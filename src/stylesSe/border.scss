@@ -1,0 +1,80 @@
+@import './variables.scss';
+
+/* 阴影 */
+.BS {
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, .2);
+}
+
+.BST {
+  box-shadow: -2px -2px 12px rgba(0, 0, 0, .2);
+}
+
+.BSE {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .2);
+}
+
+.BSA {
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, .2),
+  -2px -2px 12px rgba(0, 0, 0, .2),
+  2px -2px 12px rgba(0, 0, 0, .2),
+  -2px 2px 12px rgba(0, 0, 0, .2);
+}
+
+/* border */
+.bor_B {
+  border-bottom: 1px solid $colorDd;
+}
+
+.bor_R {
+  border-right: 1px solid $colorDd;
+}
+
+.bor_T {
+  border-top: 1px solid $colorDd;
+}
+
+.bor_L {
+  border-left: 1px solid $colorDd;
+}
+
+.bor_TS + .bor_TS {
+  border-top: 1px solid $colorDd;
+}
+
+.border {
+  border: 1px solid $colorDd;
+}
+
+.borderBl {
+  border: 1px solid $colorBl;
+  background-color: $colorFf;
+  color: $colorBl;
+}
+
+.borderLs {
+  border: 1px solid $colorLs;
+  background-color: $colorFf;
+  color: $colorLs;
+}
+
+.borderYe {
+  border: 1px solid $colorYs;
+  background-color: $colorFf;
+  color: $colorYs;
+}
+
+.borderJs {
+  border: 1px solid $colorJs;
+  background-color: $colorFf;
+  color: $colorJs;
+}
+
+.borderFe {
+  border: 1px solid $colorFe;
+  background-color: $colorFf;
+  color: $colorFe;
+}
+
+.borderNo {
+  border: none !important;
+}

@@ -1,0 +1,121 @@
+@import './variables.scss';
+
+/* color */
+.colorBl {
+  color: $colorBl;
+}
+
+.colorLs {
+  color: $colorLs;
+}
+
+.colorYe {
+  color: $colorYs;
+}
+
+.colorJs {
+  color: $colorJs;
+}
+
+.colorFe {
+  color: $colorFe;
+}
+
+.colorQs {
+  color: $colorQs;
+}
+
+.color33 {
+  color: #333333;
+}
+
+.color66 {
+  color: #666666;
+}
+
+.color99 {
+  color: #999999;
+}
+
+.colorFf {
+  color: $colorFf;
+}
+
+/* bgc */
+.bgcBl {
+  background-color: $colorBl;
+  color: $colorFf;
+}
+
+.bgcLs {
+  background-color: $colorLs;
+  color: $colorFf;
+}
+
+.bgcYe {
+  background-color: $colorYs;
+  color: $colorFf;
+}
+
+.bgcJs {
+  background-color: $colorJs;
+  color: $colorFf;
+}
+
+.bgcFe {
+  background-color: $colorFe;
+  color: $colorFf;
+}
+
+.bgcQs {
+  background-color: $colorQs;
+  color: $colorFf;
+}
+
+.bgcHs {
+  background-color: #000000;
+  color: $colorFf;
+}
+
+.bgc33 {
+  background-color: #333333;
+  color: $colorFf;
+}
+
+.bgc99 {
+  background-color: #999999;
+}
+
+.bgcDd {
+  background-color: $colorDd;
+}
+
+.bgcF5 {
+  background-color: #f5f5f5;
+}
+
+.bgcFf {
+  background-color: $colorFf;
+}
+
+.bgcTrans {
+  background-color: transparent !important;
+}
+
+.bgcNo {
+  background: none !important;
+}
+
+/* 其他 */
+.maskFf {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.maskHs {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.active_oa {
+  color: $colorBl !important;
+  border-bottom: 1px solid $colorBl;
+}

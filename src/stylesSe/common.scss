@@ -1,0 +1,110 @@
+/* 滚动 */
+.scrollY {
+  overflow-y: auto;
+}
+
+.scrollY::-webkit-scrollbar { // 滑块
+  width: 10px;
+  height: 10px;
+}
+
+.scrollY::-webkit-scrollbar-thumb { // 滑块
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.scrollY::-webkit-scrollbar-track { // 轨道
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.scrollYA { // 默认
+  overflow-y: auto;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    height: 0;
+    font-size: 0;
+    content: " ";
+    clear: both;
+  }
+}
+
+.over {
+  overflow: hidden;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.tal {
+  text-align: left;
+}
+
+.tac {
+  text-align: center;
+}
+
+.tar {
+  text-align: right;
+}
+
+.dB {
+  display: block;
+  width: 100%;
+}
+
+.dIb {
+  display: inline-block !important;
+}
+
+.dN {
+  display: none;
+}
+
+.zIndex {
+  z-index: 100 !important;
+}
+
+.zIndexH {
+  z-index: 9999 !important;
+}
+
+.breakAll {
+  word-break: break-all;
+}
+
+.circle {
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.cursorPoin {
+  cursor: pointer;
+}
+
+/* 旋转动画 */
+.loopXz {
+  animation: loopXzAn 5s linear infinite;
+}
+
+@keyframes loopXzAn {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+.preserve3d {
+  transform-style: preserve-3d;
+  // perspective: 1000px;
+}
