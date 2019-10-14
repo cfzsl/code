@@ -10,7 +10,7 @@
           <el-form-item label="区域">
             <el-select class="searchInput" v-model="formInline.region" placeholder="活动区域">
               <el-option label="东营区" value="shanghai"></el-option>
-              <el-option label="滨洲区" value="beijing"></el-option>
+              <el-option label="滨州区" value="beijing"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="活动单位">
@@ -26,13 +26,70 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot">点击打开 Dialog</el-button>
+        <el-button class="buttonBot" @click="dialogVisible = true">添加人员信息</el-button>
         <el-button class="buttonBot">导入模板下载</el-button>
         <el-button class="buttonBot">人员信息导入</el-button>
         <el-button class="buttonBotLast">导出全员信息</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
+    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class='dialogText'>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <div class="formTop">
+          <el-form-item label="区域" class='formTopSelected'>
+            <el-select v-model="formInline.region" placeholder="活动区域" class="selectTop">
+              <el-option label="东营区" value="shanghai"></el-option>
+              <el-option label="滨州区" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="单位">
+            <el-select v-model="formInline.relog" placeholder="活动单位" class="selectTop">
+              <el-option label="环卫一部" value="shanghai"></el-option>
+              <el-option label="环卫二部" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <el-form-item label="姓名">
+          <el-input v-model="formInline.name"></el-input>
+        </el-form-item>
+        <el-form-item label="年龄">
+          <el-input v-model="formInline.msg"></el-input>
+        </el-form-item>
+        <el-form-item label="住址">
+          <el-input v-model="formInline.address"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input v-model="formInline.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="formInline.stated" placeholder="状态" class='selectBot'>
+            <el-option label="在职" value="shanghai"></el-option>
+            <el-option label="离职" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职时间">
+          <el-input v-model="formInline.addtime"></el-input>
+        </el-form-item>
+        <el-form-item label="离职时间">
+          <el-input v-model="formInline.updatetime"></el-input>
+        </el-form-item>
+        <el-form-item label="负责道路名称">
+          <el-select v-model="formInline.region" placeholder="负责道路名称" class='selectBot'>
+            <el-option label="滨湖大道" value="shanghai"></el-option>
+            <el-option label="翠湖公园路" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="负责区域范围">
+          <el-select v-model="formInline.region" placeholder="负责区域范围" class='selectBot'>
+            <el-option label="东营翠湖公园" value="shanghai"></el-option>
+            <el-option label="陶然公园" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false" class='formButon'>保存</el-button>
+      </span>
+    </el-dialog>
     <!-- 表格 -->
     <div class="table">
       <Table></Table>
@@ -51,21 +108,14 @@ export default {
       formInline: {
         user: "",
         region: "",
-        relog: "",
-        msgadd: false,
-      }
+        relog: ""
+      },
+      dialogVisible: false
     };
   },
   methods: {
     onSubmit() {
       console.log("submit!");
-    },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(_ => {
-          done();
-        })
-        .catch(_ => {});
     }
   },
   components: {
@@ -100,6 +150,41 @@ export default {
   width: 1128px;
   height: 465px;
   margin-top: 16px;
+}
+.dialogText {
+    text-align: center;
+}
+.demo-form-inline {
+  text-align: right;
+  .formTop {
+    width: 100%;
+    margin-bottom: 16px;
+    .formTopSelected {
+      float: left;
+      padding-left: 50px;
+    }
+    .selectTop {
+      width: 104px;
+      height: 22px;
+      text-align: center;
+    }
+  }
+  .el-form-item {
+      margin-bottom: 2px;
+      .el-input {
+          width: 240px;
+          height: 32px;
+      }
+  }
+  .selectBot {
+      width: 240px;
+      height: 32px;
+  }
+}
+.formButon {
+    width: 127px;
+    height: 40px;
+    text-align: center;
 }
 .pagination {
   float: right;

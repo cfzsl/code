@@ -1,4 +1,5 @@
 <template>
+<!-- 列表 -->
   <div id="table">
     <el-table :data="tableData" border style="width: 1128px">
       <el-table-column class='text' prop="name" label="姓名" width="159px"></el-table-column>
@@ -10,22 +11,76 @@
       <el-table-column class='text' prop="msg" label="是否超龄" width="140px"></el-table-column>
       <el-table-column class='text' fixed="right" label="操作" width="142px">
         <template slot-scope="scope">
-          <el-button class='tableButton1' @click="handleClick(scope.row)" type="button" size="small">详情</el-button>
+          <el-button class='tableButton1' type="button" size="small"  @click="tableDate = true">详情</el-button>
           <el-button class='tableButton2' type="button" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog title="添加人员信息" :visible.sync="tableDate" width="426px" class='dialogText'>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <div class="formTop">
+          <el-form-item label="区域" class='formTopSelected'>
+            <el-select v-model="formInline.region" placeholder="活动区域" class="selectTop">
+              <el-option label="东营区" value="shanghai"></el-option>
+              <el-option label="滨州区" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="单位">
+            <el-select v-model="formInline.relog" placeholder="活动单位" class="selectTop">
+              <el-option label="环卫一部" value="shanghai"></el-option>
+              <el-option label="环卫二部" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <el-form-item label="姓名">
+          <el-input v-model="formInline.name"></el-input>
+        </el-form-item>
+        <el-form-item label="年龄">
+          <el-input v-model="formInline.msg"></el-input>
+        </el-form-item>
+        <el-form-item label="住址">
+          <el-input v-model="formInline.address"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input v-model="formInline.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="formInline.stated" placeholder="状态" class='selectBot'>
+            <el-option label="在职" value="shanghai"></el-option>
+            <el-option label="离职" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职时间">
+          <el-input v-model="formInline.addtime"></el-input>
+        </el-form-item>
+        <el-form-item label="离职时间">
+          <el-input v-model="formInline.updatetime"></el-input>
+        </el-form-item>
+        <el-form-item label="负责道路名称">
+          <el-select v-model="formInline.region" placeholder="负责道路名称" class='selectBot'>
+            <el-option label="滨湖大道" value="shanghai"></el-option>
+            <el-option label="翠湖公园路" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="负责区域范围">
+          <el-select v-model="formInline.region" placeholder="负责区域范围" class='selectBot'>
+            <el-option label="东营翠湖公园" value="shanghai"></el-option>
+            <el-option label="陶然公园" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="tableDate = false" class='formButon'>保存</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
   methods: {
-    handleClick(row) {
-      console.log(row);
-    }
-  },
 
+  },
   data() {
     return {
       tableData: [
@@ -59,7 +114,13 @@ export default {
           zipiphone: "15927227885",
           msg: "否"
         }
-      ]
+      ],
+      tableDate:false,
+      formInline: {
+        user: "",
+        region: "",
+        relog: ""
+      },
     };
   }
 };
