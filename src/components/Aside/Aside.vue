@@ -13,7 +13,7 @@
               <span>车辆管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="1-1">人员信息管理</el-menu-item>
+              <el-menu-item index="/base">人员信息管理</el-menu-item>
               <el-menu-item index="carmsg">车辆信息管理</el-menu-item>
               <el-menu-item index="1-3">车辆监管</el-menu-item>
             </el-menu-item-group>
@@ -93,5 +93,6 @@ export default {
 }
 .el-menu-item {
   background-color: #fff;
+    background-color: #fff;
 }
 </style>

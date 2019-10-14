@@ -17,12 +17,17 @@ export default new Router({
           name: "carmsg",
           component: () => import("./components/CarMsg.vue")
         },
+        {
+          path: "/base",
+          name: "base",
+          component: () => import("./views/base/base.vue")
+        }
       ]
     },
     {
       path: "/login",
       name: "login",
       component: () => import("./views/login/login.vue")
-    },
+    }
   ]
 });
