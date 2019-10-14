@@ -9,13 +9,12 @@
         <span>管理员您好，欢迎登录！</span>
       </div>
       <div class="TopRb">
-          <i class="el-icon-refresh"></i>
-          <span>刷新</span>
-          <i class="el-icon-thumb"></i>
-          <span>幫助</span>
-          <i class="el-icon-switch-button"></i>
-          <span>退出</span>
-        </div>
+        <i class="el-icon-refresh"></i>
+        <span>刷新</span>
+        <i class="el-icon-thumb"></i>
+        <span>幫助</span>
+        <i class="el-icon-switch-button"></i>
+        <span>退出</span>
       </div>
     </div>
   </div>
@@ -57,22 +56,22 @@ export default {};
     font-style: normal;
     font-size: 12px;
     .TopRt {
-        margin-top: 12px;
-        span {
-            display: inline-block;
-            margin-left: 24px;
-        }
+      margin-top: 12px;
+      span {
+        display: inline-block;
+        margin-left: 24px;
+      }
     }
     .TopRb {
-        margin-top: 12px;
-        i {
-            display: inline-block;
-            margin-right: 6px; 
-        }
-        span {
-            display: inline-block;
-            margin-right: 12px;
-        }
+      margin-top: 12px;
+      i {
+        display: inline-block;
+        margin-right: 6px;
+      }
+      span {
+        display: inline-block;
+        margin-right: 12px;
+      }
     }
   }
 }

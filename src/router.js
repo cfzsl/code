@@ -10,7 +10,14 @@ export default new Router({
     {
       path: "/",
       name: "home",
-      component: () => import("./views/home/home.vue")
+      component: () => import("./views/home/home.vue"),
+      children: [
+        {
+          path: "carmsg",
+          name: "carmsg",
+          component: () => import("./components/CarMsg.vue")
+        },
+      ]
     },
     {
       path: "/login",

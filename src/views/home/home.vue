@@ -4,7 +4,9 @@
       <el-header height='70px'><Top></Top></el-header>
       <el-container>
         <el-aside width="245px"><Asd></Asd></el-aside>
-        <el-main></el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
