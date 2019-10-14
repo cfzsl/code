@@ -129,6 +129,10 @@ export default {
   width: 1128px;
   height: 76px;
   margin-top: 16px;
+  .searchTop {
+      float: left;
+      margin-bottom: 16px;
+  }
   .searchBot {
     float: right;
     .buttonBot {

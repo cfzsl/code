@@ -16,6 +16,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 弹框 -->
     <el-dialog title="添加人员信息" :visible.sync="tableDate" width="426px" class='dialogText'>
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <div class="formTop">
@@ -116,7 +117,7 @@ export default {
         }
       ],
       tableDate:false,
-      formInline: {
+        formInline: {
         user: "",
         region: "",
         relog: ""
@@ -136,6 +137,41 @@ export default {
 }
 .tableButton1 {
     margin-right: 10px;
+}
+.dialogText {
+    text-align: center;
+}
+.demo-form-inline {
+  text-align: right;
+  .formTop {
+    width: 100%;
+    margin-bottom: 16px;
+    .formTopSelected {
+      float: left;
+      padding-left: 50px;
+    }
+    .selectTop {
+      width: 104px;
+      height: 22px;
+      text-align: center;
+    }
+  }
+  .el-form-item {
+      margin-bottom: 2px;
+      .el-input {
+          width: 240px;
+          height: 32px;
+      }
+  }
+  .selectBot {
+      width: 240px;
+      height: 32px;
+  }
+}
+.formButon {
+    width: 127px;
+    height: 40px;
+    text-align: center;
 }
 </style>
 
