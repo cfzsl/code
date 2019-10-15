@@ -6,14 +6,14 @@
       border
       style="width: 1128px"
     >
-      <el-table-column class="text" prop="name" label="姓名" width="159px"></el-table-column>
-      <el-table-column class="text" prop="province" label="区域" width="159px"></el-table-column>
-      <el-table-column class="text" prop="city" label="单位" width="159px"></el-table-column>
-      <el-table-column class="text" prop="date" label="入职时间" width="113px"></el-table-column>
-      <el-table-column class="text" prop="updata" label="离职时间" width="123px"></el-table-column>
-      <el-table-column class="text" prop="zipiphone" label="联系方式" width="123px"></el-table-column>
-      <el-table-column class="text" prop="msg" label="是否超龄" width="140px"></el-table-column>
-      <el-table-column class="text" fixed="right" label="操作" width="142px">
+      <el-table-column align="center" prop="name" label="姓名" width="159px"></el-table-column>
+      <el-table-column align="center" prop="province" label="区域" width="159px"></el-table-column>
+      <el-table-column align="center" prop="city" label="单位" width="159px"></el-table-column>
+      <el-table-column align="center" prop="date" label="入职时间" width="113px"></el-table-column>
+      <el-table-column align="center" prop="updata" label="离职时间" width="123px"></el-table-column>
+      <el-table-column align="center" prop="zipiphone" label="联系方式" width="123px"></el-table-column>
+      <el-table-column align="center" prop="msg" label="是否超龄" width="140px"></el-table-column>
+      <el-table-column align="center" fixed="right" label="操作" width="142px">
         <template slot-scope="scope">
           <el-button
             class="tableButton1"
@@ -40,10 +40,16 @@
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <div class="formTop">
           <el-form-item label="区域" class="formTopSelected">
-            <el-input :value="formInline.province"></el-input>
+            <el-select v-model="formInline.region" placeholder="活动区域" class="selectTop">
+              <el-option label="东营区" value="shanghai"></el-option>
+              <el-option label="滨州区" value="beijing"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="单位">
-            <el-input :value="formInline.city"></el-input>
+            <el-select v-model="formInline.relog" placeholder="活动单位" class="selectTop">
+              <el-option label="环卫一部" value="shanghai"></el-option>
+              <el-option label="环卫二部" value="beijing"></el-option>
+            </el-select>
           </el-form-item>
         </div>
         <el-form-item label="姓名">
@@ -56,13 +62,13 @@
           <el-input v-model="formInline.address"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
+          <el-input v-model="formInline.zipiphone"></el-input>
         </el-form-item>
         <el-form-item label="状态">
         <el-input v-model="formInline.updata"></el-input>
         </el-form-item>
         <el-form-item label="入职时间">
-          <el-input v-model="formInline.addtime"></el-input>
+          <el-input v-model="formInline.date"></el-input>
         </el-form-item>
         <el-form-item label="离职时间">
           <el-input v-model="formInline.updatetime"></el-input>
@@ -102,6 +108,7 @@ export default {
           city: "环卫一部",
           address: "上海市普陀区金沙江路 1518 弄",
           date: "2016-05-02",
+          updatetime: '',
           updata: "在职",
           zipiphone: "15927227885",
           msg: "否"
@@ -128,10 +135,11 @@ export default {
       console.log(this.dialogFormVisible)
     },
     addDo() {
-      let _index = this.listIndex;
+      // let _index = this.listIndex;
       //根据索引，赋值到list制定的数
-      this.list[_index] = editObj;
+      // this.list[_index] = this.formInline;
       //关闭弹窗
+      console.log('关闭')
       this.dialogFormVisible = false;
     },
     getlist() {
@@ -173,17 +181,26 @@ export default {
 .tableButton1 {
   margin-right: 10px;
 }
+.paginationList {
+  float: right;
+  margin-top: 32px;
+  padding: 0;
+}
+.table {
+  width: 1128px;
+  height: 465px;
+  margin-top: 16px;
+}
 .dialogText {
   text-align: center;
 }
 .demo-form-inline {
   text-align: right;
   .formTop {
-    width: 100%;
     margin-bottom: 16px;
     .formTopSelected {
       float: left;
-      padding-left: 50px;
+      margin-left: 48px;
     }
     .selectTop {
       width: 104px;
@@ -208,9 +225,8 @@ export default {
   height: 40px;
   text-align: center;
 }
-.paginationList {
+.pagination {
   float: right;
-  margin-top: 32px;
-  padding: 0;
+  margin-right: 16px;
 }
 </style>

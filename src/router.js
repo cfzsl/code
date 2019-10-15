@@ -82,6 +82,11 @@ export default new Router({
           name: "message",
           component: () => import("./views/HRManagement/Message.vue")
         },
+        {
+          path: "/vehicle",
+          name: "vehicle",
+          component: () => import("./views/vehicle/vehicle.vue")
+        }
       ]
     },
     {

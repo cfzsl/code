@@ -1,5 +1,5 @@
 <template>
-  <el-row class="tac">
+  <!-- <el-row class="tac"> -->
     <el-col>
       <el-menu router unique-opened :default-active="activeIndex" class="el-menu-vertical-demo">
         <el-submenu index="1">
@@ -9,7 +9,7 @@
           <el-menu-item-group>
             <el-menu-item index="/base">人员信息管理</el-menu-item>
             <el-menu-item index="carmsg">车辆信息管理</el-menu-item>
-            <el-menu-item index>车辆监管</el-menu-item>
+            <el-menu-item index='/vehicle'>车辆监管</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-divider></el-divider>
@@ -50,7 +50,7 @@
         </el-submenu>
       </el-menu>
     </el-col>
-  </el-row>
+  <!-- </el-row> -->
 </template>
 
 <script>
