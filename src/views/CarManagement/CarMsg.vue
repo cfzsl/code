@@ -30,7 +30,7 @@
         <el-button icon="el-icon-upload2" @click="msgexport = true">车辆信息导出</el-button>
       </div>
 
-      <el-dialog title="添加车辆信息" :visible.sync="msgadd" @close="msg = {}" width="25%">
+      <el-dialog title="车辆信息" :visible.sync="msgadd" @close="msg = {}" width="25%">
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <el-form-item label="车辆信息">
             <el-select v-model="msg.type" placeholder="请选择车辆类型" style="width: 100%">
@@ -70,9 +70,10 @@
           <el-form-item label="车辆维修情况">
             <el-input
               type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
+              :autosize="{ minRows: 2, maxRows: 2}"
               placeholder="请输入内容"
               v-model="msg.service"
+              resize="none"
             ></el-input>
           </el-form-item>
         </el-form>
@@ -123,7 +124,6 @@
     <div class="list">
       <el-table
         :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
-        highlight-current-row
         stripe
         style="width: 100%"
         @row-click="showadd"

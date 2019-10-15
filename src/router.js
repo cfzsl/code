@@ -23,6 +23,21 @@ export default new Router({
           component: () => import("./views/CarManagement/base.vue")
         },
         {
+          path: "worker",
+          name: "worker",
+          component: () => import("./views/WorkerManagement/Worker.vue")
+        },
+        {
+          path: "wsupervision",
+          name: "wsupervision",
+          component: () => import("./views/WorkerManagement/Supervision.vue")
+        },
+        {
+          path: "wcarmsg",
+          name: "wcarmsg",
+          component: () => import("./views/WorkerManagement/CarMsg.vue")
+        },
+        {
           path: "toiltmsg",
           name: "toiltmsg",
           component: () => import("./views/ToiletManagement/ToiltMsg.vue")
