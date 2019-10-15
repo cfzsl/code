@@ -15,7 +15,7 @@ export default new Router({
         {
           path: "carmsg",
           name: "carmsg",
-          component: () => import("./components/CarMsg.vue")
+          component: () => import("./views/CarMsg/CarMsg.vue")
         },
         {
           path: "/base",
