@@ -155,7 +155,7 @@
       <el-pagination
         :current-page="data.currpage"
         :page-size="data.pagesize"
-        :pager-count="5"
+        :pager-count="21"
         layout="total, prev, pager, next"
         :total="data.list.length"
         @prev-click="nextpage"
@@ -174,7 +174,7 @@ export default {
       input: null,
       radio: "0",
       data: {
-        pagesize: 10,
+        pagesize: 14,
         currpage: 1,
         list: []
       },
@@ -187,13 +187,13 @@ export default {
   methods: {
     onSubmit() {},
     date() {
-      for (let i = 0; i < 999; i++) {
+      for (let i = 0; i < 300; i++) {
         this.data.list.push({
           sid: i,
           type: "垃圾运输车",
-          carbrand: "鄂A " + i + i + i + i,
+          carbrand: "鄂A " + i,
           date: "2011.10.20",
-          num: "环卫-A001",
+          num: "环卫-A00" + i,
           company: "环卫",
           driver: "李诞",
           phone: "15375669845",
@@ -259,7 +259,9 @@ export default {
 }
 
 .pagination {
-  float: right;
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
   padding-top: 40px;
 }
 </style>
