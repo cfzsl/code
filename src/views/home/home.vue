@@ -29,6 +29,7 @@ export default {
 }
 .el-aside {
   display: block;
+  height: 92%;
   position: absolute;
   left: 0;
   top: 70px;
