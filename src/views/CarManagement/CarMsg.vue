@@ -6,12 +6,40 @@
         <el-input v-model="input" placeholder="请输入车牌号" style="width: 130px"></el-input>
       </div>
       <div class="searchbox">
-        <span>区域</span>
-        <el-input v-model="input" placeholder="请输入区域" style="width: 130px"></el-input>
+        <span>车辆类型</span>
+        <el-select v-model="search.type">
+          <el-option label="全部" value="全部"></el-option>
+          <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
+          <el-option label="洒水车" value="洒水车"></el-option>
+          <el-option label="清扫车" value="清扫车"></el-option>
+        </el-select>
+      </div>
+      <div class="searchbox">
+        <span>负责道路</span>
+        <el-select v-model="search.road">
+          <el-option label="全部" value="全部"></el-option>
+          <el-option label="庐山路" value="庐山路"></el-option>
+          <el-option label="宁阳路" value="宁阳路"></el-option>
+          <el-option label="新泰路" value="新泰路"></el-option>
+        </el-select>
+      </div>
+      <div class="searchbox">
+        <span>作业区域</span>
+        <el-select v-model="search.work">
+          <el-option label="全部" value="全部"></el-option>
+          <el-option label="东营区新区" value="东营区新区"></el-option>
+          <el-option label="文辉街道办事处" value="文辉街道办事处"></el-option>
+          <el-option label="新电路办事处" value="新电路办事处"></el-option>
+        </el-select>
       </div>
       <div class="searchbox">
         <span>单位</span>
-        <el-input v-model="input" placeholder="请输入单位" style="width: 130px"></el-input>
+        <el-select v-model="search.company">
+          <el-option label="全部" value="全部"></el-option>
+          <el-option label="环卫一部" value="环卫一部"></el-option>
+          <el-option label="环卫二部" value="环卫二部"></el-option>
+          <el-option label="环卫三部" value="环卫三部"></el-option>
+        </el-select>
       </div>
       <el-button type="primary" class="btn">查询</el-button>
     </div>
@@ -134,6 +162,42 @@
         <el-table-column align="center" prop="company" label="归属单位"></el-table-column>
         <el-table-column align="center" prop="driver" label="指定司机"></el-table-column>
         <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
+        <el-table-column align="center" label="车况报警">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click.stop="handleEdit(scope.$index, scope.row)"
+            >详情</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="油耗报警">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click.stop="handleEdit(scope.$index, scope.row)"
+            >详情</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="保养记录">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click.stop="handleEdit(scope.$index, scope.row)"
+            >详情</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="保险缴纳">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click.stop="handleEdit(scope.$index, scope.row)"
+            >详情</el-button>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button
@@ -177,6 +241,12 @@ export default {
         pagesize: 14,
         currpage: 1,
         list: []
+      },
+      search: {
+        type: "全部",
+        road: "全部",
+        work: "全部",
+        company: "全部"
       },
       msg: {},
       msgadd: false,

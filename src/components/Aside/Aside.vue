@@ -10,6 +10,8 @@
             <el-menu-item index="/base">人员信息管理</el-menu-item>
             <el-menu-item index="carmsg">车辆信息管理</el-menu-item>
             <el-menu-item index='/vehicle'>车辆监管</el-menu-item>
+            <el-menu-item index="history">历史页面</el-menu-item>
+            <el-menu-item index="test">测试页面1</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-divider></el-divider>

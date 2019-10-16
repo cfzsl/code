@@ -165,6 +165,15 @@
     </div>
     <div class="bdMap">
       <baidu-map class="map" center="东营市">
+        <bm-polyline
+          :path="polylinePath"
+          stroke-color="blue"
+          :stroke-opacity="0.5"
+          :stroke-weight="2"
+          :editing="true"
+          @lineupdate="updatePolylinePath"
+        ></bm-polyline>
+
         <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
@@ -221,7 +230,12 @@ export default {
         ]
       },
       value1: "",
-      value2: ""
+      value2: "",
+      polylinePath: [
+        { lng: 116.404, lat: 39.915 },
+        { lng: 116.405, lat: 39.92 },
+        { lng: 116.423493, lat: 39.907445 }
+      ]
     };
   },
   created() {
@@ -251,9 +265,15 @@ export default {
           region: "东营南站",
           policeTime: "2011.10.20",
           service: "超出原定使用区域：东营区东营南站",
-          troubleshooting:'未维修'
+          troubleshooting: "未维修"
         });
       }
+    },
+    updatePolylinePath(e) {
+      this.polylinePath = e.target.getPath();
+    },
+    addPolylinePoint() {
+      this.polylinePath.push({ lng: 116.404, lat: 39.915 });
     }
   }
 };
