@@ -7,20 +7,28 @@
           <el-form-item label="姓名">
             <el-input class="searchInput" v-model="formInline.user" placeholder="姓名"></el-input>
           </el-form-item>
-          <el-form-item label="区域">
-            <el-select class="searchInput" v-model="formInline.region" placeholder="活动区域">
-              <el-option label="东营区" value="shanghai"></el-option>
-              <el-option label="滨州区" value="beijing"></el-option>
+          <el-form-item label="作业区域">
+            <el-select v-model="value">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="活动单位">
-            <el-select class="searchInput" v-model="formInline.relog" placeholder="活动单位">
-              <el-option label="环卫一部" value="shanghai"></el-option>
-              <el-option label="环卫二部" value="beijing"></el-option>
+          <el-form-item label="归属单位">
+            <el-select v-model="id">
+              <el-option
+                v-for="item in optionsList"
+                :key="item.id"
+                :label="item.label"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询人员讯息</el-button>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -35,25 +43,27 @@
     <!-- 弹窗 -->
     <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <div class="formTop">
-          <el-form-item label="区域" class="formTopSelected">
-            <el-select v-model="formInline.region" placeholder="活动区域" class="selectTop">
-              <el-option label="东营区" value="shanghai"></el-option>
-              <el-option label="滨州区" value="beijing"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="单位">
-            <el-select v-model="formInline.relog" placeholder="活动单位" class="selectTop">
-              <el-option label="环卫一部" value="shanghai"></el-option>
-              <el-option label="环卫二部" value="beijing"></el-option>
-            </el-select>
-          </el-form-item>
-        </div>
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
         </el-form-item>
+        <el-form-item label="性别">
+          <el-input v-model="formInline.usg"></el-input>
+        </el-form-item>
         <el-form-item label="年龄">
           <el-input v-model="formInline.msg"></el-input>
+        </el-form-item>
+        <el-form-item label="证件号">
+          <el-input v-model="formInline.id"></el-input>
+        </el-form-item>
+        <el-form-item label="准驾车型">
+          <el-select v-model="type" class="selectTop">
+            <el-option
+              v-for="item in optionsType"
+              :key="item.type"
+              :label="item.label"
+              :value="item.type"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="住址">
           <el-input v-model="formInline.address"></el-input>
@@ -62,9 +72,13 @@
           <el-input v-model="formInline.mobile"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="formInline.stated" placeholder="状态" class="selectBot">
-            <el-option label="在职" value="shanghai"></el-option>
-            <el-option label="离职" value="beijing"></el-option>
+          <el-select v-model="state" class="selectTop">
+            <el-option
+              v-for="item in optionsStated"
+              :key="item.state"
+              :label="item.label"
+              :value="item.state"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间">
@@ -73,19 +87,30 @@
         <el-form-item label="离职时间">
           <el-input v-model="formInline.updatetime"></el-input>
         </el-form-item>
-        <el-form-item label="负责道路名称">
-          <el-select v-model="formInline.region" placeholder="负责道路名称" class="selectBot">
-            <el-option label="滨湖大道" value="shanghai"></el-option>
-            <el-option label="翠湖公园路" value="beijing"></el-option>
+        <el-form-item label="作业区域">
+          <el-select v-model="job" class='selectTop'>
+            <el-option
+              v-for="item in optionsJob"
+              :key="item.job"
+              :label="item.label"
+              :value="item.job"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="负责区域范围">
-          <el-select v-model="formInline.region" placeholder="负责区域范围" class="selectBot">
-            <el-option label="东营翠湖公园" value="shanghai"></el-option>
-            <el-option label="陶然公园" value="beijing"></el-option>
+        <el-form-item label="归属单位">
+          <el-select v-model="web" class='selectTop'>
+            <el-option
+              v-for="item in optionsWeb"
+              :key="item.web"
+              :label="item.label"
+              :value="item.web"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
+      <span slot="footer" class="delect-footer">
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+      </span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
       </span>
@@ -102,12 +127,201 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      formInline: {
-        user: "",
-        region: "",
-        relog: ""
-      },
-      dialogVisible: false
+      formInline: {},
+      dialogVisible: false,
+      value: "0",
+      options: [
+        {
+          value: "0",
+          label: "全部"
+        },
+        {
+          value: "1",
+          label: "东营区新区"
+        },
+        {
+          value: "2",
+          label: "文汇街道办事处"
+        },
+        {
+          value: "3",
+          label: "辛店街道办事处"
+        },
+        {
+          value: "4",
+          label: "黄河街道办事处"
+        },
+        {
+          value: "5",
+          label: "圣园街道办事处"
+        },
+        {
+          value: "6",
+          label: "六户镇"
+        },
+        {
+          value: "7",
+          label: "牛庄镇"
+        },
+        {
+          value: "8",
+          label: "史口镇"
+        },
+        {
+          value: "9",
+          label: "龙居镇"
+        }
+      ],
+      web: "0",
+      optionsWeb: [
+        {
+          web: "0",
+          label: "全部"
+        },
+        {
+          web: "1",
+          label: "环卫一部"
+        },
+        {
+          web: "2",
+          label: "环卫二部"
+        },
+        {
+          web: "3",
+          label: "环卫三部"
+        },
+        {
+          web: "4",
+          label: "环卫四部"
+        }
+      ],
+       job: '0',
+       optionsJob: [
+        {
+          job: "0",
+          label: "全部"
+        },
+        {
+          job: "1",
+          label: "东营区新区"
+        },
+        {
+          job: "2",
+          label: "文汇街道办事处"
+        },
+        {
+          job: "3",
+          label: "辛店街道办事处"
+        },
+        {
+          job: "4",
+          label: "黄河街道办事处"
+        },
+        {
+          job: "5",
+          label: "圣园街道办事处"
+        },
+        {
+          job: "6",
+          label: "六户镇"
+        },
+        {
+          job: "7",
+          label: "牛庄镇"
+        },
+        {
+          job: "8",
+          label: "史口镇"
+        },
+        {
+          job: "9",
+          label: "龙居镇"
+        }
+      ],
+      id: "0",
+      optionsList: [
+        {
+          id: "0",
+          label: "全部"
+        },
+        {
+          id: "1",
+          label: "环卫一部"
+        },
+        {
+          id: "2",
+          label: "环卫二部"
+        },
+        {
+          id: "3",
+          label: "环卫三部"
+        },
+        {
+          id: "4",
+          label: "环卫四部"
+        }
+      ],
+      web: "0",
+      optionsWeb: [
+        {
+          web: "0",
+          label: "全部"
+        },
+        {
+          web: "1",
+          label: "环卫一部"
+        },
+        {
+          web: "2",
+          label: "环卫二部"
+        },
+        {
+          web: "3",
+          label: "环卫三部"
+        },
+        {
+          web: "4",
+          label: "环卫四部"
+        }
+      ],
+      type: "0",
+      optionsType: [
+        {
+          type: "0",
+          label: "A1"
+        },
+        {
+          type: "1",
+          label: "A2"
+        },
+        {
+          type: "2",
+          label: "B1"
+        },
+        {
+          type: "3",
+          label: "B2"
+        },
+        {
+          type: "4",
+          label: "C1"
+        },
+        {
+          type: "5",
+          label: "C2"
+        }
+      ],
+      state: "0",
+      optionsStated: [
+        {
+          state: "0",
+          label: "在职"
+        },
+        {
+          state: "1",
+          label: "离职"
+        }
+      ]
     };
   },
   methods: {
@@ -123,7 +337,8 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
 .search {
-  width: 1128px;
+  position: relative;
+  width: 100%;
   height: 76px;
   margin-top: 16px;
   .searchTop {
@@ -131,7 +346,9 @@ export default {
     margin-bottom: 16px;
   }
   .searchBot {
-    float: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
     .buttonBot {
       width: 92px;
       height: 25px;
@@ -157,18 +374,8 @@ export default {
 }
 .demo-form-inline {
   text-align: right;
-  .formTop {
-    width: 100%;
-    margin-bottom: 16px;
-    .formTopSelected {
-      float: left;
-      padding-left: 50px;
-    }
-    .selectTop {
-      width: 104px;
-      height: 22px;
-      text-align: center;
-    }
+  .selectTop {
+    width: 240px;
   }
   .el-form-item {
     margin-bottom: 2px;
@@ -190,5 +397,12 @@ export default {
 .pagination {
   float: right;
   margin-right: 16px;
+}
+.table {
+  width: 100%;
+}
+.delect-footer {
+  float: left;
+  margin-left: 10px;
 }
 </style>

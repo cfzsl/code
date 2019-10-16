@@ -9,7 +9,7 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "home",
+      name: "/",
       component: () => import("./views/home/home.vue"),
       children: [
         {
@@ -96,6 +96,7 @@ export default new Router({
           path: "history",
           name: "history",
           component: () => import("./views/history.vue")
+          component: () => import("./views/vehicle/vehicle.vue"),
         }
       ]
     },

@@ -2,7 +2,7 @@
   <!-- <el-row class="tac"> -->
     <el-col>
       <el-menu router unique-opened :default-active="activeIndex" class="el-menu-vertical-demo">
-        <el-submenu index="1">
+        <el-submenu index="/home">
           <template slot="title">
             <span>车辆管理</span>
           </template>
