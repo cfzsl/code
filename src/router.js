@@ -11,92 +11,72 @@ export default new Router({
       path: "/",
       name: "/",
       component: () => import("./views/home/home.vue"),
+      redirect: "/homeview",
       children: [
         {
-          path: "CarMsg",
-          name: "CarMsg",
-          component: () => import("./views/CarManagement/CarMsg.vue")
+          path: "/homeview",
+          name: "homeview",
+          component: () => import("./views/homeview/homeview.vue"),
         },
         {
-          path: "/base",
-          name: "base",
-          component: () => import("./views/CarManagement/base.vue")
+          path: "/onece",
+          name: "onece",
+          component: () => import("./views/onece/index.vue"),
         },
         {
-          path: "worker",
+          path:"/onece/base",
+          name:"base",
+          component: () =>import("./views/onece/base.vue")
+        },
+        {
+          path:"/onece/carmsg",
+          name:"base",
+          component: () =>import("./views/onece/CarMsg.vue")
+        },
+        {
+          path:"/onece/vehicle",
+          name:"vehicle",
+          component: () =>import("./views/onece/vehicle.vue")
+        },
+        {
+          path: "/town",
+          name: "town",
+          component: () => import("./views/town/index.vue")
+        },
+        {
+          path: "/town/worker",
           name: "worker",
-          component: () => import("./views/WorkerManagement/Worker.vue")
+          component: () => import("./views/town/Worker.vue")
         },
         {
-          path: "wsupervision",
-          name: "wsupervision",
-          component: () => import("./views/WorkerManagement/Supervision.vue")
+          path: "/town/carmsg",
+          name: "CarMsg",
+          component: () => import("./views/town/CarMsg.vue")
         },
         {
-          path: "wcarmsg",
-          name: "wcarmsg",
-          component: () => import("./views/WorkerManagement/CarMsg.vue")
-        },
-        {
-          path: "toiltmsg",
-          name: "toiltmsg",
-          component: () => import("./views/ToiletManagement/ToiltMsg.vue")
-        },
-        {
-          path: "supervision",
+          path: "/town/supervision",
           name: "supervision",
-          component: () => import("./views/ToiletManagement/Supervision.vue")
+          component: () => import("./views/town/Supervision.vue")
         },
         {
-          path: "personnel",
-          name: "personnel",
-          component: () => import("./views/ToiletManagement/Personnel.vue")
+          path: "/welcom",
+          name: "welcom",
+          component: () => import("./views/three/index.vue")
         },
         {
-          path: "monitor",
-          name: "monitor",
-          component: () => import("./views/ToiletManagement/Monitor.vue")
+          path: "/business",
+          name: "business",
+          component: () => import("./views/four/index.vue")
         },
         {
-          path: "mobile",
-          name: "mobile",
-          component: () => import("./views/ToiletManagement/Mobile.vue")
+          path: "/business/process",
+          name: "process",
+          component: () => import("./views/four/process.vue")
         },
         {
-          path: "led",
-          name: "led",
-          component: () => import("./views/ToiletManagement/LED.vue")
-        },
-        {
-          path: "assessment",
-          name: "assessment",
-          component: () => import("./views/HRManagement/Assessment.vue")
-        },
-        {
-          path: "hr",
-          name: "hr",
-          component: () => import("./views/HRManagement/HRManagement.vue")
-        },
-        {
-          path: "message",
-          name: "message",
-          component: () => import("./views/HRManagement/Message.vue")
-        },
-        {
-          path: "/vehicle",
-          name: "vehicle",
-          component: () => import("./views/vehicle/vehicle.vue")
-        },
-        {
-          path: "test",
-          name: "test",
-          component: () => import("./views/test.vue")
-        },
-        {
-          path: "history",
-          name: "history",
-          component: () => import("./views/history.vue")
-          component: () => import("./views/vehicle/vehicle.vue"),
+          path: "/matters",
+          name: "matters",
+          component: () => import("./views/five/index.vue")
         }
       ]
     },

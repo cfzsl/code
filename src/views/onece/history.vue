@@ -125,7 +125,5 @@ export default {
 .BMap_Marker {
   width: 20px;
   height: 20px;
-  img {
-  }
 }
 </style>

@@ -1,18 +1,18 @@
 <template>
-  <!-- 车辆监管 -->
+  <!-- 环卫日常监管 -->
   <div id="vehicle">
     <div class="menu">
       <div class="btn">
-        <el-button @click="msgserach = true">历史轨迹播放</el-button>
-        <el-button @click="msgerr = true">路线异常报警</el-button>
-        <el-button @click="msgeslint = true">车况检测和预警</el-button>
-        <el-button @click="msgedate = true">车辆考勤和工作量</el-button>
+        <el-button @click="msgserach = true">历史轨迹追溯</el-button>
+        <el-button @click="msgerr = true">越界报警</el-button>
+        <el-button @click="msgeslint = true">停滞超限预警</el-button>
+        <el-button @click="msgedate = true">日常考勤</el-button>
       </div>
 
       <!-- 弹窗1 -->
       <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if='mapview'>
           <div class="search">
             <el-form-item label="车牌号鲁-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
@@ -91,7 +91,7 @@
         </el-form>
       </el-dialog>
       <!-- 弹窗2 -->
-      <el-dialog title="历史轨迹播放" :visible.sync="msgerr" @close="msg = {}" width="70%">
+      <el-dialog title="越界报警" :visible.sync="msgerr" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
@@ -137,14 +137,7 @@
         </el-form>
       </el-dialog>
       <!-- 弹框3 -->
-      <el-dialog :visible.sync="msgeslint" @close="msg = {}" width="70%" class="elDialog">
-        <div class="elDialogtitle">车况检测和预警</div>
-        <div class="searchDialogBot">
-          <el-button class="buttonBot">车辆故障代码</el-button>
-          <el-button class="buttonBot">油耗超标报警</el-button>
-          <el-button class="buttonBot">车辆保养预警</el-button>
-          <el-button class="buttonBotLast">保险到期提醒</el-button>
-        </div>
+      <el-dialog title="停滞超限预警" :visible.sync="msgeslint" @close="msg = {}" width="70%" class="elDialog">
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
@@ -153,16 +146,6 @@
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="故障维修结果" class="Troubleshooting">
-              <el-select v-model="th" class="selectTop">
-                <el-option
-                  v-for="item in troublesHooting"
-                  :key="item.th"
-                  :label="item.label"
-                  :value="item.th"
-                ></el-option>
-              </el-select>
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
@@ -177,11 +160,12 @@
             >
               <el-table-column align="center" prop="number" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="company" label="车辆故障代码"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
-              <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
-              <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
-              <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
+              <el-table-column align="center" prop="driver" label="车辆使用人"></el-table-column>
+              <el-table-column align="center" prop="company" label="单位"></el-table-column>
+              <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
+              <el-table-column align="center" prop="date" label="停滞点" width="200x"></el-table-column>
+              <el-table-column align="center" prop="policeTime" label="报警时间" width="200px"></el-table-column>              
+              <el-table-column align="center" prop="timeout" label="停滞时长" width="220px"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -200,29 +184,15 @@
         </el-form>
       </el-dialog>
       <!-- 弹窗4 -->
-      <el-dialog :visible.sync="msgedate" @close="msg = {}" width="70%">
-        <div class="elDialogtitle">车辆考勤和工作量</div>
-        <div class="searchDialogBot">
-          <el-button class="buttonBot" @click="work()">车辆考勤</el-button>
-          <el-button class="buttonBot" @click="total()">车辆工作总量</el-button>
-        </div>
+      <el-dialog title="日常考勤" :visible.sync="msgedate" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="flow">
           <div class="search">
             <el-form-item label="车牌号 鲁E- " class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="运转站" class="Troubleshooting stations">
-              <el-select v-model="s" class="selectTop">
-                <el-option
-                  v-for="item in station"
-                  :key="item.s"
-                  :label="item.label"
-                  :value="item.s"
-                ></el-option>
-              </el-select>
             </el-form-item>
-            <el-form-item label="司机" class="Troubleshooting msgnumber">
+            <el-form-item label="使用人" class="Troubleshooting msgnumber">
               <el-input v-model="msg.number" class="TroubleshootingInput"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
@@ -240,11 +210,11 @@
               @row-click="showadd"
             >
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="company" label="车辆故障代码"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
-              <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
-              <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
-              <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
+              <el-table-column align="center" prop="driver" label="车辆使用人"></el-table-column>
+              <el-table-column align="center" prop="company" label="单位"></el-table-column>
+              <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
+              <el-table-column align="center" prop="date" label="上午打卡"></el-table-column>
+              <el-table-column align="center" prop="date" label="下午打卡"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -299,6 +269,7 @@ export default {
     return {
       radio: "0",
       flow: true,
+      mapview: true,
       msgserach: false,
       msgerr: false,
       msgeslint: false,
@@ -631,7 +602,6 @@ export default {
     onSubmit() {},
     showadd() {},
     handleEdit(_index, row) {
-      console.log("播放轨迹");
     },
     searchMap() {
       console.log("百度地图搜索");
@@ -652,7 +622,8 @@ export default {
           region: "东营南站",
           policeTime: "2011.10.20",
           service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未维修"
+          troubleshooting: "未维修",
+          timeout:"1小时"
         });
       }
     },

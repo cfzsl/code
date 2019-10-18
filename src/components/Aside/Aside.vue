@@ -1,77 +1,112 @@
 <template>
-  <!-- <el-row class="tac"> -->
-    <el-col>
-      <el-menu router unique-opened :default-active="activeIndex" class="el-menu-vertical-demo">
-        <el-submenu index="/home">
-          <template slot="title">
-            <span>车辆管理</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="/base">人员信息管理</el-menu-item>
-            <el-menu-item index="carmsg">车辆信息管理</el-menu-item>
-            <el-menu-item index='/vehicle'>车辆监管</el-menu-item>
-            <el-menu-item index="history">历史页面</el-menu-item>
-            <el-menu-item index="test">测试页面1</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
+  <el-col>
+    <el-menu
+      router
+      class="el-menu-vertical-demo"
+      background-color="rgba(204, 204, 204, 1)"
+      unique-opened
+      @open="handleOpen"
+      @close="handleClose"
+    >
+      <el-submenu index="0">
+        <template slot="title">
+          <el-menu-item index="/homeview" class="temtitle">首页</el-menu-item>
+        </template>
+      </el-submenu>
+      <el-divider></el-divider>
+      <el-submenu index="1">
+        <template slot="title">
+          <el-menu-item index="/onece" class="temtitle">环卫车辆管理</el-menu-item>
+        </template>
         <el-divider></el-divider>
-        <el-submenu index="2">
-          <template slot="title">
-            <span>环卫工管理</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="worker">人员信息管理</el-menu-item>
-            <el-menu-item index="wcarmsg">车辆信息管理</el-menu-item>
-            <el-menu-item index="wsupervision">日常监管</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
+        <el-menu-item index="/onece/base" class='bgcColor'>人员信息管理</el-menu-item>
         <el-divider></el-divider>
-        <el-submenu index="3">
-          <template slot="title">
-            <span>公厕管理</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="supervision">公厕监管</el-menu-item>
-            <el-menu-item index="toiltmsg">公厕信息管理</el-menu-item>
-            <el-menu-item index="personnel">值班人员管理</el-menu-item>
-            <el-menu-item index="led">LED电子屏管理</el-menu-item>
-            <el-menu-item index="monitor">公厕监控管理</el-menu-item>
-            <el-menu-item index="mobile">移动端公厕引导</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
+        <el-menu-item index="/onece/carmsg" class='bgcColor'>车辆信息管理</el-menu-item>
         <el-divider></el-divider>
-        <el-submenu index="4">
-          <template slot="title">
-            <span>人事管理与通讯</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="hr">人事管理</el-menu-item>
-            <el-menu-item index="assessment">绩效考核</el-menu-item>
-            <el-menu-item index="message">信息发布</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
-      </el-menu>
-    </el-col>
-  <!-- </el-row> -->
+        <el-menu-item index="/onece/vehicle" class='bgcColor'>车辆综合监管</el-menu-item>
+        <el-divider></el-divider>
+      </el-submenu>
+      <el-divider></el-divider>
+      <el-submenu index="2">
+        <template slot="title">
+          <el-menu-item index="/town" class="temtitle">环卫工管理</el-menu-item>
+        </template>
+        <el-divider></el-divider>
+        <el-menu-item index="/town/worker" class='bgcColor'>人员信息管理</el-menu-item>
+        <el-divider></el-divider>
+        <el-menu-item index="/town/carmsg" class='bgcColor'>车辆信息管理</el-menu-item>
+        <el-divider></el-divider>
+        <el-menu-item index="/town/supervision" class='bgcColor'>日常监管</el-menu-item>
+        <el-divider></el-divider>
+      </el-submenu>
+      <el-divider></el-divider>
+      <el-submenu index="3">
+        <template slot="title">
+          <el-menu-item index="/welcom" class="temtitle">公厕管理</el-menu-item>
+        </template>
+        <el-divider></el-divider>
+        <el-menu-item index="/welcom/" class='bgcColor'>公厕分布图</el-menu-item>
+        <el-divider></el-divider>
+        <el-menu-item title='未完成'  class='bgcColor'>公厕详情</el-menu-item>
+        <el-divider></el-divider>
+        <el-menu-item title='未完成'  class='bgcColor'>公厕管理</el-menu-item>
+        <el-divider></el-divider>
+        <el-menu-item title='未完成'  class='bgcColor'>值班人员管理</el-menu-item>
+        <el-divider></el-divider>
+        <el-menu-item title='未完成'  class='bgcColor'>LED电子屏管理</el-menu-item>
+        <el-divider></el-divider>
+      </el-submenu>
+      <el-divider></el-divider>
+      <el-submenu index="4">
+        <template slot="title">
+          <el-menu-item index="/business" class="temtitle">业务处理</el-menu-item>
+        </template>
+        <el-divider></el-divider>
+        <el-menu-item index="/business/process" class='bgcColor'>业务处理表</el-menu-item>
+        <el-divider></el-divider>
+        <el-menu-item title='未完成' class='bgcColor'>绩效考核表</el-menu-item>
+        <el-divider></el-divider>
+      </el-submenu>
+      <el-divider></el-divider>
+      <el-submenu index="5">
+        <template slot="title">
+          <el-menu-item index="/matters" class="temtitle">人事管理与通讯</el-menu-item>
+        </template>
+        <el-divider></el-divider>
+        <el-menu-item title='未完成' class='bgcColor'>人事信息管理</el-menu-item>
+      </el-submenu>
+    </el-menu>
+  </el-col>
 </template>
-
 <script>
 export default {
   data() {
-    return {
-      activeIndex: this.$route.name
-    };
+    return {};
+  },
+  methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    }
   },
   created() {}
 };
 </script>
-
-<style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
-.el-menu-item-group__title {
-  padding: 0px;
-  line-height: normal;
-  font-size: 12px;
-  color: #909399;
+ <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
+.temtitle {
+  margin: 0;
+  font-family: "Arial Normal", "Arial";
+  font-weight: 700;
+  font-style: normal;
+  font-size: 16px;
+}
+.bgcColor {
+  background-color: #ededed !important;
+}
+.el-menu-item {
+  text-align: center;
 }
 .el-divider {
   margin: 0;

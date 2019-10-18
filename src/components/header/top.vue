@@ -29,7 +29,8 @@ export default {};
   position: fixed;
   width: 100%;
   height: 70px;
-  background-color: rgba(204, 204, 204, 1);
+  background-color: rgb(89, 153, 242);
+  color: #fff;
   overflow: hidden;
   .TopL {
     float: left;
@@ -55,6 +56,7 @@ export default {};
     font-weight: 400;
     font-style: normal;
     font-size: 12px;
+    color: #fff;
     .TopRt {
       margin-top: 12px;
       span {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 公厕信息 -->
-    公厕信息
+    公厕详情
   </div>
 </template>
 
