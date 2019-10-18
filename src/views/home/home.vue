@@ -41,7 +41,7 @@ export default {
 .el-main {
   display: block;
   position: absolute;
-  left: 245px;
+  left: 225px;
   top: 70px;
   bottom: 0;
   right: 0;

@@ -141,7 +141,7 @@
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -254,7 +254,7 @@
       <!-- 百度地图搜索 -->
     </div>
     <div class="bdMap">
-      <baidu-map class="map" center="东营市" dragging :zoom="14" scroll-wheel-zoom>
+      <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="14" scroll-wheel-zoom>
         <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
@@ -676,7 +676,7 @@ export default {
   .map {
     position: relative;
     width: 100%;
-    height: 556px;
+    height: 746px;
     .input-with-select {
       position: absolute;
       right: 20px;

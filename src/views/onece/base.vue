@@ -7,6 +7,16 @@
           <el-form-item label="姓名">
             <el-input class="searchInput" v-model="formInline.user" placeholder="姓名"></el-input>
           </el-form-item>
+          <el-form-item label="负责道路">
+            <el-select v-model="lu">
+              <el-option
+                v-for="item in roadList"
+                :key="item.lu"
+                :label="item.label"
+                :value="item.lu"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="作业区域">
             <el-select v-model="value">
               <el-option
@@ -129,6 +139,37 @@ export default {
     return {
       formInline: {},
       dialogVisible: false,
+       lu: "0",
+      roadList: [
+        {
+          lu: "0",
+          label: "全部"
+        },
+        {
+          lu: "1",
+          label: "庐山路"
+        },
+        {
+          lu: "2",
+          label: "宁阳路"
+        },
+        {
+          lu: "3",
+          label: "新泰路"
+        },
+        {
+          lu: "4",
+          label: "北一路"
+        },
+        {
+          lu: "5",
+          label: "北二路"
+        },
+        {
+          lu: "6",
+          label: "黄河路"
+        }
+      ],
       value: "0",
       options: [
         {

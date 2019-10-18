@@ -8,12 +8,6 @@
       @open="handleOpen"
       @close="handleClose"
     >
-      <el-submenu index="0">
-        <template slot="title">
-          <el-menu-item index="/homeview" class="temtitle">首页</el-menu-item>
-        </template>
-      </el-submenu>
-      <el-divider></el-divider>
       <el-submenu index="1">
         <template slot="title">
           <el-menu-item index="/onece" class="temtitle">环卫车辆管理</el-menu-item>
@@ -45,9 +39,9 @@
           <el-menu-item index="/welcom" class="temtitle">公厕管理</el-menu-item>
         </template>
         <el-divider></el-divider>
-        <el-menu-item index="/welcom/" class='bgcColor'>公厕分布图</el-menu-item>
+        <el-menu-item index="/welcom/wcmap" class='bgcColor'>公厕分布图</el-menu-item>
         <el-divider></el-divider>
-        <el-menu-item title='未完成'  class='bgcColor'>公厕详情</el-menu-item>
+        <el-menu-item index="/welcom/toiltMsg" class='bgcColor'>公厕详情</el-menu-item>
         <el-divider></el-divider>
         <el-menu-item title='未完成'  class='bgcColor'>公厕管理</el-menu-item>
         <el-divider></el-divider>
@@ -64,7 +58,7 @@
         <el-divider></el-divider>
         <el-menu-item index="/business/process" class='bgcColor'>业务处理表</el-menu-item>
         <el-divider></el-divider>
-        <el-menu-item title='未完成' class='bgcColor'>绩效考核表</el-menu-item>
+        <el-menu-item title='未完成' index="/business/project" class='bgcColor'>绩效考核表</el-menu-item>
         <el-divider></el-divider>
       </el-submenu>
       <el-divider></el-divider>

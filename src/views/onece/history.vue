@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       polylinePath: [
-        { lng: 114.366304, lat: 30.6292 },
+        { lng: 114.366304, lat: 30.6292, top:1},
         { lng: 114.366497, lat: 30.628963 },
         { lng: 114.366582, lat: 30.62885 },
         { lng: 114.366604, lat: 30.628811 },

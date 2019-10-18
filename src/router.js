@@ -64,6 +64,16 @@ export default new Router({
           component: () => import("./views/three/index.vue")
         },
         {
+          path: "/welcom/wcmap",
+          name: "wcmap",
+          component: () => import("./views/three/wcmap.vue")
+        },
+        {
+          path: "/welcom/toiltMsg",
+          name: "toiltMsg",
+          component: () => import("./views/three/ToiltMsg.vue")
+        },
+        {
           path: "/business",
           name: "business",
           component: () => import("./views/four/index.vue")
@@ -72,6 +82,11 @@ export default new Router({
           path: "/business/process",
           name: "process",
           component: () => import("./views/four/process.vue")
+        },
+        {
+          path: "/business/project",
+          name: "project",
+          component: () => import("./views/four/project.vue")
         },
         {
           path: "/matters",

@@ -1,12 +1,17 @@
 <template>
   <div class="bdMap">
-    <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="14" scroll-wheel-zoom>
-      <bm-marker
+    <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="12" scroll-wheel-zoom>
+      <!-- <bm-marker
         v-for="(value,index) in positions"
         :key="index"
         :position="value"
-        :dragging="true"
         animation="BMAP_ANIMATION_BOUNCE"
+        :labelStyle="{color: 'orange', fontSize : '24px'}"
+      ></bm-marker> -->
+      <bm-marker
+         v-for="item in position2"
+        :key='item.code'
+        :position="{lng: item.lng, lat: item.lat}"
         :labelStyle="{color: 'orange', fontSize : '24px'}"
       ></bm-marker>
       <div class="mapList">
@@ -73,18 +78,31 @@ export default {
   data() {
     return {
       input3: "",
-      positions: [
-        { lng: 118.550734, lat: 37.469664 },
-        { lng: 118.566096, lat: 37.469922 },
-        { lng: 118.54123, lat: 37.452391 }
-      ]
+      // positions: [
+      //   { lng: 118.550734, lat: 37.469664 },
+      //   { lng: 118.566096, lat: 37.469922 },
+      //   { lng: 118.54123, lat: 37.452391 }
+      // ],
+      position2: [],
     };
   },
   methods: {
     searchMap() {},
-    map_init(){
-        var map = new BMap.Map("allmap");
+    map_init() {
+      var map = new BMap.Map("allmap");
+    },
+    getMapMark() {
+      
+      setInterval(() => {
+        this.$http.get('xy/get').then(res=>{
+          this.position2=res.data
+          console.log(this.position2)
+        })
+      }, 1000);
     }
+  },
+  created() {
+    this.getMapMark();
   }
 };
 </script>
@@ -137,6 +155,7 @@ export default {
   position: absolute;
   top: 10px;
   left: 194px;
+  margin: 0 auto;
   width: 826px;
   height: 44px;
 }

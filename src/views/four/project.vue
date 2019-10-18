@@ -1,12 +1,12 @@
 <template>
-  <!-- 环卫车辆信息 -->
-  <div id="carmsg">
+  <!-- 人员绩效考核 -->
+  <div id="project">
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="车牌号鲁E-">
-            <el-input class="searchInput" v-model="formInline.user" placeholder="车牌号"></el-input>
+          <el-form-item label="姓名">
+            <el-input class="searchInput" v-model="formInline.user" placeholder="姓名"></el-input>
           </el-form-item>
           <el-form-item label="负责道路">
             <el-select v-model="lu">
@@ -45,14 +45,14 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加车辆信息</el-button>
-        <el-button class="buttonBot" @click="msgimport = true">导入模板下载</el-button>
+        <el-button class="buttonBot" @click="dialogVisible = true">添加人员信息</el-button>
+        <el-button class="buttonBot">导入模板下载</el-button>
         <el-button class="buttonBot">人员信息导入</el-button>
-        <el-button class="buttonBotLast" @click="msgexport = true">导出全员信息</el-button>
+        <el-button class="buttonBotLast">导出全员信息</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加车辆信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
+    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
@@ -105,57 +105,20 @@
         <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
       </span>
     </el-dialog>
-    <!-- 弹框2 -->
-    <el-dialog title="信息导入" :visible.sync="msgimport" width="15%" center>
-        <div class="download">
-          <div>全部信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-        <div class="download">
-          <div>垃圾运输车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-        <div class="download">
-          <div>清扫车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-        <div class="download">
-          <div>洒水车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-      </el-dialog>
-      <!-- 弹框3 -->
-      <el-dialog title="信息导出" :visible.sync="msgexport" width="15%" center>
-        <div class="download">
-          <div>全部信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
-        </div>
-        <div class="download">
-          <div>垃圾运输车信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
-        </div>
-        <div class="download">
-          <div>清扫车信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
-        </div>
-        <div class="download">
-          <div>洒水车信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
-        </div>
-      </el-dialog>
     <!-- 表格 -->
     <el-table
       :data="tableData.slice((currpage - 1) * pagesize, currpage * pagesize)"
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="number" label="序号" width></el-table-column>
-      <el-table-column align="center" prop="carid" label="车牌号" width></el-table-column>
-      <el-table-column align="center" prop="date" label="购车时间" width></el-table-column>
-      <el-table-column align="center" prop="updata" label="资产编号" width></el-table-column>
+      <el-table-column align="center" prop="name" label="员工姓名" width></el-table-column>
+      <el-table-column align="center" prop="carid" label="驾驶车辆" width></el-table-column>
       <el-table-column align="center" prop="city" label="归属单位" width></el-table-column>
-      <el-table-column align="center" prop="name" label="使用人" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="联系方式" width></el-table-column>
+      <el-table-column align="center" prop="number" label="工作区域" width></el-table-column>
+      <el-table-column align="center" prop="name" label="报警次数" width></el-table-column>
+      <el-table-column align="center" prop="date" label="报警类型" width></el-table-column>
+      <el-table-column align="center" prop="date" label="报警信息" width></el-table-column>
+      <el-table-column align="center" prop="updata" label="考核分数(月)" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button
@@ -286,8 +249,6 @@ export default {
   data() {
     return {
       text: "添加车辆信息",
-      msgexport:false,
-      msgimport:false,
       pagesize: 10,
       currpage: 1,
       tableData: [],
@@ -554,7 +515,7 @@ export default {
       this.buttonIf = false;
     },
     adddate() {
-      this.dialogFormVisible=false
+      this.dialogFormVisible = false;
     },
     pagination(row, _index) {
       console.log(row);
@@ -576,7 +537,7 @@ export default {
         this.tableData.push({
           number: i,
           name: "李旦",
-          carid:'e1323',
+          carid: "e1323",
           province: "东营区",
           city: "环卫一部",
           address: "上海市普陀区金沙江路 1518 弄",
@@ -669,15 +630,5 @@ export default {
 }
 .inputText {
   width: 240px;
-}
-.download {
-  height: 40px;
-  div {
-    float: left;
-    line-height: 30px;
-  }
-  button {
-    float: right;
-  }
 }
 </style>
