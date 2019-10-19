@@ -3,7 +3,7 @@
     <el-container>
       <el-header height='70px'><Top></Top></el-header>
       <el-container>
-        <el-aside width="245px"><Asd></Asd></el-aside>
+        <el-aside width="282px"><Asd></Asd></el-aside>
         <el-main>
           <router-view></router-view>
         </el-main>
@@ -29,22 +29,22 @@ export default {
 }
 .el-aside {
   display: block;
-  height: 92%;
   position: absolute;
   left: 0;
-  top: 70px;
+  top: 86px;
   bottom: 140px;
-  background: inherit;
-  background-color: rgba(255, 255, 255, 1);
-  box-shadow: 3px 0px 5px rgba(215, 215, 215, 0.349019607843137);
+	height: 814px;
+	background-color: #3f4d5c;
+	border: solid 1px #d2d2d2;
 }
 .el-main {
   display: block;
   position: absolute;
-  left: 225px;
-  top: 70px;
+  left: 252px;
+  top: 96px;
   bottom: 0;
   right: 0;
+  margin-right: 10px;
   padding: 0 0 0 40px;
 }
 </style>

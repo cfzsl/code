@@ -1,7 +1,7 @@
 <template>
   <bm-overlay
     ref="customOverlay"
-    :class="{sample: true, active}"
+    :class="{sample: true, green: true, active}"
     pane="labelPane"
     @draw="draw">
     <div v-text="text" @click="handleClick"></div>
@@ -16,38 +16,65 @@ export default {
       handler () {
         this.$refs.customOverlay.reload()
       },
-      deep: true
+      deep: true,
+      BMap:''
     }
   },
   methods: {
     handleClick () {
-      global.alert('Well done.')
+      this.$emit('mapPositions',this.position)
     },
     draw ({el, BMap, map}) {
+      this.BMap=BMap
       const {lng, lat} = this.position
       const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat))
-      el.style.left = pixel.x - 60 + 'px'
-      el.style.top = pixel.y - 20 + 'px'
+      el.style.left = pixel.x - 63 + 'px'
+      el.style.top = pixel.y - 18 + 'px'
+    },
+    // 弹窗颜色
+    bgimg () {
+      if (this.status == 2) {
+        this.green = true
+      } else if (status == 0) {
+        this.grey = true
+      } else if (status == 1) {
+        this.red = true
+      }
     }
+  },
+  created(){
   }
 }
 </script>
 
 <style>
 .sample {
-  width: 120px;
-  height: 40px;
-  line-height: 40px;
-  background: rgba(0,0,0,0.5);
-  overflow: hidden;
-  box-shadow: 0 0 5px #000;
+  margin-left: 48px;
+  margin-top: -18px;
+  width: 126px;
+  height: 36px;
+  line-height: 30px;
   color: #fff;
-  text-align: center;
-  padding: 10px;
   position: absolute;
+  overflow: hidden;
+  text-align: center;
 }
-.sample.active {
-  background: rgba(0,0,0,0.75);
-  color: #fff;
+.green {
+  background-image: url("../../assets/img/marker_background_green.png");
+  background-repeat: no-repeat;
+}
+.grey {
+  background-image: url("../../assets/img/marker_background_grey.png");
+  background-repeat: no-repeat;
+}
+.red {
+  background-image: url("../../assets/img/marker_background_red.png");
+  background-repeat: no-repeat;
+}
+
+.text {
+  height: 100%;
+  padding-left: 30px;
+  font-size: 15px;
 }
 </style>

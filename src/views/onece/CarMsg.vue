@@ -3,7 +3,7 @@
   <div>
     <div class="search">
       <div class="searchbox">
-        <span>车牌号</span>
+        <span>车牌号鲁E-</span>
         <el-input v-model="input" placeholder="请输入车牌号" style="width: 130px"></el-input>
       </div>
       <div class="searchbox">
@@ -262,7 +262,7 @@ export default {
         this.data.list.push({
           sid: i,
           type: "垃圾运输车",
-          carbrand: "鄂A " + i,
+          carbrand: "鲁E" + i,
           date: "2011.10.20",
           num: "环卫-A00" + i,
           company: "环卫",

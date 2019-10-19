@@ -95,7 +95,7 @@
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
-            <el-form-item label="车牌号号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
@@ -721,7 +721,7 @@ export default {
           sid: i,
           number: i,
           type: "垃圾运输车",
-          carbrand: "鄂A " + i + i + i + i,
+          carbrand: "鲁E" + i + i + i + i,
           date: "2011.10.20",
           num: "环卫-A001",
           company: "环卫",
