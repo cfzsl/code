@@ -4,17 +4,26 @@
     <div class="TopL">
       <span>智慧环卫综合管理平台</span>
     </div>
-    <div class="alert">公告：智慧环卫综合管理平台有新功能更新！</div>
+    <div class="alert">
+      <span>公告：智慧环卫综合管理平台有新功能更新！</span>
+    </div>
     <div class="TopR">
-      <div class="TopRb">
-        <div class="TopRbone" @click="screen">
-          <i class="el-icon-full-screen"></i>全屏
+      <div class="right-wrap">
+        <div class="po search" @click="screen">
+          <span class="iconfont icon-quanping icon"></span>
+          <span>全屏</span>
         </div>
-        <i class="el-icon-refresh"></i>
-        <span>刷新</span>
-        <i class="el-icon-document-checked"></i>
-        <span>幫助</span>
-        <span>当前登录：管理员</span>
+        <div class="po">
+          <span class="iconfont icon-shuaxin icon"></span>
+          <span>刷新</span>
+        </div>
+        <div class="po">
+          <span class="iconfont icon-bangzhu icon"></span>
+          <span>幫助</span>
+        </div>
+        <div>
+          <span>当前登录：管理员</span>
+        </div>
       </div>
     </div>
   </div>
@@ -28,32 +37,32 @@ export default {
     };
   },
   methods: {
-    screen(){
-          let element = document.documentElement;
-          if (this.fullscreen) {
-            if (document.exitFullscreen) {
-              document.exitFullscreen();
-            } else if (document.webkitCancelFullScreen) {
-              document.webkitCancelFullScreen();
-            } else if (document.mozCancelFullScreen) {
-              document.mozCancelFullScreen();
-            } else if (document.msExitFullscreen) {
-              document.msExitFullscreen();
-            }
-          } else {
-            if (element.requestFullscreen) {
-              element.requestFullscreen();
-            } else if (element.webkitRequestFullScreen) {
-              element.webkitRequestFullScreen();
-            } else if (element.mozRequestFullScreen) {
-              element.mozRequestFullScreen();
-            } else if (element.msRequestFullscreen) {
-              // IE11
-              element.msRequestFullscreen();
-            }
-          }
-          this.fullscreen = !this.fullscreen;
+    screen() {
+      let element = document.documentElement;
+      if (this.fullscreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
         }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          // IE11
+          element.msRequestFullscreen();
+        }
+      }
+      this.fullscreen = !this.fullscreen;
+    }
   }
 };
 </script>
@@ -62,20 +71,20 @@ export default {
 #Top {
   position: relative;
   position: fixed;
+  display: flex;
   width: 100%;
   height: 86px;
   background-image: linear-gradient(135deg, #254b8b 0%, #3b99f1 100%);
   overflow: hidden;
   .TopL {
     float: left;
-    height: 28px;
-    width: 280px;
-    margin-left: 30px;
-    margin-top: 19px;
+    width: 380px;
+    padding-top: 20px;
+    margin-left: 20px;
     span {
       display: inline-block;
-      width: 320px;
       height: 45px;
+      line-height: 45px;
       font-family: PingFangSC-Medium;
       font-size: 32px;
       font-weight: normal;
@@ -85,59 +94,60 @@ export default {
     }
   }
   .alert {
-    position: absolute;
-    left: 688px;
-    top: 31px;
-    width: 361px;
-    height: 25px;
-    font-family: PingFangSC-Regular;
-    font-size: 18px;
-    font-weight: normal;
-    font-stretch: normal;
-    letter-spacing: 0px;
-    color: #ffffff;
+    float: left;
+    flex: 1;
+    height: 86px;
+    line-height: 86px;
+    span {
+      display: block;
+      margin: 0 auto;
+      width: 361px;
+      height: 25px;
+      font-family: PingFangSC-Regular;
+      font-size: 18px;
+      font-weight: normal;
+      font-stretch: normal;
+      letter-spacing: 0px;
+      color: #ffffff;
+    }
   }
   .TopR {
     float: right;
-    margin-top: 31px;
+    margin-top: 28px;
     font-family: "ArialMT", "Arial";
     font-weight: 400;
     font-style: normal;
     font-size: 14px;
     color: #fff;
+    font-size: 14px;
     text-align: center;
-    .TopRb {
-      .TopRbone {
-        display: inline-block;
-        width: 70px;
-        height: 30px;
-        margin-right: 35px;
-        line-height: 30px;
-        background-color: rgba(0, 0, 0, 0.2);
-        border-radius: 4px;
-      }
-      i {
-        display: inline-block;
-        width: 20px;
-        font-size: 15px;
-        height: 20px;
-        line-height: 20px;
-        color: #ffffff;
-        margin-right: 6px;
-      }
-      span {
-        display: inline-block;
-        margin-right: 35px;
-        height: 20px;
-        line-height: 20px;
-        font-family: PingFangSC-Regular;
-        font-size: 15px;
-        font-weight: normal;
-        font-stretch: normal;
-        letter-spacing: 0px;
-        color: #ffffff;
-      }
+    width: 444px;
+    .right-wrap {
+      display: flex;
+      // justify-content: space-between;
+      align-content: center;
+      height: 34px;
+      line-height: 34px;
     }
+    .search {
+      width: 70px;
+      height: 34px;
+    }
+    .search:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+    .icon {
+      margin-left: 6px;
+      margin-right: 6px;
+    }
+  }
+  .po {
+    margin-right: 35px;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
   }
 }
 </style>

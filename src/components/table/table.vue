@@ -6,23 +6,83 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="number" label="序号" width></el-table-column>
-      <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
-      <el-table-column align="center" prop="province" label="区域" width></el-table-column>
-      <el-table-column align="center" prop="city" label="单位" width></el-table-column>
-      <el-table-column align="center" prop="date" label="入职时间" width></el-table-column>
-      <el-table-column align="center" prop="updata" label="离职时间" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="联系方式" width></el-table-column>
-      <el-table-column align="center" prop="msg" label="是否超龄" width></el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width>
+      <el-table-column
+        align="center"
+        prop="number"
+        label="序号"
+        width="63px"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="name"
+        label="姓名"
+        width="93"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="province"
+        label="区域"
+        width="102px"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="province"
+        label="负责道路"
+        width="193px"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="city"
+        label="单位"
+        width="203px"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="date"
+        label="入职时间"
+        width="168px"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="updata"
+        label="离职时间"
+        width="167px"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="zipiphone"
+        label="联系方式"
+        width="160px"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="msg"
+        label="是否超龄"
+        width="144px"
+      ></el-table-column>
+      <el-table-column align="center" fixed="right" label="操作" width="280px">
         <template slot-scope="scope">
           <el-button
             class="tableButton1"
             type="button"
             size="small"
-            @click="pagination(scope.row,scope.$index)"
-          >详情</el-button>
-          <el-button class="tableButton2" type="button" @click="deletList" size="small">删除</el-button>
+            @click="pagination(scope.row, scope.$index)"
+            >详情</el-button
+          >
+          <el-button
+            class="tableButton2"
+            type="button"
+            size="small"
+            @click="pagination(scope.row, scope.$index)"
+            >编辑</el-button
+          >
+          <el-button
+            class="tableButton3"
+            type="button"
+            @click="deletList"
+            size="small"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -37,8 +97,18 @@
     ></el-pagination>
 
     <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if='buttonIf'>
+    <el-dialog
+      :title="text"
+      :visible.sync="dialogFormVisible"
+      width="426px"
+      class="dialogText"
+    >
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline"
+        v-if="buttonIf"
+      >
         <el-form-item label="姓名">
           <el-input v-model="formInline.name" class="inputL"></el-input>
         </el-form-item>
@@ -76,7 +146,12 @@
           <el-input v-model="formInline.web"></el-input>
         </el-form-item>
       </el-form>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if='!buttonIf'>
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline"
+        v-if="!buttonIf"
+      >
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
         </el-form-item>
@@ -122,7 +197,7 @@
           <el-input v-model="formInline.updatetime"></el-input>
         </el-form-item>
         <el-form-item label="作业区域">
-          <el-select v-model="job" class='selectTop'>
+          <el-select v-model="job" class="selectTop">
             <el-option
               v-for="item in optionsJob"
               :key="item.job"
@@ -132,7 +207,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="web" class='selectTop'>
+          <el-select v-model="web" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -143,11 +218,28 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogFormVisible=false" class="formButon">取消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogFormVisible = false"
+          class="formButon"
+          >取消</el-button
+        >
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if='buttonIf' @click="addDo" class="formButon">编辑</el-button>
-        <el-button type="primary" v-else-if='!buttonIf' @click="adddate" class="formButon">保存</el-button>
+        <el-button
+          type="primary"
+          v-if="buttonIf"
+          @click="addDo"
+          class="formButon"
+          >编辑</el-button
+        >
+        <el-button
+          type="primary"
+          v-else-if="!buttonIf"
+          @click="adddate"
+          class="formButon"
+          >保存</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -159,8 +251,8 @@ export default {
   data() {
     return {
       value: "0",
-      text:'人员信息详情',
-      buttonIf:true,
+      text: "人员信息详情",
+      buttonIf: true,
       options: [
         {
           value: "0",
@@ -352,7 +444,7 @@ export default {
       this.formInline = row;
       //显示弹窗
       this.dialogFormVisible = true;
-      this.buttonIf=true;
+      this.buttonIf = true;
       console.log(this.dialogFormVisible);
     },
     addDo() {
@@ -364,12 +456,12 @@ export default {
       this.buttonIf = false;
     },
     adddate() {
-      this.dialogFormVisible=false
+      this.dialogFormVisible = false;
     },
     getlist() {
       for (let i = 1; i < 99; i++) {
         this.tableData.push({
-          number:i,
+          number: i,
           name: "李旦",
           province: "东营区",
           city: "环卫一部",
@@ -396,22 +488,25 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
 .tableButton1,
-.tableButton2 {
-  width: 55px;
-  height: 25px;
-  padding: 0;
-  margin: 0;
+.tableButton2,
+.tableButton3 {
+  width: 60px;
+  height: 26px;
 }
-.tableButton2 {
+.tableButton3 {
   color: #fff;
   background-color: #f56c6c;
-  border-color: #f56c6c;
+	border-radius: 3px;
+}
+.tableButton2 {
+  color: #fff;
+  background-color: #4eb14e;
+	border-radius: 3px;
 }
 .tableButton1 {
-  margin-right: 10px;
   color: #fff;
   background-color: #409eff;
-  border-color: #409eff;
+	border-radius: 3px;
 }
 .paginationList {
   float: right;

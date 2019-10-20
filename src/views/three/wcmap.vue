@@ -43,8 +43,25 @@
           :show="infoWindow.show"
           @close="infoWindowClose"
         >
-          <p v-text="infoWindow.contents"></p>
-          <button @click="clear">Clear</button>
+          <el-divider></el-divider>
+          <p>厕所名称:公厕详情</p>
+          <p>管养单位:东营市卓越环境工程有限公司</p>
+          <div>
+            <span>负责人:毛文平</span>
+            <span>负责人电话:13361503999</span>
+          </div>
+          <p>地址:蒙山路与黄河路路口的西北角</p>
+          <div>
+            <span>当前状态:</span>
+            <span>开放使用</span>
+          </div>
+          <p>服务:生活垃圾收集点,第三卫生间</p>
+          <p>最后接收数据时间:2019-10-19 11:19:06</p>
+          <el-table :data="tableData" border style="width: 100%">
+            <el-table-column prop="date" label="分类" width="180"></el-table-column>
+            <el-table-column prop="name" label="男厕" width="180"></el-table-column>
+            <el-table-column prop="address" label="女厕"></el-table-column>
+          </el-table>
         </bm-info-window>
       </baidu-map>
     </div>
@@ -58,8 +75,30 @@ export default {
     return {
       infoWindow: {
         show: true,
-        contents: ''
+        contents: ""
       },
+      tableData: [
+        {
+          date: "硫化氢",
+          name: "0.0(标准值:<=0.5ppm)",
+          address: "0.0(标准值:<=0.5ppm)"
+        },
+        {
+          date: "氨气",
+          name: "0.0(标准值:<=0.5ppm)",
+          address: "0.0(标准值:<=0.5ppm)"
+        },
+        {
+          date: "温度",
+          name: "17.5",
+          address: "17.5"
+        },
+        {
+          date: "湿度",
+          name: "17.5",
+          address: "17.5"
+        }
+      ],
       active: false,
       positions: [
         { lng: 118.550303, lat: 37.465282 },
@@ -69,12 +108,12 @@ export default {
       ]
     };
   },
-  methods:{
-    infoWindowClose(){
-      this.infoWindow.show=false
+  methods: {
+    infoWindowClose() {
+      this.infoWindow.show = false;
     },
-    clear(){
-      this.infoWindow.show=false
+    clear() {
+      this.infoWindow.show = false;
     }
   },
   components: {

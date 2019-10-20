@@ -1,94 +1,75 @@
 <template>
   <div class="bdMap">
-    <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="12" scroll-wheel-zoom>
-      <bm-boundary name="东营区" :strokeWeight="2" strokeColor="#BDC5F3" fillColor="#BDC5F3"></bm-boundary>
+    <baidu-map
+      class="map"
+      center="中国石油大学胜利学院"
+      dragging
+      :zoom="12"
+      scroll-wheel-zoom
+    >
+      <bm-boundary
+        name="东营区"
+        :strokeWeight="2"
+        strokeColor="#BDC5F3"
+        fillColor="#BDC5F3"
+      ></bm-boundary>
       <bm-marker
         v-for="item in position2"
         :key="item.code"
         :position="{ lng: item.lng, lat: item.lat }"
         :labelStyle="{ color: 'orange', fontSize: '24px' }"
       ></bm-marker>
-      <!-- <div class="mapList">
+      <div class="mapList">
         <div class="list">
+          <i style="background-color: blue"></i>
           <span>洒水车</span>
         </div>
         <div class="list">
+          <i style="background-color: orange"></i>
           <span>清扫车</span>
         </div>
         <div class="list">
+          <i style="background-color: green"></i>
           <span>垃圾运输车</span>
         </div>
         <div class="list">
+          <i style="background-color: pink"></i>
           <span>三轮车</span>
         </div>
         <div class="list">
+          <i style="background-color: #ccc"></i>
           <span>对讲机</span>
         </div>
-      </div>-->
+      </div>
       <div class="button">
-        <div @click="msgeslint = true" class="buttonrow">
-          <div class="buttonrowL oneself">
-            <span class="iconfont icon-huaban"></span>
-            <span>车况异常</span>
-          </div>
-          <div class="buttonrowR oneselfnew">
-            <span>20</span>
-          </div>
-        </div>
-        <div @click="msgeslint2 = true" class="buttonrow">
-          <div class="buttonrowL townself">
-            <span class="iconfont icon-huaban"></span>
-            <span>油耗超标</span>
-          </div>
-          <div class="buttonrowR townselfnew">
-            <span>20</span>
-          </div>
-        </div>
-        <div @click="msgeslint3 = true" class="buttonrow">
-          <div class="buttonrowL threeself">
-            <span class="iconfont icon-huaban"></span>
-            <span>保养到期</span>
-          </div>
-          <div class="buttonrowR threeselfnew">
-            <span>20</span>
-          </div>
-        </div>
-        <div @click="msgeslint4 = true" class="buttonrow">
-          <div class="buttonrowL fourself">
-            <span class="iconfont icon-huaban"></span>
-            <span>保险到期</span>
-          </div>
-          <div class="buttonrowR fourselfnew">
-            <span>20</span>
-          </div>
-        </div>
-        <div @click="msgeslint5 = true" class="buttonrow">
-          <div class="buttonrowL fifself">
-            <span class="iconfont icon-huaban"></span>
-            <span>人员超龄</span>
-          </div>
-          <div class="buttonrowR fifselfnew">
-            <span>20</span>
-          </div>
-        </div>
-        <div @click="msgeslint6 = true" class="buttonrow">
-          <div class="buttonrowL sixself">
-            <span class="iconfont icon-huaban"></span>
-            <span>越界</span>
-          </div>
-          <div class="buttonrowR sixselfnew">
-            <span>20</span>
-          </div>
-        </div>
-        <div @click="msgeslint7 = true" class="buttonrow">
-          <div class="buttonrowL sevenself">
-            <span class="iconfont icon-huaban"></span>
-            <span>停滞超限</span>
-          </div>
-          <div class="buttonrowR sevenselfnew">
-            <span>20</span>
-          </div>
-        </div>
+        <el-button type="primary" round @click="msgeslint = true">
+          车况异常报警
+          <br />(20)
+        </el-button>
+        <el-button type="success" round @click="msgeslint2 = true">
+          油耗超标报警
+          <br />(20)
+        </el-button>
+        <el-button type="info" round @click="msgeslint3 = true">
+          保养到期报警
+          <br />(20)
+        </el-button>
+        <el-button type="warning" round @click="msgeslint4 = true">
+          保险到期报警
+          <br />(20)
+        </el-button>
+        <el-button type="danger" round @click="msgeslint5 = true">
+          人员超龄报警
+          <br />(20)
+        </el-button>
+        <el-button type="warning" round @click="msgeslint6 = true">
+          越界报警
+          <br />(20)
+        </el-button>
+        <el-button type="danger" round @click="msgeslint7 = true">
+          停滞超限报警
+          <br />(20)
+        </el-button>
       </div>
       <!-- 弹框1 -->
       <el-dialog
@@ -101,10 +82,18 @@
         <el-form ref="form" v-model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input
+                v-model="msg.number"
+                class="searchInputNumber"
+              ></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="datemsg" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="datemsg"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -122,11 +111,33 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="车辆耗油量(L/100KM)"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期" width="237px"></el-table-column>
-              <el-table-column align="center" prop="driver" label="报警时间" width="237px"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="number"
+                label="序号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="carbrand"
+                label="车牌号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="policeTime"
+                label="车辆耗油量(L/100KM)"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="date"
+                label="报警日期"
+                width="237px"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="driver"
+                label="报警时间"
+                width="237px"
+              ></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -155,10 +166,18 @@
         <el-form ref="form" v-model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input
+                v-model="msg.number"
+                class="searchInputNumber"
+              ></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="datemsg" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="datemsg"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -176,11 +195,33 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="车辆耗油量(L/100KM)"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期" width="237px"></el-table-column>
-              <el-table-column align="center" prop="driver" label="报警时间" width="237px"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="number"
+                label="序号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="carbrand"
+                label="车牌号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="policeTime"
+                label="车辆耗油量(L/100KM)"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="date"
+                label="报警日期"
+                width="237px"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="driver"
+                label="报警时间"
+                width="237px"
+              ></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -209,10 +250,18 @@
         <el-form ref="form" v-model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input
+                v-model="msg.number"
+                class="searchInputNumber"
+              ></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="datemsg" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="datemsg"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -230,11 +279,33 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="车辆耗油量(L/100KM)"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期" width="237px"></el-table-column>
-              <el-table-column align="center" prop="driver" label="报警时间" width="237px"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="number"
+                label="序号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="carbrand"
+                label="车牌号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="policeTime"
+                label="车辆耗油量(L/100KM)"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="date"
+                label="报警日期"
+                width="237px"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="driver"
+                label="报警时间"
+                width="237px"
+              ></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -263,10 +334,18 @@
         <el-form ref="form" v-model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input
+                v-model="msg.number"
+                class="searchInputNumber"
+              ></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="datemsg" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="datemsg"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -284,11 +363,33 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="车辆耗油量(L/100KM)"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期" width="237px"></el-table-column>
-              <el-table-column align="center" prop="driver" label="报警时间" width="237px"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="number"
+                label="序号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="carbrand"
+                label="车牌号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="policeTime"
+                label="车辆耗油量(L/100KM)"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="date"
+                label="报警日期"
+                width="237px"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="driver"
+                label="报警时间"
+                width="237px"
+              ></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -317,10 +418,18 @@
         <el-form ref="form" v-model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input
+                v-model="msg.number"
+                class="searchInputNumber"
+              ></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="datemsg" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="datemsg"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -338,11 +447,33 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="车辆耗油量(L/100KM)"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期" width="237px"></el-table-column>
-              <el-table-column align="center" prop="driver" label="报警时间" width="237px"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="number"
+                label="序号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="carbrand"
+                label="车牌号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="policeTime"
+                label="车辆耗油量(L/100KM)"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="date"
+                label="报警日期"
+                width="237px"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="driver"
+                label="报警时间"
+                width="237px"
+              ></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -371,10 +502,18 @@
         <el-form ref="form" v-model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input
+                v-model="msg.number"
+                class="searchInputNumber"
+              ></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="datemsg" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="datemsg"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -392,11 +531,33 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="车辆耗油量(L/100KM)"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期" width="237px"></el-table-column>
-              <el-table-column align="center" prop="driver" label="报警时间" width="237px"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="number"
+                label="序号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="carbrand"
+                label="车牌号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="policeTime"
+                label="车辆耗油量(L/100KM)"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="date"
+                label="报警日期"
+                width="237px"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="driver"
+                label="报警时间"
+                width="237px"
+              ></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -425,10 +586,18 @@
         <el-form ref="form" v-model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input
+                v-model="msg.number"
+                class="searchInputNumber"
+              ></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="datemsg" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="datemsg"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -446,11 +615,33 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="车辆耗油量(L/100KM)"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期" width="237px"></el-table-column>
-              <el-table-column align="center" prop="driver" label="报警时间" width="237px"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="number"
+                label="序号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="carbrand"
+                label="车牌号"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="policeTime"
+                label="车辆耗油量(L/100KM)"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="date"
+                label="报警日期"
+                width="237px"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="driver"
+                label="报警时间"
+                width="237px"
+              ></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -468,7 +659,11 @@
           </div>
         </el-form>
       </el-dialog>
-      <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
+      <el-input
+        placeholder="请输入车牌号"
+        v-model="input3"
+        class="input-with-select"
+      >
         <el-button slot="append" @click="searchMap">搜索</el-button>
       </el-input>
     </baidu-map>
@@ -572,6 +767,16 @@ export default {
     width: 100%;
     height: 28px;
     line-height: 28px;
+    i {
+      position: absolute;
+      display: block;
+      left: 9px;
+      top: 9px;
+      width: 12px;
+      height: 12px;
+      margin: 0 auto;
+      border-radius: 15px;
+    }
     span {
       display: inline;
     }
@@ -579,101 +784,11 @@ export default {
 }
 .button {
   position: absolute;
-  display: flex;
   top: 10px;
-  align-items: center;
-  justify-content: center;
-  font-size: 0;
-  color: #fff;
-  margin-left: 15px;
-  margin-top: 10px;
-}
-.buttonrow {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  font-family: PingFangSC-Medium;
-  font-weight: 400;
-  .buttonrowL {
-    border-radius: 6px 0 0 6px;
-    height: 40px;
-    width: 92px;
-    line-height: 40px;
-    margin-left: 6px;
-    span {
-      margin-right: 0 !important;
-      margin-left: 4px;
-    }
-  }
-  .oneself {
-    background-color: #3b99f1;
-  }
-  .townself {
-    background-color: #4eb14e;
-  }
-  .threeself {
-    background-color: #ffb533;
-  }
-  .fourself {
-    background-color: #f66134;
-  }
-  .fifself {
-    background-color: #439dc5;
-  }
-  .sixself {
-    background-color: #f29118;
-  }
-  .sevenself {
-    background-color: #31cab5;
-  }
-  .buttonrowR {
-    border-radius: 0 6px 6px 0;
-    height: 40px;
-    width: 48px;
-    line-height: 40px;
-    span {
-      margin-left: 16px;
-      margin-bottom: 18px;
-    }
-  }
-  .oneselfnew {
-    border: 2px solid #3b99f1;
-    color: #3b99f1;
-  }
-  .townselfnew {
-    border: 2px solid #4eb14e;
-    columns: #4eb14e;
-  }
-  .threeselfnew {
-    border: 2px solid #ffb533;
-    color: #ffb533;
-  }
-  .fourselfnew {
-    border: 2px solid #f66134;
-    color: #f66134;
-  }
-  .fifselfnew {
-    border: 2px solid #439dc5;
-    color: #439dc5;
-  }
-  .sixselfnew {
-    border: 2px solid #f29118;
-    color: #f29118;
-  }
-  .sevenselfnew {
-    border: 2px solid #31cab5;
-    color: #31cab5;
-  }
-
-  // buttonList:[
-  //   {text:'车况异常',color: '#3b99f1'},
-  //   {text:'油耗超标',color: '#4eb14e'},
-  //   {text:'保养到期',color: '#ffb533'},
-  //   {text:'保险到期',color: '#f66134'},
-  //   {text:'人员超龄',color: '#439dc5'},
-  //   {text:'越界',color: '#f29118'}
-  //   {text:'停滞超限',color: '#31cab5'}
-  // ]
+  left: 194px;
+  margin: 0 auto;
+  width: 826px;
+  height: 44px;
 }
 .search {
   width: 100%;

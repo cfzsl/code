@@ -1,9 +1,13 @@
 <template>
   <div id="home">
     <el-container>
-      <el-header height='70px'><Top></Top></el-header>
-      <el-container>
-        <el-aside width="282px"><Asd></Asd></el-aside>
+      <el-header height="86px">
+        <Top></Top>
+      </el-header>
+      <el-container class="se-container">
+        <el-aside width="282px">
+          <Aside></Aside>
+        </el-aside>
         <el-main>
           <router-view></router-view>
         </el-main>
@@ -14,37 +18,29 @@
 
 <script>
 import Top from "@/components/header/top";
-import Asd from "@/components/Aside/Aside";
+import Aside from "@/components/Aside/Aside";
 export default {
   components: {
     Top,
-    Asd
+    Aside
   }
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss" type="text/scss" scopedlang='scss' scoped>
+<style lang="scss">
 .el-header {
-    padding: 0;
+  padding: 0;
+  z-index: 999;
 }
-.el-aside {
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 86px;
-  bottom: 140px;
-	height: 814px;
-	background-color: #3f4d5c;
-	border: solid 1px #d2d2d2;
-}
-.el-main {
-  display: block;
-  position: absolute;
-  left: 252px;
-  top: 96px;
-  bottom: 0;
-  right: 0;
-  margin-right: 10px;
-  padding: 0 0 0 40px;
+
+.se-container {
+  height: calc(100vh - 86px);
+  .el-aside {
+    height: 100%;
+    background-color: #3f4d5c;
+  }
+  .el-main {
+    height: 100%;
+  }
 }
 </style>

@@ -29,7 +29,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="上报时间" class="msgDate">
-            <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            <el-date-picker
+              v-model="value1"
+              type="date"
+              placeholder
+              class="msgDatePicker"
+            ></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -38,18 +43,30 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加公厕信息</el-button>
+        <el-button class="buttonBot" @click="dialogVisible = true"
+          >添加公厕信息</el-button
+        >
         <el-button class="buttonBot">导入模板下载</el-button>
         <el-button class="buttonBot">人员信息导入</el-button>
         <el-button class="buttonBotLast">导出全员信息</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
+    <el-dialog
+      title="添加人员信息"
+      :visible.sync="dialogVisible"
+      width="426px"
+      class="dialogText"
+    >
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
+            <el-option
+              v-for="item in optionsCar"
+              :key="item.i"
+              :label="item.label"
+              :value="item.i"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -92,10 +109,20 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = false"
+          class="formButon"
+          >取消</el-button
+        >
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = false"
+          class="formButon"
+          >保存</el-button
+        >
       </span>
     </el-dialog>
     <!-- 表格 -->
@@ -104,24 +131,75 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="wcid" label="公厕名" width></el-table-column>
-      <el-table-column align="center" prop="date" label="管养单位" width></el-table-column>
-      <el-table-column align="center" prop="name" label="联络人" width></el-table-column>
-      <el-table-column align="center" prop="city" label="电话" width></el-table-column>
-      <el-table-column align="center" prop="updata" label="氨气(PPM)" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="硫化氢(PPM)" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="温度(C)" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="湿度(%)" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="更新时间" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="报警次数" width></el-table-column>
+      <el-table-column
+        align="center"
+        prop="wcid"
+        label="公厕名"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="date"
+        label="管养单位"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="name"
+        label="联络人"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="city"
+        label="电话"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="updata"
+        label="氨气(PPM)"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="zipiphone"
+        label="硫化氢(PPM)"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="zipiphone"
+        label="温度(C)"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="zipiphone"
+        label="湿度(%)"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="zipiphone"
+        label="更新时间"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="zipiphone"
+        label="报警次数"
+        width
+      ></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button
             class="tableButton1"
             type="button"
             size="small"
-            @click="pagination(scope.row,scope.$index)"
-          >申诉</el-button>
+            @click="pagination(scope.row, scope.$index)"
+            >申诉</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -135,11 +213,26 @@
       @size-change="handleSizeChange"
     ></el-pagination>
     <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
+    <el-dialog
+      :title="text"
+      :visible.sync="dialogFormVisible"
+      width="426px"
+      class="dialogText"
+    >
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline"
+        v-if="buttonIf"
+      >
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
+            <el-option
+              v-for="item in optionsCar"
+              :key="item.i"
+              :label="item.label"
+              :value="item.i"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -181,10 +274,20 @@
           <el-input v-model="formInline.text" class="inputText"></el-input>
         </el-form-item>
       </el-form>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline"
+        v-if="!buttonIf"
+      >
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
+            <el-option
+              v-for="item in optionsCar"
+              :key="item.i"
+              :label="item.label"
+              :value="item.i"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -227,11 +330,28 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogFormVisible=false" class="formButon">取消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogFormVisible = false"
+          class="formButon"
+          >取消</el-button
+        >
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
+        <el-button
+          type="primary"
+          v-if="buttonIf"
+          @click="addDo"
+          class="formButon"
+          >编辑</el-button
+        >
+        <el-button
+          type="primary"
+          v-else-if="!buttonIf"
+          @click="adddate"
+          class="formButon"
+          >保存</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -249,11 +369,11 @@ export default {
       tableData: [],
       formInline: {},
       dialogVisible: false,
-      les:0,
-      progressDate:[
-        {les:0,progress:'未处理'},
-        {les:1,progress:'处理中'},
-        {les:2,progress:'完成'},
+      les: 0,
+      progressDate: [
+        { les: 0, progress: "未处理" },
+        { les: 1, progress: "处理中" },
+        { les: 2, progress: "完成" }
       ],
       i: "0",
       optionsCar: [
@@ -508,12 +628,12 @@ export default {
   },
   methods: {
     miStatusColor(item) {
-      if(item==0) {
-        return 'danger'
-      }else if(item==1)  {
-        return 'primary'
+      if (item == 0) {
+        return "danger";
+      } else if (item == 1) {
+        return "primary";
       }
-      return 'success'
+      return "success";
     },
     addDo() {
       // let _index = this.listIndex;
@@ -545,7 +665,7 @@ export default {
       for (let i = 1; i < 99; i++) {
         this.tableData.push({
           number: i,
-          wcid:'体育公园公厕',
+          wcid: "体育公园公厕",
           name: "李旦",
           carid: "e1323",
           province: "东营区",
@@ -606,14 +726,14 @@ export default {
   text-align: center;
 }
 .demo-form-inline {
-  text-align: right;
+  text-align: left;
   .selectTop {
     width: 240px;
   }
   .el-form-item {
     margin-bottom: 2px;
     .el-input {
-      width: 240px;
+      width: 195px;
       height: 32px;
     }
   }

@@ -10,6 +10,10 @@ import BaiduMap from 'vue-baidu-map';
 import qs from 'qs'
 import Axios from 'axios'
 
+import './assets/font/iconfont.css'
+
+
+
 Vue.use(BaiduMap, {
   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
   ak: 'ydPscWsaF9oqc1DOYtPgmCTmAUdqG4Cq'

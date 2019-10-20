@@ -4,7 +4,7 @@
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="formInline">
           <el-form-item label="姓名">
             <el-input class="searchInput" v-model="formInline.user" placeholder="姓名"></el-input>
           </el-form-item>

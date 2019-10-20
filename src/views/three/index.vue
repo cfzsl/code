@@ -1,12 +1,16 @@
 <template>
-<!-- 公厕管理 -->
+  <!-- 公厕管理 -->
   <div id="wc">
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item label="姓名">
-            <el-input class="searchInput" v-model="formInline.user" placeholder="姓名"></el-input>
+            <el-input
+              class="searchInput"
+              v-model="formInline.user"
+              placeholder="姓名"
+            ></el-input>
           </el-form-item>
           <el-form-item label="负责道路">
             <el-select v-model="lu">
@@ -45,14 +49,21 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加人员信息</el-button>
+        <el-button class="buttonBot" @click="dialogVisible = true"
+          >添加人员信息</el-button
+        >
         <el-button class="buttonBot">导入模板下载</el-button>
         <el-button class="buttonBot">人员信息导入</el-button>
         <el-button class="buttonBotLast">导出全员信息</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
+    <el-dialog
+      title="添加人员信息"
+      :visible.sync="dialogVisible"
+      width="426px"
+      class="dialogText"
+    >
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
@@ -99,7 +110,7 @@
           <el-input v-model="formInline.updatetime"></el-input>
         </el-form-item>
         <el-form-item label="作业区域">
-          <el-select v-model="lu" class='selectTop'>
+          <el-select v-model="lu" class="selectTop">
             <el-option
               v-for="item in optionslu"
               :key="item.lu"
@@ -109,7 +120,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="web" class='selectTop'>
+          <el-select v-model="web" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -120,10 +131,20 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = false"
+          class="formButon"
+          >取消</el-button
+        >
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = false"
+          class="formButon"
+          >保存</el-button
+        >
       </span>
     </el-dialog>
     <!-- 表格 -->
@@ -140,11 +161,11 @@ export default {
     return {
       formInline: {},
       dialogVisible: false,
-      lu:'0',
+      lu: "0",
       roadList: [
         {
-          lu:'0',
-          label:'全部'
+          lu: "0",
+          label: "全部"
         },
         {
           lu: "1",
@@ -169,7 +190,7 @@ export default {
         {
           lu: "6",
           label: "黄河路"
-        },
+        }
       ],
       value: "0",
       options: [
@@ -237,8 +258,8 @@ export default {
           label: "环卫四部"
         }
       ],
-       lu: '0',
-       optionslu: [
+      lu: "0",
+      optionslu: [
         {
           lu: "0",
           label: "全部"
@@ -405,46 +426,5 @@ export default {
       margin: 0;
     }
   }
-}
-.table {
-  width: 1128px;
-  height: 465px;
-  margin-top: 16px;
-}
-.dialogText {
-  text-align: center;
-}
-.demo-form-inline {
-  text-align: right;
-  .selectTop {
-    width: 240px;
-  }
-  .el-form-item {
-    margin-bottom: 2px;
-    .el-input {
-      width: 240px;
-      height: 32px;
-    }
-  }
-  .selectBot {
-    width: 240px;
-    height: 32px;
-  }
-}
-.formButon {
-  width: 127px;
-  height: 40px;
-  text-align: center;
-}
-.pagination {
-  float: right;
-  margin-right: 16px;
-}
-.table {
-  width: 100%;
-}
-.delect-footer {
-  float: left;
-  margin-left: 10px;
 }
 </style>
