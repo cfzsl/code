@@ -3,6 +3,8 @@
   <div id="Top">
     <div class="TopL">
       <span>智慧环卫综合管理平台</span>
+      <i v-if='showdown' class='el-icon-s-fold' @click="endlist"></i>
+      <i v-if='!showdown' class='el-icon-s-unfold' @click="openlist" ></i>
     </div>
     <div class="alert">
       <span>公告：智慧环卫综合管理平台有新功能更新！</span>
@@ -33,10 +35,23 @@
 export default {
   data() {
     return {
-      isFullscreen: false
+      isFullscreen: false,
+      showdown:true,
+      open:false
     };
   },
   methods: {
+    endlist() {
+      this.open=false
+      this.showdown=!this.showdown
+      this.$emit("asideEnd",this.open)
+    },
+    openlist(){
+      this.open=true
+      this.showdown=!this.showdown
+      this.$emit("asideOpen",this.open)
+
+    },
     screen() {
       let element = document.documentElement;
       if (this.fullscreen) {
@@ -81,16 +96,16 @@ export default {
     width: 380px;
     padding-top: 20px;
     margin-left: 20px;
+    font-size: 32px;
+    color: #ffffff;
     span {
       display: inline-block;
       height: 45px;
       line-height: 45px;
       font-family: PingFangSC-Medium;
-      font-size: 32px;
       font-weight: normal;
       font-stretch: normal;
       letter-spacing: 0px;
-      color: #ffffff;
     }
   }
   .alert {

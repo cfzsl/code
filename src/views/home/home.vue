@@ -5,9 +5,16 @@
         <Top></Top>
       </el-header>
       <el-container class="se-container">
-        <el-aside width="282px">
-          <Aside></Aside>
-        </el-aside>
+        <el-drawer
+          title="我是标题"
+          :visible.sync="drawer"
+          :direction="direction"
+          :before-close="handleClose"
+        >
+          <el-aside>
+            <Aside @asideEnd="getAsideEnd" @asideOpen="getAsideOpen"></Aside>
+          </el-aside>
+        </el-drawer>
         <el-main>
           <router-view></router-view>
         </el-main>
@@ -20,6 +27,22 @@
 import Top from "@/components/header/top";
 import Aside from "@/components/Aside/Aside";
 export default {
+  data() {
+    return {
+      drawer: true,
+      direction: "ltr"
+    };
+  },
+  methods: {
+    getAsideEnd(date) {
+      this.drawer = date;
+      console.log(this.drawer);
+    },
+    getAsideOpen(date) {
+      this.drawer = date;
+      console.log(this.drawer);
+    }
+  },
   components: {
     Top,
     Aside
@@ -32,14 +55,15 @@ export default {
   padding: 0;
   z-index: 999;
 }
-
 .se-container {
   height: calc(100vh - 86px);
   .el-aside {
+    width: 282px;
     height: 100%;
     background-color: #3f4d5c;
   }
   .el-main {
+    width: 100%;
     height: 100%;
   }
 }
