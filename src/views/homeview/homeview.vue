@@ -1,30 +1,54 @@
 <template>
   <div class="bdMap">
     <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="12" scroll-wheel-zoom>
+      <!-- 控件 -->
+      <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-navigation>
+      <!-- 覆盖范围高亮 -->
       <bm-boundary name="东营区" :strokeWeight="2" strokeColor="#BDC5F3" fillColor="#BDC5F3"></bm-boundary>
+      <!-- mark点 -->
+      <bm-marker
+        v-for="item in positions"
+        :key="item.index"
+        :position="item"
+        :icon="{url: 'http://47.110.160.217:9071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
+        @click="infoWindowOpen"
+      >
+      <bm-info-window :position="item" :show="show" @close="infoWindowClose" @open="infoWindowOpen">我爱北京天安门</bm-info-window>
+      </bm-marker>
       <bm-marker
         v-for="item in position2"
         :key="item.code"
         :position="{ lng: item.lng, lat: item.lat }"
         :labelStyle="{ color: 'orange', fontSize: '24px' }"
       ></bm-marker>
-      <!-- <div class="mapList">
+      <div class="mapList">
         <div class="list">
+          <!-- <span class="iconfont icon-lajiche-s" style="color:#3b99f1"></span> -->
+          <img src="../../assets/img/洒水车.png" alt="">
           <span>洒水车</span>
         </div>
         <div class="list">
+          <!-- <span class="iconfont icon-lajiche-s" style="color:#4eb14e"></span> -->
+          <img src="../../assets/img/清扫车.png" alt="">
           <span>清扫车</span>
         </div>
         <div class="list">
+          <!-- <span class="iconfont icon-lajiche-s" style="color:#ffb533"></span> -->
+          <img src="../../assets/img/垃圾运输车.png" alt="">
           <span>垃圾运输车</span>
         </div>
         <div class="list">
+          <!-- <span class="iconfont icon-lajiche-s" style="color:#439dc5"></span> -->
+          <img src="../../assets/img/洒水车.png" alt="">          
+          <img src="" alt="">
           <span>三轮车</span>
         </div>
         <div class="list">
+          <!-- <span class="iconfont icon-lajiche-s" style="color:#31cab5"></span> -->
+          <img src="../../assets/img/洒水车.png" alt="">
           <span>对讲机</span>
         </div>
-      </div>-->
+      </div>
       <div class="button">
         <div @click="msgeslint = true" class="buttonrow">
           <div class="buttonrowL oneself">
@@ -479,6 +503,7 @@
 export default {
   data() {
     return {
+      show:false,
       msg: "",
       datemsg: "",
       msgeslint: false,
@@ -489,11 +514,13 @@ export default {
       msgeslint6: false,
       msgeslint7: false,
       input3: "",
-      // positions: [
-      //   { lng: 118.550734, lat: 37.469664 },
-      //   { lng: 118.566096, lat: 37.469922 },
-      //   { lng: 118.54123, lat: 37.452391 }
-      // ],
+      positions: [
+        { lng: 118.550519, lat: 37.440409 },
+        { lng: 118.520048, lat: 37.399597 },
+        { lng:118.394716, lat: 37.404183 },
+        { lng:118.561442, lat: 37.549436},
+        { lng:118.450483, lat: 37.304588},
+      ],
       position2: [],
       data: {
         pagesize: 10,
@@ -503,6 +530,12 @@ export default {
     };
   },
   methods: {
+    infoWindowClose () {
+      this.show = false
+    },
+    infoWindowOpen () {
+      this.show = true
+    },
     showadd() {
       console.log("测试");
     },
@@ -537,7 +570,7 @@ export default {
     }
   },
   created() {
-    // this.getMapMark();
+    this.getMapMark();
     this.date();
   }
 };
@@ -551,7 +584,7 @@ export default {
     height: 746px;
     .input-with-select {
       position: absolute;
-      right: 20px;
+      right: 10px;
       top: 16px;
       width: 309px;
     }
@@ -559,21 +592,23 @@ export default {
 }
 .mapList {
   position: absolute;
-  left: 10px;
-  top: 15px;
-  width: 116px;
-  height: 140px;
-  background-color: #fff;
-  text-align: center;
-  div {
-    position: relative;
-    display: block;
-    float: left;
-    width: 100%;
-    height: 28px;
-    line-height: 28px;
+  right: 10px;
+  top:58px;
+  align-items: center;
+  justify-content: center;
+  .list {
+    width: 126px;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    img {
+      display: inline-block;
+    }
     span {
-      display: inline;
+      display: inline-block;
+      margin-left: 6px;
     }
   }
 }
@@ -597,12 +632,12 @@ export default {
   .buttonrowL {
     border-radius: 6px 0 0 6px;
     height: 40px;
-    width: 92px;
+    // width: 92px;
     line-height: 40px;
     margin-left: 6px;
     span {
       margin-right: 0 !important;
-      margin-left: 4px;
+      margin-left: 2px;
     }
   }
   .oneself {
@@ -629,10 +664,12 @@ export default {
   .buttonrowR {
     border-radius: 0 6px 6px 0;
     height: 40px;
-    width: 48px;
+    width: 40px;
+    font-size: 16px;
+    font-weight: 700;
     line-height: 40px;
     span {
-      margin-left: 16px;
+      margin-left: 8px;
       margin-bottom: 18px;
     }
   }

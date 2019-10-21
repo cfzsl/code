@@ -76,18 +76,16 @@
             </el-table>
           </div>
           <!-- 分页 -->
-          <div class="pagination">
-            <el-pagination
-              :current-page="data.currpage"
-              :page-size="data.pagesize"
-              :pager-count="5"
-              layout="total, prev, pager, next"
-              :total="data.list.length"
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-            ></el-pagination>
-          </div>
+          <el-pagination
+      class="paginationList"
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
         </el-form>
       </el-dialog>
       <!-- 弹窗2 -->
@@ -95,7 +93,7 @@
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
-            <el-form-item label="车牌号号鲁-" class="searchInput">
+            <el-form-item label="车牌号号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
@@ -117,23 +115,22 @@
               <el-table-column align="center" prop="company" label="归属单位"></el-table-column>
               <el-table-column align="center" prop="driver" label="指定司机"></el-table-column>
               <el-table-column align="center" prop="phone" label="联系电话"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="policeTime" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="policedate" label="报警时间"></el-table-column>
               <el-table-column align="center" prop="service" label="线路异常情况" width="436px"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
-          <div class="pagination">
-            <el-pagination
-              :current-page="data.currpage"
-              :page-size="data.pagesize"
-              :pager-count="5"
-              layout="total, prev, pager, next"
-              :total="data.list.length"
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-            ></el-pagination>
-          </div>
+          <el-pagination
+      class="paginationList"
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
         </el-form>
       </el-dialog>
       <!-- 弹框3 -->
@@ -153,34 +150,31 @@
           </div>
           <div class="list">
             <el-table
-              :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              :data="stagnationList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
               border
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
               <el-table-column align="center" prop="driver" label="车辆使用人"></el-table-column>
               <el-table-column align="center" prop="company" label="单位"></el-table-column>
               <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
-              <el-table-column align="center" prop="date" label="停滞点" width="200x"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间" width="200px"></el-table-column>              
+              <el-table-column align="center" prop="region" label="停滞点" width="200x"></el-table-column>
               <el-table-column align="center" prop="timeout" label="停滞时长" width="220px"></el-table-column>
+              <el-table-column align="center" prop="policeTime" label="报警时间" width="200px"></el-table-column>              
             </el-table>
           </div>
           <!-- 分页 -->
-          <div class="pagination">
-            <el-pagination
-              :current-page="data.currpage"
-              :page-size="data.pagesize"
-              :pager-count="5"
-              layout="total, prev, pager, next"
-              :total="data.list.length"
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-            ></el-pagination>
-          </div>
+          <el-pagination
+      class="paginationList"
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
         </el-form>
       </el-dialog>
       <!-- 弹窗4 -->
@@ -204,7 +198,7 @@
           </div>
           <div class="list">
             <el-table
-              :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              :data="dailyList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
               border
               style="width: 100%"
               @row-click="showadd"
@@ -213,23 +207,22 @@
               <el-table-column align="center" prop="driver" label="车辆使用人"></el-table-column>
               <el-table-column align="center" prop="company" label="单位"></el-table-column>
               <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
+              <el-table-column align="center" prop="daily" label="日期"></el-table-column>
               <el-table-column align="center" prop="date" label="上午打卡"></el-table-column>
-              <el-table-column align="center" prop="date" label="下午打卡"></el-table-column>
+              <el-table-column align="center" prop="update" label="下午打卡"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
-          <div class="pagination">
-            <el-pagination
-              :current-page="data.currpage"
-              :page-size="data.pagesize"
-              :pager-count="5"
-              layout="total, prev, pager, next"
-              :total="data.list.length"
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-            ></el-pagination>
-          </div>
+          <el-pagination
+      class="paginationList"
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
         </el-form>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="!flow">
           <div>
@@ -577,6 +570,67 @@ export default {
         { lng: 116.404, lat: 39.915 },
         { lng: 116.405, lat: 39.92 },
         { lng: 116.423493, lat: 39.907445 }
+      ],
+      stagnationList:[
+        {
+          number: 1,
+          carbrand: "鲁E-04DF",
+          company: "环卫一部",
+          driver: "李诞",
+          phone: "15375669845",
+          region: "西湖公园",
+          policeTime: "2019-10-09 18:50",
+          timeout:"1小时5分"
+        },
+        {
+          number: 2,
+          carbrand: "鲁E-12FA",
+          company: "环卫二部",
+          driver: "张园园",
+          phone: "15375669845",
+          region: "东营南站",
+          policeTime: "2019-10-09 17:54",
+          timeout:"56分"
+        },
+        {
+          number: 3,
+          carbrand: "鲁E-23SD",
+          company: "环卫三部",
+          driver: "刘波",
+          phone: "15375669845",
+          region: "红光渔港",
+          policeTime: "2019-10-09 17:54",
+          timeout:"1小时30分"
+        },
+      ],
+      dailyList: [
+        {
+          carbrand: "鲁E-04DF",
+          date: "06:50--11:05",
+          update: "13:48--17:02",
+          daily:"2019/10/10",
+          company: "环卫1部",
+          driver: "李诞",
+          phone: "15375669845",
+        },
+        {
+          carbrand: "鲁E-12FA",
+          date: "06:55--11:10",
+          update: "13:58--17:33",
+          daily:"2019/10/10",
+          company: "环卫2部",
+          driver: "张圆圆",
+          phone: "15375669845",
+        },
+        {
+          carbrand: "鲁E-23SD",
+          date: "06:33--11:06",
+          update: "13:50--17:15",
+          daily:"2019/10/10",
+          company: "环卫3部",
+          driver: "刘波",
+          phone: "15375669845",
+        },
       ]
     };
   },
@@ -584,6 +638,8 @@ export default {
     this.date();
   },
   methods: {
+    handleSizeChange(){},
+    handleCurrentChange(){},
     work() {
       this.flow = true;
     },
@@ -608,20 +664,21 @@ export default {
     },
     nextpage() {},
     date() {
-      for (let i = 1; i < 999; i++) {
+      for (let i = 1; i < 2; i++) {
         this.data.list.push({
           sid: i,
           number: i,
           type: "垃圾运输车",
-          carbrand: "鄂A " + i + i + i + i,
-          date: "2011.10.20",
+          carbrand: "鲁E-04DF",
+          date: "2019-10-10",
           num: "环卫-A001",
           company: "环卫",
           driver: "李诞",
           phone: "15375669845",
           region: "东营南站",
-          policeTime: "2011.10.20",
-          service: "超出原定使用区域：东营区东营南站",
+          policeTime: "2019-10-10",
+          policedate: "11:35:10",
+          service: "超过原定使用区域：东营区东营南站",
           troubleshooting: "未维修",
           timeout:"1小时"
         });
@@ -766,5 +823,10 @@ export default {
     border-radius: 0px;
     font-weight: 700;
   }
+}
+.paginationList {
+  text-align: center;
+  margin-top: 32px;
+  padding: 0;
 }
 </style>

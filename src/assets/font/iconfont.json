@@ -13,6 +13,13 @@
       "unicode_decimal": 58979
     },
     {
+      "icon_id": "7007987",
+      "name": "垃圾车-s",
+      "font_class": "lajiche-s",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
       "icon_id": "8423790",
       "name": "警报灯警报器",
       "font_class": "huaban",

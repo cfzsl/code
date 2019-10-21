@@ -6,60 +6,19 @@
       border
       style="width: 100%"
     >
-      <el-table-column
-        align="center"
-        prop="number"
-        label="序号"
-        width="63px"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="name"
-        label="姓名"
-        width="93"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="province"
-        label="区域"
-        width="102px"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="province"
-        label="负责道路"
-        width="193px"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="city"
-        label="单位"
-        width="203px"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="date"
-        label="入职时间"
-        width="168px"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="updata"
-        label="离职时间"
-        width="167px"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="zipiphone"
-        label="联系方式"
-        width="160px"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="msg"
-        label="是否超龄"
-        width="144px"
-      ></el-table-column>
+      <el-table-column align="center" prop="number" label="序号" width="63px"></el-table-column>
+      <el-table-column align="center" prop="name" label="姓名" width="93"></el-table-column>
+      <el-table-column align="center" prop="province" label="负责道路" width="193px"></el-table-column>
+      <el-table-column align="center" prop="provdown" label="作业区域" width="102px"></el-table-column>
+      <el-table-column align="center" prop="city" label="归属单位" width="203px"></el-table-column>
+      <el-table-column align="center" prop="date" label="入职时间" width="168px"></el-table-column>
+      <el-table-column align="center" prop="updata" label="离职时间" width="167px"></el-table-column>
+      <el-table-column align="center" prop="zipiphone" label="联系方式" width="160px"></el-table-column>
+      <el-table-column align="center" prop="msg" label="是否超龄" width="144px">
+        <template slot-scope="scope">
+        <div :class="scope.row.red?'textmsg':'textcc'">{{scope.row.msg}}</div>
+      </template>
+      </el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="280px">
         <template slot-scope="scope">
           <el-button
@@ -67,22 +26,14 @@
             type="button"
             size="small"
             @click="pagination(scope.row, scope.$index)"
-            >详情</el-button
-          >
+          >详情</el-button>
           <el-button
             class="tableButton2"
             type="button"
             size="small"
             @click="pagination(scope.row, scope.$index)"
-            >编辑</el-button
-          >
-          <el-button
-            class="tableButton3"
-            type="button"
-            @click="deletList"
-            size="small"
-            >删除</el-button
-          >
+          >编辑</el-button>
+          <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -90,25 +41,17 @@
     <el-pagination
       class="paginationList"
       background
-      layout="total, prev, pager, next"
-      :total="tableData.length"
-      @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
-    ></el-pagination>
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
 
     <!-- 弹框 -->
-    <el-dialog
-      :title="text"
-      :visible.sync="dialogFormVisible"
-      width="426px"
-      class="dialogText"
-    >
-      <el-form
-        :inline="true"
-        :model="formInline"
-        class="demo-form-inline"
-        v-if="buttonIf"
-      >
+    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
         <el-form-item label="姓名">
           <el-input v-model="formInline.name" class="inputL"></el-input>
         </el-form-item>
@@ -146,12 +89,7 @@
           <el-input v-model="formInline.web"></el-input>
         </el-form-item>
       </el-form>
-      <el-form
-        :inline="true"
-        :model="formInline"
-        class="demo-form-inline"
-        v-if="!buttonIf"
-      >
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
         </el-form-item>
@@ -218,28 +156,11 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button
-          type="primary"
-          @click="dialogFormVisible = false"
-          class="formButon"
-          >取消</el-button
-        >
+        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          v-if="buttonIf"
-          @click="addDo"
-          class="formButon"
-          >编辑</el-button
-        >
-        <el-button
-          type="primary"
-          v-else-if="!buttonIf"
-          @click="adddate"
-          class="formButon"
-          >保存</el-button
-        >
+        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
+        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -425,14 +346,50 @@ export default {
       pagesize: 10,
       currpage: 1,
       listIndex: null,
-      tableData: [],
+      tableData: [
+        {
+          number: 1,
+          name: "李诞",
+          province: "庐山路",
+          provdown: "东营区新区",
+          city: "环卫一部",
+          date: "2018-01-01",
+          updata: "-",
+          zipiphone: "15375669845",
+          msg: "否",
+          red:false
+        },
+        {
+          number: 2,
+          name: "张圆圆",
+          province: "宁阳路",
+          provdown: "东营区新区",
+          city: "环卫一部",
+          date: "2018-01-01",
+          updata: "-",
+          zipiphone: "15375669845",
+          msg: "是",
+          red:true
+        },
+        {
+          number: 3,
+          name: "刘波",
+          province: "新泰路",
+          provdown: "东营区新区",
+          city: "环卫一部",
+          date: "2018-01-01",
+          updata: "-",
+          zipiphone: "15375669845",
+          msg: "否",
+          red:false          
+        },
+      ],
       dialogFormVisible: false,
       formInline: {}
     };
   },
 
   created() {
-    this.getlist();
   },
   methods: {
     // 弹窗传值
@@ -458,21 +415,6 @@ export default {
     adddate() {
       this.dialogFormVisible = false;
     },
-    getlist() {
-      for (let i = 1; i < 99; i++) {
-        this.tableData.push({
-          number: i,
-          name: "李旦",
-          province: "东营区",
-          city: "环卫一部",
-          address: "上海市普陀区金沙江路 1518 弄",
-          date: "2016-05-02",
-          updata: "在职",
-          zipiphone: "15927227885",
-          msg: "否"
-        });
-      }
-    },
     deletList() {
       console.log("删除指定项");
     },
@@ -496,20 +438,26 @@ export default {
 .tableButton3 {
   color: #fff;
   background-color: #f56c6c;
-	border-radius: 3px;
+  border-radius: 3px;
 }
 .tableButton2 {
   color: #fff;
   background-color: #4eb14e;
-	border-radius: 3px;
+  border-radius: 3px;
 }
 .tableButton1 {
   color: #fff;
   background-color: #409eff;
-	border-radius: 3px;
+  border-radius: 3px;
+}
+.textmsg {
+  color: red;
+}
+.textcc {
+  color: #000;
 }
 .paginationList {
-  float: right;
+  text-align: center;
   margin-top: 32px;
   padding: 0;
 }

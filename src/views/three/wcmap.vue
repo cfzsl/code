@@ -35,34 +35,36 @@
           :active="active"
           @mouseover.native="active = true"
           @mouseleave.native="active = false"
-        ></my-overlay>
-        <!-- 信息弹窗 -->
-        <bm-info-window
-          :position="{lng: 118.550303, lat: 37.465282}"
-          title="智慧公厕详情"
-          :show="infoWindow.show"
-          @close="infoWindowClose"
+          @click="infoWindow"
         >
-          <el-divider></el-divider>
-          <p>厕所名称:公厕详情</p>
-          <p>管养单位:东营市卓越环境工程有限公司</p>
-          <div>
-            <span>负责人:毛文平</span>
-            <span>负责人电话:13361503999</span>
-          </div>
-          <p>地址:蒙山路与黄河路路口的西北角</p>
-          <div>
-            <span>当前状态:</span>
-            <span>开放使用</span>
-          </div>
-          <p>服务:生活垃圾收集点,第三卫生间</p>
-          <p>最后接收数据时间:2019-10-19 11:19:06</p>
-          <el-table :data="tableData" border style="width: 100%">
-            <el-table-column prop="date" label="分类" width="180"></el-table-column>
-            <el-table-column prop="name" label="男厕" width="180"></el-table-column>
-            <el-table-column prop="address" label="女厕"></el-table-column>
-          </el-table>
-        </bm-info-window>
+          <bm-info-window
+            title="智慧公厕详情"
+            :position="item"
+            :show="show"
+            @close="infoWindowClose"
+          >
+            <el-divider></el-divider>
+            <p>厕所名称:公厕详情</p>
+            <p>管养单位:东营市卓越环境工程有限公司</p>
+            <div>
+              <span>负责人:毛文平</span>
+              <span>负责人电话:13361503999</span>
+            </div>
+            <p>地址:蒙山路与黄河路路口的西北角</p>
+            <div>
+              <span>当前状态:</span>
+              <span>开放使用</span>
+            </div>
+            <p>服务:生活垃圾收集点,第三卫生间</p>
+            <p>最后接收数据时间:2019-10-19 11:19:06</p>
+            <el-table :data="tableData" border style="width: 100%">
+              <el-table-column prop="date" label="分类" width="60"></el-table-column>
+              <el-table-column prop="name" label="男厕" width="140"></el-table-column>
+              <el-table-column prop="address" label="女厕" width="140"></el-table-column>
+            </el-table>
+          </bm-info-window>
+        </my-overlay>
+        <!-- 信息弹窗 -->
       </baidu-map>
     </div>
   </div>
@@ -73,10 +75,7 @@ import MyOverlay from "@/components/MyOverlay/MyOverlay.vue";
 export default {
   data() {
     return {
-      infoWindow: {
-        show: true,
-        contents: ""
-      },
+      show:false,
       tableData: [
         {
           date: "硫化氢",
@@ -109,12 +108,12 @@ export default {
     };
   },
   methods: {
-    infoWindowClose() {
-      this.infoWindow.show = false;
+    infoWindow() {
+      this.show = true;
     },
-    clear() {
-      this.infoWindow.show = false;
-    }
+    infoWindowClose() {
+      this.show = false;
+    },
   },
   components: {
     MyOverlay

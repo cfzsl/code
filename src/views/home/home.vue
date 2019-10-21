@@ -5,16 +5,9 @@
         <Top></Top>
       </el-header>
       <el-container class="se-container">
-        <el-drawer
-          title="我是标题"
-          :visible.sync="drawer"
-          :direction="direction"
-          :before-close="handleClose"
-        >
-          <el-aside>
+        <el-aside>
             <Aside @asideEnd="getAsideEnd" @asideOpen="getAsideOpen"></Aside>
-          </el-aside>
-        </el-drawer>
+        </el-aside>
         <el-main>
           <router-view></router-view>
         </el-main>
@@ -63,6 +56,7 @@ export default {
     background-color: #3f4d5c;
   }
   .el-main {
+    padding: 10px !important;
     width: 100%;
     height: 100%;
   }

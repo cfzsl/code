@@ -1,6 +1,6 @@
 <template>
-  <!-- 值班人员管理 -->
-  <div id="Personnel">
+  <!-- 公厕管理 -->
+  <div id="WcSupervision">
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
@@ -42,37 +42,34 @@
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加值班人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
+    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="公厕名">
-          <el-input v-model="formInline.wcid"></el-input>
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="管养单位">
           <el-select v-model="lu" class="selectTop">
-            <el-option v-for="item in options" :key="item.web" :label="item.label" :value="item.lu"></el-option>
+            <el-option v-for="item in options" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="optionsStated">
           <el-select v-model="state" class="selectTop">
             <el-option
-              v-for="item in optionsStated"
+              v-for="item in options"
               :key="item.state"
               :label="item.label"
               :value="item.state"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-input v-model="formInline.state"></el-input>
-        </el-form-item>
         <el-form-item label="地址">
-          <el-input v-model="formInline.cnumber"></el-input>
+          <el-input v-model="formInline.cnumber" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="服务">
-          <el-input v-model="formInline.snumber"></el-input>
+          <el-input v-model="formInline.snumber" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="联络人">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input v-model="formInline.name" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="电话">
           <el-input v-model="formInline.phone" class="inputText"></el-input>
@@ -125,17 +122,17 @@
     <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="公厕名">
-          <el-input v-model="formInline.wcid"></el-input>
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="管养单位">
           <el-select v-model="lu" class="selectTop">
-            <el-option v-for="item in options" :key="item.web" :label="item.label" :value="item.lu"></el-option>
+            <el-option v-for="item in options" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="optionsStated">
           <el-select v-model="state" class="selectTop">
             <el-option
-              v-for="item in optionsStated"
+              v-for="item in options"
               :key="item.state"
               :label="item.label"
               :value="item.state"
@@ -143,13 +140,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input v-model="formInline.cnumber"></el-input>
+          <el-input v-model="formInline.cnumber" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="服务">
-          <el-input v-model="formInline.snumber"></el-input>
+          <el-input v-model="formInline.snumber" class="inputText"></el-input>
         </el-form-item>
-        <el-form-item label="联系人">
-          <el-input v-model="formInline.name"></el-input>
+        <el-form-item label="联络人">
+          <el-input v-model="formInline.name" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="电话">
           <el-input v-model="formInline.phone" class="inputText"></el-input>
@@ -265,7 +262,6 @@ export default {
       //记录数据
       this.formInline = row;
       //显示弹窗
-
       this.dialogFormVisible = true;
       this.buttonIf = true;
     },

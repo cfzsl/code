@@ -6,11 +6,7 @@
       <div class="searchTop">
         <el-form :inline="true" :model="formInline">
           <el-form-item label="车牌号鲁E-">
-            <el-input
-              class="searchInput"
-              v-model="formInline.user"
-              placeholder="车牌号"
-            ></el-input>
+            <el-input class="searchInput" v-model="formInline.user" placeholder="车牌号"></el-input>
           </el-form-item>
           <el-form-item label="负责道路">
             <el-select v-model="lu">
@@ -49,34 +45,18 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true"
-          >添加车辆信息</el-button
-        >
-        <el-button class="buttonBot" @click="msgimport = true"
-          >导入模板下载</el-button
-        >
+        <el-button class="buttonBot" @click="dialogVisible = true">添加车辆信息</el-button>
+        <el-button class="buttonBot" @click="msgimport = true">导入模板下载</el-button>
         <el-button class="buttonBot">人员信息导入</el-button>
-        <el-button class="buttonBotLast" @click="msgexport = true"
-          >导出全员信息</el-button
-        >
+        <el-button class="buttonBotLast" @click="msgexport = true">导出全员信息</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog
-      title="添加车辆信息"
-      :visible.sync="dialogVisible"
-      width="426px"
-      class="dialogText"
-    >
+    <el-dialog title="添加车辆信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.i"
-            ></el-option>
+            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -119,20 +99,10 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button
-          type="primary"
-          @click="dialogVisible = false"
-          class="formButon"
-          >取消</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          @click="dialogVisible = false"
-          class="formButon"
-          >保存</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
       </span>
     </el-dialog>
     <!-- 弹框2 -->
@@ -179,48 +149,13 @@
       border
       style="width: 100%"
     >
-      <el-table-column
-        align="center"
-        prop="number"
-        label="序号"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="carid"
-        label="车牌号"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="date"
-        label="购车时间"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="updata"
-        label="资产编号"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="city"
-        label="归属单位"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="name"
-        label="使用人"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="zipiphone"
-        label="联系方式"
-        width
-      ></el-table-column>
+      <el-table-column align="center" prop="number" label="序号" width></el-table-column>
+      <el-table-column align="center" prop="carid" label="车牌号" width></el-table-column>
+      <el-table-column align="center" prop="date" label="购车时间" width></el-table-column>
+      <el-table-column align="center" prop="address" label="资产编号" width></el-table-column>
+      <el-table-column align="center" prop="city" label="归属单位" width></el-table-column>
+      <el-table-column align="center" prop="name" label="使用人" width></el-table-column>
+      <el-table-column align="center" prop="zipiphone" label="联系方式" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button
@@ -228,15 +163,8 @@
             type="button"
             size="small"
             @click="pagination(scope.row, scope.$index)"
-            >详情</el-button
-          >
-          <el-button
-            class="tableButton2"
-            type="button"
-            @click="deletList"
-            size="small"
-            >删除</el-button
-          >
+          >详情</el-button>
+          <el-button class="tableButton2" type="button" @click="deletList" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -244,32 +172,19 @@
     <el-pagination
       class="paginationList"
       background
-      layout="total, prev, pager, next"
-      :total="tableData.length"
-      @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
-    ></el-pagination>
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
     <!-- 弹框 -->
-    <el-dialog
-      :title="text"
-      :visible.sync="dialogFormVisible"
-      width="426px"
-      class="dialogText"
-    >
-      <el-form
-        :inline="true"
-        :model="formInline"
-        class="demo-form-inline"
-        v-if="buttonIf"
-      >
+    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.i"
-            ></el-option>
+            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -311,20 +226,10 @@
           <el-input v-model="formInline.text" class="inputText"></el-input>
         </el-form-item>
       </el-form>
-      <el-form
-        :inline="true"
-        :model="formInline"
-        class="demo-form-inline"
-        v-if="!buttonIf"
-      >
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.i"
-            ></el-option>
+            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -367,28 +272,11 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button
-          type="primary"
-          @click="dialogFormVisible = false"
-          class="formButon"
-          >取消</el-button
-        >
+        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          v-if="buttonIf"
-          @click="addDo"
-          class="formButon"
-          >编辑</el-button
-        >
-        <el-button
-          type="primary"
-          v-else-if="!buttonIf"
-          @click="adddate"
-          class="formButon"
-          >保存</el-button
-        >
+        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
+        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -686,18 +574,16 @@ export default {
     handleCurrentChange() {},
     handleSizeChange() {},
     getlist() {
-      for (let i = 1; i < 99; i++) {
+      for (let i = 1; i < 2; i++) {
         this.tableData.push({
           number: i,
-          name: "李旦",
-          carid: "e1323",
-          province: "东营区",
+          name: "李诞",
+          carid: "鲁E-D001",
           city: "环卫一部",
-          address: "上海市普陀区金沙江路 1518 弄",
+          shoptime: "2011.10.20",
+          address: "环卫-A001",
           date: "2016-05-02",
-          updata: "在职",
-          zipiphone: "15927227885",
-          msg: "否"
+          zipiphone: "15375669845"
         });
       }
     },
@@ -739,6 +625,11 @@ export default {
       margin: 0;
     }
   }
+}
+.paginationList {
+  text-align: center;
+  margin-top: 32px;
+  padding: 0;
 }
 .table {
   width: 1128px;
