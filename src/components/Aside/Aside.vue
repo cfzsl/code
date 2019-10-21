@@ -111,10 +111,7 @@ export default {
 </script>
 
 <style lang="scss">
-.el-menu {
-  // height: 100%;
-}
-span {
+.iconfont {
   margin-right: 8px;
 }
 </style>
