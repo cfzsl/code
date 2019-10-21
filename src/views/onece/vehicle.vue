@@ -14,7 +14,7 @@
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="mapview">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="车辆类型" class="searchType">
@@ -96,7 +96,7 @@
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
@@ -156,7 +156,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="show == 1">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -208,7 +208,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 2">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -247,7 +247,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 3">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -301,7 +301,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 4">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">

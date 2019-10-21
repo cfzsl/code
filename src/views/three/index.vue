@@ -4,7 +4,7 @@
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="formInline">
           <el-form-item label="姓名">
             <el-input
               class="searchInput"
@@ -426,5 +426,46 @@ export default {
       margin: 0;
     }
   }
+}
+.table {
+  width: 1128px;
+  height: 465px;
+  margin-top: 16px;
+}
+.dialogText {
+  text-align: center;
+}
+.demo-form-inline {
+  text-align: right;
+  .selectTop {
+    width: 240px;
+  }
+  .el-form-item {
+    margin-bottom: 2px;
+    .el-input {
+      width: 240px;
+      height: 32px;
+    }
+  }
+  .selectBot {
+    width: 240px;
+    height: 32px;
+  }
+}
+.formButon {
+  width: 127px;
+  height: 40px;
+  text-align: center;
+}
+.pagination {
+  float: right;
+  margin-right: 16px;
+}
+.table {
+  width: 100%;
+}
+.delect-footer {
+  float: left;
+  margin-left: 10px;
 }
 </style>

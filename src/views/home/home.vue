@@ -5,16 +5,9 @@
         <Top></Top>
       </el-header>
       <el-container class="se-container">
-        <el-drawer
-          title="我是标题"
-          :visible.sync="drawer"
-          :direction="direction"
-          :before-close="handleClose"
-        >
           <el-aside>
             <Aside @asideEnd="getAsideEnd" @asideOpen="getAsideOpen"></Aside>
           </el-aside>
-        </el-drawer>
         <el-main>
           <router-view></router-view>
         </el-main>
