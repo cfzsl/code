@@ -190,20 +190,16 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="保养记录">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              size="mini"
-              @click.stop="handleEdit(scope.$index, scope.row)"
-            >详情</el-button>
+          <template>
+            <el-button type="primary" size="mini" @click.stop="showmaintenance">详情</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保险缴纳">
-          <template slot-scope="scope">
+          <template>
             <el-button
               type="primary"
               size="mini"
-              @click.stop="handleEdit(scope.$index, scope.row)"
+              @click.stop="showinsurance"
             >详情</el-button>
           </template>
         </el-table-column>
@@ -250,7 +246,7 @@
     </el-dialog>
 
     <!-- 保养记录 -->
-    <el-dialog title="油耗报警" :visible.sync="maintenance">
+    <el-dialog title="保养记录" :visible.sync="maintenance">
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="6">
           <div class="grid-content bg-purple">
@@ -265,13 +261,8 @@
                 <el-upload
                   class="upload-demo"
                   action="https://jsonplaceholder.typicode.com/posts/"
-                  :on-preview="handlePreview"
-                  :on-remove="handleRemove"
-                  :before-remove="beforeRemove"
                   multiple
                   :limit="3"
-                  :on-exceed="handleExceed"
-                  :file-list="fileList"
                 >
                   <el-button size="medium" type="primary">点击上传</el-button>
                 </el-upload>
@@ -306,9 +297,44 @@
         <el-table-column align="center" prop="date" label="保养时间"></el-table-column>
         <el-table-column align="center" prop="content" label="保养描述"></el-table-column>
         <el-table-column align="center" label="保养图片">
-            <el-image class="img" style="width: 50px; height: 50px" :src="url" fit="fill"></el-image>
-            <el-image class="img" style="width: 50px; height: 50px" :src="url" fit="fill"></el-image>
+          <el-image
+            class="img"
+            style="width: 50px; height: 50px"
+            :src="url"
+            fit="fill"
+            @click="showimgs"
+          ></el-image>
+          <el-image
+            class="img"
+            style="width: 50px; height: 50px"
+            :src="url"
+            fit="fill"
+            @click="showimgs"
+          ></el-image>
         </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!-- 保养记录图片 -->
+    <el-dialog title="Camera Image" width="550px" :visible.sync="showimg">
+      <el-image style="width: 511px; height: 592px" :src="url" fit="contain"></el-image>
+      <el-row class="imgcontent">
+        <el-col :span="20">
+          <div class="grid-content bg-purple">上传于： 2019-10-20</div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content bg-purple-light">APP上传</div>
+        </el-col>
+      </el-row>
+    </el-dialog>
+
+    <!-- 保险 -->
+    <el-dialog title="保险缴纳" :visible.sync="insurance">
+      <el-table :data="insuranceList" style="width: 100%">
+        <el-table-column prop="carbrand" label="车牌号"></el-table-column>
+        <el-table-column prop="company" label="保险公司"></el-table-column>
+        <el-table-column prop="effectivedate" label="保险生效日"></el-table-column>
+        <el-table-column prop="warningdate" label="保险预警日期"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -337,8 +363,25 @@ export default {
       msgimport: false,
       msgexport: false,
       warning: false,
-      maintenance: true,
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      maintenance: false,
+      showimg: false,
+      insurance: false,
+      url:
+        "http://47.110.160.217:9071/images000/1.png",
+      insuranceList: [
+        {
+          carbrand: '鲁E-123456',
+          company: '太平洋保险',
+          effectivedate: '2019-02-30',
+          warningdate: '2020-10-15',
+        },
+        {
+          carbrand: '鲁E-123456',
+          company: '太平洋保险',
+          effectivedate: '2018-05-10',
+          warningdate: '2019-09-19',
+        },
+      ],
       maintenanceMsg: {
         date: "",
         driver: "",
@@ -348,9 +391,16 @@ export default {
       maintenanceList: [
         {
           carbrand: "鲁E-123456",
-          date: "2011.10.20",
+          date: "2019-01-20",
           driver: "李诞",
           content: "前胎轮胎漏气，换内胎一只",
+          img: ""
+        },
+        {
+          carbrand: "鲁E-456789",
+          date: "2018-05-20",
+          driver: "刘波",
+          content: "车刹片维保",
           img: ""
         }
       ],
@@ -364,10 +414,20 @@ export default {
           driver: "李诞"
         }
       ]
-
     };
   },
   methods: {
+    showinsurance() {
+      this.insurance = !this.insurance
+    },
+    showimgs() {
+      console.log(111);
+
+      this.showimg = !this.showimg;
+    },
+    showmaintenance() {
+      this.maintenance = !this.maintenance;
+    },
     showWarning() {
       this.warning = !this.warning;
     },
@@ -463,5 +523,10 @@ export default {
 
 .img {
   margin-right: 5px;
+}
+.imgcontent {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #d2d2d2;
 }
 </style>
