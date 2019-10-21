@@ -1,5 +1,5 @@
 <template>
-<!-- 车辆信息管理 -->
+  <!-- 车辆信息管理 -->
   <div>
     <div class="search">
       <div class="searchbox">
@@ -22,6 +22,11 @@
           <el-option label="庐山路" value="庐山路"></el-option>
           <el-option label="宁阳路" value="宁阳路"></el-option>
           <el-option label="新泰路" value="新泰路"></el-option>
+          <el-option label="北一路" value="北一路"></el-option>
+          <el-option label="北二路" value="北二路"></el-option>
+          <el-option label="黄河路" value="黄河路"></el-option>
+          <el-option label="济南路" value="济南路"></el-option>
+          <el-option label="淄博路" value="淄博路"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
@@ -29,8 +34,14 @@
         <el-select v-model="search.work">
           <el-option label="全部" value="全部"></el-option>
           <el-option label="东营区新区" value="东营区新区"></el-option>
-          <el-option label="文辉街道办事处" value="文辉街道办事处"></el-option>
-          <el-option label="新电路办事处" value="新电路办事处"></el-option>
+          <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
+          <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
+          <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
+          <el-option label="胜园街道办事处" value="胜园街道办事处"></el-option>
+          <el-option label="六户镇" value="六户镇"></el-option>
+          <el-option label="牛庄镇" value="牛庄镇"></el-option>
+          <el-option label="史口镇" value="史口镇"></el-option>
+          <el-option label="龙居镇" value="龙居镇"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
@@ -40,6 +51,7 @@
           <el-option label="环卫一部" value="环卫一部"></el-option>
           <el-option label="环卫二部" value="环卫二部"></el-option>
           <el-option label="环卫三部" value="环卫三部"></el-option>
+          <el-option label="环卫四部" value="环卫四部"></el-option>
         </el-select>
       </div>
       <el-button type="primary" class="btn">查询</el-button>
@@ -173,12 +185,8 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="油耗报警">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              size="mini"
-              @click.stop="handleEdit(scope.$index, scope.row)"
-            >详情</el-button>
+          <template>
+            <el-button type="primary" size="mini" @click.stop="showWarning">详情</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保养记录">
@@ -203,12 +211,12 @@
           <template slot-scope="scope">
             <el-button
               type="primary"
-              size="mini"
+              class="btn"
               @click.stop="handleEdit(scope.$index, scope.row)"
-            >详情</el-button>
+            >编辑</el-button>
             <el-button
-              size="mini"
               type="danger"
+              class="btn"
               @click.stop="handleDelete(scope.$index, scope.row)"
             >删除</el-button>
           </template>
@@ -228,6 +236,81 @@
         @current-change="nextpage"
       ></el-pagination>
     </div>
+
+    <!-- 油耗 -->
+    <el-dialog title="油耗报警" :visible.sync="warning">
+      <el-table :data="warningList" style="width: 100%">
+        <el-table-column prop="carbrand" label="车牌号"></el-table-column>
+        <el-table-column prop="driver" label="司机"></el-table-column>
+        <el-table-column prop="remaining" label="液位高度"></el-table-column>
+        <el-table-column prop="consumption" label="百公里耗油量"></el-table-column>
+        <el-table-column prop="maximum" label="最大油量"></el-table-column>
+        <el-table-column prop="date" label="报警时间"></el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!-- 保养记录 -->
+    <el-dialog title="油耗报警" :visible.sync="maintenance">
+      <el-row type="flex" class="row-bg" justify="space-between">
+        <el-col :span="6">
+          <div class="grid-content bg-purple">
+            <el-form label-position="right" label-width="80px" :model="maintenanceMsg">
+              <el-form-item label="日期">
+                <el-input v-model="maintenanceMsg.date"></el-input>
+              </el-form-item>
+              <el-form-item label="负责人">
+                <el-input v-model="maintenanceMsg.driver"></el-input>
+              </el-form-item>
+              <el-form-item label="上传图片">
+                <el-upload
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="3"
+                  :on-exceed="handleExceed"
+                  :file-list="fileList"
+                >
+                  <el-button size="medium" type="primary">点击上传</el-button>
+                </el-upload>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+        <el-col :span="13">
+          <div class="grid-content">
+            <el-form label-position="right" label-width="80px" :model="maintenanceMsg">
+              <el-form-item label="保养内容">
+                <el-input
+                  type="textarea"
+                  resize="none"
+                  v-model="maintenanceMsg.content"
+                  :autosize="{ minRows: 7, maxRows: 4}"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+        <el-col :span="5" :offset="1">
+          <div class="grid-content bg-purple">
+            <el-button type="primary" style="width: 90%">添加</el-button>
+          </div>
+        </el-col>
+      </el-row>
+
+      <el-table :data="maintenanceList">
+        <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
+        <el-table-column align="center" prop="driver" label="保养人"></el-table-column>
+        <el-table-column align="center" prop="date" label="保养时间"></el-table-column>
+        <el-table-column align="center" prop="content" label="保养描述"></el-table-column>
+        <el-table-column align="center" label="保养图片">
+            <el-image class="img" style="width: 50px; height: 50px" :src="url" fit="fill"></el-image>
+            <el-image class="img" style="width: 50px; height: 50px" :src="url" fit="fill"></el-image>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -252,20 +335,51 @@ export default {
       msg: {},
       msgadd: false,
       msgimport: false,
-      msgexport: false
+      msgexport: false,
+      warning: false,
+      maintenance: true,
+      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      maintenanceMsg: {
+        date: "",
+        driver: "",
+        img: "",
+        content: ""
+      },
+      maintenanceList: [
+        {
+          carbrand: "鲁E-123456",
+          date: "2011.10.20",
+          driver: "李诞",
+          content: "前胎轮胎漏气，换内胎一只",
+          img: ""
+        }
+      ],
+      warningList: [
+        {
+          remaining: 0,
+          consumption: 0,
+          maximum: 0,
+          date: "0",
+          carbrand: "鲁E-12345",
+          driver: "李诞"
+        }
+      ]
+
     };
   },
   methods: {
-    onSubmit() {},
+    showWarning() {
+      this.warning = !this.warning;
+    },
     date() {
-      for (let i = 0; i < 300; i++) {
+      for (let i = 0; i < 1; i++) {
         this.data.list.push({
           sid: i,
-          type: "垃圾运输车",
-          carbrand: "鲁E" + i,
+          type: "垃圾清运车",
+          carbrand: "鲁E-12345",
           date: "2011.10.20",
-          num: "环卫-A00" + i,
-          company: "环卫",
+          num: "环卫-A001",
+          company: "环卫一部",
           driver: "李诞",
           phone: "15375669845",
           region: "东营南站",
@@ -318,6 +432,17 @@ export default {
   }
 }
 
+.list {
+  button {
+    margin-left: 15px;
+  }
+  .btn {
+    width: 50px;
+    margin-left: 0;
+    text-align: center;
+  }
+}
+
 .download {
   height: 40px;
   div {
@@ -334,5 +459,9 @@ export default {
   bottom: 50px;
   right: 50px;
   padding-top: 40px;
+}
+
+.img {
+  margin-right: 5px;
 }
 </style>
