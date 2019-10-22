@@ -21,7 +21,7 @@
           <el-form-item label="状态">
             <el-select v-model="state">
               <el-option
-                v-for="item in optionsStated"
+                v-for="item in optionSe"
                 :key="item.state"
                 :label="item.label"
                 :value="item.state"
@@ -42,7 +42,7 @@
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
+    <el-dialog title="添加公厕信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="公厕名">
           <el-input v-model="formInline.name"></el-input>
@@ -52,10 +52,10 @@
             <el-option v-for="item in options" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="optionsStated">
+        <el-form-item label="开放状态">
           <el-select v-model="state" class="selectTop">
             <el-option
-              v-for="item in options"
+              v-for="item in optionSe"
               :key="item.state"
               :label="item.label"
               :value="item.state"
@@ -119,8 +119,8 @@
       :total="32"
     ></el-pagination>
     <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+    <el-dialog title="公厕详情" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if='ifshow'>
         <el-form-item label="公厕名">
           <el-input v-model="formInline.name"></el-input>
         </el-form-item>
@@ -129,10 +129,42 @@
             <el-option v-for="item in options" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="optionsStated">
+        <el-form-item label="开放状态">
+          <el-select v-model="state" class="selectTop" disabled>
+            <el-option
+              v-for="item in optionSe"
+              :key="item.state"
+              :label="item.label"
+              :value="item.state"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地址">
+          <el-input v-model="formInline.cnumber" class="inputText"></el-input>
+        </el-form-item>
+        <el-form-item label="服务">
+          <el-input v-model="formInline.snumber" class="inputText"></el-input>
+        </el-form-item>
+        <el-form-item label="联络人">
+          <el-input v-model="formInline.name" class="inputText"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input v-model="formInline.phone" class="inputText"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if='!ifshow'>
+        <el-form-item label="公厕名">
+          <el-input v-model="formInline.name"></el-input>
+        </el-form-item>
+        <el-form-item label="管养单位">
+          <el-select v-model="lu" class="selectTop">
+            <el-option v-for="item in options" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="开放状态">
           <el-select v-model="state" class="selectTop">
             <el-option
-              v-for="item in options"
+              v-for="item in optionSe"
               :key="item.state"
               :label="item.label"
               :value="item.state"
@@ -156,7 +188,8 @@
         <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addDo" class="formButon">编辑</el-button>
+        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
+        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -167,8 +200,8 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      ifshow:true,
       value1: "",
-      text: "添加车辆信息",
       pagesize: 10,
       currpage: 1,
       tableData: [],
@@ -187,13 +220,17 @@ export default {
         }
       ],
       state: "0",
-      optionsStated: [
+      optionSe: [
         {
           state: "0",
           label: "开放使用"
         },
         {
           state: "1",
+          label: "即将开放"
+        },
+        {
+          state: "2",
           label: "暂停使用"
         }
       ],
@@ -250,6 +287,7 @@ export default {
       // this.list[_index] = this.formInline;
       //关闭弹窗
       console.log("关闭");
+      this.ifshow=false;
       this.buttonIf = false;
     },
     adddate() {

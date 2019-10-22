@@ -1,5 +1,5 @@
 <template>
-  <!-- 环卫车辆信息 -->
+  <!-- 业务处理 -->
   <div id="process">
     <!-- 搜索 -->
     <div class="search">
@@ -33,68 +33,8 @@
           </el-form-item>
         </el-form>
       </div>
-      <!-- 按钮 -->
-      <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加业务信息</el-button>
-        <el-button class="buttonBot">导入模板下载</el-button>
-        <el-button class="buttonBot">人员信息导入</el-button>
-        <el-button class="buttonBotLast">导出全员信息</el-button>
-      </div>
+
     </div>
-    <!-- 弹窗 -->
-    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
-        </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
-        </el-form-item>
-        <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
-        </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.web"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
-      </span>
-    </el-dialog>
     <!-- 表格 -->
     <el-table
       :data="tableData.slice((currpage - 1) * pagesize, currpage * pagesize)"
@@ -111,9 +51,8 @@
       </el-table-column>
       <el-table-column align="center" prop="carid" label="问题编号" width></el-table-column>
       <el-table-column align="center" prop="date" label="问题描述" width></el-table-column>
-      <el-table-column align="center" prop="updata" label="问题上报" width></el-table-column>
       <el-table-column align="center" prop="city" label="区域范围" width></el-table-column>
-      <el-table-column align="center" prop="name" label="道路名称" width></el-table-column>
+      <el-table-column align="center" prop="province" label="道路名称" width></el-table-column>
       <el-table-column align="center" prop="zipiphone" label="上报时间" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
@@ -122,7 +61,7 @@
             type="button"
             size="small"
             @click="pagination(scope.row,scope.$index)"
-          >申诉</el-button>
+          >处理</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -130,109 +69,42 @@
     <el-pagination
       class="paginationList"
       background
-      layout="total, prev, pager, next"
       :total="tableData.length"
-      @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
     <!-- 弹框 -->
     <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
-          </el-select>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="上传图片" class="searchType">
+                   <el-upload
+  class="avatar-uploader"
+  action="https://jsonplaceholder.typicode.com/posts/"
+  :show-file-list="false"
+  :on-success="handleAvatarSuccess"
+  :before-upload="beforeAvatarUpload">
+  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+</el-upload>
         </el-form-item>
-        <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
+        <el-form-item label="处理过程">
+          <el-input
+  type="textarea"
+  :rows="2"
+  placeholder="请输入内容"
+  v-model="textarea">
+</el-input>
         </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
-        </el-form-item>
-        <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
-        </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.web"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
-        </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
-        </el-form-item>
-        <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
-        </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.web"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
         <el-button type="primary" @click="dialogFormVisible=false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
+        <el-button type="primary"  @click="addDo" class="formButon">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -244,10 +116,28 @@ export default {
   data() {
     return {
       value1: "",
-      text: "添加车辆信息",
+      text: "业务处理",
       pagesize: 10,
       currpage: 1,
-      tableData: [],
+      tableData: [
+        {
+          carid: "20191018",
+          date: "钟山路路口堆放建筑垃圾",
+          city: "东营区新区",
+          province: "钟山路",
+          zipiphone: "2019-10-18 18:06",
+          msg: "否"
+        },
+        {
+          carid: "20191017",
+          date: "香山路中段卫生打扫很差",
+          city: "东营区新区",
+          province: "香山路",
+          zipiphone: "2019-10-17 18:06",
+          msg: "否"
+        },
+        
+      ],
       formInline: {},
       dialogVisible: false,
       les:0,
@@ -521,6 +411,7 @@ export default {
       //根据索引，赋值到list制定的数
       // this.list[_index] = this.formInline;
       //关闭弹窗
+      this.dialogFormVisible = false;
       console.log("关闭");
       this.buttonIf = false;
     },
@@ -542,22 +433,6 @@ export default {
     },
     handleCurrentChange() {},
     handleSizeChange() {},
-    getlist() {
-      for (let i = 1; i < 99; i++) {
-        this.tableData.push({
-          number: i,
-          name: "李旦",
-          carid: "e1323",
-          province: "东营区",
-          city: "环卫一部",
-          address: "上海市普陀区金沙江路 1518 弄",
-          date: "2016-05-02",
-          updata: "在职",
-          zipiphone: "15927227885",
-          msg: "否"
-        });
-      }
-    },
     onSubmit() {
       console.log("查啥?");
     }
@@ -606,7 +481,7 @@ export default {
   text-align: center;
 }
 .demo-form-inline {
-  text-align: right;
+  text-align: left;
   .selectTop {
     width: 240px;
   }
@@ -640,5 +515,36 @@ export default {
 }
 .inputText {
   width: 240px;
+}
+
+.avatar-uploader .el-upload {
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .avatar-uploader-icon {
+    border: 1px dashed #ccc !important;
+  }
+  .paginationList {
+  text-align: center;
+  margin-top: 32px;
+  padding: 0;
 }
 </style>

@@ -458,9 +458,6 @@
           :scroll-wheel-zoom="true"
         >
           <bm-marker class="icon" :position="polylinePath[0]" :dragging="false"></bm-marker>
-          <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
-            <el-button slot="append" @click="searchMap">搜索</el-button>
-          </el-input>
           <bm-polyline
             :path="polylinePath"
             stroke-color="blue"
@@ -806,7 +803,7 @@ export default {
           number: 1,
           type: "垃圾运输车",
           carbrand: "鲁E-559F3",
-          date: "2011.10.20",
+          date: "2012-11-21",
           num: "环卫-A001",
           company: "发动机故障",
           driver: "张毅",
@@ -821,7 +818,7 @@ export default {
           number: 2,
           type: "垃圾运输车",
           carbrand: "鲁E-37588",
-          date: "2011.10.20",
+          date: "2010-09-11",
           num: "环卫-A001",
           company: "手刹故障",
           driver: "张毅",
@@ -836,7 +833,7 @@ export default {
           number: 3,
           type: "垃圾运输车",
           carbrand: "鲁E-A3250",
-          date: "2011.10.20",
+          date: "2009-01-15",
           num: "环卫-A001",
           company: "水温过高",
           driver: "张毅",
@@ -851,7 +848,7 @@ export default {
           number: 4,
           type: "垃圾运输车",
           carbrand: "鲁E-325AA",
-          date: "2011.10.20",
+          date: "2009-05-20",
           num: "环卫-A001",
           company: "机油报警",
           driver: "张毅",

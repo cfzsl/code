@@ -3,14 +3,14 @@
   <div id="vehicle">
     <div class="menu">
       <div class="btn">
-        <el-button @click="msgserach = true">历史轨迹追溯</el-button>
+        <el-button @click="serachend">历史轨迹追溯</el-button>
         <el-button @click="msgerr = true">越界报警</el-button>
         <el-button @click="msgeslint = true">停滞超限预警</el-button>
         <el-button @click="msgedate = true">日常考勤</el-button>
       </div>
 
       <!-- 弹窗1 -->
-      <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msg = {}" width="70%">
+      <el-dialog title="历史轨迹播放":visible.sync="msgserach" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if='mapview'>
           <div class="search">
@@ -69,7 +69,7 @@
                     type="primary"
                     size="mini"
                     class="buttonSearch"
-                    @click.stop="handleEdit(scope.$index, scope.row)"
+                    @click.stop="huifang(scope)"
                   >播放轨迹</el-button>
                 </template>
               </el-table-column>
@@ -247,11 +247,32 @@
       <!-- 百度地图搜索 -->
     </div>
     <div class="bdMap">
-      <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="14" scroll-wheel-zoom>
+      <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="14" scroll-wheel-zoom v-if='showmap'>
         <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
+        <bm-marker v-for="(item,index) in positions" :key='index' :position="item" :dragging="true" >   
+        </bm-marker>
       </baidu-map>
+      <div class="mapbox">
+      <baidu-map
+          class="map"
+          :center="{lng: 118.515183, lat:37.478661}"
+          :zoom="15"
+          :scroll-wheel-zoom="true"
+          v-if='!showmap'
+        >
+          <bm-marker class="icon" :position="polylinePath[0]" :dragging="false"></bm-marker>
+          <bm-polyline
+            :path="polylinePath"
+            stroke-color="blue"
+            :stroke-opacity="0.5"
+            :stroke-weight="3"
+            :editing="false"
+            @lineupdate="updatePolylinePath"
+          ></bm-polyline>
+        </baidu-map>
+      </div>
     </div>
   </div>
 </template>
@@ -260,6 +281,7 @@
 export default {
   data() {
     return {
+      showmap:true,
       radio: "0",
       flow: true,
       mapview: true,
@@ -535,6 +557,16 @@ export default {
         currpage: 1,
         list: []
       },
+      positions:[   
+    { lng: 118.542326, lat: 37.464451}, 
+    { lng: 118.508694, lat: 37.440731}, 
+    { lng: 118.556987, lat: 37.454139}, 
+    { lng: 118.556987, lat: 37.454139}, 
+    { lng: 118.525366, lat: 37.463878}, 
+    { lng: 118.581277, lat: 37.451962}, 
+    { lng: 118.581852, lat: 37.472356}, 
+    { lng: 118.581852, lat: 37.472356}, 
+      ],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
@@ -631,13 +663,33 @@ export default {
           driver: "刘波",
           phone: "15375669845",
         },
-      ]
+      ],
+      polylinePath: [{ lng: "", lat: "" }],
     };
   },
   created() {
     this.date();
   },
   methods: {
+    serachend(){
+      this.msgserach=true;
+    },
+    huifang() {
+      this.showmap=false;
+      this.$http.get("xy/demo").then(res => {
+        this.polylinePath = res.data;
+        console.log(this.polylinePath);
+      });
+      clearInterval(this.timer);
+      this.msgserach = !this.msgserach;
+      this.timer = setInterval(() => {
+        if (this.polylinePath.length != 0) {
+          this.polylinePath.splice(0, 1);
+        } else if (this.polylinePath.length == 0) {
+          clearInterval(this.timer);
+        }
+      }, 500);
+    },
     handleSizeChange(){},
     handleCurrentChange(){},
     work() {
@@ -657,8 +709,15 @@ export default {
     },
     onSubmit() {},
     showadd() {},
-    handleEdit(_index, row) {
-    },
+    // handleEdit(_index, row) {
+    //   this.msgserach=false;
+    //   this.showmap=false;
+    // },
+    // getpolylinePath() {
+    //   this.$http.get("xy/demo").then(res => {
+    //     this.polylinePath = res.data
+    //   });
+    // },
     searchMap() {
       console.log("百度地图搜索");
     },
@@ -828,5 +887,23 @@ export default {
   text-align: center;
   margin-top: 32px;
   padding: 0;
+}
+.mapbox {
+  height: 100%;
+  .bf,
+  .hf {
+    position: fixed;
+    width: 150px;
+    height: 50px;
+    top: 100px;
+    background-color: #fff;
+  }
+  .bf {
+    right: 100px;
+  }
+  .hf {
+    top: 150px;
+    left: 300px;
+  }
 }
 </style>

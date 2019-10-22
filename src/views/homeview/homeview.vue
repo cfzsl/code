@@ -28,32 +28,27 @@
       ></bm-marker>
       <div class="mapList">
         <div class="list">
-          <span class="iconfont icon-lajiche-s" style="color:#3b99f1"></span>
-          <!-- <img src="../../assets/img/洒水车.png" alt /> -->
+          <img src="../../assets/img/洒水车.png" alt />
           <span>洒水车</span>
         </div>
         <div class="list">
-          <span class="iconfont icon-lajiche-s" style="color:#4eb14e"></span>
-          <!-- <img src="../../assets/img/清扫车.png" alt /> -->
+          <img src="../../assets/img/清扫车.png" alt />
           <span>清扫车</span>
         </div>
         <div class="list">
-          <span class="iconfont icon-lajiche-s" style="color:#ffb533"></span>
-          <!-- <img src="../../assets/img/垃圾运输车.png" alt /> -->
+          <img src="../../assets/img/垃圾运输车.png" alt />
           <span>垃圾运输车</span>
         </div>
         <div class="list">
-          <span class="iconfont icon-lajiche-s" style="color:#439dc5"></span>
-          <!-- <img src="../../assets/img/洒水车.png" alt /> -->
-          <img src alt />
+          <img src="../../assets/img/洒水车.png" alt />
           <span>三轮车</span>
         </div>
         <div class="list">
-          <span class="iconfont icon-lajiche-s" style="color:#31cab5"></span>
-          <!-- <img src="../../assets/img/洒水车.png" alt /> -->
+          <img src="../../assets/img/洒水车.png" alt />
           <span>对讲机</span>
         </div>
       </div>
+      <!-- 按钮 -->
       <div class="button">
         <div @click="msgeslint = true" class="buttonrow">
           <div class="buttonrowL oneself">
@@ -145,7 +140,7 @@
             <el-table :data="oil" border style="width: 100%" @row-click="showadd">
               <el-table-column align="center" prop="id" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="consumption" label="车辆耗油量（L/100KM）"></el-table-column>
+              <el-table-column align="center" prop="consumption" label="报警内容"></el-table-column>
               <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
               <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
             </el-table>
@@ -172,12 +167,12 @@
         class="elDialog"
       >
         <el-table :data="warningList" border style="width: 100%">
-          <el-table-column prop="carbrand" label="车牌号"></el-table-column>
-          <el-table-column prop="driver" label="司机"></el-table-column>
-          <el-table-column prop="remaining" label="液位高度"></el-table-column>
-          <el-table-column prop="consumption" label="百公里耗油量"></el-table-column>
-          <el-table-column prop="maximum" label="最大油量"></el-table-column>
-          <el-table-column prop="date" label="报警时间"></el-table-column>
+          <el-table-column  align="center" prop="carbrand" label="车牌号"></el-table-column>
+          <el-table-column  align="center" prop="driver" label="司机"></el-table-column>
+          <el-table-column  align="center" prop="remaining" label="液位高度"></el-table-column>
+          <el-table-column  align="center" prop="consumption" label="百公里耗油量"></el-table-column>
+          <el-table-column  align="center" prop="maximum" label="最大油量"></el-table-column>
+          <el-table-column  align="center" prop="date" label="报警时间"></el-table-column>
         </el-table>
         <div class="pagination">
             <el-pagination
@@ -297,10 +292,10 @@
             <!-- 此处data应为
             data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
             <el-table border :data="insuranceList" style="width: 100%">
-          <el-table-column prop="carbrand" label="车牌号"></el-table-column>
-          <el-table-column prop="company" label="保险公司"></el-table-column>
-          <el-table-column prop="effectivedate" label="保险生效日"></el-table-column>
-          <el-table-column prop="warningdate" label="保险预警日期"></el-table-column>
+          <el-table-column  align="center" prop="carbrand" label="车牌号"></el-table-column>
+          <el-table-column  align="center" prop="company" label="保险公司"></el-table-column>
+          <el-table-column  align="center" prop="effectivedate" label="保险生效日"></el-table-column>
+          <el-table-column align="center"  prop="warningdate" label="保险预警日期"></el-table-column>
         </el-table>
           </div>
           <!-- 分页 -->
@@ -387,13 +382,20 @@
           <div class="list">
             <!-- 此处data应为
             data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table :data="oilday" border style="width: 100%" @row-click="showadd">
+            <el-table
+              :data="oilday"
+              border
+              style="width: 100%"
+              @row-click="showadd"
+            >
               <el-table-column align="center" prop="id" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="consumption" label="作业区域"></el-table-column>
-              <el-table-column align="center" prop="consumptionNo" label="所在区域"></el-table-column>
-              <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="consumption" label="归属单位"></el-table-column>
+              <el-table-column align="center" prop="name" label="指定司机"></el-table-column>
+              <el-table-column align="center" prop="phone" label="联系电话"></el-table-column>
+              <el-table-column align="center" prop="policeTime" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="policeDate" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="consumptionNo" label="线路异常情况" width="436px"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -457,9 +459,9 @@
           </div>
         </el-form>
       </el-dialog>
-      <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
+      <!-- <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
         <el-button slot="append" @click="searchMap">搜索</el-button>
-      </el-input>
+      </el-input> -->
     </baidu-map>
   </div>
 </template>
@@ -500,21 +502,21 @@ export default {
         {
           id: 1,
           carbrand: "鲁E-12131",
-          consumption: "35 (标准值 ≤ 25)",
+          consumption: "发动机故障",
           policeDate: "2011-10-09",
           policeTime: "08:00"
         },
         {
           id: 2,
           carbrand: "鲁E-65QQ3",
-          consumption: "30 (标准值 ≤ 25)",
+          consumption: "机油报警",
           policeDate: "2011-10-09",
           policeTime: "15:25"
         },
         {
           id: 3,
           carbrand: "鲁E-58965",
-          consumption: "26 (标准值 ≤ 25)",
+          consumption: "手刹未放",
           policeDate: "2011-10-09",
           policeTime: "10:35"
         }
@@ -524,7 +526,9 @@ export default {
           id: 1,
           carbrand: "鲁E-12131",
           consumption: "东营区新区",
-          consumptionNo: "文汇街道办事处",
+          name:'李诞',
+          phone:'15375669845',
+          consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2011-10-09",
           policeTime: "08:00"
         },
@@ -532,7 +536,9 @@ export default {
           id: 2,
           carbrand: "鲁E-65QQ3",
           consumption: "东营区新区",
-          consumptionNo: "文汇街道办事处",
+          name:'张圆圆',
+          phone:'15375669845',
+          consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2011-10-09",
           policeTime: "15:25"
         },
@@ -540,17 +546,19 @@ export default {
           id: 3,
           carbrand: "鲁E-58965",
           consumption: "东营区新区",
-          consumptionNo: "文汇街道办事处",
+          name:'刘波',
+          phone:'15375669845',
+          consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2011-10-09",
           policeTime: "10:35"
         }
       ],
       warningList: [
         {
-          remaining: 0,
-          consumption: 0,
-          maximum: 0,
-          date: "0",
+          remaining: 'MAX',
+          consumption: "12L",
+          maximum: "80L",
+          date: "2019-10-18 18:20",
           carbrand: "鲁E-12345",
           driver: "李诞"
         }
@@ -700,7 +708,7 @@ export default {
     },
   },
   created() {
-    // this.getMapMark();
+    this.getMapMark();
     this.date();
   }
 };
@@ -715,7 +723,7 @@ export default {
     .input-with-select {
       position: absolute;
       right: 10px;
-      top: 16px;
+      top: 100px;
       width: 309px;
     }
   }
@@ -723,10 +731,10 @@ export default {
 .mapList {
   position: absolute;
   right: 10px;
-  top: 58px;
-  align-items: center;
-  justify-content: center;
+  top: 68px;
   .list {
+    // float: left;
+    display: flex;
     width: 126px;
     height: 40px;
     line-height: 40px;
@@ -734,8 +742,9 @@ export default {
     background-color: #ffffff;
     border-radius: 4px;
     align-items: center;
-   justify-content: center;
+   justify-content: left;
     img {
+      margin-left: 10px;
     }
     span {
       margin-left: 6px;
@@ -754,6 +763,7 @@ export default {
   margin-top: 10px;
 }
 .buttonrow {
+  z-index: 800;
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -798,6 +808,7 @@ export default {
     font-size: 16px;
     font-weight: 700;
     line-height: 40px;
+    background-color: #fff;
     span {
       margin-left: 8px;
       margin-bottom: 18px;

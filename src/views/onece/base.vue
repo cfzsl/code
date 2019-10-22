@@ -5,11 +5,7 @@
       <div class="searchTop">
         <el-form :inline="true" :model="formInline">
           <el-form-item label="姓名">
-            <el-input
-              class="searchInput"
-              v-model="formInline.user"
-              placeholder="姓名"
-            ></el-input>
+            <el-input class="searchInput" v-model="formInline.user" placeholder="姓名"></el-input>
           </el-form-item>
           <el-form-item label="负责道路">
             <el-select v-model="lu">
@@ -48,21 +44,15 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true"
-          >添加人员信息</el-button
-        >
+        <el-button class="buttonBot" @click="dialogVisible = true">添加人员信息</el-button>
         <el-button class="buttonBot">导入模板下载</el-button>
-        <el-button class="buttonBot">人员信息导入</el-button>
+        <el-button class="buttonBot" @click="dialogAble = true">人员信息导入</el-button>
         <el-button class="buttonBotLast">导出全员信息</el-button>
       </div>
     </div>
-    <!-- 弹窗 -->
-    <el-dialog
-      title="添加人员信息"
-      :visible.sync="dialogVisible"
-      width="426px"
-      class="dialogText"
-    >
+
+    <!-- 弹窗1 -->
+    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
@@ -130,20 +120,35 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button
-          type="primary"
-          @click="dialogVisible = false"
-          class="formButon"
-          >取消</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          @click="dialogVisible = false"
-          class="formButon"
-          >保存</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
+      </span>
+    </el-dialog>
+    <!-- 弹窗2 -->
+    <el-dialog title="导入人员信息" :visible.sync="dialogAble" width="426px" class="dialogText">
+      <el-divider></el-divider>
+      <!-- <span>上传Excel表格</span>
+      <el-upload
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList"
+      >
+        <el-input v-model="excel"></el-input> 
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload> -->
+      <span slot="footer" class="delect-footer">
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
       </span>
     </el-dialog>
     <!-- 表格 -->
@@ -160,6 +165,7 @@ export default {
     return {
       formInline: {},
       dialogVisible: false,
+      dialogAble: false,
       lu: "0",
       roadList: [
         {
@@ -467,5 +473,7 @@ export default {
 .delect-footer {
   float: left;
   margin-left: 10px;
+}
+.el-dialog__body {
 }
 </style>

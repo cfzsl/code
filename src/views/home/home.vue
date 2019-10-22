@@ -61,4 +61,7 @@ export default {
     height: 100%;
   }
 }
+.el-divider--horizontal {
+  margin: 0;
+}
 </style>

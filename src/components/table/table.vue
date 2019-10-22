@@ -459,7 +459,7 @@ export default {
           province: "东营区",
           road: "庐山路",
           city: "环卫一部",
-          address: "上海市普陀区金沙江路 1518 弄",
+          address: "山东东营北一路112号",
           date: "2019-10-20",
           updata: "在职",
           zipiphone: "15927227885",
@@ -476,10 +476,10 @@ export default {
           province: "东营区",
           road: "新泰路",
           city: "环卫二部",
-          address: "上海市普陀区金沙江路 1518 弄",
+          address: "山东东营北二路222号",
           date: "2019-05-10",
           updata: "在职",
-          zipiphone: "1316727645",
+          zipiphone: "13167276453",
           msg: "46",
           sex: "男",
           idcard: 370100199507093468,
@@ -493,7 +493,7 @@ export default {
           province: "东营区",
           road: "宁阳路",
           city: "环卫二部",
-          address: "上海市普陀区金沙江路 1518 弄",
+          address: "山东东营庐山路333号",
           date: "2019-04-05",
           updata: "在职",
           zipiphone: "17759237655",
@@ -510,7 +510,7 @@ export default {
           province: "东营区",
           road: "北二路",
           city: "环卫一部",
-          address: "上海市普陀区金沙江路 1518 弄",
+          address: "山东东营庐山路145号",
           date: "2019-03-02",
           updata: "在职",
           zipiphone: "18336797885",
@@ -527,7 +527,7 @@ export default {
           province: "东营区",
           road: "淄博路",
           city: "环卫二部",
-          address: "上海市普陀区金沙江路 1518 弄",
+          address: "山东东营宁阳路323号",
           date: "2019-03-02",
           updata: "在职",
           zipiphone: "18836797885",
@@ -544,7 +544,7 @@ export default {
           province: "东营区",
           road: "黄河路",
           city: "环卫一部",
-          address: "上海市普陀区金沙江路 1518 弄",
+          address: "山东东营宁阳路156号",
           date: "2019-01-15",
           updata: "在职",
           zipiphone: "17734229685",
@@ -595,11 +595,6 @@ export default {
     adddate() {
       this.dialogFormVisible = false;
     },
-    getlist() {
-      // for (let i = 1; i < 6; i++) {
-      //   this.tableData.push();
-      // }
-    },
     deletList() {
       console.log("删除指定项");
     },
@@ -628,6 +623,12 @@ export default {
   color: #fff;
   background-color: #409eff;
   border-radius: 3px;
+}
+.textmsg {
+  color: red;
+}
+.textcc {
+  color: #000;
 }
 .paginationList {
   text-align: center;
@@ -676,4 +677,5 @@ export default {
   float: left;
   margin-left: 10px;
 }
+
 </style>

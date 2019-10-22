@@ -60,7 +60,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
           <el-input v-model="formInline.usg"></el-input>
@@ -182,22 +182,17 @@
     <!-- 弹框 -->
     <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input v-model="formInline.carid"></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
+          <el-input v-model="formInline.date"></el-input>
         </el-form-item>
         <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
+          <el-input v-model="formInline.address"></el-input>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
+          <el-select v-model="formInline.city" class="selectTop" disabled>
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -206,40 +201,22 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
+        <el-form-item label="使用人">
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
+          <el-input v-model="formInline.zipiphone"></el-input>
         </el-form-item>
       </el-form>
       <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input v-model="formInline.carid"></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
+          <el-input v-model="formInline.date"></el-input>
         </el-form-item>
         <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
+          <el-input v-model="formInline.address"></el-input>
         </el-form-item>
         <el-form-item label="归属单位">
           <el-select v-model="web" class="selectTop">
@@ -251,24 +228,11 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
+        <el-form-item label="使用人">
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
+          <el-input v-model="formInline.zipiphone"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -287,7 +251,7 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      text: "添加车辆信息",
+      text: "车辆信息",
       msgexport: false,
       msgimport: false,
       pagesize: 10,
@@ -312,7 +276,11 @@ export default {
         {
           i: "3",
           label: "洒水车"
-        }
+        },
+        {
+          i: "3",
+          label: "三轮车"
+        },
       ],
       lu: "0",
       roadList: [

@@ -21,7 +21,7 @@
         </div>
         <div class="po">
           <span class="iconfont icon-bangzhu icon"></span>
-          <span>幫助</span>
+          <span>帮助</span>
         </div>
         <div>
           <span>当前登录：管理员</span>
