@@ -4,7 +4,7 @@
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="formInline">
           <el-form-item label="公厕名" class="msgWc">
             <el-input v-model="value1"></el-input>
           </el-form-item>
@@ -29,12 +29,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="上报时间" class="msgDate">
-            <el-date-picker
-              v-model="value1"
-              type="date"
-              placeholder
-              class="msgDatePicker"
-            ></el-date-picker>
+            <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -43,42 +38,19 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true"
-          >添加公厕信息</el-button
-        >
+        <el-button class="buttonBot" @click="dialogVisible = true">添加公厕信息</el-button>
         <el-button class="buttonBot">导入模板下载</el-button>
         <el-button class="buttonBot">人员信息导入</el-button>
         <el-button class="buttonBotLast">导出全员信息</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog
-      title="添加人员信息"
-      :visible.sync="dialogVisible"
-      width="426px"
-      class="dialogText"
-    >
+    <el-dialog title="添加公厕信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.i"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
-        </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
-        </el-form-item>
-        <el-form-item label="资产编号">
+        <el-form-item label="公厕名">
           <el-input v-model="formInline.msg"></el-input>
         </el-form-item>
-        <el-form-item label="归属单位">
+        <el-form-item label="管养单位">
           <el-select v-model="web" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
@@ -88,151 +60,72 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
+        <el-form-item label="联络人">
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
+        <el-form-item label="电话">
+          <el-input v-model="formInline.phone"></el-input>
         </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
+        <el-form-item label="氨气(ppm)">
+          <el-input v-model="formInline.nh" class="inputText"></el-input>
         </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
+        <el-form-item label="硫化氢(ppm)">
+          <el-input v-model="formInline.hs" class="inputText"></el-input>
+        </el-form-item>
+        <el-form-item label="温度(C)">
+          <el-input v-model="formInline.cnumber" class="inputText"></el-input>
+        </el-form-item>
+        <el-form-item label="湿度(%)">
+          <el-input v-model="formInline.snumber" class="inputText"></el-input>
+        </el-form-item>
+        <el-form-item label="更新时间">
+          <el-input v-model="formInline.update" class="inputText"></el-input>
+        </el-form-item>
+        <el-form-item label="报警次数">
+          <el-input v-model="formInline.policeNode" class="inputText"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button
-          type="primary"
-          @click="dialogVisible = false"
-          class="formButon"
-          >取消</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          @click="dialogVisible = false"
-          class="formButon"
-          >保存</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
       </span>
     </el-dialog>
     <!-- 表格 -->
     <el-table
-      :data="tableData.slice((currpage - 1) * pagesize, currpage * pagesize)"
+      :data="wcList.slice((currpage - 1) * pagesize, currpage * pagesize)"
       border
       style="width: 100%"
     >
-      <el-table-column
-        align="center"
-        prop="wcid"
-        label="公厕名"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="date"
-        label="管养单位"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="name"
-        label="联络人"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="city"
-        label="电话"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="updata"
-        label="氨气(PPM)"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="zipiphone"
-        label="硫化氢(PPM)"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="zipiphone"
-        label="温度(C)"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="zipiphone"
-        label="湿度(%)"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="zipiphone"
-        label="更新时间"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="zipiphone"
-        label="报警次数"
-        width
-      ></el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width>
-        <template slot-scope="scope">
-          <el-button
-            class="tableButton1"
-            type="button"
-            size="small"
-            @click="pagination(scope.row, scope.$index)"
-            >申诉</el-button
-          >
-        </template>
-      </el-table-column>
+      <el-table-column align="center" prop="wcid" label="公厕名" width></el-table-column>
+      <el-table-column align="center" prop="date" label="管养单位" width></el-table-column>
+      <el-table-column align="center" prop="name" label="联络人" width></el-table-column>
+      <el-table-column align="center" prop="phone" label="电话" width></el-table-column>
+      <el-table-column align="center" prop="nh" label="氨气(PPM)" width></el-table-column>
+      <el-table-column align="center" prop="hs" label="硫化氢(PPM)" width></el-table-column>
+      <el-table-column align="center" prop="cnumber" label="温度(C)" width></el-table-column>
+      <el-table-column align="center" prop="snumber" label="湿度(%)" width></el-table-column>
+      <el-table-column align="center" prop="update" label="更新时间" width></el-table-column>
+      <el-table-column align="center" prop="policeNode" label="报警次数" width></el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
       class="paginationList"
       background
-      layout="total, prev, pager, next"
-      :total="tableData.length"
-      @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
-    ></el-pagination>
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
     <!-- 弹框 -->
-    <el-dialog
-      :title="text"
-      :visible.sync="dialogFormVisible"
-      width="426px"
-      class="dialogText"
-    >
-      <el-form
-        :inline="true"
-        :model="formInline"
-        class="demo-form-inline"
-        v-if="buttonIf"
-      >
+    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.i"
-            ></el-option>
+            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -274,20 +167,10 @@
           <el-input v-model="formInline.text" class="inputText"></el-input>
         </el-form-item>
       </el-form>
-      <el-form
-        :inline="true"
-        :model="formInline"
-        class="demo-form-inline"
-        v-if="!buttonIf"
-      >
+      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
         <el-form-item label="车辆类型" class="searchType">
           <el-select v-model="i" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.i"
-            ></el-option>
+            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -330,28 +213,11 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button
-          type="primary"
-          @click="dialogFormVisible = false"
-          class="formButon"
-          >取消</el-button
-        >
+        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          v-if="buttonIf"
-          @click="addDo"
-          class="formButon"
-          >编辑</el-button
-        >
-        <el-button
-          type="primary"
-          v-else-if="!buttonIf"
-          @click="adddate"
-          class="formButon"
-          >保存</el-button
-        >
+        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
+        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -620,11 +486,51 @@ export default {
       ],
       buttonIf: false,
       formInline: {},
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      wcList: [
+        {
+          number: 1,
+          wcid: "火车站公厕",
+          date:"东营丛林绿化工程有限责任公司",
+          name: "毛文平",
+          phone: "13361503999",
+          nh: "5.2ppm",
+          hs: "1.0ppm",
+          cnumber: "25",
+          snumber: "50",
+          update:"2019/10/11 12:08:50",
+          policeNode: "10",
+        },
+        {
+          number: 2,
+          wcid: "体育公园公厕",
+          date:"东营丛林绿化工程有限责任公司",
+          name: "毛文平",
+          phone: "13361503999",
+          nh: "5.2ppm",
+          hs: "1.0ppm",
+          cnumber: "25",
+          snumber: "50",
+          update:"2019/10/11 12:08:50",
+          policeNode: "11",
+        },
+        {
+          number: 3,
+          wcid: "北二路中石化公厕",
+          date:"东营丛林绿化工程有限责任公司",
+          name: "毛文平",
+          phone: "13361503999",
+          nh: "5.2ppm",
+          hs: "1.0ppm",
+          cnumber: "25",
+          snumber: "50",
+          update:"2019/10/11 12:08:50",
+          policeNode: "12",
+        },
+      ]
     };
   },
   created() {
-    this.getlist();
   },
   methods: {
     miStatusColor(item) {
@@ -661,23 +567,6 @@ export default {
     },
     handleCurrentChange() {},
     handleSizeChange() {},
-    getlist() {
-      for (let i = 1; i < 99; i++) {
-        this.tableData.push({
-          number: i,
-          wcid: "体育公园公厕",
-          name: "李旦",
-          carid: "e1323",
-          province: "东营区",
-          city: "环卫一部",
-          address: "上海市普陀区金沙江路 1518 弄",
-          date: "2016-05-02",
-          updata: "在职",
-          zipiphone: "15927227885",
-          msg: "否"
-        });
-      }
-    },
     onSubmit() {
       console.log("查啥?");
     }
@@ -726,14 +615,14 @@ export default {
   text-align: center;
 }
 .demo-form-inline {
-  text-align: left;
+  text-align: right;
   .selectTop {
     width: 240px;
   }
   .el-form-item {
     margin-bottom: 2px;
     .el-input {
-      width: 195px;
+      width: 240px;
       height: 32px;
     }
   }
@@ -760,5 +649,10 @@ export default {
 }
 .inputText {
   width: 240px;
+}
+.paginationList {
+  text-align: center;
+  margin-top: 32px;
+  padding: 0;
 }
 </style>

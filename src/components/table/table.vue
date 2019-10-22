@@ -37,11 +37,13 @@
     <el-pagination
       class="paginationList"
       background
-      layout="total, prev, pager, next"
-      :total="tableData.length"
-      @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
-    ></el-pagination>
+      @current-change="handleCurrentChange"
+      :page-sizes="[10,20,30,40]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="32">
+    </el-pagination>
 
     <!-- 弹框 -->
     <!-- 编辑 -->
@@ -560,7 +562,6 @@ export default {
   },
 
   created() {
-    this.getlist();
   },
   methods: {
     // 弹窗传值
@@ -594,11 +595,14 @@ export default {
     adddate() {
       this.dialogFormVisible = false;
     },
+<<<<<<< HEAD
     getlist() {
       // for (let i = 1; i < 6; i++) {
       //   this.tableData.push();
       // }
     },
+=======
+>>>>>>> want
     deletList() {
       console.log("删除指定项");
     },
@@ -627,9 +631,18 @@ export default {
   color: #fff;
   background-color: #409eff;
   border-radius: 3px;
+<<<<<<< HEAD
+=======
+}
+.textmsg {
+  color: red;
+}
+.textcc {
+  color: #000;
+>>>>>>> want
 }
 .paginationList {
-  float: right;
+  text-align: center;
   margin-top: 32px;
   padding: 0;
 }

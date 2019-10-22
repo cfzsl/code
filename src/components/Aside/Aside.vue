@@ -54,13 +54,13 @@
       <el-menu-item index="/welcom/toiltMsg">
         <span class="iconfont icon-gongcexiangqing"></span>公厕详情
       </el-menu-item>
-      <el-menu-item index="5" title="未完成">
+      <el-menu-item index="/welcom/WcSupervision">
         <span class="iconfont icon-shouye"></span>公厕管理
       </el-menu-item>
-      <el-menu-item index="6" title="未完成">
+      <el-menu-item index="/welcom/Personnel">
         <span class="iconfont icon-zhibanrenyuan"></span>值班人员管理
       </el-menu-item>
-      <el-menu-item index="8" title="未完成">
+      <el-menu-item index="/welcom/LED" >
         <span class="iconfont icon-LEDdianziping"></span>LED电子屏管理
       </el-menu-item>
     </el-submenu>
@@ -103,6 +103,7 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+      this.$router.push(key);
     }
   },
   created() {}

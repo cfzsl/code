@@ -74,6 +74,21 @@ export default new Router({
           component: () => import("./views/three/ToiltMsg.vue")
         },
         {
+          path: "/welcom/WcSupervision",
+          name: "WcSupervision",
+          component: () => import("./views/three/WcSupervision.vue")
+        },
+        {
+          path: "/welcom/Personnel",
+          name: "Personnel",
+          component: () => import("./views/three/Personnel.vue")
+        },
+        {
+          path: "/welcom/LED",
+          name: "LED",
+          component: () => import("./views/three/LED.vue")
+        },
+        {
           path: "/business",
           name: "business",
           component: () => import("./views/four/index.vue")
