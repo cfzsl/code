@@ -108,7 +108,17 @@ export default new Router({
           path: "/matters",
           name: "matters",
           component: () => import("./views/five/index.vue")
-        }
+        },
+        {
+          path: "/Recruitment",
+          name: "Recruitment",
+          component: () => import("./views/five/Recruitment.vue")
+        },
+        {
+          path: "/AddressBook",
+          name: "AddressBook",
+          component: () => import("./views/five/AddressBook.vue")
+        },
       ]
     },
     {

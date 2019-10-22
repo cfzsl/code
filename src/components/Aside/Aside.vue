@@ -83,10 +83,13 @@
       </template>
       <!-- <el-menu-item index="2" title="未完成">
         <span class="iconfont icon-renyuanxinxiguanli"></span>人事信息管理
-      </el-menu-item>
-      <el-menu-item index="1" title="未完成">
+      </el-menu-item>-->
+      <el-menu-item index="/Recruitment" title="未完成">
+        <span class="iconfont icon-zhaopinguanli"></span>招聘管理
+      </el-menu-item> 
+      <el-menu-item index="/AddressBook" title="未完成">
         <span class="iconfont icon-tongxunlu"></span>通讯录
-      </el-menu-item> -->
+      </el-menu-item> 
     </el-submenu>
   </el-menu>
 </template>
