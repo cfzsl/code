@@ -133,20 +133,6 @@
               <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
             </el-table>
           </div>
-          <!-- 分页 -->
-          <!-- 修改类名 margin-left: 45% -->
-          <div class="pagination">
-            <el-pagination
-              :current-page="data.currpage"
-              :page-size="data.pagesize"
-              :pager-count="5"
-              layout="total, prev, pager, next"
-              :total="data.list.length"
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-            ></el-pagination>
-          </div>
         </el-form>
       </el-dialog>
 
@@ -314,22 +300,22 @@
               type="primary"
               size="mini"
               @click.stop="carwarning(scope.$index, scope.row)"
-            >详情</el-button>
+            >查看</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="油耗报警">
           <template>
-            <el-button type="primary" size="mini" @click.stop="showWarning">详情</el-button>
+            <el-button type="primary" size="mini" @click.stop="showWarning">查看</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保养记录">
           <template>
-            <el-button type="primary" size="mini" @click.stop="showmaintenance">详情</el-button>
+            <el-button type="primary" size="mini" @click.stop="showmaintenance">查看</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保险缴纳">
           <template>
-            <el-button type="primary" size="mini" @click.stop="showinsurance">详情</el-button>
+            <el-button type="primary" size="mini" @click.stop="showinsurance">查看</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
@@ -338,7 +324,7 @@
               type="primary"
               class="btn"
               @click.stop="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button>
+            >详情</el-button>
             <el-button
               type="danger"
               class="btn"

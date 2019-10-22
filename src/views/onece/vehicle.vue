@@ -447,9 +447,8 @@
           <el-table-column prop="leave" label="离开时间"></el-table-column>
         </el-table>
       </el-dialog>
-
-      <!-- 百度地图搜索 -->
     </div>
+    <!-- 百度地图搜索 -->
     <div class="bdMap">
       <div class="mapbox">
         <baidu-map
@@ -798,6 +797,7 @@ export default {
       },
       value1: "",
       value2: "",
+      timer: null,
       polylinePath: [{ lng: "", lat: "" }],
       num: 0.001,
       // 故障代码
@@ -1042,10 +1042,13 @@ export default {
         this.polylinePath = res.data;
         console.log(this.polylinePath);
       });
+      clearInterval(this.timer);
       this.msgserach = !this.msgserach;
-      let timer = setInterval(() => {
+      this.timer = setInterval(() => {
         if (this.polylinePath.length != 0) {
           this.polylinePath.splice(0, 1);
+        } else if (this.polylinePath.length == 0) {
+          clearInterval(this.timer);
         }
       }, 500);
     },

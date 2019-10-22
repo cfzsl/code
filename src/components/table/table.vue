@@ -595,14 +595,11 @@ export default {
     adddate() {
       this.dialogFormVisible = false;
     },
-<<<<<<< HEAD
     getlist() {
       // for (let i = 1; i < 6; i++) {
       //   this.tableData.push();
       // }
     },
-=======
->>>>>>> want
     deletList() {
       console.log("删除指定项");
     },
@@ -631,15 +628,6 @@ export default {
   color: #fff;
   background-color: #409eff;
   border-radius: 3px;
-<<<<<<< HEAD
-=======
-}
-.textmsg {
-  color: red;
-}
-.textcc {
-  color: #000;
->>>>>>> want
 }
 .paginationList {
   text-align: center;

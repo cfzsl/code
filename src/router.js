@@ -30,7 +30,7 @@ export default new Router({
         },
         {
           path:"/onece/carmsg",
-          name:"base",
+          name:"carmsg",
           component: () =>import("./views/onece/CarMsg.vue")
         },
         {
