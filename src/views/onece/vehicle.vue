@@ -14,7 +14,7 @@
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="mapview">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="车辆类型" class="searchType">
@@ -69,7 +69,7 @@
                     type="primary"
                     size="mini"
                     class="buttonSearch"
-                    @click.stop="handleEdit(scope.$index, scope.row)"
+                    @click.stop="huifang(scope)"
                   >播放轨迹</el-button>
                 </template>
               </el-table-column>
@@ -92,11 +92,11 @@
       </el-dialog>
 
       <!-- 弹窗2 -->
-      <el-dialog title="历史轨迹播放" :visible.sync="msgerr" @close="msg = {}" width="70%">
+      <el-dialog title="路线异常报警" :visible.sync="msgerr" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
@@ -147,7 +147,7 @@
         class="elDialog"
       >
         <div class="searchDialogBot">
-          <el-button class="buttonBot" @click="showdialog(1)">车辆故障代码</el-button>
+          <el-button class="buttonBot" @click="showdialog(1)">车况检测报警</el-button>
           <el-button class="buttonBot" @click="showdialog(2)">油耗超标报警</el-button>
           <el-button class="buttonBot" @click="showdialog(3)">车辆保养预警</el-button>
           <el-button class="buttonBotLast" @click="showdialog(4)">保险到期提醒</el-button>
@@ -156,7 +156,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="show == 1">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -182,7 +182,7 @@
             <el-table :data="warning" border style="width: 100%" @row-click="showadd">
               <el-table-column align="center" prop="number" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="company" label="车辆故障代码"></el-table-column>
+              <el-table-column align="center" prop="company" label="故障信息"></el-table-column>
               <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
               <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
               <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
@@ -208,7 +208,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 2">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -247,7 +247,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 3">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -301,7 +301,7 @@
 
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 4">
           <div class="search">
-            <el-form-item label="车牌号鲁-" class="searchInput">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
@@ -310,6 +310,7 @@
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
             </el-form-item>
+            <div class="sytime">系统时间：2019-10-22</div>
           </div>
           <div class="list">
             <!-- 此处data应为
@@ -451,7 +452,12 @@
     </div>
     <div class="bdMap">
       <div class="mapbox">
-        <baidu-map class="map" center="东营区" :zoom="13" :scroll-wheel-zoom="true">
+        <baidu-map
+          class="map"
+          :center="{lng: 118.515183, lat:37.478661}"
+          :zoom="15"
+          :scroll-wheel-zoom="true"
+        >
           <bm-marker class="icon" :position="polylinePath[0]" :dragging="false"></bm-marker>
           <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
             <el-button slot="append" @click="searchMap">搜索</el-button>
@@ -465,8 +471,6 @@
             @lineupdate="updatePolylinePath"
           ></bm-polyline>
         </baidu-map>
-
-        <button class="hf" @click="huifang">播放历史轨迹</button>
       </div>
     </div>
   </div>
@@ -801,17 +805,17 @@ export default {
         {
           number: 1,
           type: "垃圾运输车",
-          carbrand: "鲁E-12131",
+          carbrand: "鲁E-559F3",
           date: "2011.10.20",
           num: "环卫-A001",
           company: "发动机故障",
-          driver: "/",
+          driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "/",
+          policeDate: "2012-11-20",
           policeTime: "08:00",
           service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
+          troubleshooting: "已处理"
         },
         {
           number: 2,
@@ -823,7 +827,7 @@ export default {
           driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "2011-10-09",
+          policeDate: "2010-09-10",
           policeTime: "15:30",
           service: "超出原定使用区域：东营区东营南站",
           troubleshooting: "已处理"
@@ -838,7 +842,7 @@ export default {
           driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "2011-10-09",
+          policeDate: "2009-01-14",
           policeTime: "18:55",
           service: "超出原定使用区域：东营区东营南站",
           troubleshooting: "已处理"
@@ -853,7 +857,7 @@ export default {
           driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "2011-10-09",
+          policeDate: "2009-05-19",
           policeTime: "10:12",
           service: "超出原定使用区域：东营区东营南站",
           troubleshooting: "已处理"
@@ -863,23 +867,23 @@ export default {
       oil: [
         {
           id: 1,
-          carbrand: "鲁E-12131",
+          carbrand: "鲁E-259X3",
           consumption: "35 (标准值 ≤ 25)",
-          policeDate: "2011-10-09",
+          policeDate: "2019-07-15",
           policeTime: "08:00"
         },
         {
           id: 2,
-          carbrand: "鲁E-65QQ3",
+          carbrand: "鲁E-996D5",
           consumption: "30 (标准值 ≤ 25)",
-          policeDate: "2011-10-09",
+          policeDate: "2019-08-20",
           policeTime: "15:25"
         },
         {
           id: 3,
-          carbrand: "鲁E-58965",
+          carbrand: "鲁E-783F6",
           consumption: "26 (标准值 ≤ 25)",
-          policeDate: "2011-10-09",
+          policeDate: "2019-10-11",
           policeTime: "10:35"
         }
       ],
@@ -887,13 +891,13 @@ export default {
       maintenance: [
         {
           id: 1,
-          carbrand: "鲁E-58965",
-          policeDate: "2011-10-09",
-          maintenance: 25600,
-          travel: 35900,
-          excess: 300,
+          carbrand: "鲁E-859Q9",
+          policeDate: "2019-10-07",
+          maintenance: 37850,
+          travel: 37980,
+          excess: 130,
           driver: "李诞",
-          fulfill: "/"
+          fulfill: "2019-10-08完成保养"
         },
         {
           id: 2,
@@ -903,43 +907,44 @@ export default {
           travel: 36200,
           excess: 400,
           driver: "李诞",
-          fulfill: "2019-10-08完成保养"
+          fulfill: "2019-01-09完成保养"
         },
         {
           id: 3,
-          carbrand: "鲁E-859QQ",
-          policeDate: "2018-05-07",
-          maintenance: 37850,
-          travel: 37980,
-          excess: 130,
+          carbrand: "鲁E-589A5",
+          policeDate: "2011-10-09",
+          maintenance: 25600,
+          travel: 35900,
+          excess: 300,
           driver: "李诞",
-          fulfill: "2019-10-08完成保养"
+          fulfill: "2011-10-10完成保养"
         }
       ],
       // 保险
       insurance: [
         {
           id: 1,
-          carbrand: "鲁E-859QQ",
-          expireday: 30,
-          effectivedate: "2018-11-13",
-          expiredate: "2019-11-12",
+          carbrand: "鲁E-594D3",
+          expireday: 2,
+          effectivedate: "2018-10-20",
+          expiredate: "2019-10-20",
           driver: "李诞"
         },
         {
           id: 2,
-          carbrand: "鲁E-A65855",
-          expireday: 15,
-          effectivedate: "2018-10-28",
-          expiredate: "2019-10-27",
+          carbrand: "鲁E-668D5",
+          expireday: 0,
+          effectivedate: "2017-10-20",
+          expiredate: "2018-10-20",
           driver: "李诞"
         },
+
         {
           id: 3,
-          carbrand: "鲁E-B9658",
-          expireday: 7,
-          effectivedate: "2018-10-20",
-          expiredate: "2019-10-19",
+          carbrand: "鲁E-294F3",
+          expireday: 0,
+          effectivedate: "2016-10-20",
+          expiredate: "2017-10-20",
           driver: "李诞"
         }
       ],
@@ -962,7 +967,7 @@ export default {
           driver: "张兆",
           phone: 15065667823,
           transport: "济南路生活垃圾中转站",
-          Clearance: 4,
+          Clearance: 3,
           tonnage: 8
         }
       ],
@@ -1033,6 +1038,11 @@ export default {
       this.polylinePath = e.target.getPath();
     },
     huifang() {
+      this.$http.get("xy/demo").then(res => {
+        this.polylinePath = res.data;
+        console.log(this.polylinePath);
+      });
+      this.msgserach = !this.msgserach;
       let timer = setInterval(() => {
         if (this.polylinePath.length != 0) {
           this.polylinePath.splice(0, 1);
@@ -1082,7 +1092,7 @@ export default {
           sid: i,
           number: i,
           type: "垃圾运输车",
-          carbrand: "鲁E" + i + i + i + i,
+          carbrand: "鲁E-563D3",
           date: "2011.10.20",
           num: "环卫-A001",
           company: "环卫",
@@ -1279,5 +1289,11 @@ export default {
 }
 .chart {
   float: right;
+}
+.sytime {
+  float: right;
+  margin-right: 55px;
+  padding-bottom: 10px;
+  color: red;
 }
 </style>
