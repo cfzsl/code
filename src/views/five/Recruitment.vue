@@ -250,9 +250,8 @@ export default {
 }
 
 .pagination {
-  position: fixed;
-  bottom: 50px;
-  right: 50px;
-  padding-top: 40px;
+  float: right;
+  margin-right: 25px;
+  padding-top: 20px;
 }
 </style>

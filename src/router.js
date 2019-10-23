@@ -12,8 +12,9 @@ export default new Router({
       path: "/",
       name: "/",
       component: () => import("./views/home/home.vue"),
-      redirect: "/homeview",
+      redirect: "/login",
       children: [
+       
         {
           path: "/homeview",
           name: "homeview",

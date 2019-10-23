@@ -50,47 +50,6 @@
       <div class="btn">
         <el-button icon="el-icon-plus">导出通讯录</el-button>
       </div>
-
-      <!-- <el-dialog title="员工编辑" width="450px" :visible.sync="showedit" @close="msg = {}">
-        <el-form ref="form" :model="msg" label-width="auto" class="msg">
-          <el-form-item label="姓名">
-            <el-input v-model="msg.name" placeholder="请输入姓名"></el-input>
-          </el-form-item>
-          <el-form-item label="电话">
-            <el-input v-model="msg.phone" placeholder="请输入手机号"></el-input>
-          </el-form-item>
-          <el-form-item label="单位">
-            <el-input v-model="msg.company" placeholder="请输入单位"></el-input>
-          </el-form-item>
-          <el-form-item label="区域">
-            <el-select v-model="msg.area" placeholder="请选择区域" style="width: 100%">
-              <el-option label="东营区" value="东营区"></el-option>
-              <el-option label="滨洲区" value="滨洲区"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="岗位">
-            <el-select v-model="msg.company" placeholder="请选择岗位" style="width: 100%">
-              <el-option label="环卫工" value="环卫工"></el-option>
-              <el-option label="洒水车司机" value="洒水车司机"></el-option>
-              <el-option label="垃圾清扫车司机" value="垃圾清扫车司机"></el-option>
-              <el-option label="主管" value="主管"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="学历">
-            <el-input v-model="msg.education" placeholder="请输入学历"></el-input>
-          </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input v-model="msg.entryTime" placeholder="请输入入职时间"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input v-model="msg.age" placeholder="请输入年龄"></el-input>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="showedit = false">取消</el-button>
-          <el-button type="primary" @click="showedit = false">提交</el-button>
-        </span>
-      </el-dialog>-->
     </div>
 
     <div class="list">
@@ -134,7 +93,7 @@ export default {
       input: null,
       radio: "0",
       data: {
-        pagesize: 14,
+        pagesize: 16,
         currpage: 1,
         list: []
       },
@@ -169,6 +128,7 @@ export default {
         });
     },
     serachAddBook() {
+      this.data.currpage = 1
       this.$http
         .post(
           "userInformation/userInformationCriteriaQuery",
@@ -223,9 +183,8 @@ export default {
 }
 
 .pagination {
-  position: fixed;
-  bottom: 50px;
-  right: 50px;
-  padding-top: 40px;
+  float: right;
+  margin-right: 25px;
+  padding-top: 20px;
 }
 </style>

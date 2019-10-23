@@ -122,7 +122,7 @@ export default {
       // 绘制图表
       myChart.setOption({
         title: {
-          text: "折线图堆叠"
+          text: "当月考勤统计"
         },
         tooltip: {
           trigger: "axis"
