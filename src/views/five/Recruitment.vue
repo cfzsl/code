@@ -1,5 +1,5 @@
 <template>
-  <!-- 车辆信息管理 -->
+  <!-- 招聘信息管理 -->
   <div>
     <div class="search">
       <div class="searchbox">
@@ -92,6 +92,7 @@
     <div class="list">
       <el-table
         :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        border
         stripe
         style="width: 100%"
         @row-click="showadd"
@@ -233,6 +234,7 @@ export default {
   }
   .btn {
     float: right;
+    margin-bottom: 10px;
   }
 }
 

@@ -285,6 +285,7 @@
       <el-table
         :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
         stripe
+        border
         style="width: 100%"
         @row-click="showadd"
       >
@@ -760,6 +761,7 @@ export default {
   }
   .btn {
     float: right;
+    margin-bottom: 10px;
   }
 }
 

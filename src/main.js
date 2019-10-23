@@ -9,9 +9,13 @@ import '@/stylesSe/index.scss';
 import BaiduMap from 'vue-baidu-map';
 import qs from 'qs'
 import Axios from 'axios'
+import Echarts from 'echarts'
 
 import './assets/font/iconfont.css'
 
+
+
+Vue.prototype.$Echarts = Echarts 
 
 
 Vue.use(BaiduMap, {
@@ -20,8 +24,8 @@ Vue.use(BaiduMap, {
 })
 
 Axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-Axios.defaults.baseURL = 'http://192.168.8.109:8877/'
-// Axios.defaults.baseURL = 'http://47.110.160.217:10071/'
+// Axios.defaults.baseURL = 'http://192.168.8.109:8877/'
+Axios.defaults.baseURL = 'http://47.110.160.217:10071/'
 
 Vue.prototype.$http = Axios
 Vue.prototype.$qs = qs

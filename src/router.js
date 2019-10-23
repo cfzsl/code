@@ -120,6 +120,11 @@ export default new Router({
           component: () => import("./views/five/AddressBook.vue")
         },
         {
+          path: "/Attendance",
+          name: "Attendance",
+          component: () => import("./views/five/Attendance.vue")
+        },
+        {
           path: "/matters/HRManagement",
           name: "HRManagement",
           component: () => import("./views/five/HRManagement.vue")

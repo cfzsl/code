@@ -6,7 +6,7 @@
         <el-button @click="msgse">历史轨迹播放</el-button>
         <el-button @click="msgerr = true">路线异常报警</el-button>
         <el-button @click="msgeslint = true">车况检测和预警</el-button>
-        <el-button @click="msgedate = true">车辆考勤和工作量</el-button>
+        <el-button @click="showmsgedate">车辆考勤和工作量</el-button>
       </div>
 
       <!-- 弹窗1 -->
@@ -345,13 +345,19 @@
       </el-dialog>
 
       <!-- 弹窗4 -->
-      <el-dialog title="车辆考勤和工作量" :visible.sync="msgedate" @close="msg = {}" width="70%">
+      <el-dialog
+        title="车辆考勤和工作量"
+        append-to-body
+        :visible.sync="msgedate"
+        @close="msg = {}"
+        width="70%"
+      >
         <div class="searchDialogbtn">
           <el-button class="buttonBot" @click="work()">车辆考勤</el-button>
           <el-button class="buttonBot" @click="total()">车辆工作总量</el-button>
         </div>
         <el-divider class="divider"></el-divider>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="flow">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-show="flow">
           <div class="search">
             <el-form-item label="车牌号 鲁E- " class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
@@ -410,7 +416,7 @@
             ></el-pagination>
           </div>
         </el-form>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="!flow">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-show="!flow">
           <div>
             <div class="left">
               <div class="leftboder">
@@ -425,7 +431,7 @@
                 <div class="textone">总车辆（个）</div>
                 <div class="texttown">62</div>
               </div>
-              <div id="main" style="width: 600px;height:400px;"></div>
+              <div id="main" style="width: 450px;height:200px;"></div>
             </div>
           </div>
         </el-form>
@@ -472,13 +478,7 @@
   </div>
 </template>
 <script>
-// 引入 ECharts 主模块
-var echarts = require("echarts/lib/echarts");
-// 引入柱状图
-require("echarts/lib/chart/bar");
-// 引入提示框和标题组件
-require("echarts/lib/component/tooltip");
-require("echarts/lib/component/title");
+var echarts = require("echarts");
 export default {
   data() {
     return {
@@ -989,32 +989,12 @@ export default {
     this.getpolyline();
     this.date();
   },
-  mounted() {
-    this.drawBar();
-  },
+  mounted() {},
   methods: {
-    drawBar() {
-      // 基于准备好的dom，初始化echarts实例
-      var myChart = echarts.init(document.getElementById("main"));
-      // 绘制图表
-      myChart.setOption({
-        title: {
-          text: "ECharts 入门示例"
-        },
-        tooltip: {},
-        xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-        },
-        yAxis: {},
-        series: [
-          {
-            name: "销量",
-            type: "bar",
-            data: [5, 20, 36, 10, 10, 20]
-          }
-        ]
-      });
+    showmsgedate() {
+      this.msgedate = !this.msgedate;
     },
+    drawBar() {},
     showtime() {
       this.time = !this.time;
     },
@@ -1066,6 +1046,41 @@ export default {
     },
     total() {
       this.flow = false;
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$Echarts.init(document.getElementById("main"));
+      // 绘制图表
+      myChart.setOption({
+        title: {},
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+          data: ["10~20车", "20~30车", "30~40车"]
+        },
+        series: [
+          {
+            name: "转运辆数/天",
+            type: "pie",
+            radius: ["55%", "70%"],
+            center: ["50%", "60%"],
+            data: [
+              { value: 18, name: "10~20车" },
+              { value: 59, name: "20~30车" },
+              { value: 13, name: "30~40车" }
+            ],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              }
+            }
+          }
+        ]
+      });
     },
     listSearch() {
       if (this.i == 0) {
@@ -1218,42 +1233,47 @@ export default {
   margin-left: 20px;
   width: 100%;
   height: 200px;
-}
-.leftboder {
-  display: inline-block;
-  width: 175px;
-  height: 155px;
-  margin-right: 30px;
-  .textone {
-    width: 175px;
-    height: 48px;
-    line-height: 48px;
-    text-align: center;
-    font-size: 13px;
-    background: inherit;
-    background-color: rgba(242, 242, 242, 1);
-    box-sizing: border-box;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(204, 204, 204, 1);
-  }
-  .texttown {
+  .leftboder {
+    float: left;
     width: 175px;
     height: 155px;
-    background: inherit;
-    background-color: rgba(255, 255, 255, 1);
-    border-top: 0px;
-    font-size: 32px;
-    line-height: 155px;
-    text-align: center;
-    box-sizing: border-box;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(204, 204, 204, 1);
-    border-radius: 0px;
-    font-weight: 700;
+    margin-right: 30px;
+    .textone {
+      width: 175px;
+      height: 48px;
+      line-height: 48px;
+      text-align: center;
+      font-size: 13px;
+      background: inherit;
+      background-color: rgba(242, 242, 242, 1);
+      box-sizing: border-box;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgba(204, 204, 204, 1);
+    }
+    .texttown {
+      width: 175px;
+      height: 155px;
+      background: inherit;
+      background-color: rgba(255, 255, 255, 1);
+      border-top: 0px;
+      font-size: 32px;
+      line-height: 155px;
+      text-align: center;
+      box-sizing: border-box;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgba(204, 204, 204, 1);
+      border-radius: 0px;
+      font-weight: 700;
+    }
+  }
+  #main {
+    float: right;
+    margin-right: 50px;
   }
 }
+
 .mapbox {
   height: 100%;
   .bf,
