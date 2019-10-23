@@ -119,6 +119,16 @@ export default new Router({
           name: "AddressBook",
           component: () => import("./views/five/AddressBook.vue")
         },
+        {
+          path: "/matters/HRManagement",
+          name: "HRManagement",
+          component: () => import("./views/five/HRManagement.vue")
+        },
+        {
+          path: "/matters/bonus",
+          name: "bonus",
+          component: () => import("./views/five/bonus.vue")
+        }
       ]
     },
     {

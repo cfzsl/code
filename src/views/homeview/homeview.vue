@@ -40,11 +40,11 @@
           <span>垃圾运输车</span>
         </div>
         <div class="list">
-          <img src="../../assets/img/洒水车.png" alt />
+          <img src="../../assets/img/三轮车.png" alt />
           <span>三轮车</span>
         </div>
         <div class="list">
-          <img src="../../assets/img/洒水车.png" alt />
+          <img src="../../assets/img/对讲机.png" alt />
           <span>对讲机</span>
         </div>
       </div>
@@ -708,7 +708,7 @@ export default {
     },
   },
   created() {
-    this.getMapMark();
+    // this.getMapMark();
     this.date();
   }
 };

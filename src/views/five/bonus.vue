@@ -1,6 +1,6 @@
 <template>
-  <!-- 人事管理 -->
-  <div id="HRManagement">
+  <!-- 奖金管理 -->
+  <div id="bonus">
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
@@ -28,15 +28,8 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="state">
-              <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
-                :label="item.label"
-                :value="item.state"
-              ></el-option>
-            </el-select>
+          <el-form-item label="日期" class="msgDate">
+            <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -92,7 +85,7 @@
           <el-input v-model="formInline.education"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="formInline.state"  class="selectTop">
+          <el-select v-model="formInline.state" class="selectTop">
             <el-option
               v-for="item in optionsStated"
               :key="item.state"
@@ -202,7 +195,7 @@
           <el-input v-model="formInline.education"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="formInline.state"  class="selectTop" disabled>
+          <el-select v-model="formInline.state" class="selectTop" disabled>
             <el-option
               v-for="item in optionsStated"
               :key="item.state"
@@ -254,7 +247,7 @@
           <el-input v-model="formInline.education"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="formInline.state"  class="selectTop">
+          <el-select v-model="formInline.state" class="selectTop">
             <el-option
               v-for="item in optionsStated"
               :key="item.state"
@@ -564,7 +557,7 @@ export default {
           state: "在职",
           basepay: "3000",
           subsidies: "300",
-          msg:'36',
+          msg: "36",
           policeNode: "10"
         },
         {
@@ -578,7 +571,7 @@ export default {
           state: "在职",
           basepay: "3600",
           subsidies: "500",
-          msg:'42',
+          msg: "42",
           policeNode: "11"
         },
         {
@@ -592,7 +585,7 @@ export default {
           state: "离职",
           basepay: "3200",
           subsidies: "600",
-          msg:'54',
+          msg: "54",
           policeNode: "12"
         }
       ]
@@ -619,7 +612,6 @@ export default {
     adddate() {
       this.dialogFormVisible = false;
       this.buttonIf = true;
-
     },
     showdetail(row, _index) {
       console.log(row);

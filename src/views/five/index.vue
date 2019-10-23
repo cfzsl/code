@@ -1,5 +1,5 @@
 <template>
-<!-- 公厕管理 -->
+<!-- 人员信息管理 -->
   <div id="matters">
     <!-- 搜索 -->
     <div class="search">

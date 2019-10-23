@@ -60,7 +60,7 @@
       <el-menu-item index="/welcom/Personnel">
         <span class="iconfont icon-zhibanrenyuan"></span>值班人员管理
       </el-menu-item>
-      <el-menu-item index="/welcom/LED" >
+      <el-menu-item index="/welcom/LED">
         <span class="iconfont icon-LEDdianziping"></span>LED电子屏管理
       </el-menu-item>
     </el-submenu>
@@ -81,15 +81,18 @@
         <span class="iconfont icon-renshiguanli"></span>
         <span>人事管理与通讯</span>
       </template>
-      <!-- <el-menu-item index="2" title="未完成">
+      <el-menu-item index="/matters/HRManagement">
         <span class="iconfont icon-renyuanxinxiguanli"></span>人事信息管理
-      </el-menu-item>-->
-      <el-menu-item index="/Recruitment" title="未完成">
+      </el-menu-item>
+      <el-menu-item index="/matters/bonus">
+        <span class="iconfont icon-xinchouguanli"></span>奖金管理
+      </el-menu-item>
+      <el-menu-item index="/Recruitment" >
         <span class="iconfont icon-zhaopinguanli"></span>招聘管理
-      </el-menu-item> 
-      <el-menu-item index="/AddressBook" title="未完成">
+      </el-menu-item>
+      <el-menu-item index="/AddressBook">
         <span class="iconfont icon-tongxunlu"></span>通讯录
-      </el-menu-item> 
+      </el-menu-item>
     </el-submenu>
   </el-menu>
 </template>
