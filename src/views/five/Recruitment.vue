@@ -9,7 +9,8 @@
           <el-option label="环卫工" value="环卫工"></el-option>
           <el-option label="洒水车司机" value="洒水车司机"></el-option>
           <el-option label="垃圾运输车司机" value="垃圾运输车司机"></el-option>
-          <el-option label="主管" value="主管"></el-option>
+          <el-option label="中队长" value="中队长"></el-option>
+          <el-option label="队员" value="队员"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
@@ -50,7 +51,11 @@
             <el-input v-model="msg.phone" placeholder="请输入手机号"></el-input>
           </el-form-item>
           <el-form-item label="单位">
-            <el-input v-model="msg.company" placeholder="请输入单位"></el-input>
+            <el-select v-model="msg.area" placeholder="请选择单位" style="width: 100%">
+              <el-option label="环卫一部" value="环卫一部"></el-option>
+              <el-option label="环卫二部" value="环卫二部"></el-option>
+              <el-option label="环卫三部" value="环卫三部"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="区域">
             <el-select v-model="msg.area" placeholder="请选择区域" style="width: 100%">
@@ -63,7 +68,8 @@
               <el-option label="环卫工" value="环卫工"></el-option>
               <el-option label="洒水车司机" value="洒水车司机"></el-option>
               <el-option label="垃圾清扫车司机" value="垃圾清扫车司机"></el-option>
-              <el-option label="主管" value="主管"></el-option>
+              <el-option label="中队长" value="中队长"></el-option>
+              <el-option label="队员" value="队员"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="学历">

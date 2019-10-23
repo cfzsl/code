@@ -21,7 +21,8 @@
           <el-option label="环卫工" value="环卫工"></el-option>
           <el-option label="洒水车司机" value="洒水车司机"></el-option>
           <el-option label="垃圾运输车司机" value="垃圾运输车司机"></el-option>
-          <el-option label="主管" value="主管"></el-option>
+          <el-option label="中队长" value="中队长"></el-option>
+          <el-option label="队员" value="队员"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
@@ -30,6 +31,7 @@
           <el-option label="全部部门" value="全部部门"></el-option>
           <el-option label="环卫一部" value="环卫一部"></el-option>
           <el-option label="环卫二部" value="环卫二部"></el-option>
+          <el-option label="环卫三部" value="环卫三部"></el-option>
         </el-select>
       </div>
 

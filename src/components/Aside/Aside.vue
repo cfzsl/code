@@ -87,9 +87,13 @@
       <el-menu-item index="/matters/bonus">
         <span class="iconfont icon-xinchouguanli"></span>奖金管理
       </el-menu-item>
-      <el-menu-item index="/Recruitment" >
+      <el-menu-item index="/Attendance">
+        <span class="iconfont icon-chuqintongji"></span>出勤统计
+      </el-menu-item>
+      <el-menu-item index="/Recruitment">
         <span class="iconfont icon-zhaopinguanli"></span>招聘管理
       </el-menu-item>
+
       <el-menu-item index="/AddressBook">
         <span class="iconfont icon-tongxunlu"></span>通讯录
       </el-menu-item>
