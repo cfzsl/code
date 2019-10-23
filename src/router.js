@@ -134,6 +134,11 @@ export default new Router({
           path: "/matters/bonus",
           name: "bonus",
           component: () => import("./views/five/bonus.vue")
+        },
+        {
+          path: "/matters/details",
+          name: "details",
+          component: () => import("./views/five/details.vue")
         }
       ]
     },

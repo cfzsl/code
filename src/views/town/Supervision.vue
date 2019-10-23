@@ -3,14 +3,23 @@
   <div id="vehicle">
     <div class="menu">
       <div class="btn">
+        <el-button @click="showClc">环卫三轮车</el-button>
+        <el-button @click="showMap">道路监控</el-button>
         <el-button @click="serachend">历史轨迹追溯</el-button>
         <el-button @click="msgerr = true">越界报警</el-button>
         <el-button @click="msgeslint = true">停滞超限预警</el-button>
         <el-button @click="msgedate = true">日常考勤</el-button>
       </div>
-
+      <!-- 弹框 -->
+      <el-dialog title="道路监控" :visible.sync="monitoring" @close="msg = {}" width="70%">
+        <video-player
+            class="video-player vjs-custom-skin"
+            :playsinline="true"
+            :options="videoOption">
+          </video-player>
+      </el-dialog>
       <!-- 弹窗1 -->
-      <el-dialog title="历史轨迹播放":visible.sync="msgserach" @close="msg = {}" width="70%">
+      <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if='mapview'>
           <div class="search">
@@ -247,12 +256,20 @@
       <!-- 百度地图搜索 -->
     </div>
     <div class="bdMap">
-      <baidu-map class="map" center="中国石油大学胜利学院" dragging :zoom="14" scroll-wheel-zoom v-if='showmap'>
-        <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
+      <baidu-map class="map" :center="{lng: 118.542132,lat: 37.453942}" :dragging="true"  :zoom="14" scroll-wheel-zoom v-if='showmap'>
+        <el-input placeholder="请输入车牌号" v-model="input1" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
-        <bm-marker v-for="(item,index) in positions" :key='index' :position="item" :dragging="true" >   
-        </bm-marker>
+        <bm-marker v-for="(item,index) in positionsCls" :key='index' :position="item"  :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 300, height: 157}}"></bm-marker>
+      </baidu-map>
+      <baidu-map class="map" :center="{lng: 118.592815,lat: 37.457724}" dragging :zoom="17" scroll-wheel-zoom v-if='showmark'>
+        <el-input placeholder="请输道路名称" v-model="input2" class="input-with-select">
+          <el-button slot="append" @click="searchMap">搜索</el-button>
+        </el-input>
+        <bml-marker-clusterer :averageCenter="true">
+          <bm-marker v-for="(value,index) in positions" :key='index' :position="value" :icon="{url: 'http://47.110.160.217:10071/images000/监控.png', size: {width: 38, height: 30}}" clicking @click='monitoring = true'> 
+          </bm-marker>
+        </bml-marker-clusterer>
       </baidu-map>
       <div class="mapbox">
       <baidu-map
@@ -260,7 +277,7 @@
           :center="{lng: 118.515183, lat:37.478661}"
           :zoom="15"
           :scroll-wheel-zoom="true"
-          v-if='!showmap'
+          v-if='showline'
         >
           <bm-marker class="icon" :position="polylinePath[0]" :dragging="false"></bm-marker>
           <bm-polyline
@@ -277,11 +294,40 @@
   </div>
 </template>
 <script>
-
+import 'videojs-contrib-hls'
+import {BmlMarkerClusterer} from 'vue-baidu-map'
 export default {
   data() {
     return {
+      showmark:false,
+      showline:false,
       showmap:true,
+      videoOption:{
+            live: false,
+            preload: "auto",
+            autoplay: true,
+            language: "zh-CN",
+            aspectRatio: "16:8",
+            fluid: true,
+            sources: [
+                {
+                    src: "http://hls01open.ys7.com/openlive/f515aa55a63f429d8169f069a9ac9986.m3u8" //url地址
+                }
+            ],
+            notSupportedMessage: "此视频暂无法播放，请稍后再试", //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+            controlBar: {
+                timeDivider: false,
+                durationDisplay: false,
+                remainingTimeDisplay: false,
+                fullscreenToggle: true //全屏按钮
+            },
+            flash: {
+                hls: {
+                    withCredentials: false
+                }
+            }
+        },
+      monitoring:false,
       radio: "0",
       flow: true,
       mapview: true,
@@ -289,7 +335,8 @@ export default {
       msgerr: false,
       msgeslint: false,
       msgedate: false,
-      input3: "",
+      input1: "",
+      input2: '',
       s: "0",
       station: [
         {
@@ -557,16 +604,8 @@ export default {
         currpage: 1,
         list: []
       },
-      positions:[   
-    { lng: 118.542326, lat: 37.464451}, 
-    { lng: 118.508694, lat: 37.440731}, 
-    { lng: 118.556987, lat: 37.454139}, 
-    { lng: 118.556987, lat: 37.454139}, 
-    { lng: 118.525366, lat: 37.463878}, 
-    { lng: 118.581277, lat: 37.451962}, 
-    { lng: 118.581852, lat: 37.472356}, 
-    { lng: 118.581852, lat: 37.472356}, 
-      ],
+      positions:[],
+      positionsCls:[],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
@@ -669,13 +708,31 @@ export default {
   },
   created() {
     this.date();
+    this.getPositions();
+    this.getTricycle();
+  },
+  components: {
+    BmlMarkerClusterer
   },
   methods: {
+    showClc(){
+      this.showmap=true;
+      this.showmark=false;
+      this.showline=false;
+      location.reload();
+    },
+    showMap(){
+      this.showmap=false;
+      this.showmark=true;
+      this.showline=false;
+    },
     serachend(){
       this.msgserach=true;
     },
     huifang() {
       this.showmap=false;
+      this.showmark=false;
+      this.showline=true;
       this.$http.get("xy/demo").then(res => {
         this.polylinePath = res.data;
         console.log(this.polylinePath);
@@ -689,6 +746,20 @@ export default {
           clearInterval(this.timer);
         }
       }, 500);
+    },
+    // 获取监控地址
+    getPositions(){
+      this.$http.post('xy/video').then(res=>{
+        console.log(res.data)
+        this.positions=res.data;
+      })
+    },
+    // 获取三轮车的位置
+    getTricycle(){
+      this.$http.post('xy/pedicabDemo').then(res=>{
+        console.log(res.data)
+        this.positionsCls=res.data
+      })
     },
     handleSizeChange(){},
     handleCurrentChange(){},
@@ -709,15 +780,6 @@ export default {
     },
     onSubmit() {},
     showadd() {},
-    // handleEdit(_index, row) {
-    //   this.msgserach=false;
-    //   this.showmap=false;
-    // },
-    // getpolylinePath() {
-    //   this.$http.get("xy/demo").then(res => {
-    //     this.polylinePath = res.data
-    //   });
-    // },
     searchMap() {
       console.log("百度地图搜索");
     },

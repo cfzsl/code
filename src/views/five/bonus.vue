@@ -38,10 +38,10 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加人事信息档案</el-button>
+        <el-button class="buttonBot" @click="dialogVisible = true">添加薪资档案</el-button>
         <el-button class="buttonBot">导入模板下载</el-button>
-        <el-button class="buttonBot">人员信息导入</el-button>
-        <el-button class="buttonBotLast">人事信息导出</el-button>
+        <el-button class="buttonBot">薪资信息介绍</el-button>
+        <el-button class="buttonBotLast">薪资信息导出</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
@@ -110,35 +110,46 @@
     </el-dialog>
     <!-- 表格 -->
     <el-table
-      :data="wcList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+      :data="salaryList.slice((currpage - 1) * pagesize, currpage * pagesize)"
       border
       style="width: 100%"
     >
       <el-table-column align="center" prop="number" label="序号" width="80px"></el-table-column>
       <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
-      <el-table-column align="center" prop="phone" label="电话" width></el-table-column>
-      <el-table-column align="center" prop="date" label="单位" width></el-table-column>
-      <el-table-column align="center" prop="region" label="区域" width></el-table-column>
-      <el-table-column align="center" prop="job" label="岗位" width="121px"></el-table-column>
-      <el-table-column align="center" prop="education" label="学历" width></el-table-column>
-      <el-table-column align="center" prop="state" label="状态" width></el-table-column>
       <el-table-column align="center" prop="basepay" label="基本工资(元)" width></el-table-column>
       <el-table-column align="center" prop="subsidies" label="其他补助(元)" width></el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width="280px">
+      <el-table-column align="center" prop="trafficpay" label="交通补助" width></el-table-column>
+      <el-table-column align="center" prop="communication" label="通讯补助" width></el-table-column>
+      <el-table-column align="center" prop="bonus" label="奖金" width></el-table-column>
+      <el-table-column align="center" prop="jobdate" label="应上班天数" width></el-table-column>
+      <el-table-column align="center" prop="education" label="实际上班天数" width></el-table-column>
+      <el-table-column align="center" prop="leave" label="请假补充" width></el-table-column>
+      <el-table-column align="center" prop="retire" label="退休保险" width></el-table-column>
+      <el-table-column align="center" prop="medical" label="医疗保险" width></el-table-column>
+      <el-table-column align="center" prop="unemployment" label="失业保险" width></el-table-column>
+      <el-table-column align="center" prop="realwages" label="实发工资" width></el-table-column>
+      <el-table-column align="center" label="发放情况" width>
+        <template slot-scope="scope">
+          <span :class="scope.row.grant?'hede':'green'">{{scope.row.status}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="time" label="发放时间" width></el-table-column>
+      <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.grant"
             class="tableButton1"
             type="button"
             size="small"
             @click="showdetail(scope.row, scope.$index)"
-          >详情</el-button>
+          >薪资发放</el-button>
           <el-button
+            v-else-if="!scope.row.grant"
             class="tableButton2"
             type="button"
             size="small"
-            @click="pagination(scope.row, scope.$index)"
-          >设为离职</el-button>
-          <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
+            disabled
+          >已发放</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -152,10 +163,10 @@
       :page-size="pagesize"
       :current-page="currpage"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="wcList.length"
+      :total="salaryList.length"
     ></el-pagination>
     <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+    <!-- <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
@@ -273,7 +284,7 @@
         <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
         <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -545,48 +556,63 @@ export default {
       buttonIf: true,
       formInline: {},
       dialogFormVisible: false,
-      wcList: [
+      salaryList: [
         {
           number: 1,
           name: "李诞",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "环卫工",
-          education: "初中",
-          state: "在职",
           basepay: "3000",
           subsidies: "300",
-          msg: "36",
-          policeNode: "10"
+          trafficpay: "200",
+          communication: "/",
+          bonus: "/",
+          jobdate: "26",
+          education: "25",
+          leave: "-115.3",
+          retire: "",
+          medical: "",
+          unemployment: "",
+          realwages: "2642.7",
+          status: "待发",
+          time: "2019-10-13",
+          grant: true
         },
         {
           number: 2,
-          name: "毛文平",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "洒水车司机",
-          education: "大专",
-          state: "在职",
+          name: "张圆圆",
           basepay: "3600",
           subsidies: "500",
-          msg: "42",
-          policeNode: "11"
+          trafficpay: "200",
+          communication: "/",
+          bonus: "/",
+          jobdate: "26",
+          education: "26",
+          leave: "0",
+          retire: "",
+          medical: "",
+          unemployment: "",
+          realwages: "2842.7",
+          status: "待发",
+          time: "2019-10-13",
+          grant: true
         },
         {
           number: 3,
-          name: "毛文平",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "垃圾运输车司机",
-          education: "高中",
-          state: "离职",
+          name: "刘波",
           basepay: "3200",
           subsidies: "600",
-          msg: "54",
-          policeNode: "12"
+          trafficpay: "200",
+          communication: "200",
+          bonus: "/",
+          jobdate: "26",
+          education: "26",
+          leave: "0",
+          retire: "",
+          medical: "",
+          unemployment: "",
+          realwages: "2842.7",
+          status: "已发",
+          time: "2019-10-13",
+          grant: false
         }
       ]
     };
@@ -725,9 +751,16 @@ export default {
 .tableButton2 {
   background-color: #ffb533;
   color: #fff;
+  width: 82px;
 }
 .tableButton3 {
   background-color: #f66134;
   color: #fff;
+}
+.hede {
+  color: #000;
+}
+.green {
+  color: rgb(0, 204, 0);
 }
 </style>

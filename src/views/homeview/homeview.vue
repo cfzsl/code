@@ -10,7 +10,7 @@
         v-for="item in positions"
         :key="item.index"
         :position="item"
-        :icon="{url: 'http://47.110.160.217:9071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
+        :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
         @click="infoWindowOpen"
       >
         <bm-info-window
@@ -24,7 +24,7 @@
         v-for="item in position2"
         :key="item.code"
         :position="{ lng: item.lng, lat: item.lat }"
-        :icon="{url: 'http://47.110.160.217:9071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
+        :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
       ></bm-marker>
       <div class="mapList">
         <div class="list">
@@ -708,7 +708,7 @@ export default {
     },
   },
   created() {
-    // this.getMapMark();
+    this.getMapMark();
     this.date();
   }
 };

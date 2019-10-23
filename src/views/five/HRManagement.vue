@@ -144,6 +144,7 @@
             type="button"
             size="small"
             @click="pagination(scope.row, scope.$index)"
+            v-if="scope.row.join"
           >设为离职</el-button>
           <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
         </template>
@@ -162,7 +163,7 @@
       :total="wcList.length"
     ></el-pagination>
     <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+    <!-- <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
@@ -280,7 +281,7 @@
         <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
         <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -562,6 +563,7 @@ export default {
           job: "环卫工",
           education: "初中",
           state: "在职",
+          join:true,
           basepay: "3000",
           subsidies: "300",
           msg:'36',
@@ -569,13 +571,14 @@ export default {
         },
         {
           number: 2,
-          name: "毛文平",
+          name: "张圆圆",
           phone: "15375669845",
           date: "环卫1部",
           region: "东营区",
           job: "洒水车司机",
           education: "大专",
           state: "在职",
+          join:true,
           basepay: "3600",
           subsidies: "500",
           msg:'42',
@@ -583,13 +586,14 @@ export default {
         },
         {
           number: 3,
-          name: "毛文平",
+          name: "刘波",
           phone: "15375669845",
           date: "环卫1部",
           region: "东营区",
           job: "垃圾运输车司机",
           education: "高中",
           state: "离职",
+          join:false,
           basepay: "3200",
           subsidies: "600",
           msg:'54',
@@ -622,13 +626,14 @@ export default {
 
     },
     showdetail(row, _index) {
-      console.log(row);
+      // console.log(row);
       //记录索引
       this.listIndex = _index;
       //记录数据
       this.formInline = row;
       //显示弹窗
-      this.dialogFormVisible = true;
+      const id=row.number
+      this.$router.push({path:'/matters/details', query: {id}})
     },
     pagination(row, _index) {
       console.log("设为了离职");

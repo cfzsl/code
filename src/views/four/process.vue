@@ -116,6 +116,8 @@ export default {
   data() {
     return {
       value1: "",
+      textarea:'',
+      imageUrl: '',
       text: "业务处理",
       pagesize: 10,
       currpage: 1,
@@ -394,9 +396,6 @@ export default {
       dialogFormVisible: false
     };
   },
-  created() {
-    this.getlist();
-  },
   methods: {
     miStatusColor(item) {
       if(item==0) {
@@ -406,11 +405,22 @@ export default {
       }
       return 'success'
     },
+    handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
     addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
       this.dialogFormVisible = false;
       console.log("关闭");
       this.buttonIf = false;

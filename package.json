@@ -16,9 +16,11 @@
     "qs": "^6.9.0",
     "sass-loader": "^8.0.0",
     "screenfull": "^5.0.0",
+    "videojs-contrib-hls": "^5.15.0",
     "vue": "^2.6.10",
     "vue-baidu-map": "^0.21.22",
     "vue-router": "^3.0.3",
+    "vue-video-player": "^5.0.2",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

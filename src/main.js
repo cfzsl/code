@@ -11,6 +11,12 @@ import qs from 'qs'
 import Axios from 'axios'
 import Echarts from 'echarts'
 
+// 引入vue-video-player
+import VideoPlayer from 'vue-video-player'
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+import hls from 'videojs-contrib-hls'
+// 字体图标样式
 import './assets/font/iconfont.css'
 
 
@@ -24,8 +30,8 @@ Vue.use(BaiduMap, {
 })
 
 Axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-Axios.defaults.baseURL = 'http://192.168.8.109:8877/'
-// Axios.defaults.baseURL = 'http://47.110.160.217:10071/'
+// Axios.defaults.baseURL = 'http://192.168.8.109:8877/'
+Axios.defaults.baseURL = 'http://47.110.160.217:10071/'
 
 Vue.prototype.$http = Axios
 Vue.prototype.$qs = qs
@@ -35,6 +41,8 @@ Axios.interceptors.response.use(function (res) {
   return res.data
 })
 
+Vue.use(hls)
+Vue.use(VideoPlayer)
 Vue.use(ElementUI, { size: "small", zIndex: 3000 });
 
 Vue.config.productionTip = false;
