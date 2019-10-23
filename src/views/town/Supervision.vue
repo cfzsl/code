@@ -266,7 +266,7 @@
         <el-input placeholder="请输道路名称" v-model="input2" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
-        <bml-marker-clusterer :averageCenter="true">
+        <bml-marker-clusterer :averageCenter="true" :styles="cssMap">
           <bm-marker v-for="(value,index) in positions" :key='index' :position="value" :icon="{url: 'http://47.110.160.217:10071/images000/监控.png', size: {width: 38, height: 30}}" clicking @click='monitoring = true'> 
           </bm-marker>
         </bml-marker-clusterer>
@@ -299,6 +299,9 @@ import {BmlMarkerClusterer} from 'vue-baidu-map'
 export default {
   data() {
     return {
+      cssMap:[
+        {url:"http://47.110.160.217:10071/images000/三轮车.png", size:{width: 41, height: 29},}
+      ],
       showmark:false,
       showline:false,
       showmap:true,
@@ -816,6 +819,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
+.BMap_mask>div>div>div {
+  background-image: url("../../assets/img/垃圾运输车.png") !important ;
+}
 .menu {
   padding: 16px 0;
   height: 60px;

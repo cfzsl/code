@@ -5,9 +5,9 @@
         <Top></Top>
       </el-header>
       <el-container class="se-container">
-          <el-aside>
-            <Aside @asideEnd="getAsideEnd" @asideOpen="getAsideOpen"></Aside>
-          </el-aside>
+        <el-aside>
+          <Aside @asideEnd="getAsideEnd" @asideOpen="getAsideOpen"></Aside>
+        </el-aside>
         <el-main>
           <router-view></router-view>
         </el-main>
