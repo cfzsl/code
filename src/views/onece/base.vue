@@ -72,6 +72,8 @@
           <el-select v-model="type" class="selectTop">
             <el-option label="A1" value></el-option>
             <el-option label="A2" value="A2"></el-option>
+            <el-option label="B1" value="B1"></el-option>
+            <el-option label="B2" value="B2"></el-option>
             <el-option label="C1" value="C1"></el-option>
             <el-option label="C2" value="C2"></el-option>
           </el-select>

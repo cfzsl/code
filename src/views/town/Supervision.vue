@@ -266,11 +266,13 @@
         <el-input placeholder="请输道路名称" v-model="input2" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
-        <bml-marker-clusterer :averageCenter="true" :styles="cssMap">
+        <bml-marker-clusterer :averageCenter="true" :opt_anchor="{lng: 118.592815,lat: 37.457724}" :styles="cssMap" @draw="draw">
           <bm-marker v-for="(value,index) in positions" :key='index' :position="value" :icon="{url: 'http://47.110.160.217:10071/images000/监控.png', size: {width: 38, height: 30}}" clicking @click='monitoring = true'> 
           </bm-marker>
         </bml-marker-clusterer>
       </baidu-map>
+      
+	    <!-- <div id="allmap" v-if='showmark' ></div> -->
       <div class="mapbox">
       <baidu-map
           class="map"
@@ -300,7 +302,7 @@ export default {
   data() {
     return {
       cssMap:[
-        {url:"http://47.110.160.217:10071/images000/三轮车.png", size:{width: 41, height: 29},}
+        {url:"http://47.110.160.217:10071/images000/监控1.png", size:{width: 43, height: 28,},textColor:"#fff"},
       ],
       showmark:false,
       showline:false,
@@ -714,10 +716,18 @@ export default {
     this.getPositions();
     this.getTricycle();
   },
+
   components: {
     BmlMarkerClusterer
   },
   methods: {
+      draw ({ el, BMap, map }) {
+      this.map = map
+      const { lng, lat } = {lng: 118.592815,lat: 37.457724}
+      const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat))
+      el.style.left = pixel.x - 100 + 'px'
+      el.style.top = pixel.y - 200 + 'px'
+    },
     showClc(){
       this.showmap=true;
       this.showmark=false;
