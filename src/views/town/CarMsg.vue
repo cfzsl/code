@@ -85,12 +85,12 @@
           <el-input v-model="formInline.mobile"></el-input>
         </el-form-item>
         <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
+          <el-select v-model="label" class="selectTop">
             <el-option
               v-for="item in optionslu"
               :key="item.lu"
               :label="item.label"
-              :value="item.lu"
+              :value="item.label"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -197,7 +197,7 @@
               v-for="item in optionsWeb"
               :key="item.web"
               :label="item.label"
-              :value="item.web"
+              :value="item.label"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -224,7 +224,7 @@
               v-for="item in optionsWeb"
               :key="item.web"
               :label="item.label"
-              :value="item.web"
+              :value="item.label"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -490,29 +490,29 @@ export default {
           label: "龙居镇"
         }
       ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
-          label: "环卫四部"
-        }
-      ],
+      // sk: "0",
+      // optionsWeb: [
+      //   {
+      //     sk: "0",
+      //     label: "全部"
+      //   },
+      //   {
+      //     sk: "1",
+      //     label: "环卫一部"
+      //   },
+      //   {
+      //     sk: "2",
+      //     label: "环卫二部"
+      //   },
+      //   {
+      //     sk: "3",
+      //     label: "环卫三部"
+      //   },
+      //   {
+      //     sk: "4",
+      //     label: "环卫四部"
+      //   }
+      // ],
       lu: "0",
       optionslu: [
         {

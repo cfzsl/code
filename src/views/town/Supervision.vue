@@ -277,7 +277,7 @@
           v-for="(item,index) in positionsCls"
           :key="index"
           :position="item"
-          :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 300, height: 157}}"
+          :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 24, height: 24}}"
         ></bm-marker>
       </baidu-map>
       <!-- 点聚合 -->
@@ -699,7 +699,7 @@ export default {
           carbrand: "鲁E-04DF",
           company: "环卫一部",
           driver: "李诞",
-          phone: "15375669845",
+          phone: "15975669845",
           region: "西湖公园",
           policeTime: "2019-10-09 18:50",
           timeout: "1小时5分"
@@ -709,7 +709,7 @@ export default {
           carbrand: "鲁E-12FA",
           company: "环卫二部",
           driver: "张园园",
-          phone: "15375669845",
+          phone: "15975669866",
           region: "东营南站",
           policeTime: "2019-10-09 17:54",
           timeout: "56分"
@@ -719,7 +719,7 @@ export default {
           carbrand: "鲁E-23SD",
           company: "环卫三部",
           driver: "刘波",
-          phone: "15375669845",
+          phone: "13675696845",
           region: "红光渔港",
           policeTime: "2019-10-09 17:54",
           timeout: "1小时30分"
@@ -733,7 +733,7 @@ export default {
           daily: "2019/10/10",
           company: "环卫1部",
           driver: "李诞",
-          phone: "15375669845"
+          phone: "15955669845"
         },
         {
           carbrand: "鲁E-12FA",
@@ -742,7 +742,7 @@ export default {
           daily: "2019/10/10",
           company: "环卫2部",
           driver: "张圆圆",
-          phone: "15375669845"
+          phone: "13675636845"
         },
         {
           carbrand: "鲁E-23SD",
@@ -751,7 +751,7 @@ export default {
           daily: "2019/10/10",
           company: "环卫3部",
           driver: "刘波",
-          phone: "15375669845"
+          phone: "15975689845"
         }
       ]
     };

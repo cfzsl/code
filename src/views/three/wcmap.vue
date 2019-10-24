@@ -30,14 +30,14 @@
         <my-overlay
           v-for="(item,index) in positions"
           :key="index"
-          :position="item"
-          text="智慧公厕"
+          v-text="item.text"
+          :position="{lng:item.lng, lat:item.lat}"
           :active="active"
           @mouseover.native="active = true"
           @mouseleave.native="active = false"
           @click="infoWindow"
         >
-          <bm-info-window
+          <!-- <bm-info-window
             title="智慧公厕详情"
             :position="item"
             :show="show"
@@ -62,7 +62,7 @@
               <el-table-column prop="name" label="男厕" width="140"></el-table-column>
               <el-table-column prop="address" label="女厕" width="140"></el-table-column>
             </el-table>
-          </bm-info-window>
+          </bm-info-window> -->
         </my-overlay>
         <!-- 信息弹窗 -->
       </baidu-map>
@@ -100,10 +100,11 @@ export default {
       ],
       active: false,
       positions: [
-        { lng: 118.550303, lat: 37.465282 },
-        { lng: 118.58408, lat: 37.496438 },
-        { lng: 118.505029, lat: 37.496123 },
-        { lng: 118.506322, lat: 37.455342 }
+        { lng: 118.496593, lat: 37.474549, text:"裕华南公厕" },
+        { lng: 118.496553, lat: 37.476699, text:"裕华北公厕"},
+        { lng: 118.493386, lat: 37.464995, text:"胜利广场公厕"},
+        { lng: 118.533078, lat: 37.464312, text:"体育公园公厕"},
+        {lng: 118.550734, lat: 37.469664,  text:"新区公厕"}
       ]
     };
   },
@@ -114,6 +115,9 @@ export default {
     infoWindowClose() {
       this.show = false;
     },
+    getwcList() {
+      this.$http
+    }
   },
   components: {
     MyOverlay

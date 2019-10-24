@@ -13,7 +13,7 @@
       <span class="iconfont icon-shouye"></span>
       <span>首页</span>
     </el-menu-item>
-    <el-submenu index="/onece">
+    <el-submenu index="/onece/base">
       <template slot="title">
         <span class="iconfont icon-huanweicheguanli"></span>
         <span>环卫车辆管理</span>
@@ -28,7 +28,7 @@
         <span class="iconfont icon-cheliangzonghejianguan"></span>车辆综合监管
       </el-menu-item>
     </el-submenu>
-    <el-submenu index="/town">
+    <el-submenu index="/town/worker">
       <template slot="title">
         <span class="iconfont icon-huanweigongguanli"></span>
         <span>环卫工管理</span>
@@ -43,7 +43,7 @@
         <span class="iconfont icon-richangjianguan"></span>日常监管
       </el-menu-item>
     </el-submenu>
-    <el-submenu index="/welcom">
+    <el-submenu index="/welcom/wcmap">
       <template slot="title">
         <span class="iconfont icon-gongceguanli"></span>
         <span>公厕管理</span>
@@ -64,7 +64,7 @@
         <span class="iconfont icon-LEDdianziping"></span>LED电子屏管理
       </el-menu-item>
     </el-submenu>
-    <el-submenu index="/business">
+    <el-submenu index="/business/process">
       <template slot="title">
         <span class="iconfont icon-yewuchuli"></span>
         <span>业务处理</span>
@@ -76,7 +76,7 @@
         <span class="iconfont icon-xinchouguanli"></span>绩效考核表
       </el-menu-item>
     </el-submenu>
-    <el-submenu index="/matters">
+    <el-submenu index="/matters/HRManagement">
       <template slot="title">
         <span class="iconfont icon-renshiguanli"></span>
         <span>人事管理与通讯</span>
@@ -111,9 +111,10 @@ export default {
       this.$router.push(key);
       console.log(key, keyPath);
     },
+
     handleClose(key, keyPath) {
       console.log(key, keyPath);
-      this.$router.push(key);
+      // this.$router.push(key);
     }
   },
   created() {}

@@ -28,7 +28,7 @@ export default {
       this.BMap=BMap
       const {lng, lat} = this.position
       const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat))
-      el.style.left = pixel.x - 63 + 'px'
+      el.style.left = pixel.x - 62 + 'px'
       el.style.top = pixel.y - 18 + 'px'
     },
     // 弹窗颜色
@@ -49,8 +49,9 @@ export default {
 
 <style>
 .sample {
-  margin-left: 48px;
-  margin-top: -18px;
+  margin-left: 43px;
+  padding-left: 25px;
+  margin-top: 22px;
   width: 126px;
   height: 36px;
   line-height: 30px;

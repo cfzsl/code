@@ -76,7 +76,7 @@
             <span>油耗超标</span>
           </div>
           <div class="buttonrowR townselfnew">
-            <span>1</span>
+            <span>3</span>
           </div>
         </div>
         <div @click="msgeslint3 = true" class="buttonrow">
@@ -85,7 +85,7 @@
             <span>保养到期</span>
           </div>
           <div class="buttonrowR threeselfnew">
-            <span>2</span>
+            <span>3</span>
           </div>
         </div>
         <div @click="msgeslint4 = true" class="buttonrow">
@@ -133,6 +133,74 @@
         width="70%"
         class="elDialog"
       >
+      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+          <div class="search">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
+              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="报警日期" class="msgDate">
+              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="故障维修结果" class="Troubleshooting">
+              <el-select v-model="th" class="selectTop">
+                <el-option
+                  v-for="item in troublesHooting"
+                  :key="item.th"
+                  :label="item.label"
+                  :value="item.th"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="msgButton">
+              <el-button type="primary" @click="onSubmit">查询</el-button>
+            </el-form-item>
+          </div>
+          <div class="list">
+            <!-- 此处data应为
+            data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
+            <el-table :data="warning" border style="width: 100%" @row-click="showadd">
+              <el-table-column align="center" prop="number" label="序号"></el-table-column>
+              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="company" label="故障信息"></el-table-column>
+              <el-table-column align="center" prop="date" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
+              <el-table-column align="center" prop="policeDate" label="维修日期"></el-table-column>
+              <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
+            </el-table>
+          </div>
+          <!-- 分页 -->
+          <!-- 修改类名 margin-left: 45% -->
+          <div class="pagination">
+            <el-pagination
+              :current-page="data.currpage"
+              :page-size="data.pagesize"
+              :pager-count="5"
+              layout="total, prev, pager, next"
+              :total="data.list.length"
+              @prev-click="nextpage"
+              @next-click="nextpage"
+              @current-change="nextpage"
+            ></el-pagination>
+          </div>
+        </el-form>
+      </el-dialog>
+      <!-- 弹框2 -->
+      <el-dialog
+        title="油耗超标报警"
+        :visible.sync="msgeslint2"
+        @close="msg = {}"
+        width="70%"
+        class="elDialog"
+      >
+        <!-- <el-table :data="warningList" border style="width: 100%">
+          <el-table-column  align="center" prop="carbrand" label="车牌号"></el-table-column>
+          <el-table-column  align="center" prop="driver" label="司机"></el-table-column>
+          <el-table-column  align="center" prop="remaining" label="液位高度"></el-table-column>
+          <el-table-column  align="center" prop="consumption" label="百公里耗油量"></el-table-column>
+          <el-table-column  align="center" prop="maximum" label="最大油量"></el-table-column>
+          <el-table-column  align="center" prop="date" label="报警时间"></el-table-column>
+        </el-table> -->
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
@@ -151,7 +219,7 @@
             <el-table :data="oil" border style="width: 100%" @row-click="showadd">
               <el-table-column align="center" prop="id" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="consumption" label="报警内容"></el-table-column>
+              <el-table-column align="center" prop="consumption" label="车辆耗油量（L/100KM）"></el-table-column>
               <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
               <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
             </el-table>
@@ -160,6 +228,9 @@
           <!-- 修改类名 margin-left: 45% -->
           <div class="pagination">
             <el-pagination
+              :current-page="data.currpage"
+              :page-size="data.pagesize"
+              :pager-count="5"
               layout="total, prev, pager, next"
               :total="oil.length"
               @prev-click="nextpage"
@@ -169,32 +240,6 @@
           </div>
         </el-form>
       </el-dialog>
-      <!-- 弹框2 -->
-      <el-dialog
-        title="油耗超标报警"
-        :visible.sync="msgeslint2"
-        @close="msg = {}"
-        width="70%"
-        class="elDialog"
-      >
-        <el-table :data="warningList" border style="width: 100%">
-          <el-table-column  align="center" prop="carbrand" label="车牌号"></el-table-column>
-          <el-table-column  align="center" prop="driver" label="司机"></el-table-column>
-          <el-table-column  align="center" prop="remaining" label="液位高度"></el-table-column>
-          <el-table-column  align="center" prop="consumption" label="百公里耗油量"></el-table-column>
-          <el-table-column  align="center" prop="maximum" label="最大油量"></el-table-column>
-          <el-table-column  align="center" prop="date" label="报警时间"></el-table-column>
-        </el-table>
-        <div class="pagination">
-            <el-pagination
-              layout="total, prev, pager, next"
-              :total="warningList.length"
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-            ></el-pagination>
-          </div>
-      </el-dialog>
       <!-- 弹框3 -->
       <el-dialog
         title="保养到期报警"
@@ -203,81 +248,63 @@
         width="70%"
         class="elDialog"
       >
-        <el-row type="flex" class="row-bg" justify="space-between">
-          <el-col :span="6">
-            <div class="grid-content bg-purple">
-              <el-form label-position="right" label-width="80px" :model="maintenanceMsg">
-                <el-form-item label="日期">
-                  <el-input v-model="maintenanceMsg.date"></el-input>
-                </el-form-item>
-                <el-form-item label="负责人">
-                  <el-input v-model="maintenanceMsg.driver"></el-input>
-                </el-form-item>
-                <el-form-item label="上传图片">
-                  <el-upload
-                    class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    multiple
-                    :limit="3"
-                  >
-                    <el-button size="medium" type="primary">点击上传</el-button>
-                  </el-upload>
-                </el-form-item>
-              </el-form>
-            </div>
-          </el-col>
-          <el-col :span="13">
-            <div class="grid-content">
-              <el-form label-position="right" label-width="80px" :model="maintenanceMsg">
-                <el-form-item label="保养内容">
-                  <el-input
-                    type="textarea"
-                    resize="none"
-                    v-model="maintenanceMsg.content"
-                    :autosize="{ minRows: 7, maxRows: 4}"
-                  ></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-          </el-col>
-          <el-col :span="5" :offset="1">
-            <div class="grid-content bg-purple">
-              <el-button type="primary" style="width: 90%">添加</el-button>
-            </div>
-          </el-col>
-        </el-row>
-
-        <el-table :data="maintenanceList" border>
-          <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-          <el-table-column align="center" prop="driver" label="保养人"></el-table-column>
-          <el-table-column align="center" prop="date" label="保养时间"></el-table-column>
-          <el-table-column align="center" prop="content" label="保养描述"></el-table-column>
-          <el-table-column align="center" label="保养图片">
-            <el-image
-              class="img"
-              style="width: 50px; height: 50px"
-              :src="url"
-              fit="fill"
-              @click="showimgs"
-            ></el-image>
-            <el-image
-              class="img"
-              style="width: 50px; height: 50px"
-              :src="url"
-              fit="fill"
-              @click="showimgs"
-            ></el-image>
-          </el-table-column>
-        </el-table>
-        <div class="pagination">
+      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+          <div class="search">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
+              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="报警日期" class="msgDate">
+              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="保养完成情况" class="Troubleshooting">
+              <el-select v-model="th" class="selectTop">
+                <!-- <el-option
+                  v-for="item in troublesHooting"
+                  :key="item.th"
+                  :label="item.label"
+                  :value="item.th"
+                ></el-option>-->
+                <el-option label="/" value="0"></el-option>
+                <el-option label="完成保养" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="msgButton">
+              <el-button type="primary" @click="onSubmit">查询</el-button>
+            </el-form-item>
+          </div>
+          <div class="list">
+            <!-- 此处data应为
+            data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
+            <el-table :data="maintenance" border style="width: 100%" @row-click="showadd">
+              <el-table-column align="center" prop="id" label="序号"></el-table-column>
+              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="policeDate" label="上次保养时间"></el-table-column>
+              <el-table-column align="center" prop="maintenance" label="上次保养公里数"></el-table-column>
+              <el-table-column align="center" prop="travel" label="已行驶公里数"></el-table-column>
+              <el-table-column align="center" prop="excess" label="超限公里数"></el-table-column>
+              <el-table-column align="center" prop="driver" label="保养负责人"></el-table-column>
+              <el-table-column align="center" label="保养完成情况" width>
+                <template slot-scope="scope">
+                  <span>{{scope.row.fulfill}}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <!-- 分页 -->
+          <!-- 修改类名 margin-left: 45% -->
+          <div class="pagination">
             <el-pagination
+              :current-page="data.currpage"
+              :page-size="data.pagesize"
+              :pager-count="5"
               layout="total, prev, pager, next"
-              :total="maintenanceList.length"
+              :total="data.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
             ></el-pagination>
           </div>
+        </el-form>
       </el-dialog>
       <!-- 弹框4 -->
       <el-dialog
@@ -298,16 +325,26 @@
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
+            <div class="sytime">系统时间：2019-10-13</div>
           </div>
           <div class="list">
             <!-- 此处data应为
             data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table border :data="insuranceList" style="width: 100%">
-          <el-table-column  align="center" prop="carbrand" label="车牌号"></el-table-column>
-          <el-table-column  align="center" prop="company" label="保险公司"></el-table-column>
-          <el-table-column  align="center" prop="effectivedate" label="保险生效日"></el-table-column>
-          <el-table-column align="center"  prop="warningdate" label="保险预警日期"></el-table-column>
-        </el-table>
+            <el-table :data="insurance" border style="width: 100%" @row-click="showadd">
+              <el-table-column align="center" prop="id" label="序号"></el-table-column>
+              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
+              <el-table-column align="center" label="到期剩余天数" width>
+                <template slot-scope="scope">
+                  <span :class="scope.row.expireday<10?'red':'hed'">{{scope.row.expireday}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" prop="effectivedate" label="生效时间"></el-table-column>
+              <el-table-column align="center" prop="expiredate" label="到期时间"></el-table-column>
+              <el-table-column align="center" prop="driver" label="负责人"></el-table-column>
+              <el-table-column align="center" label="操作">
+                <el-button type="warning">报警处理</el-button>
+              </el-table-column>
+            </el-table>
           </div>
           <!-- 分页 -->
           <!-- 修改类名 margin-left: 45% -->
@@ -501,28 +538,152 @@ export default {
         currpage: 1,
         list: []
       },
+      // 故障代码
+      warning: [
+        {
+          number: 1,
+          type: "垃圾运输车",
+          carbrand: "鲁E-559F3",
+          date: "2019-10-18",
+          num: "环卫-A001",
+          company: "发动机故障",
+          driver: "张毅",
+          phone: "15375669845",
+          region: "东营南站",
+          policeDate: "2019-10-19",
+          policeTime: "08:00",
+          service: "超出原定使用区域：东营区东营南站",
+          troubleshooting: "未处理"
+        },
+        {
+          number: 2,
+          type: "垃圾运输车",
+          carbrand: "鲁E-37588",
+          date: "2019-10-20",
+          num: "环卫-A001",
+          company: "手刹故障",
+          driver: "张毅",
+          phone: "15375669845",
+          region: "东营南站",
+          policeDate: "2019-10-21",
+          policeTime: "15:30",
+          service: "超出原定使用区域：东营区东营南站",
+          troubleshooting: "未处理"
+        },
+        {
+          number: 3,
+          type: "垃圾运输车",
+          carbrand: "鲁E-A3250",
+          date: "2019-10-15",
+          num: "环卫-A001",
+          company: "水温过高",
+          driver: "张毅",
+          phone: "15375669845",
+          region: "东营南站",
+          policeDate: "2019-10-16",
+          policeTime: "18:55",
+          service: "超出原定使用区域：东营区东营南站",
+          troubleshooting: "未处理"
+        },
+        {
+          number: 4,
+          type: "垃圾运输车",
+          carbrand: "鲁E-325AA",
+          date: "2019-10-20",
+          num: "环卫-A001",
+          company: "机油报警",
+          driver: "张毅",
+          phone: "15375669845",
+          region: "东营南站",
+          policeDate: "2019-10-22",
+          policeTime: "10:12",
+          service: "超出原定使用区域：东营区东营南站",
+          troubleshooting: "未处理"
+        }
+      ],
       // 油耗
       oil: [
         {
           id: 1,
-          carbrand: "鲁E-12131",
-          consumption: "发动机故障",
-          policeDate: "2011-10-09",
+          carbrand: "鲁E-259X3",
+          consumption: "35 (标准值 ≤ 25)",
+          policeDate: "2019-07-15",
           policeTime: "08:00"
         },
         {
           id: 2,
-          carbrand: "鲁E-65QQ3",
-          consumption: "机油报警",
-          policeDate: "2011-10-09",
+          carbrand: "鲁E-996D5",
+          consumption: "30 (标准值 ≤ 25)",
+          policeDate: "2019-08-20",
           policeTime: "15:25"
         },
         {
           id: 3,
-          carbrand: "鲁E-58965",
-          consumption: "手刹未放",
-          policeDate: "2011-10-09",
+          carbrand: "鲁E-783F6",
+          consumption: "26 (标准值 ≤ 25)",
+          policeDate: "2019-10-11",
           policeTime: "10:35"
+        }
+      ],
+      // 保险
+      insurance: [
+        {
+          id: 1,
+          carbrand: "鲁E-594D3",
+          expireday: 30,
+          effectivedate: "2018-11-13",
+          expiredate: "2019-11-12",
+          driver: "李诞"
+        },
+        {
+          id: 2,
+          carbrand: "鲁E-668D5",
+          expireday: 35,
+          effectivedate: "2018-10-28",
+          expiredate: "2019-10-27",
+          driver: "李诞"
+        },
+
+        {
+          id: 3,
+          carbrand: "鲁E-294F3",
+          expireday: 7,
+          effectivedate: "2018-10-20",
+          expiredate: "2019-10-19",
+          driver: "李诞"
+        }
+      ],
+      // 保养
+      maintenance: [
+        {
+          id: 1,
+          carbrand: "鲁E-859Q9",
+          policeDate: "2019-04-10",
+          maintenance: 27850,
+          travel: 37980,
+          excess: 130,
+          driver: "李诞",
+          fulfill: "未保养"
+        },
+        {
+          id: 2,
+          carbrand: "鲁E-B5277",
+          policeDate: "2019-04-15",
+          maintenance: 25800,
+          travel: 36200,
+          excess: 400,
+          driver: "李诞",
+          fulfill: "未保养"
+        },
+        {
+          id: 3,
+          carbrand: "鲁E-589A5",
+          policeDate: "2019-04-20",
+          maintenance: 25600,
+          travel: 35900,
+          excess: 300,
+          driver: "李诞",
+          fulfill: "未保养"
         }
       ],
       oilday: [
@@ -531,7 +692,7 @@ export default {
           carbrand: "鲁E-12131",
           consumption: "东营区新区",
           name:'李诞',
-          phone:'15375669845',
+          phone:'15975669745',
           consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2011-10-09",
           policeTime: "08:00"
@@ -541,7 +702,7 @@ export default {
           carbrand: "鲁E-65QQ3",
           consumption: "东营区新区",
           name:'张圆圆',
-          phone:'15375669845',
+          phone:'15975659845',
           consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2011-10-09",
           policeTime: "15:25"
@@ -551,7 +712,7 @@ export default {
           carbrand: "鲁E-58965",
           consumption: "东营区新区",
           name:'刘波',
-          phone:'15375669845',
+          phone:'13675667845',
           consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2011-10-09",
           policeTime: "10:35"
@@ -573,54 +734,24 @@ export default {
         img: "",
         content: ""
       },
-      maintenanceList: [
-        {
-          carbrand: "鲁E-123456",
-          date: "2019-01-20",
-          driver: "李诞",
-          content: "前胎轮胎漏气，换内胎一只",
-          img: ""
-        },
-        {
-          carbrand: "鲁E-456789",
-          date: "2018-05-20",
-          driver: "刘波",
-          content: "车刹片维保",
-          img: ""
-        }
-      ],
-      insuranceList: [
-        {
-          carbrand: '鲁E-123456',
-          company: '太平洋保险',
-          effectivedate: '2019-02-30',
-          warningdate: '2020-10-15',
-        },
-        {
-          carbrand: '鲁E-123456',
-          company: '太平洋保险',
-          effectivedate: '2018-05-10',
-          warningdate: '2019-09-19',
-        },
-      ],
       overAge:[
         {
           id: "1",
-          carbrand: "鲁E-123456",
+          carbrand: "鲁E-1A2G6",
           name:'李诞',
           policeDate: '是',
           police: '2019-10-6',
         },
         {
           id: "2",
-          carbrand: "鲁E-123456",
+          carbrand: "鲁E-2X5SF",
           name:'张圆圆',
           policeDate: '是',
           police: '2019-10-6',
         },
         {
           id: "3",
-          carbrand: "鲁E-123456",
+          carbrand: "鲁E-S126D",
           name:'刘波',
           policeDate: '是',
           police: '2019-10-6',
@@ -629,30 +760,30 @@ export default {
       stagnationList:[
         {
           number: 1,
-          carbrand: "鲁E-04DF",
+          carbrand: "鲁E-S112D",
           company: "环卫一部",
           driver: "李诞",
-          phone: "15375669845",
+          phone: "15975669892",
           region: "西湖公园",
           policeTime: "2019-10-09 18:50",
           timeout:"1小时5分"
         },
         {
           number: 2,
-          carbrand: "鲁E-12FA",
+          carbrand: "鲁E-12FA2",
           company: "环卫二部",
           driver: "张园园",
-          phone: "15375669845",
+          phone: "15975669585",
           region: "东营南站",
           policeTime: "2019-10-09 17:54",
           timeout:"56分"
         },
         {
           number: 3,
-          carbrand: "鲁E-23SD",
+          carbrand: "鲁E-23SD4",
           company: "环卫三部",
           driver: "刘波",
-          phone: "15375669845",
+          phone: "13675879845",
           region: "红光渔港",
           policeTime: "2019-10-09 17:54",
           timeout:"1小时30分"
@@ -706,7 +837,6 @@ export default {
       setInterval(() => {
         this.$http.get("xy/get").then(res => {
           this.position2 = res.data;
-          console.log(this.position2);
         });
       }, 1000);
     },
@@ -877,5 +1007,20 @@ export default {
       font-size: 13px;
     }
   }
+}
+.Troubleshooting {
+  margin-left: 20px;
+}
+.sytime {
+  float: right;
+  margin-right: 55px;
+  padding-bottom: 10px;
+  color: red;
+}
+.red {
+  color:red;
+}
+.hede {
+  color:#000;
 }
 </style>

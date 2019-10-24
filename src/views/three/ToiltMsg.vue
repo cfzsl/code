@@ -8,28 +8,8 @@
           <el-form-item label="公厕名" class="msgWc">
             <el-input v-model="value1"></el-input>
           </el-form-item>
-          <el-form-item label="区域范围">
-            <el-select v-model="value">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="道路名称">
-            <el-select v-model="lu">
-              <el-option
-                v-for="item in roadList"
-                :key="item.lu"
-                :label="item.label"
-                :value="item.lu"
-              ></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="上报时间" class="msgDate">
-            <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            <el-date-picker v-model="date" type="date" placeholder class="msgDatePicker"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -228,6 +208,7 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      date:"",
       value1: "",
       text: "添加车辆信息",
       pagesize: 10,
@@ -261,79 +242,7 @@ export default {
         }
       ],
       lu: "0",
-      roadList: [
-        {
-          lu: "0",
-          label: "全部"
-        },
-        {
-          lu: "1",
-          label: "庐山路"
-        },
-        {
-          lu: "2",
-          label: "宁阳路"
-        },
-        {
-          lu: "3",
-          label: "新泰路"
-        },
-        {
-          lu: "4",
-          label: "北一路"
-        },
-        {
-          lu: "5",
-          label: "北二路"
-        },
-        {
-          lu: "6",
-          label: "黄河路"
-        }
-      ],
       value: "0",
-      options: [
-        {
-          value: "0",
-          label: "全部"
-        },
-        {
-          value: "1",
-          label: "东营区新区"
-        },
-        {
-          value: "2",
-          label: "文汇街道办事处"
-        },
-        {
-          value: "3",
-          label: "辛店街道办事处"
-        },
-        {
-          value: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          value: "5",
-          label: "圣园街道办事处"
-        },
-        {
-          value: "6",
-          label: "六户镇"
-        },
-        {
-          value: "7",
-          label: "牛庄镇"
-        },
-        {
-          value: "8",
-          label: "史口镇"
-        },
-        {
-          value: "9",
-          label: "龙居镇"
-        }
-      ],
       web: "0",
       optionsWeb: [
         {

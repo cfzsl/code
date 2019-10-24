@@ -183,10 +183,10 @@
               <el-table-column align="center" prop="number" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
               <el-table-column align="center" prop="company" label="故障信息"></el-table-column>
-              <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="date" label="报警日期"></el-table-column>
               <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
               <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
-              <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
+              <el-table-column align="center" prop="policeDate" label="维修日期"></el-table-column>
               <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
             </el-table>
           </div>
@@ -310,7 +310,7 @@
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
             </el-form-item>
-            <div class="sytime">系统时间：2019-10-22</div>
+            <div class="sytime">系统时间：2019-10-13</div>
           </div>
           <div class="list">
             <!-- 此处data应为
@@ -318,7 +318,11 @@
             <el-table :data="insurance" border style="width: 100%" @row-click="showadd">
               <el-table-column align="center" prop="id" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="expireday" label="到期剩余天数"></el-table-column>
+              <el-table-column align="center" label="到期剩余天数" prop="expireday" width>
+                <template slot-scope="scope">
+                  <span :class="scope.row.expireday<10?'red':'hed'">{{scope.row.expireday}}</span>
+                </template>
+              </el-table-column>
               <el-table-column align="center" prop="effectivedate" label="生效时间"></el-table-column>
               <el-table-column align="center" prop="expiredate" label="到期时间"></el-table-column>
               <el-table-column align="center" prop="driver" label="负责人"></el-table-column>
@@ -809,61 +813,61 @@ export default {
           number: 1,
           type: "垃圾运输车",
           carbrand: "鲁E-559F3",
-          date: "2012-11-21",
+          date: "2019-10-20",
           num: "环卫-A001",
           company: "发动机故障",
           driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "2012-11-20",
+          policeDate: "2019-10-21",
           policeTime: "08:00",
           service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
+          troubleshooting: "未处理"
         },
         {
           number: 2,
           type: "垃圾运输车",
           carbrand: "鲁E-37588",
-          date: "2010-09-11",
+          date: "2019-10-15",
           num: "环卫-A001",
           company: "手刹故障",
           driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "2010-09-10",
+          policeDate: "2019-10-16",
           policeTime: "15:30",
           service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
+          troubleshooting: "未处理"
         },
         {
           number: 3,
           type: "垃圾运输车",
           carbrand: "鲁E-A3250",
-          date: "2009-01-15",
+          date: "2019-10-18",
           num: "环卫-A001",
           company: "水温过高",
           driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "2009-01-14",
+          policeDate: "2019-10-19",
           policeTime: "18:55",
           service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
+          troubleshooting: "未处理"
         },
         {
           number: 4,
           type: "垃圾运输车",
           carbrand: "鲁E-325AA",
-          date: "2009-05-20",
+          date: "2019-10-20",
           num: "环卫-A001",
           company: "机油报警",
           driver: "张毅",
           phone: "15375669845",
           region: "东营南站",
-          policeDate: "2009-05-19",
+          policeDate: "2019-10-22",
           policeTime: "10:12",
           service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
+          troubleshooting: "未处理"
         }
       ],
       // 油耗
@@ -896,11 +900,11 @@ export default {
           id: 1,
           carbrand: "鲁E-859Q9",
           policeDate: "2019-10-07",
-          maintenance: 37850,
+          maintenance: 27850,
           travel: 37980,
           excess: 130,
           driver: "李诞",
-          fulfill: "2019-10-08完成保养"
+          fulfill: "未保养"
         },
         {
           id: 2,
@@ -910,7 +914,7 @@ export default {
           travel: 36200,
           excess: 400,
           driver: "李诞",
-          fulfill: "2019-01-09完成保养"
+          fulfill: "未保养"
         },
         {
           id: 3,
@@ -920,7 +924,7 @@ export default {
           travel: 35900,
           excess: 300,
           driver: "李诞",
-          fulfill: "2011-10-10完成保养"
+          fulfill: "未保养"
         }
       ],
       // 保险
@@ -928,26 +932,26 @@ export default {
         {
           id: 1,
           carbrand: "鲁E-594D3",
-          expireday: 2,
-          effectivedate: "2018-10-20",
-          expiredate: "2019-10-20",
+          expireday: 30,
+          effectivedate: "2018-11-13",
+          expiredate: "2019-11-12",
           driver: "李诞"
         },
         {
           id: 2,
           carbrand: "鲁E-668D5",
-          expireday: 0,
-          effectivedate: "2017-10-20",
-          expiredate: "2018-10-20",
+          expireday: 35,
+          effectivedate: "2018-10-28",
+          expiredate: "2019-10-27",
           driver: "李诞"
         },
 
         {
           id: 3,
           carbrand: "鲁E-294F3",
-          expireday: 0,
-          effectivedate: "2016-10-20",
-          expiredate: "2017-10-20",
+          expireday: 7,
+          effectivedate: "2018-10-20",
+          expiredate: "2019-10-19",
           driver: "李诞"
         }
       ],
@@ -1317,5 +1321,11 @@ export default {
   margin-right: 55px;
   padding-bottom: 10px;
   color: red;
+}
+.red {
+  color: red;
+}
+.hede {
+  color: #000;
 }
 </style>

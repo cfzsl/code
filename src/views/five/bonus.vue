@@ -29,7 +29,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="日期" class="msgDate">
-            <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            <el-date-picker v-model="date" type="date" placeholder class="msgDatePicker"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -118,16 +118,16 @@
       <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
       <el-table-column align="center" prop="basepay" label="基本工资(元)" width></el-table-column>
       <el-table-column align="center" prop="subsidies" label="其他补助(元)" width></el-table-column>
-      <el-table-column align="center" prop="trafficpay" label="交通补助" width></el-table-column>
-      <el-table-column align="center" prop="communication" label="通讯补助" width></el-table-column>
-      <el-table-column align="center" prop="bonus" label="奖金" width></el-table-column>
+      <el-table-column align="center" prop="trafficpay" label="交通补助(元)" width></el-table-column>
+      <el-table-column align="center" prop="communication" label="通讯补助(元)" width></el-table-column>
+      <el-table-column align="center" prop="bonus" label="奖金(元)" width></el-table-column>
       <el-table-column align="center" prop="jobdate" label="应上班天数" width></el-table-column>
       <el-table-column align="center" prop="education" label="实际上班天数" width></el-table-column>
-      <el-table-column align="center" prop="leave" label="请假补充" width></el-table-column>
+      <el-table-column align="center" prop="leave" label="请假扣款(元)" width></el-table-column>
       <el-table-column align="center" prop="retire" label="退休保险" width></el-table-column>
       <el-table-column align="center" prop="medical" label="医疗保险" width></el-table-column>
       <el-table-column align="center" prop="unemployment" label="失业保险" width></el-table-column>
-      <el-table-column align="center" prop="realwages" label="实发工资" width></el-table-column>
+      <el-table-column align="center" prop="realwages" label="实发工资(元)" width></el-table-column>
       <el-table-column align="center" label="发放情况" width>
         <template slot-scope="scope">
           <span :class="scope.row.grant?'hede':'green'">{{scope.row.status}}</span>
@@ -293,6 +293,7 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      date:"",
       value1: "",
       text: "人事管理详情",
       pagesize: 10,
@@ -761,6 +762,6 @@ export default {
   color: #000;
 }
 .green {
-  color: rgb(0, 204, 0);
+  color: green;
 }
 </style>
