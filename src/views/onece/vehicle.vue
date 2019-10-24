@@ -463,7 +463,12 @@
           :zoom="15"
           :scroll-wheel-zoom="true"
         >
-          <bm-marker class="icon" :position="polylinePath[0]" :dragging="false"></bm-marker>
+          <bm-marker
+            :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
+            :rotation="polylinePathMarker[0].direction"
+            :position="polylinePathMarker[0]"
+            :dragging="false"
+          ></bm-marker>
           <bm-polyline
             :path="polylinePath"
             stroke-color="blue"
@@ -795,7 +800,8 @@ export default {
       value1: "",
       value2: "",
       timer: null,
-      polylinePath: [{ lng: "", lat: "" }],
+      polylinePath: [{ lng: "", lat: "", direction: 0 }],
+      polylinePathMarker: [{ lng: "", lat: "", direction: 0 }],
       num: 0.001,
       // 故障代码
       warning: [
@@ -1007,8 +1013,10 @@ export default {
     },
     getpolyline() {
       this.$http.get("xy/demo").then(res => {
+        console.log(res.data);
+
         this.polylinePath = res.data;
-        console.log(this.polylinePath);
+        this.polylinePathMarker = res.data;
       });
     },
     updatePolylinePath(e) {
@@ -1016,30 +1024,27 @@ export default {
     },
     huifang() {
       this.$http.get("xy/demo").then(res => {
-        this.polylinePath = res.data;
-        console.log(this.polylinePath);
+        this.polylinePathMarker = res.data;
       });
       clearInterval(this.timer);
       this.msgserach = !this.msgserach;
       this.timer = setInterval(() => {
-        if (this.polylinePath.length != 0) {
-          this.polylinePath.splice(0, 1);
-        } else if (this.polylinePath.length == 0) {
+        if (this.polylinePathMarker.length != 1) {
+          this.polylinePathMarker.splice(0, 1);
+        } else if (this.polylinePathMarker.length == 1) {
           clearInterval(this.timer);
         }
       }, 500);
     },
     draw({ el, BMap, map }) {
-      // try {
       let lng = this.polylinePath[0].lng;
       let lat = this.polylinePath[0].lat;
       const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat));
       el.style.left = pixel.x + "px";
       el.style.top = pixel.y + "px";
-      // } catch (error) {}
     },
     msgse() {
-      this.msgserach = true;
+      this.msgserach = !this.msgserach;
     },
     work() {
       this.flow = true;
@@ -1169,7 +1174,7 @@ export default {
   .map {
     position: relative;
     width: 100%;
-    height: 556px;
+    height: 800px;
     .input-with-select {
       position: absolute;
       right: 20px;

@@ -228,6 +228,13 @@
       "font_class": "bangzhu",
       "unicode": "e630",
       "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "11440187",
+      "name": "市政单位",
+      "font_class": "shizhengdanwei",
+      "unicode": "e618",
+      "unicode_decimal": 58904
     }
   ]
 }

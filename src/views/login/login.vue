@@ -19,12 +19,19 @@
                   placeholder="请输入验证码"
                   style="width: 217px; margin-top: 25px;"
                 ></el-input>
-                <el-button class="codebtn">发送验证码</el-button>
+                <el-button class="codebtn" @click="code" v-if="this.codebtn">{{ this.codemsg }}</el-button>
+                <el-button class="codebtn" style="width: 100px" disabled v-else>{{ this.codeMit }}秒</el-button>
               </div>
               <div style="margin-top: 20px">
-                <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>记住登录
+                <el-checkbox v-model="checked">记住登录</el-checkbox>
               </div>
               <el-button type="primary" style="width: 100%; margin-top: 25px" @click="go">登录</el-button>
+              <div class="footer">
+                <span
+                  class="iconfont icon-shizhengdanwei"
+                  style="margin-right: 5px;color:rgb(57, 153, 241)"
+                ></span>东营区油城环卫有限公司
+              </div>
             </div>
           </el-col>
           <el-col :span="12">
@@ -44,7 +51,11 @@ export default {
   data() {
     return {
       input: "",
-      value: true
+      value: false,
+      codebtn: true,
+      checked: false,
+      codemsg: "发送验证码",
+      codeMit: 60
     };
   },
   methods: {
@@ -52,6 +63,19 @@ export default {
       this.$router.push({
         name: "homeview"
       });
+    },
+    code() {
+      this.codeMit = 60;
+      this.codebtn = !this.codebtn;
+      clearInterval(interval);
+      let interval = setInterval(() => {
+        if (this.codeMit <= 1) {
+          this.codebtn = !this.codebtn;
+          clearInterval(interval);
+        } else if (this.codeMit > 1) {
+          this.codeMit--;
+        }
+      }, 1000);
     }
   }
 };
@@ -61,8 +85,8 @@ export default {
 .bigbox {
   width: 100%;
   height: 100%;
-  background-size:cover;
-  background-image: url('../../assets/img/背景.jpg');
+  background-size: cover;
+  background-image: url("../../assets/img/背景.jpg");
 }
 
 .login {
@@ -73,7 +97,7 @@ export default {
   right: 0;
   margin: auto;
   width: 725px;
-  height: 500px;
+  height: 450px;
   background-color: #fff;
   .title {
     font-size: 30px;
@@ -89,7 +113,6 @@ export default {
 
 .content {
   padding-bottom: 50px;
-  // border-bottom: 1px solid #d2d2d2;
 }
 .code {
   position: relative;
@@ -97,10 +120,10 @@ export default {
     position: absolute;
     top: 25px;
     right: -27px;
+    text-align: center;
   }
 }
 .footer {
-  text-align: center;
-  line-height: 60px;
+  margin-top: 20px;
 }
 </style>
