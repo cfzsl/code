@@ -553,7 +553,7 @@ export default {
           this.$qs.stringify(this.search)
         )
         .then(res => {
-          this.tableData = res.data;
+          this.data.list = res.data;
         });
     },
     nextpage(value) {
