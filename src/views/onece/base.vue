@@ -576,7 +576,7 @@ export default {
   position: relative;
   width: 100%;
   height: 76px;
-  margin-top: 16px;
+  margin-top: 15px;
   .searchTop {
     float: left;
     margin-bottom: 16px;
@@ -599,7 +599,7 @@ export default {
 }
 .table {
   width: 1128px;
-  height: 465px;
+  height: 460px;
   margin-top: 16px;
 }
 .dialogText {

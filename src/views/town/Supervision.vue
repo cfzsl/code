@@ -13,15 +13,15 @@
       <!-- 弹框 -->
       <el-dialog title="道路监控" :visible.sync="monitoring" @close="msg = {}" width="70%">
         <video-player
-            class="video-player vjs-custom-skin"
-            :playsinline="true"
-            :options="videoOption">
-          </video-player>
+          class="video-player vjs-custom-skin"
+          :playsinline="true"
+          :options="videoOption"
+        ></video-player>
       </el-dialog>
       <!-- 弹窗1 -->
       <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if='mapview'>
+        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="mapview">
           <div class="search">
             <el-form-item label="车牌号鲁-" class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
@@ -86,15 +86,15 @@
           </div>
           <!-- 分页 -->
           <el-pagination
-      class="paginationList"
-      background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10,20,30,40]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="32">
-    </el-pagination>
+            class="paginationList"
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="32"
+          ></el-pagination>
         </el-form>
       </el-dialog>
       <!-- 弹窗2 -->
@@ -131,19 +131,25 @@
           </div>
           <!-- 分页 -->
           <el-pagination
-      class="paginationList"
-      background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10,20,30,40]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="32">
-    </el-pagination>
+            class="paginationList"
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="32"
+          ></el-pagination>
         </el-form>
       </el-dialog>
       <!-- 弹框3 -->
-      <el-dialog title="停滞超限预警" :visible.sync="msgeslint" @close="msg = {}" width="70%" class="elDialog">
+      <el-dialog
+        title="停滞超限预警"
+        :visible.sync="msgeslint"
+        @close="msg = {}"
+        width="70%"
+        class="elDialog"
+      >
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
@@ -170,20 +176,20 @@
               <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
               <el-table-column align="center" prop="region" label="停滞点" width="200x"></el-table-column>
               <el-table-column align="center" prop="timeout" label="停滞时长" width="220px"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间" width="200px"></el-table-column>              
+              <el-table-column align="center" prop="policeTime" label="报警时间" width="200px"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
           <el-pagination
-      class="paginationList"
-      background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10,20,30,40]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="32">
-    </el-pagination>
+            class="paginationList"
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="32"
+          ></el-pagination>
         </el-form>
       </el-dialog>
       <!-- 弹窗4 -->
@@ -193,7 +199,6 @@
           <div class="search">
             <el-form-item label="车牌号 鲁E- " class="searchInput">
               <el-input v-model="msg.number" class="searchInputNumber"></el-input>
-            </el-form-item>
             </el-form-item>
             <el-form-item label="使用人" class="Troubleshooting msgnumber">
               <el-input v-model="msg.number" class="TroubleshootingInput"></el-input>
@@ -223,15 +228,15 @@
           </div>
           <!-- 分页 -->
           <el-pagination
-      class="paginationList"
-      background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10,20,30,40]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="32">
-    </el-pagination>
+            class="paginationList"
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="32"
+          ></el-pagination>
         </el-form>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="!flow">
           <div>
@@ -256,30 +261,60 @@
       <!-- 百度地图搜索 -->
     </div>
     <div class="bdMap">
-      <baidu-map class="map" :center="{lng: 118.542132,lat: 37.453942}" :dragging="true"  :zoom="14" scroll-wheel-zoom v-if='showmap'>
+      <baidu-map
+        class="map"
+        :center="{lng: 118.542132,lat: 37.453942}"
+        :dragging="true"
+        :zoom="14"
+        scroll-wheel-zoom
+        v-if="showmap"
+      >
         <el-input placeholder="请输入车牌号" v-model="input1" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
-        <bm-marker v-for="(item,index) in positionsCls" :key='index' :position="item"  :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 300, height: 157}}"></bm-marker>
+        <bm-marker
+          v-for="(item,index) in positionsCls"
+          :key="index"
+          :position="item"
+          :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 300, height: 157}}"
+        ></bm-marker>
       </baidu-map>
-      <baidu-map class="map" :center="{lng: 118.592815,lat: 37.457724}" dragging :zoom="17" scroll-wheel-zoom v-if='showmark'>
+      <baidu-map
+        class="map"
+        :center="{lng: 118.592815,lat: 37.457724}"
+        dragging
+        :zoom="17"
+        scroll-wheel-zoom
+        v-if="showmark"
+      >
         <el-input placeholder="请输道路名称" v-model="input2" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
-        <bml-marker-clusterer :averageCenter="true" :opt_anchor="{lng: 118.592815,lat: 37.457724}" :styles="cssMap" @draw="draw">
-          <bm-marker v-for="(value,index) in positions" :key='index' :position="value" :icon="{url: 'http://47.110.160.217:10071/images000/监控.png', size: {width: 38, height: 30}}" clicking @click='monitoring = true'> 
-          </bm-marker>
+        <bml-marker-clusterer
+          :averageCenter="true"
+          :opt_anchor="{lng: 118.592815,lat: 37.457724}"
+          :styles="cssMap"
+          @draw="draw"
+        >
+          <bm-marker
+            v-for="(value,index) in positions"
+            :key="index"
+            :position="value"
+            :icon="{url: 'http://47.110.160.217:10071/images000/监控.png', size: {width: 38, height: 30}}"
+            clicking
+            @click="monitoring = true"
+          ></bm-marker>
         </bml-marker-clusterer>
       </baidu-map>
-      
-	    <!-- <div id="allmap" v-if='showmark' ></div> -->
+
+      <!-- <div id="allmap" v-if='showmark' ></div> -->
       <div class="mapbox">
-      <baidu-map
+        <baidu-map
           class="map"
           :center="{lng: 118.515183, lat:37.478661}"
           :zoom="15"
           :scroll-wheel-zoom="true"
-          v-if='showline'
+          v-if="showline"
         >
           <bm-marker class="icon" :position="polylinePath[0]" :dragging="false"></bm-marker>
           <bm-polyline
@@ -296,43 +331,49 @@
   </div>
 </template>
 <script>
-import 'videojs-contrib-hls'
-import {BmlMarkerClusterer} from 'vue-baidu-map'
+import "videojs-contrib-hls";
+import { BmlMarkerClusterer } from "vue-baidu-map";
 export default {
   data() {
     return {
-      cssMap:[
-        {url:"http://47.110.160.217:10071/images000/监控1.png", size:{width: 43, height: 28,},textColor:"#fff"},
+      cssMap: [
+        {
+          url: "http://47.110.160.217:10071/images000/监控1.png",
+          size: { width: 43, height: 28 },
+          textColor: "#fff",
+          padding: "10px"
+        }
       ],
-      showmark:false,
-      showline:false,
-      showmap:true,
-      videoOption:{
-            live: false,
-            preload: "auto",
-            autoplay: true,
-            language: "zh-CN",
-            aspectRatio: "16:8",
-            fluid: true,
-            sources: [
-                {
-                    src: "http://hls01open.ys7.com/openlive/f515aa55a63f429d8169f069a9ac9986.m3u8" //url地址
-                }
-            ],
-            notSupportedMessage: "此视频暂无法播放，请稍后再试", //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-            controlBar: {
-                timeDivider: false,
-                durationDisplay: false,
-                remainingTimeDisplay: false,
-                fullscreenToggle: true //全屏按钮
-            },
-            flash: {
-                hls: {
-                    withCredentials: false
-                }
-            }
+      showmark: false,
+      showline: false,
+      showmap: true,
+      videoOption: {
+        live: false,
+        preload: "auto",
+        autoplay: true,
+        language: "zh-CN",
+        aspectRatio: "16:8",
+        fluid: true,
+        sources: [
+          {
+            src:
+              "http://hls01open.ys7.com/openlive/f515aa55a63f429d8169f069a9ac9986.m3u8" //url地址
+          }
+        ],
+        notSupportedMessage: "此视频暂无法播放，请稍后再试", //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        controlBar: {
+          timeDivider: false,
+          durationDisplay: false,
+          remainingTimeDisplay: false,
+          fullscreenToggle: true //全屏按钮
         },
-      monitoring:false,
+        flash: {
+          hls: {
+            withCredentials: false
+          }
+        }
+      },
+      monitoring: false,
       radio: "0",
       flow: true,
       mapview: true,
@@ -341,7 +382,7 @@ export default {
       msgeslint: false,
       msgedate: false,
       input1: "",
-      input2: '',
+      input2: "",
       s: "0",
       station: [
         {
@@ -609,8 +650,8 @@ export default {
         currpage: 1,
         list: []
       },
-      positions:[],
-      positionsCls:[],
+      positions: [],
+      positionsCls: [],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
@@ -647,7 +688,7 @@ export default {
         { lng: 116.405, lat: 39.92 },
         { lng: 116.423493, lat: 39.907445 }
       ],
-      stagnationList:[
+      stagnationList: [
         {
           number: 1,
           carbrand: "鲁E-04DF",
@@ -656,7 +697,7 @@ export default {
           phone: "15375669845",
           region: "西湖公园",
           policeTime: "2019-10-09 18:50",
-          timeout:"1小时5分"
+          timeout: "1小时5分"
         },
         {
           number: 2,
@@ -666,7 +707,7 @@ export default {
           phone: "15375669845",
           region: "东营南站",
           policeTime: "2019-10-09 17:54",
-          timeout:"56分"
+          timeout: "56分"
         },
         {
           number: 3,
@@ -676,39 +717,39 @@ export default {
           phone: "15375669845",
           region: "红光渔港",
           policeTime: "2019-10-09 17:54",
-          timeout:"1小时30分"
-        },
+          timeout: "1小时30分"
+        }
       ],
       dailyList: [
         {
           carbrand: "鲁E-04DF",
           date: "06:50--11:05",
           update: "13:48--17:02",
-          daily:"2019/10/10",
+          daily: "2019/10/10",
           company: "环卫1部",
           driver: "李诞",
-          phone: "15375669845",
+          phone: "15375669845"
         },
         {
           carbrand: "鲁E-12FA",
           date: "06:55--11:10",
           update: "13:58--17:33",
-          daily:"2019/10/10",
+          daily: "2019/10/10",
           company: "环卫2部",
           driver: "张圆圆",
-          phone: "15375669845",
+          phone: "15375669845"
         },
         {
           carbrand: "鲁E-23SD",
           date: "06:33--11:06",
           update: "13:50--17:15",
-          daily:"2019/10/10",
+          daily: "2019/10/10",
           company: "环卫3部",
           driver: "刘波",
-          phone: "15375669845",
-        },
+          phone: "15375669845"
+        }
       ],
-      polylinePath: [{ lng: "", lat: "" }],
+      polylinePath: [{ lng: "", lat: "" }]
     };
   },
   created() {
@@ -721,31 +762,31 @@ export default {
     BmlMarkerClusterer
   },
   methods: {
-      draw ({ el, BMap, map }) {
-      this.map = map
-      const { lng, lat } = {lng: 118.592815,lat: 37.457724}
-      const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat))
-      el.style.left = pixel.x - 100 + 'px'
-      el.style.top = pixel.y - 200 + 'px'
+    draw({ el, BMap, map }) {
+      this.map = map;
+      const { lng, lat } = { lng: 118.592815, lat: 37.457724 };
+      const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat));
+      el.style.left = pixel.x - 100 + "px";
+      el.style.top = pixel.y - 200 + "px";
     },
-    showClc(){
-      this.showmap=true;
-      this.showmark=false;
-      this.showline=false;
+    showClc() {
+      this.showmap = true;
+      this.showmark = false;
+      this.showline = false;
       location.reload();
     },
-    showMap(){
-      this.showmap=false;
-      this.showmark=true;
-      this.showline=false;
+    showMap() {
+      this.showmap = false;
+      this.showmark = true;
+      this.showline = false;
     },
-    serachend(){
-      this.msgserach=true;
+    serachend() {
+      this.msgserach = true;
     },
     huifang() {
-      this.showmap=false;
-      this.showmark=false;
-      this.showline=true;
+      this.showmap = false;
+      this.showmark = false;
+      this.showline = true;
       this.$http.get("xy/demo").then(res => {
         this.polylinePath = res.data;
         console.log(this.polylinePath);
@@ -761,21 +802,21 @@ export default {
       }, 500);
     },
     // 获取监控地址
-    getPositions(){
-      this.$http.post('xy/video').then(res=>{
-        console.log(res.data)
-        this.positions=res.data;
-      })
+    getPositions() {
+      this.$http.post("xy/video").then(res => {
+        console.log(res.data);
+        this.positions = res.data;
+      });
     },
     // 获取三轮车的位置
-    getTricycle(){
-      this.$http.post('xy/pedicabDemo').then(res=>{
-        console.log(res.data)
-        this.positionsCls=res.data
-      })
+    getTricycle() {
+      this.$http.post("xy/pedicabDemo").then(res => {
+        console.log(res.data);
+        this.positionsCls = res.data;
+      });
     },
-    handleSizeChange(){},
-    handleCurrentChange(){},
+    handleSizeChange() {},
+    handleCurrentChange() {},
     work() {
       this.flow = true;
     },
@@ -814,7 +855,7 @@ export default {
           policedate: "11:35:10",
           service: "超过原定使用区域：东营区东营南站",
           troubleshooting: "未维修",
-          timeout:"1小时"
+          timeout: "1小时"
         });
       }
     },
@@ -829,7 +870,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
-.BMap_mask>div>div>div {
+.BMap_mask > div > div > div {
   background-image: url("../../assets/img/垃圾运输车.png") !important ;
 }
 .menu {
