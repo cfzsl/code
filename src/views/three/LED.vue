@@ -25,16 +25,30 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">设置电子屏幕</el-button>
+        <el-button class="buttonBot" @click="dialogVisible = true"
+          >设置电子屏幕</el-button
+        >
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="LED电子屏内容编辑" :visible.sync="dialogVisible" width="426px" class="dialogText">
+    <el-dialog
+      title="LED电子屏内容编辑"
+      :visible.sync="dialogVisible"
+      width="426px"
+      class="dialogText"
+    >
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-input type="textarea" :rows="2" placeholder="请输入LED电子屏的展示内容" v-model="textarea"></el-input>
+        <el-input
+          type="textarea"
+          :rows="2"
+          placeholder="请输入LED电子屏的展示内容"
+          v-model="textarea"
+        ></el-input>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">发送</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >发送</el-button
+        >
       </span>
     </el-dialog>
     <!-- 表格 -->
@@ -43,13 +57,47 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" type="selection" width="40"></el-table-column>
-      <el-table-column align="center" prop="wcid" label="公厕名" width></el-table-column>
-      <el-table-column align="center" prop="date" label="管养单位" width="282"></el-table-column>
-      <el-table-column align="center" prop="state" label="状态" width></el-table-column>
-      <el-table-column align="center" prop="name" label="联络人" width></el-table-column>
-      <el-table-column align="center" prop="phone" label="电话" width></el-table-column>
-      <el-table-column align="center" prop="text" label="电子屏内容" width="282"></el-table-column>
+      <el-table-column
+        align="center"
+        type="selection"
+        width="40"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="wcid"
+        label="公厕名"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="date"
+        label="管养单位"
+        width="282"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="state"
+        label="状态"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="name"
+        label="联络人"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="phone"
+        label="电话"
+        width
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="text"
+        label="电子屏内容"
+        width="282"
+      ></el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
@@ -57,7 +105,7 @@
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :page-sizes="[10,20,30,40]"
+      :page-sizes="[10, 20, 30, 40]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
       :total="32"
@@ -70,6 +118,7 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      textarea: "",
       value1: "",
       i: "",
       text: "添加车辆信息",
@@ -187,7 +236,7 @@ export default {
 };
 </script>
 
-<style lang="scss"  scoped>
+<style lang="scss" scoped>
 .search {
   position: relative;
   width: 100%;

@@ -7,7 +7,7 @@
       <bm-boundary name="东营区" :strokeWeight="2" strokeColor="#BDC5F3" fillColor="#BDC5F3"></bm-boundary>
       <!-- mark点 -->
       <bm-marker
-        :position="{ lng: 118.550519, lat: 37.440409 }"
+        :position="{ lng: 118.651704, lat: 37.3801 }"
         :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
       >
       </bm-marker>
@@ -22,12 +22,12 @@
       >
       </bm-marker>
       <bm-marker
-        :position="{ lng: 118.561442, lat: 37.549436 }"
+        :position="{ lng: 118.693672, lat: 37.408082 }"
         :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 38, height: 30}}"
       >
       </bm-marker>
       <bm-marker
-        :position="{ lng: 118.450483, lat: 37.304588 }"
+        :position="{ lng: 118.598237, lat: 37.463098 }"
         :icon="{url: 'http://47.110.160.217:10071/images000/对讲机.png', size: {width: 38, height: 30}}"
       >
       </bm-marker>
@@ -441,8 +441,8 @@
               <el-table-column align="center" prop="consumption" label="归属单位"></el-table-column>
               <el-table-column align="center" prop="name" label="指定司机"></el-table-column>
               <el-table-column align="center" prop="phone" label="联系电话"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警日期"></el-table-column>
-              <el-table-column align="center" prop="policeDate" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
               <el-table-column align="center" prop="consumptionNo" label="线路异常情况" width="436px"></el-table-column>
             </el-table>
           </div>
