@@ -3,11 +3,11 @@
   <div id="Top">
     <div class="TopL">
       <span>智慧环卫综合管理平台</span>
-      <i v-if='showdown' class='el-icon-s-fold' @click="endlist"></i>
-      <i v-if='!showdown' class='el-icon-s-unfold' @click="openlist" ></i>
+      <i v-if="showdown" class="el-icon-s-fold" @click="endlist"></i>
+      <i v-if="!showdown" class="el-icon-s-unfold" @click="openlist"></i>
     </div>
     <div class="alert">
-      <span>公告：智慧环卫综合管理平台有新功能更新！</span>
+      <span>{{ this.msg }}</span>
     </div>
     <div class="TopR">
       <div class="right-wrap">
@@ -36,21 +36,23 @@ export default {
   data() {
     return {
       isFullscreen: false,
-      showdown:true,
-      open:false
+      showdown: true,
+      open: false,
+      animate: false,
+      msg: '公告：智慧环卫综合管理平台有新功能更新！',
+      timer: null //在data上定义定时器timer，默认为null
     };
   },
   methods: {
     endlist() {
-      this.open=false
-      this.showdown=!this.showdown
-      this.$emit("asideEnd",this.open)
+      this.open = false;
+      this.showdown = !this.showdown;
+      this.$emit("asideEnd", this.open);
     },
-    openlist(){
-      this.open=true
-      this.showdown=!this.showdown
-      this.$emit("asideOpen",this.open)
-
+    openlist() {
+      this.open = true;
+      this.showdown = !this.showdown;
+      this.$emit("asideOpen", this.open);
     },
     screen() {
       let element = document.documentElement;
@@ -77,7 +79,21 @@ export default {
         }
       }
       this.fullscreen = !this.fullscreen;
+    },
+    show() {
+      if (this.timer != null) return;
+      this.timer = setInterval(() => {
+        //获取到头的第一个字符
+        let start = this.msg.substring(0, 1);
+        //获取到后面的所有字符
+        let end = this.msg.substring(1);
+        //重新拼接得到新的字符串，并赋值给this.msg
+        this.msg = end + start;
+      }, 300);
     }
+  },
+  created() {
+    this.show()
   }
 };
 </script>
