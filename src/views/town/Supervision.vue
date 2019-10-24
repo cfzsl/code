@@ -338,8 +338,8 @@ export default {
     return {
       cssMap: [
         {
-          url: "http://47.110.160.217:10071/images000/监控1.png",
-          size: { width: 43, height: 28 },
+          url: "http://47.110.160.217:10071/images000/监控2.png",
+          size: { width: 62, height: 30 },
           textColor: "#fff",
           padding: "10px"
         }
