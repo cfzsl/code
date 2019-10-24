@@ -230,13 +230,8 @@
           </el-form-item>
           <el-form-item label="状态">
             <el-select v-model="state" class="selectTop">
-              <el-option label="全部道路" value></el-option>
-              <el-option label="庐山路" value="庐山路"></el-option>
-              <el-option label="宁阳路" value="宁阳路"></el-option>
-              <el-option label="新泰路" value="新泰路"></el-option>
-              <el-option label="北一路" value="北一路"></el-option>
-              <el-option label="北二路" value="北二路"></el-option>
-              <el-option label="黄河路" value="黄河路"></el-option>
+              <el-option label="在职" value ="在职"></el-option>
+              <el-option label="在职" value="离职"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="入职时间">
@@ -475,7 +470,7 @@ export default {
       id: "",
       web: "",
       type: "",
-      state: "",
+      state: "在职",
       value: "",
       text: "人员信息详情",
       buttonIf: true,
@@ -484,7 +479,6 @@ export default {
       id: "",
       web: "",
       type: "",
-      state: "",
       pagesize: 10,
       currpage: 1,
       listIndex: null,

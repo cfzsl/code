@@ -7,18 +7,29 @@
       <bm-boundary name="东营区" :strokeWeight="2" strokeColor="#BDC5F3" fillColor="#BDC5F3"></bm-boundary>
       <!-- mark点 -->
       <bm-marker
-        v-for="item in positions"
-        :key="item.index"
-        :position="item"
+        :position="{ lng: 118.550519, lat: 37.440409 }"
         :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
-        @click="infoWindowOpen"
       >
-        <bm-info-window
-          :position="item"
-          :show="show"
-          @close="infoWindowClose"
-          @open="infoWindowOpen"
-        >我爱北京天安门</bm-info-window>
+      </bm-marker>
+      <bm-marker
+        :position="{ lng: 118.520048, lat: 37.399597 }"
+        :icon="{url: 'http://47.110.160.217:10071/images000/清扫车.png', size: {width: 38, height: 30}}"
+      >
+      </bm-marker>
+      <bm-marker
+        :position="{ lng: 118.394716, lat: 37.404183 }"
+        :icon="{url: 'http://47.110.160.217:10071/images000/洒水车.png', size: {width: 38, height: 30}}"
+      >
+      </bm-marker>
+      <bm-marker
+        :position="{ lng: 118.561442, lat: 37.549436 }"
+        :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 38, height: 30}}"
+      >
+      </bm-marker>
+      <bm-marker
+        :position="{ lng: 118.450483, lat: 37.304588 }"
+        :icon="{url: 'http://47.110.160.217:10071/images000/对讲机.png', size: {width: 38, height: 30}}"
+      >
       </bm-marker>
       <bm-marker
         v-for="item in position2"
@@ -28,23 +39,23 @@
       ></bm-marker>
       <div class="mapList">
         <div class="list">
-          <img src="../../assets/img/洒水车.png" alt />
+          <img src="../../assets/img/洒水车.png" width="18px" height="24px" alt />
           <span>洒水车</span>
         </div>
         <div class="list">
-          <img src="../../assets/img/清扫车.png" alt />
+          <img src="../../assets/img/清扫车.png" width="18px" height="24px" alt />
           <span>清扫车</span>
         </div>
         <div class="list">
-          <img src="../../assets/img/垃圾运输车.png" alt />
+          <img src="../../assets/img/垃圾运输车.png" width="18px" height="24px" alt />
           <span>垃圾运输车</span>
         </div>
         <div class="list">
-          <img src="../../assets/img/三轮车.png" alt />
+          <img src="../../assets/img/三轮车.png" width="18px" height="24px" alt />
           <span>三轮车</span>
         </div>
         <div class="list">
-          <img src="../../assets/img/对讲机.png" alt />
+          <img class='duli' src="../../assets/img/对讲机.png" width="8px" height="24px" alt />
           <span>对讲机</span>
         </div>
       </div>
@@ -56,7 +67,7 @@
             <span>车况异常</span>
           </div>
           <div class="buttonrowR oneselfnew">
-            <span>20</span>
+            <span>3</span>
           </div>
         </div>
         <div @click="msgeslint2 = true" class="buttonrow">
@@ -65,7 +76,7 @@
             <span>油耗超标</span>
           </div>
           <div class="buttonrowR townselfnew">
-            <span>20</span>
+            <span>1</span>
           </div>
         </div>
         <div @click="msgeslint3 = true" class="buttonrow">
@@ -74,7 +85,7 @@
             <span>保养到期</span>
           </div>
           <div class="buttonrowR threeselfnew">
-            <span>20</span>
+            <span>2</span>
           </div>
         </div>
         <div @click="msgeslint4 = true" class="buttonrow">
@@ -83,7 +94,7 @@
             <span>保险到期</span>
           </div>
           <div class="buttonrowR fourselfnew">
-            <span>20</span>
+            <span>2</span>
           </div>
         </div>
         <div @click="msgeslint5 = true" class="buttonrow">
@@ -92,7 +103,7 @@
             <span>人员超龄</span>
           </div>
           <div class="buttonrowR fifselfnew">
-            <span>20</span>
+            <span>3</span>
           </div>
         </div>
         <div @click="msgeslint6 = true" class="buttonrow">
@@ -101,7 +112,7 @@
             <span>越界</span>
           </div>
           <div class="buttonrowR sixselfnew">
-            <span>20</span>
+            <span>3</span>
           </div>
         </div>
         <div @click="msgeslint7 = true" class="buttonrow">
@@ -110,7 +121,7 @@
             <span>停滞超限</span>
           </div>
           <div class="buttonrowR sevenselfnew">
-            <span>20</span>
+            <span>3</span>
           </div>
         </div>
       </div>
@@ -484,13 +495,6 @@ export default {
       msgeslint7: false,
       input3: "",
       url: "http://47.110.160.217:9071/images000/1.png",
-      positions: [
-        { lng: 118.550519, lat: 37.440409 },
-        { lng: 118.520048, lat: 37.399597 },
-        { lng: 118.394716, lat: 37.404183 },
-        { lng: 118.561442, lat: 37.549436 },
-        { lng: 118.450483, lat: 37.304588 }
-      ],
       position2: [],
       data: {
         pagesize: 10,
@@ -714,7 +718,7 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
 .bdMap {
   .map {
     position: relative;
@@ -735,7 +739,7 @@ export default {
   .list {
     // float: left;
     display: flex;
-    width: 126px;
+    width: 130px;
     height: 40px;
     line-height: 40px;
     margin-bottom: 10px;
@@ -745,6 +749,9 @@ export default {
    justify-content: left;
     img {
       margin-left: 10px;
+    }
+    .duli {
+      margin: 0 10px 0 14px;
     }
     span {
       margin-left: 6px;
@@ -766,6 +773,7 @@ export default {
   z-index: 800;
   font-size: 14px;
   display: flex;
+  justify-content: center;
   align-items: center;
   font-family: PingFangSC-Medium;
   font-weight: 400;
@@ -776,8 +784,10 @@ export default {
     line-height: 40px;
     margin-left: 6px;
     span {
+      display: inline-block;
+      // margin-left: 10px !important;
       margin-right: 0 !important;
-      margin-left: 2px;
+      margin:0 auto;
     }
   }
   .oneself {

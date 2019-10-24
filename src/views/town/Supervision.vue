@@ -339,7 +339,7 @@ export default {
       cssMap: [
         {
           url: "http://47.110.160.217:10071/images000/监控2.png",
-          size: { width: 62, height: 30 },
+          size: { width: 62, height: 32 },
           textColor: "#fff",
           padding: "10px"
         }
