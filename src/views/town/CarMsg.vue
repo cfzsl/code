@@ -149,13 +149,13 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="number" label="序号" width></el-table-column>
-      <el-table-column align="center" prop="carid" label="车牌号" width></el-table-column>
+      <el-table-column align="center" prop="sid" label="序号" width></el-table-column>
+      <el-table-column align="center" prop="carbrand" label="车牌号" width></el-table-column>
       <el-table-column align="center" prop="date" label="购车时间" width></el-table-column>
-      <el-table-column align="center" prop="address" label="资产编号" width></el-table-column>
-      <el-table-column align="center" prop="city" label="归属单位" width></el-table-column>
-      <el-table-column align="center" prop="name" label="使用人" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="联系方式" width></el-table-column>
+      <el-table-column align="center" prop="num" label="资产编号" width></el-table-column>
+      <el-table-column align="center" prop="company" label="归属单位" width></el-table-column>
+      <el-table-column align="center" prop="driver" label="使用人" width></el-table-column>
+      <el-table-column align="center" prop="phone" label="联系方式" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button
@@ -177,22 +177,22 @@
       :page-sizes="[10,20,30,40]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="32">
-    </el-pagination>
+      :total="32"
+    ></el-pagination>
     <!-- 弹框 -->
     <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
         <el-form-item label="车牌号">
-          <el-input v-model="formInline.carid"></el-input>
+          <el-input v-model="formInline.carbrand"></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
           <el-input v-model="formInline.date"></el-input>
         </el-form-item>
         <el-form-item label="资产编号">
-          <el-input v-model="formInline.address"></el-input>
+          <el-input v-model="formInline.num"></el-input>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="formInline.city" class="selectTop" disabled>
+          <el-select v-model="formInline.company" class="selectTop" disabled>
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -202,24 +202,24 @@
           </el-select>
         </el-form-item>
         <el-form-item label="使用人">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input v-model="formInline.driver"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input v-model="formInline.zipiphone"></el-input>
+          <el-input v-model="formInline.phone"></el-input>
         </el-form-item>
       </el-form>
       <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
         <el-form-item label="车牌号">
-          <el-input v-model="formInline.carid"></el-input>
+          <el-input v-model="formInline.carbrand"></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
           <el-input v-model="formInline.date"></el-input>
         </el-form-item>
         <el-form-item label="资产编号">
-          <el-input v-model="formInline.address"></el-input>
+          <el-input v-model="formInline.num"></el-input>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
+          <el-select v-model="formInline.company" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -229,10 +229,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="使用人">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input v-model="formInline.driver"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input v-model="formInline.zipiphone"></el-input>
+          <el-input v-model="formInline.phone"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -256,7 +256,141 @@ export default {
       msgimport: false,
       pagesize: 10,
       currpage: 1,
-      tableData: [],
+      tableData: [
+        {
+          sid: 1,
+          type: "垃圾清运车",
+          carbrand: "鲁E-675G3",
+          date: "2011/10/20",
+          num: "环卫-A001",
+          company: "环卫一部",
+          driver: "李诞",
+          phone: "15375669845",
+          region: "东营南站",
+          service: ""
+        },
+        {
+          sid: 2,
+          type: "洒水车",
+          carbrand: "鲁E-89901",
+          date: "2019/1/10",
+          num: "环卫-A002",
+          company: "环卫一部",
+          driver: "马丽",
+          phone: "17862169704",
+          region: "西湖公园",
+          service: ""
+        },
+        {
+          sid: 3,
+          type: "清扫车",
+          carbrand: "鲁E-81902",
+          date: "2019/1/10",
+          num: "环卫-A003",
+          company: "环卫一部",
+          driver: "张雪",
+          phone: "17862169730",
+          region: "青岛路",
+          service: ""
+        },
+        {
+          sid: 4,
+          type: "垃圾清运车",
+          carbrand: "鲁E-80003",
+          date: "2019/1/10",
+          num: "环卫-A004",
+          company: "环卫一部",
+          driver: "侯吉",
+          phone: "17865461021",
+          region: "济南路",
+          service: ""
+        },
+        {
+          sid: 5,
+          type: "垃圾清运车",
+          carbrand: "鲁E-89999",
+          date: "2019/1/10",
+          num: "环卫-A005",
+          company: "环卫一部",
+          driver: "张茜",
+          phone: "17865461024",
+          region: "滨州路",
+          service: ""
+        },
+        {
+          sid: 6,
+          type: "垃圾清运车",
+          carbrand: "鲁E-55678",
+          date: "2019/1/10",
+          num: "环卫-A006",
+          company: "环卫一部",
+          driver: "王菲",
+          phone: "17865461067",
+          region: "府前大街",
+          service: ""
+        },
+        {
+          sid: 7,
+          type: "垃圾清运车",
+          carbrand: "鲁E-21990",
+          date: "2019/1/10",
+          num: "环卫-A007",
+          company: "环卫一部",
+          driver: "李亚鹏",
+          phone: "17865461072",
+          region: "运河路",
+          service: ""
+        },
+        {
+          sid: 8,
+          type: "垃圾清运车",
+          carbrand: "鲁E-89907",
+          date: "2019/1/10",
+          num: "环卫-A008",
+          company: "环卫二部",
+          driver: "谢依霖",
+          phone: "17865463415",
+          region: "沂河路",
+          service: ""
+        },
+        {
+          sid: 9,
+          type: "垃圾清运车",
+          carbrand: "鲁E-89910",
+          date: "2019/1/10",
+          num: "环卫-A009",
+          company: "环卫二部",
+          driver: "邓超",
+          phone: "17865461159",
+          region: "北一路",
+          service: ""
+        },
+        {
+          sid: 10,
+          type: "洒水车",
+          carbrand: "鲁E-10909",
+          date: "2019/1/10",
+          num: "环卫-A0010",
+          company: "环卫二部",
+          driver: "王伟",
+          phone: "17806261529",
+          region: "井冈山路",
+          service: ""
+        },
+
+        {
+          sid: 11,
+          type: "清扫车",
+          carbrand: "鲁E-77910",
+          date: "2019/1/10",
+          num: "环卫-A011",
+          company: "环卫二部",
+          driver: "徐丽丽",
+          phone: "17806267152",
+          region: "钟山路",
+          service: ""
+        }
+      ],
       formInline: {},
       dialogVisible: false,
       i: "0",
@@ -280,7 +414,7 @@ export default {
         {
           i: "3",
           label: "三轮车"
-        },
+        }
       ],
       lu: "0",
       roadList: [
@@ -541,20 +675,7 @@ export default {
     },
     handleCurrentChange() {},
     handleSizeChange() {},
-    getlist() {
-      for (let i = 1; i < 2; i++) {
-        this.tableData.push({
-          number: i,
-          name: "李诞",
-          carid: "鲁E-D001",
-          city: "环卫一部",
-          shoptime: "2011.10.20",
-          address: "环卫-A001",
-          date: "2016-05-02",
-          zipiphone: "15375669845"
-        });
-      }
-    },
+    getlist() {},
     onSubmit() {
       console.log("查啥?");
     }

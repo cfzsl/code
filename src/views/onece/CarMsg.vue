@@ -10,7 +10,7 @@
         <span>车辆类型</span>
         <el-select v-model="search.type">
           <el-option label="全部" value="全部"></el-option>
-          <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
+          <el-option label="垃圾清运车" value="垃圾清运车"></el-option>
           <el-option label="洒水车" value="洒水车"></el-option>
           <el-option label="清扫车" value="清扫车"></el-option>
         </el-select>
@@ -58,13 +58,6 @@
     </div>
 
     <div class="menu">
-      <div class="filter">
-        <el-radio v-model="radio" label="0">全部</el-radio>
-        <el-radio v-model="radio" label="1">垃圾运输车</el-radio>
-        <el-radio v-model="radio" label="2">清扫车</el-radio>
-        <el-radio v-model="radio" label="3">洒水车</el-radio>
-      </div>
-
       <div class="btn">
         <el-button icon="el-icon-plus" @click="showedit = true">添加车辆信息</el-button>
         <el-button icon="el-icon-download" @click="msgimport = true">车辆信息导入</el-button>
@@ -72,52 +65,6 @@
       </div>
 
       <el-dialog title="车况报警" :visible.sync="msgadd">
-        <!-- <el-form ref="form" :model="msg" label-width="auto" class="msg">
-          <el-form-item label="车辆信息">
-            <el-select v-model="msg.type" placeholder="请选择车辆类型" style="width: 100%">
-              <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
-              <el-option label="洒水车" value="洒水车"></el-option>
-              <el-option label="清扫车" value="清扫车"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="车牌号">
-            <el-input v-model="msg.carbrand" placeholder="请输入车牌号"></el-input>
-          </el-form-item>
-          <el-form-item label="购车时间">
-            <el-input v-model="msg.date" placeholder="请输入购车时间"></el-input>
-          </el-form-item>
-          <el-form-item label="资产编号">
-            <el-input v-model="msg.num" placeholder="请输入资产编号"></el-input>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="msg.company" placeholder="请选择归属单位" style="width: 100%">
-              <el-option label="环卫一部" value="一部"></el-option>
-              <el-option label="环卫二部" value="二部"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="指定司机">
-            <el-input v-model="msg.driver" placeholder="请输入司机"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input v-model="msg.phone" placeholder="请输入联系方式"></el-input>
-          </el-form-item>
-          <el-form-item label="使用区域">
-            <el-select v-model="msg.region" placeholder="请选择使用区域" style="width: 100%">
-              <el-option label="东营南站" value="东营南站"></el-option>
-              <el-option label="西湖公园" value="西湖公园"></el-option>
-              <el-option label="翠湖公园" value="翠湖公园"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="车辆维修情况">
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 2}"
-              placeholder="请输入内容"
-              v-model="msg.service"
-              resize="none"
-            ></el-input>
-          </el-form-item>
-        </el-form>-->
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="list">
             <!-- 此处data应为
@@ -193,7 +140,7 @@
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <el-form-item label="车辆信息">
             <el-select v-model="msg.type" placeholder="请选择车辆类型" style="width: 100%">
-              <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
+              <el-option label="垃圾清运车" value="垃圾清运车"></el-option>
               <el-option label="洒水车" value="洒水车"></el-option>
               <el-option label="清扫车" value="清扫车"></el-option>
             </el-select>
@@ -209,8 +156,8 @@
           </el-form-item>
           <el-form-item label="归属单位">
             <el-select v-model="msg.company" placeholder="请选择归属单位" style="width: 100%">
-              <el-option label="环卫一部" value="一部"></el-option>
-              <el-option label="环卫二部" value="二部"></el-option>
+              <el-option label="环卫一部" value="环卫一部"></el-option>
+              <el-option label="环卫二部" value="环卫二部"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="指定司机">
@@ -248,7 +195,7 @@
           <el-button type="primary" size="mini">下载</el-button>
         </div>
         <div class="download">
-          <div>垃圾运输车信息模版</div>
+          <div>垃圾清运车信息模版</div>
           <el-button type="primary" size="mini">下载</el-button>
         </div>
         <div class="download">
@@ -267,7 +214,7 @@
           <el-button type="primary" size="mini">导出</el-button>
         </div>
         <div class="download">
-          <div>垃圾运输车信息模版</div>
+          <div>垃圾清运车信息模版</div>
           <el-button type="primary" size="mini">导出</el-button>
         </div>
         <div class="download">
@@ -475,7 +422,141 @@ export default {
       data: {
         pagesize: 14,
         currpage: 1,
-        list: []
+        list: [
+          {
+            sid: 1,
+            type: "垃圾清运车",
+            carbrand: "鲁E-675G3",
+            date: "2011/10/20",
+            num: "环卫-A001",
+            company: "环卫一部",
+            driver: "李诞",
+            phone: "15375669845",
+            region: "东营南站",
+            service: ""
+          },
+          {
+            sid: 2,
+            type: "洒水车",
+            carbrand: "鲁E-89901",
+            date: "2019/1/10",
+            num: "环卫-A002",
+            company: "环卫一部",
+            driver: "马丽",
+            phone: "17862169704",
+            region: "西湖公园",
+            service: ""
+          },
+          {
+            sid: 3,
+            type: "清扫车",
+            carbrand: "鲁E-81902",
+            date: "2019/1/10",
+            num: "环卫-A003",
+            company: "环卫一部",
+            driver: "张雪",
+            phone: "17862169730",
+            region: "青岛路",
+            service: ""
+          },
+          {
+            sid: 4,
+            type: "垃圾清运车",
+            carbrand: "鲁E-80003",
+            date: "2019/1/10",
+            num: "环卫-A004",
+            company: "环卫一部",
+            driver: "侯吉",
+            phone: "17865461021",
+            region: "济南路",
+            service: ""
+          },
+          {
+            sid: 5,
+            type: "垃圾清运车",
+            carbrand: "鲁E-89999",
+            date: "2019/1/10",
+            num: "环卫-A005",
+            company: "环卫一部",
+            driver: "张茜",
+            phone: "17865461024",
+            region: "滨州路",
+            service: ""
+          },
+          {
+            sid: 6,
+            type: "垃圾清运车",
+            carbrand: "鲁E-55678",
+            date: "2019/1/10",
+            num: "环卫-A006",
+            company: "环卫一部",
+            driver: "王菲",
+            phone: "17865461067",
+            region: "府前大街",
+            service: ""
+          },
+          {
+            sid: 7,
+            type: "垃圾清运车",
+            carbrand: "鲁E-21990",
+            date: "2019/1/10",
+            num: "环卫-A007",
+            company: "环卫一部",
+            driver: "李亚鹏",
+            phone: "17865461072",
+            region: "运河路",
+            service: ""
+          },
+          {
+            sid: 8,
+            type: "垃圾清运车",
+            carbrand: "鲁E-89907",
+            date: "2019/1/10",
+            num: "环卫-A008",
+            company: "环卫二部",
+            driver: "谢依霖",
+            phone: "17865463415",
+            region: "沂河路",
+            service: ""
+          },
+          {
+            sid: 9,
+            type: "垃圾清运车",
+            carbrand: "鲁E-89910",
+            date: "2019/1/10",
+            num: "环卫-A009",
+            company: "环卫二部",
+            driver: "邓超",
+            phone: "17865461159",
+            region: "北一路",
+            service: ""
+          },
+          {
+            sid: 10,
+            type: "洒水车",
+            carbrand: "鲁E-10909",
+            date: "2019/1/10",
+            num: "环卫-A0010",
+            company: "环卫二部",
+            driver: "王伟",
+            phone: "17806261529",
+            region: "井冈山路",
+            service: ""
+          },
+
+          {
+            sid: 11,
+            type: "清扫车",
+            carbrand: "鲁E-77910",
+            date: "2019/1/10",
+            num: "环卫-A011",
+            company: "环卫二部",
+            driver: "徐丽丽",
+            phone: "17806267152",
+            region: "钟山路",
+            service: ""
+          }
+        ]
       },
       search: {
         type: "全部",
@@ -551,7 +632,7 @@ export default {
       warning: [
         {
           number: 1,
-          type: "垃圾运输车",
+          type: "垃圾清运车",
           carbrand: "鲁E-675G3",
           date: "2010-05-05",
           num: "环卫-A001",
@@ -697,22 +778,6 @@ export default {
     },
     showWarning() {
       this.showwarning = !this.showwarning;
-    },
-    date() {
-      for (let i = 0; i < 1; i++) {
-        this.data.list.push({
-          sid: i,
-          type: "垃圾清运车",
-          carbrand: "鲁E-675G3",
-          date: "2011.10.20",
-          num: "环卫-A001",
-          company: "环卫一部",
-          driver: "李诞",
-          phone: "15375669845",
-          region: "东营南站",
-          service: ""
-        });
-      }
     },
     nextpage(value) {
       this.data.currpage = value;
