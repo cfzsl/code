@@ -1,104 +1,218 @@
 <template>
   <!-- 出勤统计 -->
   <div>
-    <div class="search">
-      <div class="searchbox">
-        <span>区域</span>
-        <el-select v-model="search.work">
-          <el-option label="全部区域" value="全部区域"></el-option>
-          <el-option label="东营区" value="东营区"></el-option>
-          <el-option label="滨洲区" value="滨洲区"></el-option>
-        </el-select>
-      </div>
-
-      <div class="searchbox">
-        <span>部门</span>
-        <el-select v-model="search.type">
-          <el-option label="全部部门" value="全部部门"></el-option>
-          <el-option label="环卫一部" value="环卫一部"></el-option>
-          <el-option label="环卫二部" value="环卫二部"></el-option>
-          <el-option label="环卫三部" value="环卫三部"></el-option>
-        </el-select>
-      </div>
-
-      <el-button type="primary" class="btn">查看</el-button>
-    </div>
-
-    <div class="content">
-      <div class="imgset">
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <div class="grid-content">
-              <img src="../../assets/img/微信截图_20191023142410.png" alt />
+    <el-tabs value="form">
+      <el-tab-pane label="表格统计" name="form">
+        <div id="base">
+          <!-- 搜索 -->
+          <div class="search">
+            <div class="searchTop">
+              <el-form :inline="true" :model="search">
+                <el-form-item label="姓名">
+                  <el-input class="searchInput" v-model="search.name" placeholder="姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="作业区域">
+                  <el-select v-model="search.area">
+                    <el-option label="全部区域" value></el-option>
+                    <el-option label="东营区新区" value="东营区新区"></el-option>
+                    <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
+                    <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
+                    <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
+                    <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
+                    <el-option label="六户镇" value="六户镇"></el-option>
+                    <el-option label="史口镇" value="史口镇"></el-option>
+                    <el-option label="牛庄镇" value="牛庄镇"></el-option>
+                    <el-option label="龙居镇" value="龙居镇"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="岗位">
+                  <el-select v-model="search.job">
+                    <el-option label="全部岗位" value></el-option>
+                    <el-option label="环卫工人" value="环卫工人"></el-option>
+                    <el-option label="洒水车司机" value="洒水车司机"></el-option>
+                    <el-option label="清运车司机" value="清运车司机"></el-option>
+                    <el-option label="清扫车司机" value="清扫车司机"></el-option>
+                    <el-option label="中队长" value="中队长"></el-option>
+                    <el-option label="队员" value="队员"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="归属单位">
+                  <el-date-picker v-model="search.date" type="date" placeholder="选择日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="onSubmit">查询</el-button>
+                </el-form-item>
+              </el-form>
             </div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content">
-              <img src="../../assets/img/微信截图_20191023142429.png" alt />
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content">
-              <img src="../../assets/img/微信截图_20191023142445.png" alt />
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content">
-              <img src="../../assets/img/微信截图_20191023142459.png" alt />
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+          </div>
 
-      <div class="echartscontent">
-        <div style="float:left;">
-          <div id="main" style="width: 1200px;height:500px;"></div>
+          <!-- 列表 -->
+          <div id="table">
+            <el-table
+              :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              border
+              style="width: 100%"
+            >
+              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+              <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+              <el-table-column align="center" prop="phone" label="电话"></el-table-column>
+              <el-table-column align="center" prop="company" label="单位"></el-table-column>
+              <el-table-column align="center" prop="area" label="区域"></el-table-column>
+              <el-table-column align="center" prop="job" label="岗位"></el-table-column>
+              <el-table-column align="center" prop="work" label="出勤天数"></el-table-column>
+              <el-table-column align="center" prop="rest" label="休息天数"></el-table-column>
+              <el-table-column align="center" prop="leave" label="请假天数"></el-table-column>
+              <el-table-column align="center" fixed="right" label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    class="tableButton1"
+                    type="primary"
+                    size="small"
+                    @click="showdetail(scope.row, scope.$index)"
+                  >详情</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <div class="pagination">
+              <el-pagination
+                :current-page="data.currpage"
+                :page-size="data.pagesize"
+                :pager-count="21"
+                layout="total, prev, pager, next"
+                :total="data.list.length"
+                @prev-click="nextpage"
+                @next-click="nextpage"
+                @current-change="nextpage"
+              ></el-pagination>
+            </div>
+
+            <!-- 详情 -->
+            <el-dialog
+              :title="row.name + '-出勤详情'"
+              :visible.sync="detail"
+              class="dialog"
+              @close="13"
+            >
+              <div class="title">
+                出勤
+                <span style="color: blue">{{ row.work }}</span>
+                天，休息
+                <span style="color: green">{{ row.rest }}</span>
+                天，请假
+                <span style="color: red">{{ row.leave }}</span>
+                天
+              </div>
+              <div class="datepicker">
+                <el-date-picker
+                  v-model="dialogdate"
+                  type="date"
+                  placeholder="选择日期"
+                  style="margin-right: 20px;"
+                ></el-date-picker>
+                <el-button type="primary">查询</el-button>
+              </div>
+              <div class="content">
+                <img src="./month.png" />
+              </div>
+            </el-dialog>
+          </div>
         </div>
-      </div>
-      <div style="float: left;">
-        <div class="item">
-          <div class="title">请假</div>
-          <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="12">
-              <div class="grid-content total"><b style="font-size:35px">8</b>人</div>
-            </el-col>
-            <el-col :span="12">
-              <div class="grid-content">环卫部：2人</div>
-              <div class="grid-content">人事部：1人</div>
-              <div class="grid-content">后勤部：2人</div>
-              <div class="grid-content">垃圾运输部： 1人</div>
-              <div class="grid-content">道路保养部：2人</div>
-            </el-col>
-          </el-row>
+      </el-tab-pane>
+
+      <el-tab-pane label="图表统计" name="chart">
+        <div class="search">
+          <div class="searchbox">
+            <span>月份</span>
+            <el-date-picker v-model="search.date" type="date" placeholder="选择日期"></el-date-picker>
+          </div>
+
+          <el-button type="primary" class="btn">查询</el-button>
         </div>
-        <div class="item">
-          <div class="title">迟到早退</div>
-          <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="12">
-              <div class="grid-content total"><b style="font-size:35px">4</b>人</div>
-            </el-col>
-            <el-col :span="12">
-              <div class="grid-content">环卫部：1人</div>
-              <div class="grid-content">人事部：1人</div>
-              <div class="grid-content">后勤部：2人</div>
-            </el-col>
-          </el-row>
+
+        <div class="content">
+          <div class="left">
+            <div class="imgset">
+              <el-row type="flex" class="row-bg" justify="space-around">
+                <el-col :span="6">
+                  <div class="grid-content">
+                    <img src="./pie.png" alt />
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content">
+                    <img src="./work.png" alt />
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="grid-content">
+                    <img src="./monthwork.png" alt />
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+
+            <div style="float:left;">
+              <div id="main" style="width: 1200px;height:500px;"></div>
+            </div>
+          </div>
+
+          <div style="float: left;">
+            <div class="item">
+              <!-- <div class="title">请假</div>
+              <el-row type="flex" class="row-bg" justify="space-around">
+                <el-col :span="12">
+                  <div class="grid-content total">
+                    <b style="font-size:35px">8</b>人
+                  </div>
+                </el-col>
+                <el-col :span="12">
+                  <div class="grid-content">环卫部：2人</div>
+                  <div class="grid-content">人事部：1人</div>
+                  <div class="grid-content">后勤部：2人</div>
+                  <div class="grid-content">垃圾运输部： 1人</div>
+                  <div class="grid-content">道路保养部：2人</div>
+                </el-col>
+              </el-row>-->
+              <img src="./leave.png" alt />
+            </div>
+            <div class="item">
+              <!-- <div class="title">迟到早退</div>
+              <el-row type="flex" class="row-bg" justify="space-around">
+                <el-col :span="12">
+                  <div class="grid-content total">
+                    <b style="font-size:35px">4</b>人
+                  </div>
+                </el-col>
+                <el-col :span="12">
+                  <div class="grid-content">环卫部：1人</div>
+                  <div class="grid-content">人事部：1人</div>
+                  <div class="grid-content">后勤部：2人</div>
+                </el-col>
+              </el-row>-->
+              <img src="./late.png" alt />
+            </div>
+            <div class="item">
+              <!-- <div class="title">公务外出</div>
+              <el-row type="flex" class="row-bg" justify="space-around">
+                <el-col :span="12">
+                  <div class="grid-content total">
+                    <b style="font-size:35px">5</b>人
+                  </div>
+                </el-col>
+                <el-col :span="12">
+                  <div class="grid-content">人事部：1人</div>
+                  <div class="grid-content">财务部：2人</div>
+                  <div class="grid-content">采购部：2人</div>
+                </el-col>
+              </el-row>-->
+              <img src="./goout.png" alt />
+            </div>
+          </div>
         </div>
-        <div class="item">
-          <div class="title">公务外出</div>
-          <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="12">
-              <div class="grid-content total"><b style="font-size:35px">5</b>人</div>
-            </el-col>
-            <el-col :span="12">
-              <div class="grid-content">人事部：1人</div>
-              <div class="grid-content">财务部：2人</div>
-              <div class="grid-content">采购部：2人</div>
-            </el-col>
-          </el-row>
-        </div>
-      </div>
-    </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -108,11 +222,130 @@ export default {
   data() {
     return {
       search: {
-        type: "全部部门",
-        work: "全部区域",
-        road: "全部",
-        company: "全部"
-      }
+        name: "",
+        area: "",
+        job: "",
+        date: ""
+      },
+      data: {
+        pagesize: 13,
+        currpage: 1,
+        list: [
+          {
+            sid: 1,
+            name: "李诞",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 25,
+            rest: 2,
+            leave: 1
+          },
+          {
+            sid: 2,
+            name: "马丽",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 21,
+            rest: 3,
+            leave: 4
+          },
+          {
+            sid: 3,
+            name: "张雪",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 23,
+            rest: 3,
+            leave: 5
+          },
+          {
+            sid: 4,
+            name: "侯吉",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 21,
+            rest: 3,
+            leave: 4
+          },
+          {
+            sid: 5,
+            name: "张茜",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 26,
+            rest: 1,
+            leave: 2
+          },
+          {
+            sid: 6,
+            name: "王菲",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 25,
+            rest: 2,
+            leave: 3
+          },
+          {
+            sid: 7,
+            name: "李亚鹏",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 25,
+            rest: 2,
+            leave: 2
+          },
+          {
+            sid: 8,
+            name: "谢依霖",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 27,
+            rest: 3,
+            leave: 0
+          },
+          {
+            sid: 9,
+            name: "邓超",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 23,
+            rest: 4,
+            leave: 1
+          },
+          {
+            sid: 10,
+            name: "王伟",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区新区",
+            job: "环卫工",
+            work: 27,
+            rest: 2,
+            leave: 1
+          }
+        ]
+      },
+      detail: false,
+      row: {},
+      dialogdate: ""
     };
   },
   methods: {
@@ -227,6 +460,14 @@ export default {
           }
         ]
       });
+    },
+    onSubmit() {},
+    nextpage(value) {
+      this.data.currpage = value;
+    },
+    showdetail(row, index) {
+      this.detail = !this.detail;
+      this.row = row;
     }
   },
   mounted() {
@@ -237,11 +478,9 @@ export default {
 
 <style lang="scss" scoped>
 .search {
-  padding: 20px 0;
+  margin-bottom: 10px;
   .searchbox {
     float: left;
-    padding-left: 20px;
-    margin-left: 20px;
     span {
       margin-right: 10px;
     }
@@ -252,25 +491,44 @@ export default {
 }
 
 .content {
+  .left {
+    float: left;
+    width: 75%;
+  }
   .imgset {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
   }
   .item {
-    width: 298px;
-    height: 150px;
-    border: 1px solid #d2d2d2;
+    // width: 298px;
+    // height: 150px;
+    // border: 1px solid #d2d2d2;
     margin-bottom: 25px;
-    .title {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      margin-left: 20px;
-      font-size: 20px;
-    }
-    .total {
-      margin-top: 25px;
-      font-size: 20px;
-      text-align: center;
-    }
+    // .title {
+    //   margin-top: 10px;
+    //   margin-bottom: 10px;
+    //   margin-left: 20px;
+    //   font-size: 20px;
+    // }
+    // .total {
+    //   margin-top: 25px;
+    //   font-size: 20px;
+    //   text-align: center;
+    // }
+  }
+}
+.pagination {
+  float: right;
+  margin-right: 25px;
+  padding-top: 20px;
+}
+
+.dialog {
+  .title {
+    float: right;
+  }
+  .content {
+    margin-top: 20px;
+    text-align: center;
   }
 }
 </style>

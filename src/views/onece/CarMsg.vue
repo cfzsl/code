@@ -318,7 +318,12 @@
           <div class="grid-content bg-purple">
             <el-form label-position="right" label-width="80px" :model="maintenanceMsg">
               <el-form-item label="日期">
-                <el-input v-model="maintenanceMsg.date"></el-input>
+                <el-date-picker
+                  style="width:150px"
+                  v-model="maintenanceMsg.date"
+                  type="date"
+                  placeholder="选择日期"
+                ></el-date-picker>
               </el-form-item>
               <el-form-item label="负责人">
                 <el-input v-model="maintenanceMsg.driver"></el-input>
@@ -366,24 +371,24 @@
           <el-image
             class="img"
             style="width: 50px; height: 50px"
-            :src="url"
+            :src="url1"
             fit="fill"
-            @click="showimgs"
+            @click="showimgs(url1)"
           ></el-image>
           <el-image
             class="img"
             style="width: 50px; height: 50px"
-            :src="url"
+            :src="url2"
             fit="fill"
-            @click="showimgs"
+            @click="showimgs(url2)"
           ></el-image>
         </el-table-column>
       </el-table>
     </el-dialog>
 
     <!-- 保养记录图片 -->
-    <el-dialog title="Camera Image" width="550px" :visible.sync="showimg">
-      <el-image style="width: 511px; height: 592px" :src="url" fit="contain"></el-image>
+    <el-dialog title="保养图片" width="550px" :visible.sync="showimg">
+      <el-image style="width: 100%;" :src="url" fit="contain"></el-image>
       <el-row class="imgcontent">
         <el-col :span="20">
           <div class="grid-content bg-purple">上传于： 2019-10-20</div>
@@ -574,7 +579,9 @@ export default {
       showinsurancea: false,
       showdetail: false,
       showedit: false,
-      url: "http://47.110.160.217:9071/images000/1.png",
+      url: "",
+      url1: "http://47.110.160.217:10071/images000/by1.jpg",
+      url2: "http://47.110.160.217:10071/images000/by2.jpg",
       insuranceList: [
         {
           carbrand: "鲁E-562E4",
@@ -600,14 +607,14 @@ export default {
           carbrand: "鲁E-675G3",
           date: "2019-01-20",
           driver: "李诞",
-          content: "前胎轮胎漏气，换内胎一只",
+          content: "更换火花塞",
           img: ""
         },
         {
           carbrand: "鲁E-675G3",
           date: "2018-05-20",
           driver: "刘波",
-          content: "车刹片维保",
+          content: "更换发动机机油及滤清器",
           img: ""
         }
       ],
@@ -770,7 +777,8 @@ export default {
     showinsurance() {
       this.showinsurancea = !this.showinsurancea;
     },
-    showimgs() {
+    showimgs(v) {
+      this.url = v;
       this.showimg = !this.showimg;
     },
     showmaintenance() {

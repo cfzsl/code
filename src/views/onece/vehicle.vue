@@ -140,17 +140,17 @@
 
       <!-- 弹框3 -->
       <el-dialog
-        title="车况检测和报警"
+        :title=dialog3
         :visible.sync="msgeslint"
         @close="msg = {}"
         width="70%"
         class="elDialog"
       >
         <div class="searchDialogBot">
-          <el-button class="buttonBot" @click="showdialog(1)">车况检测报警</el-button>
-          <el-button class="buttonBot" @click="showdialog(2)">油耗超标报警</el-button>
-          <el-button class="buttonBot" @click="showdialog(3)">车辆保养预警</el-button>
-          <el-button class="buttonBotLast" @click="showdialog(4)">保险到期提醒</el-button>
+          <el-button class="buttonBot" @click="showdialog(1,'车况检测报警')">车况检测报警</el-button>
+          <el-button class="buttonBot" @click="showdialog(2,'油耗超标报警')">油耗超标报警</el-button>
+          <el-button class="buttonBot" @click="showdialog(3,'车辆保养预警')">车辆保养预警</el-button>
+          <el-button class="buttonBotLast" @click="showdialog(4,'保险到期提醒')">保险到期提醒</el-button>
         </div>
         <el-divider class="divider"></el-divider>
 
@@ -988,7 +988,8 @@ export default {
           arrivals: "08:10",
           leave: "08:20"
         }
-      ]
+      ],
+      dialog3: '车况检测报警'
     };
   },
   created() {
@@ -1004,8 +1005,9 @@ export default {
     showtime() {
       this.time = !this.time;
     },
-    showdialog(v) {
+    showdialog(v,title) {
       this.show = v;
+      this.dialog3 = title;
     },
     focus(e) {
       console.log(e.target);
