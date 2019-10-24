@@ -525,9 +525,6 @@ export default {
       this.detail = !this.detail;
     },
     addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
       //关闭弹窗
       console.log("关闭");
       this.buttonIf = false;
@@ -558,7 +555,8 @@ export default {
           this.$qs.stringify(this.search)
         )
         .then(res => {
-          this.tableData = res.data;
+          console.log(res);
+          this.data.list = res.data;
         });
     },
     nextpage(value) {
