@@ -261,6 +261,7 @@
       <!-- 百度地图搜索 -->
     </div>
     <div class="bdMap">
+      <!-- 三轮车 -->
       <baidu-map
         class="map"
         :center="{lng: 118.542132,lat: 37.453942}"
@@ -279,6 +280,7 @@
           :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 300, height: 157}}"
         ></bm-marker>
       </baidu-map>
+      <!-- 点聚合 -->
       <baidu-map
         class="map"
         :center="{lng: 118.592815,lat: 37.457724}"
@@ -308,6 +310,7 @@
       </baidu-map>
 
       <!-- <div id="allmap" v-if='showmark' ></div> -->
+      <!-- 轨迹回放 -->
       <div class="mapbox">
         <baidu-map
           class="map"
@@ -316,7 +319,12 @@
           :scroll-wheel-zoom="true"
           v-if="showline"
         >
-          <bm-marker class="icon" :position="polylinePath[0]" :dragging="false"></bm-marker>
+          <bm-marker
+            :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
+            :rotation="polylinePathMarker[0].direction"
+            :position="polylinePathMarker[0]"
+            :dragging="false"
+          ></bm-marker>
           <bm-polyline
             :path="polylinePath"
             stroke-color="blue"
@@ -683,11 +691,8 @@ export default {
       },
       value1: "",
       value2: "",
-      polylinePath: [
-        { lng: 116.404, lat: 39.915 },
-        { lng: 116.405, lat: 39.92 },
-        { lng: 116.423493, lat: 39.907445 }
-      ],
+      polylinePath: [{ lng: "", lat: "", direction: 0 }],
+      polylinePathMarker: [{ lng: "", lat: "", direction: 0 }],
       stagnationList: [
         {
           number: 1,
@@ -748,14 +753,14 @@ export default {
           driver: "刘波",
           phone: "15375669845"
         }
-      ],
-      polylinePath: [{ lng: "", lat: "" }]
+      ]
     };
   },
   created() {
     this.date();
     this.getPositions();
     this.getTricycle();
+    this.getpolyline()
   },
 
   components: {
@@ -783,20 +788,25 @@ export default {
     serachend() {
       this.msgserach = true;
     },
+    getpolyline() {
+      this.$http.get("xy/demo").then(res => {
+        this.polylinePath = res.data;
+        this.polylinePathMarker = res.data;
+      });
+    },
     huifang() {
       this.showmap = false;
       this.showmark = false;
       this.showline = true;
       this.$http.get("xy/demo").then(res => {
-        this.polylinePath = res.data;
-        console.log(this.polylinePath);
+        this.polylinePathMarker = res.data;
       });
       clearInterval(this.timer);
       this.msgserach = !this.msgserach;
       this.timer = setInterval(() => {
-        if (this.polylinePath.length != 0) {
-          this.polylinePath.splice(0, 1);
-        } else if (this.polylinePath.length == 0) {
+        if (this.polylinePathMarker.length != 1) {
+          this.polylinePathMarker.splice(0, 1);
+        } else if (this.polylinePathMarker.length == 1) {
           clearInterval(this.timer);
         }
       }, 500);

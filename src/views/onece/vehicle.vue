@@ -464,7 +464,7 @@
           :scroll-wheel-zoom="true"
         >
           <bm-marker
-            :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
+            :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
             :rotation="polylinePathMarker[0].direction"
             :position="polylinePathMarker[0]"
             :dragging="false"
@@ -1013,14 +1013,9 @@ export default {
     },
     getpolyline() {
       this.$http.get("xy/demo").then(res => {
-        console.log(res.data);
-
         this.polylinePath = res.data;
         this.polylinePathMarker = res.data;
       });
-    },
-    updatePolylinePath(e) {
-      this.polylinePath = e.target.getPath();
     },
     huifang() {
       this.$http.get("xy/demo").then(res => {

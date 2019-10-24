@@ -547,6 +547,7 @@ export default {
         });
     },
     onSubmit() {
+      this.data.currpage = 1
       this.$http
         .post(
           "userInformation/userInformationCriteriaQuery",
