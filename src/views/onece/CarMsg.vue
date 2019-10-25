@@ -4,21 +4,21 @@
     <div class="search">
       <div class="searchbox">
         <span>车牌号鲁E-</span>
-        <el-input v-model="input" placeholder="请输入车牌号" style="width: 130px"></el-input>
+        <el-input v-model="search.busnumber" placeholder="请输入车牌号" style="width: 130px"></el-input>
       </div>
       <div class="searchbox">
         <span>车辆类型</span>
         <el-select v-model="search.type">
-          <el-option label="全部" value="全部"></el-option>
-          <el-option label="垃圾清运车" value="垃圾清运车"></el-option>
+          <el-option label="全部" value></el-option>
+          <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
           <el-option label="洒水车" value="洒水车"></el-option>
           <el-option label="清扫车" value="清扫车"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
         <span>负责道路</span>
-        <el-select v-model="search.road">
-          <el-option label="全部" value="全部"></el-option>
+        <el-select v-model="search.param2">
+          <el-option label="全部" value></el-option>
           <el-option label="庐山路" value="庐山路"></el-option>
           <el-option label="宁阳路" value="宁阳路"></el-option>
           <el-option label="新泰路" value="新泰路"></el-option>
@@ -31,8 +31,8 @@
       </div>
       <div class="searchbox">
         <span>作业区域</span>
-        <el-select v-model="search.work">
-          <el-option label="全部" value="全部"></el-option>
+        <el-select v-model="search.area">
+          <el-option label="全部" value></el-option>
           <el-option label="东营区新区" value="东营区新区"></el-option>
           <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
           <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
@@ -45,16 +45,16 @@
         </el-select>
       </div>
       <div class="searchbox">
-        <span>单位</span>
-        <el-select v-model="search.company">
-          <el-option label="全部" value="全部"></el-option>
+        <span>所属单位</span>
+        <el-select v-model="search.department">
+          <el-option label="全部" value></el-option>
           <el-option label="环卫一部" value="环卫一部"></el-option>
           <el-option label="环卫二部" value="环卫二部"></el-option>
           <el-option label="环卫三部" value="环卫三部"></el-option>
           <el-option label="环卫四部" value="环卫四部"></el-option>
         </el-select>
       </div>
-      <el-button type="primary" class="btn">查询</el-button>
+      <el-button type="primary" class="btn" @click="searchBtn">查询</el-button>
     </div>
 
     <div class="menu">
@@ -64,150 +64,7 @@
         <el-button icon="el-icon-upload2" @click="msgexport = true">车辆信息导出</el-button>
       </div>
 
-      <el-dialog title="车况报警" :visible.sync="msgadd">
-        <el-form ref="form" :model="msg" label-width="auto" class="msg">
-          <div class="list">
-            <!-- 此处data应为
-            data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table :data="warning" border style="width: 100%">
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="company" label="故障信息"></el-table-column>
-              <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
-              <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
-              <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
-              <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
-            </el-table>
-          </div>
-        </el-form>
-      </el-dialog>
-
-      <el-dialog title="车辆信息" width="450px" :visible.sync="showdetail">
-        <el-form ref="form" :model="msg" label-width="auto" class="msg">
-          <el-form-item label="车辆信息">
-            <el-select disabled v-model="msg.type" placeholder="请选择车辆类型" style="width: 100%">
-              <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
-              <el-option label="洒水车" value="洒水车"></el-option>
-              <el-option label="清扫车" value="清扫车"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="车牌号">
-            <el-input readonly v-model="msg.carbrand" placeholder="请输入车牌号"></el-input>
-          </el-form-item>
-          <el-form-item label="购车时间">
-            <el-input readonly v-model="msg.date" placeholder="请输入购车时间"></el-input>
-          </el-form-item>
-          <el-form-item label="资产编号">
-            <el-input readonly v-model="msg.num" placeholder="请输入资产编号"></el-input>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select disabled v-model="msg.company" placeholder="请选择归属单位" style="width: 100%">
-              <el-option label="环卫一部" value="一部"></el-option>
-              <el-option label="环卫二部" value="二部"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="指定司机">
-            <el-input readonly v-model="msg.driver" placeholder="请输入司机"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input readonly v-model="msg.phone" placeholder="请输入联系方式"></el-input>
-          </el-form-item>
-          <el-form-item label="使用区域">
-            <el-select disabled v-model="msg.region" placeholder="请选择使用区域" style="width: 100%">
-              <el-option label="东营南站" value="东营南站"></el-option>
-              <el-option label="西湖公园" value="西湖公园"></el-option>
-              <el-option label="翠湖公园" value="翠湖公园"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="车辆维修情况">
-            <el-input
-              readonly
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 2}"
-              placeholder="请输入内容"
-              v-model="msg.service"
-              resize="none"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="showedit = true;showdetail = false">编辑</el-button>
-        </span>
-      </el-dialog>
-
-      <el-dialog title="车辆编辑" width="450px" :visible.sync="showedit" @close="msg = {}">
-        <el-form ref="form" :model="msg" label-width="auto" class="msg">
-          <el-form-item label="车辆信息">
-            <el-select v-model="msg.type" placeholder="请选择车辆类型" style="width: 100%">
-              <el-option label="垃圾清运车" value="垃圾清运车"></el-option>
-              <el-option label="洒水车" value="洒水车"></el-option>
-              <el-option label="清扫车" value="清扫车"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="车牌号">
-            <el-input v-model="msg.carbrand" placeholder="请输入车牌号"></el-input>
-          </el-form-item>
-          <el-form-item label="购车时间">
-            <el-input v-model="msg.date" placeholder="请输入购车时间"></el-input>
-          </el-form-item>
-          <el-form-item label="资产编号">
-            <el-input v-model="msg.num" placeholder="请输入资产编号"></el-input>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="msg.company" placeholder="请选择归属单位" style="width: 100%">
-              <el-option label="环卫一部" value="环卫一部"></el-option>
-              <el-option label="环卫二部" value="环卫二部"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="指定司机">
-            <el-input v-model="msg.driver" placeholder="请输入司机"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input v-model="msg.phone" placeholder="请输入联系方式"></el-input>
-          </el-form-item>
-          <el-form-item label="使用区域">
-            <el-select v-model="msg.region" placeholder="请选择使用区域" style="width: 100%">
-              <el-option label="东营南站" value="东营南站"></el-option>
-              <el-option label="西湖公园" value="西湖公园"></el-option>
-              <el-option label="翠湖公园" value="翠湖公园"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="车辆维修情况">
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 2}"
-              placeholder="请输入内容"
-              v-model="msg.service"
-              resize="none"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="showedit = false">取消</el-button>
-          <el-button type="primary" @click="showedit = false">提交</el-button>
-        </span>
-      </el-dialog>
-
-      <el-dialog title="信息导入" :visible.sync="msgimport" width="15%" center>
-        <div class="download">
-          <div>全部信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-        <div class="download">
-          <div>垃圾清运车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-        <div class="download">
-          <div>清扫车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-        <div class="download">
-          <div>洒水车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
-        </div>
-      </el-dialog>
-
+      <!-- 信息导出 -->
       <el-dialog title="信息导出" :visible.sync="msgexport" width="15%" center>
         <div class="download">
           <div>全部信息模版</div>
@@ -226,6 +83,26 @@
           <el-button type="primary" size="mini">导出</el-button>
         </div>
       </el-dialog>
+
+      <!-- 信息导入 -->
+      <el-dialog title="信息导入" :visible.sync="msgimport" width="15%" center>
+        <div class="download">
+          <div>全部信息模版</div>
+          <el-button type="primary" size="mini">下载</el-button>
+        </div>
+        <div class="download">
+          <div>垃圾清运车信息模版</div>
+          <el-button type="primary" size="mini">下载</el-button>
+        </div>
+        <div class="download">
+          <div>清扫车信息模版</div>
+          <el-button type="primary" size="mini">下载</el-button>
+        </div>
+        <div class="download">
+          <div>洒水车信息模版</div>
+          <el-button type="primary" size="mini">下载</el-button>
+        </div>
+      </el-dialog>
     </div>
 
     <div class="list">
@@ -236,12 +113,12 @@
         style="width: 100%"
         @row-click="showadd"
       >
-        <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-        <el-table-column align="center" prop="date" label="购车时间"></el-table-column>
-        <el-table-column align="center" prop="num" label="资产编号"></el-table-column>
-        <el-table-column align="center" prop="company" label="归属单位"></el-table-column>
-        <el-table-column align="center" prop="driver" label="指定司机"></el-table-column>
-        <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
+        <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+        <el-table-column align="center" prop="shoppingtime" label="购车时间"></el-table-column>
+        <el-table-column align="center" prop="member" label="资产编号"></el-table-column>
+        <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
+        <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
+        <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
         <el-table-column align="center" label="车况报警">
           <template slot-scope="scope">
             <el-button
@@ -295,6 +172,130 @@
         @current-change="nextpage"
       ></el-pagination>
     </div>
+
+    <!-- 车辆信息 -->
+    <el-dialog title="车辆信息" width="450px" :visible.sync="showdetail">
+      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form-item label="车辆信息">
+          <el-select disabled v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
+            <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
+            <el-option label="洒水车" value="洒水车"></el-option>
+            <el-option label="清扫车" value="清扫车"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车牌号">
+          <el-input readonly v-model="msg.busnumber" placeholder="请输入车牌号"></el-input>
+        </el-form-item>
+        <el-form-item label="购车时间">
+          <el-input readonly v-model="msg.shoppingtime" placeholder="请输入购车时间"></el-input>
+        </el-form-item>
+        <el-form-item label="资产编号">
+          <el-input readonly v-model="msg.member" placeholder="请输入资产编号"></el-input>
+        </el-form-item>
+        <el-form-item label="归属单位">
+          <el-select disabled v-model="msg.department" placeholder="请选择归属单位" style="width: 100%">
+            <el-option label="环卫一部" value="一部"></el-option>
+            <el-option label="环卫二部" value="二部"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="指定司机">
+          <el-input readonly v-model="msg.user" placeholder="请输入司机"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input readonly v-model="msg.tel" placeholder="请输入联系方式"></el-input>
+        </el-form-item>
+        <el-form-item label="使用区域">
+          <el-select disabled v-model="msg.area" placeholder="请选择使用区域" style="width: 100%">
+            <el-option label="东营南站" value="东营南站"></el-option>
+            <el-option label="西湖公园" value="西湖公园"></el-option>
+            <el-option label="翠湖公园" value="翠湖公园"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆维修情况">
+          <el-input
+            readonly
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 2}"
+            placeholder="请输入内容"
+            v-model="msg.information"
+            resize="none"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="showedit = true;showdetail = false">编辑</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 车辆编辑 -->
+    <el-dialog title="车辆编辑" width="450px" :visible.sync="showedit" @close="msg = {}">
+      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form-item label="车辆信息">
+          <el-select v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
+            <el-option label="垃圾清运车" value="垃圾清运车"></el-option>
+            <el-option label="洒水车" value="洒水车"></el-option>
+            <el-option label="清扫车" value="清扫车"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车牌号">
+          <el-input v-model="msg.busnumber" placeholder="请输入车牌号"></el-input>
+        </el-form-item>
+        <el-form-item label="购车时间">
+          <el-input v-model="msg.shoppingtime" placeholder="请输入购车时间"></el-input>
+        </el-form-item>
+        <el-form-item label="资产编号">
+          <el-input v-model="msg.member" placeholder="请输入资产编号"></el-input>
+        </el-form-item>
+        <el-form-item label="归属单位">
+          <el-select v-model="msg.department" placeholder="请选择归属单位" style="width: 100%">
+            <el-option label="环卫一部" value="环卫一部"></el-option>
+            <el-option label="环卫二部" value="环卫二部"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="指定司机">
+          <el-input v-model="msg.user" placeholder="请输入司机"></el-input>
+        </el-form-item>
+        <el-form-item label="使用区域">
+          <el-select v-model="msg.area" placeholder="请选择使用区域" style="width: 100%">
+            <el-option label="东营南站" value="东营南站"></el-option>
+            <el-option label="西湖公园" value="西湖公园"></el-option>
+            <el-option label="翠湖公园" value="翠湖公园"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆维修情况">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 2}"
+            placeholder="请输入内容"
+            v-model="msg.information"
+            resize="none"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="showedit = false">取消</el-button>
+        <el-button type="primary" @click="showedit = false">提交</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 车况报警 -->
+    <el-dialog title="车况报警" :visible.sync="msgadd">
+      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <div class="list">
+          <!-- 此处data应为
+          data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
+          <el-table :data="warning" border style="width: 100%">
+            <el-table-column align="center" prop="number" label="序号"></el-table-column>
+            <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
+            <el-table-column align="center" prop="company" label="故障信息"></el-table-column>
+            <el-table-column align="center" prop="policeDate" label="报警时间"></el-table-column>
+            <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
+            <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
+            <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
+          </el-table>
+        </div>
+      </el-form>
+    </el-dialog>
 
     <!-- 油耗 -->
     <el-dialog title="油耗报警" :visible.sync="showwarning">
@@ -427,149 +428,34 @@ export default {
       data: {
         pagesize: 14,
         currpage: 1,
-        list: [
-          {
-            sid: 1,
-            type: "垃圾清运车",
-            carbrand: "鲁E-675G3",
-            date: "2011/10/20",
-            num: "环卫-A001",
-            company: "环卫一部",
-            driver: "李诞",
-            phone: "15375669845",
-            region: "东营南站",
-            service: ""
-          },
-          {
-            sid: 2,
-            type: "洒水车",
-            carbrand: "鲁E-89901",
-            date: "2019/1/10",
-            num: "环卫-A002",
-            company: "环卫一部",
-            driver: "马丽",
-            phone: "17862169704",
-            region: "西湖公园",
-            service: ""
-          },
-          {
-            sid: 3,
-            type: "清扫车",
-            carbrand: "鲁E-81902",
-            date: "2019/1/10",
-            num: "环卫-A003",
-            company: "环卫一部",
-            driver: "张雪",
-            phone: "17862169730",
-            region: "青岛路",
-            service: ""
-          },
-          {
-            sid: 4,
-            type: "垃圾清运车",
-            carbrand: "鲁E-80003",
-            date: "2019/1/10",
-            num: "环卫-A004",
-            company: "环卫一部",
-            driver: "侯吉",
-            phone: "17865461021",
-            region: "济南路",
-            service: ""
-          },
-          {
-            sid: 5,
-            type: "垃圾清运车",
-            carbrand: "鲁E-89999",
-            date: "2019/1/10",
-            num: "环卫-A005",
-            company: "环卫一部",
-            driver: "张茜",
-            phone: "17865461024",
-            region: "滨州路",
-            service: ""
-          },
-          {
-            sid: 6,
-            type: "垃圾清运车",
-            carbrand: "鲁E-55678",
-            date: "2019/1/10",
-            num: "环卫-A006",
-            company: "环卫一部",
-            driver: "王菲",
-            phone: "17865461067",
-            region: "府前大街",
-            service: ""
-          },
-          {
-            sid: 7,
-            type: "垃圾清运车",
-            carbrand: "鲁E-21990",
-            date: "2019/1/10",
-            num: "环卫-A007",
-            company: "环卫一部",
-            driver: "李亚鹏",
-            phone: "17865461072",
-            region: "运河路",
-            service: ""
-          },
-          {
-            sid: 8,
-            type: "垃圾清运车",
-            carbrand: "鲁E-89907",
-            date: "2019/1/10",
-            num: "环卫-A008",
-            company: "环卫二部",
-            driver: "谢依霖",
-            phone: "17865463415",
-            region: "沂河路",
-            service: ""
-          },
-          {
-            sid: 9,
-            type: "垃圾清运车",
-            carbrand: "鲁E-89910",
-            date: "2019/1/10",
-            num: "环卫-A009",
-            company: "环卫二部",
-            driver: "邓超",
-            phone: "17865461159",
-            region: "北一路",
-            service: ""
-          },
-          {
-            sid: 10,
-            type: "洒水车",
-            carbrand: "鲁E-10909",
-            date: "2019/1/10",
-            num: "环卫-A0010",
-            company: "环卫二部",
-            driver: "王伟",
-            phone: "17806261529",
-            region: "井冈山路",
-            service: ""
-          },
-
-          {
-            sid: 11,
-            type: "清扫车",
-            carbrand: "鲁E-77910",
-            date: "2019/1/10",
-            num: "环卫-A011",
-            company: "环卫二部",
-            driver: "徐丽丽",
-            phone: "17806267152",
-            region: "钟山路",
-            service: ""
-          }
-        ]
+        list: []
       },
       search: {
-        type: "全部",
-        road: "全部",
-        work: "全部",
-        company: "全部"
+        busnumber: "",
+        param2: "",
+        area: "",
+        department: ""
       },
-      msg: {},
+      msg: {
+        cartype: "垃圾清运车",
+        busnumber: "",
+        shoppingtime: "",
+        member: "",
+        department: "环卫一部",
+        user: "",
+        area: "东营南站",
+        information: ""
+      },
+      msgold: {
+        cartype: "垃圾清运车",
+        busnumber: "",
+        shoppingtime: "",
+        member: "",
+        department: "环卫一部",
+        user: "",
+        area: "东营南站",
+        information: ""
+      },
       msgadd: false,
       msgimport: false,
       msgexport: false,
@@ -714,9 +600,6 @@ export default {
       ],
       value1: "",
       value2: "",
-      msg: {
-        number: ""
-      },
       th: "0",
       // 油耗
       oil: [
@@ -773,7 +656,6 @@ export default {
     };
   },
   methods: {
-    onSubmit() {},
     showinsurance() {
       this.showinsurancea = !this.showinsurancea;
     },
@@ -795,6 +677,8 @@ export default {
     },
     carwarning(index, row) {
       this.msg = row;
+      console.log(this.msg);
+
       this.msgadd = !this.msgadd;
     },
     handleEdit(index, row) {
@@ -804,21 +688,24 @@ export default {
     handleDelete(index, row) {
       console.log("删除第" + row.sid + "个信息");
     },
-    scroll() {
-      let con1 = this.$refs.con1;
-      con1.style.marginTop = "-30px";
-      this.animate = !this.animate;
-      var that = this; // 在异步函数中会出现this的偏移问题，此处一定要先保存好this的指向
-      setTimeout(function() {
-        that.items.push(that.items[0]);
-        that.items.shift();
-        con1.style.marginTop = "0px";
-        that.animate = !that.animate; // 这个地方如果不把animate 取反会出现消息回滚的现象，此时把ul 元素的过渡属性取消掉就可以完美实现无缝滚动的效果了
-      }, 500);
+    getCarList() {
+      this.$http.get("MotorDetail/getAllMotorInformation").then(res => {
+        this.data.list = res.data;
+      });
+    },
+    searchBtn() {
+      this.$http
+        .post(
+          "MotorDetail/motorInformationCriteriaQuery",
+          this.$qs.stringify(this.search)
+        )
+        .then(res => {
+          this.data.list = res.data;
+        });
     }
   },
   created() {
-    this.date();
+    this.getCarList();
   }
 };
 </script>

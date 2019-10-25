@@ -48,29 +48,43 @@
     </div>
     <!-- 按钮 -->
     <div class="searchBot" style="float: right;margin-bottom: 10px;">
-      <el-button class="buttonBot" @click="dialogVisible = true">添加人员信息</el-button>
+      <el-button class="buttonBot" @click="dialogVisible = true;">添加人员信息</el-button>
       <el-button class="buttonBot">导入模板下载</el-button>
       <el-button class="buttonBot" @click="dialogAble = true">人员信息导入</el-button>
-      <el-button class="buttonBotLast">导出全员信息</el-button>
+      <el-button class="buttonBotLast" @click="exportStaff">导出全员信息</el-button>
     </div>
-    <!-- 弹窗1 -->
-    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="姓名">
-          <el-input v-model="formInline.name"></el-input>
+    <!-- 添加人员信息 -->
+    <el-dialog
+      title="添加人员信息"
+      :visible.sync="dialogVisible"
+      width="426px"
+      top="100px"
+      class="dialogText"
+      @close="formInline = {}"
+    >
+      <el-form
+        ref="ruleForm"
+        hide-required-asterisk="false"
+        :inline="true"
+        :rules="rules"
+        :model="formInline"
+        class="demo-form-inline"
+      >
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model.trim="formInline.name"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-input v-model="formInline.usg"></el-input>
+        <el-form-item label="性别" prop="sex">
+          <el-input v-model.trim="formInline.sex"></el-input>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="formInline.msg"></el-input>
+        <el-form-item label="年龄" prop="age">
+          <el-input v-model.trim="formInline.age"></el-input>
         </el-form-item>
-        <el-form-item label="证件号">
-          <el-input v-model="formInline.id"></el-input>
+        <el-form-item label="证件号" prop="idcard">
+          <el-input v-model.trim="formInline.idcard"></el-input>
         </el-form-item>
-        <el-form-item label="准驾车型">
-          <el-select v-model="type" class="selectTop">
-            <el-option label="A1" value></el-option>
+        <el-form-item label="准驾车型" prop="license">
+          <el-select v-model="formInline.license" class="selectTop">
+            <el-option label="A1" value="A1"></el-option>
             <el-option label="A2" value="A2"></el-option>
             <el-option label="B1" value="B1"></el-option>
             <el-option label="B2" value="B2"></el-option>
@@ -78,27 +92,17 @@
             <el-option label="C2" value="C2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="住址">
-          <el-input v-model="formInline.address"></el-input>
+        <el-form-item label="住址" prop="address">
+          <el-input v-model.trim="formInline.address"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
+        <el-form-item label="联系方式" prop="tel">
+          <el-input v-model.trim="formInline.tel"></el-input>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="state" class="selectTop">
-            <el-option label="在职" value></el-option>
-            <el-option label="离职" value="离职"></el-option>
-          </el-select>
+        <el-form-item label="入职时间" prop="hiretime">
+          <el-date-picker v-model="formInline.hiretime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="入职时间">
-          <el-input v-model="formInline.addtime"></el-input>
-        </el-form-item>
-        <el-form-item label="离职时间">
-          <el-input v-model="formInline.updatetime"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="job" class="selectTop">
-            <el-option label="全部区域" value></el-option>
+        <el-form-item label="作业区域" prop="area">
+          <el-select v-model.trim="formInline.area" class="selectTop">
             <el-option label="东营区新区" value="东营区新区"></el-option>
             <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
             <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
@@ -110,9 +114,18 @@
             <el-option label="龙居镇" value="龙居镇"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
-            <el-option label="全部部门" value></el-option>
+        <el-form-item label="负责道路" prop="param2">
+          <el-select v-model.trim="formInline.param2" class="selectTop">
+            <el-option label="庐山路" value="庐山路"></el-option>
+            <el-option label="宁阳路" value="宁阳路"></el-option>
+            <el-option label="新泰路" value="新泰路"></el-option>
+            <el-option label="北一路" value="北一路"></el-option>
+            <el-option label="北二路" value="北二路"></el-option>
+            <el-option label="黄河路" value="黄河路"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="归属单位" prop="depart">
+          <el-select v-model.trim="formInline.depart" class="selectTop">
             <el-option label="环卫一部" value="环卫一部"></el-option>
             <el-option label="环卫二部" value="环卫二部"></el-option>
             <el-option label="环卫三部" value="环卫三部"></el-option>
@@ -120,13 +133,14 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+        <el-button type="primary" @click="dialogVisible = false;" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
+        <el-button type="primary" class="formButon" @click="submitadd('ruleForm')">新增</el-button>
       </span>
     </el-dialog>
-    <!-- 弹窗2 -->
+
+    <!-- 导入人员信息 -->
     <el-dialog title="导入人员信息" :visible.sync="dialogAble" width="426px" class="dialogText">
       <el-divider></el-divider>
       <span slot="footer" class="delect-footer">
@@ -144,7 +158,7 @@
         border
         style="width: 100%"
       >
-        <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="area" label="区域"></el-table-column>
         <el-table-column align="center" prop="param2" label="负责道路"></el-table-column>
@@ -173,7 +187,12 @@
               size="small"
               @click="pagination(scope.row, scope.$index)"
             >编辑</el-button>
-            <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
+            <el-button
+              class="tableButton3"
+              type="button"
+              @click="deletList(scope.row)"
+              size="small"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -214,7 +233,7 @@
             <el-input v-model="formInline.idcard" class="inputL"></el-input>
           </el-form-item>
           <el-form-item label="准驾车型">
-            <el-select v-model="type" class="selectTop">
+            <el-select v-model="formInline.license" class="selectTop">
               <el-option label="A1" value="A1"></el-option>
               <el-option label="A2" value="A2"></el-option>
               <el-option label="B1" value="B1"></el-option>
@@ -256,7 +275,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="归属单位">
-            <el-select v-model="web" class="selectTop">
+            <el-select v-model="formInline.depart" class="selectTop">
               <el-option label="全部部门" value></el-option>
               <el-option label="环卫一部" value="环卫一部"></el-option>
               <el-option label="环卫二部" value="环卫二部"></el-option>
@@ -264,78 +283,10 @@
             </el-select>
           </el-form-item>
         </el-form>
-        <!-- <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-          <el-form-item label="姓名">
-            <el-input v-model="formInline.name"></el-input>
-          </el-form-item>
-          <el-form-item label="性别">
-            <el-input v-model="formInline.sex"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input v-model="formInline.age"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input v-model="formInline.idcard"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-select v-model="type" class="selectTop">
-              <el-option
-                v-for="item in optionsType"
-                :key="item.type"
-                :label="item.label"
-                :value="item.type"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="住址">
-            <el-input v-model="formInline.address"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input v-model="formInline.mobile"></el-input>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="state" class="selectTop">
-              <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
-                :label="item.label"
-                :value="item.state"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input v-model="formInline.addtime"></el-input>
-          </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input v-model="formInline.updatetime"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="job" class="selectTop">
-              <el-option
-                v-for="item in optionsJob"
-                :key="item.job"
-                :label="item.label"
-                :value="item.job"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="web" class="selectTop">
-              <el-option
-                v-for="item in optionsWeb"
-                :key="item.web"
-                :label="item.label"
-                :value="item.web"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>-->
         <span slot="footer" class="delect-footer">
           <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
         </span>
         <span slot="footer" class="dialog-footer">
-          <!-- <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-          <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>-->
           <el-button type="primary" @click="adddate" class="formButon">保存</el-button>
         </span>
       </el-dialog>
@@ -386,72 +337,6 @@
             <el-input readonly v-model="formInline.depart"></el-input>
           </el-form-item>
         </el-form>
-        <!-- <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-          <el-form-item label="姓名">
-            <el-input readonly v-model="formInline.name"></el-input>
-          </el-form-item>
-          <el-form-item label="性别">
-            <el-input readonly v-model="formInline.usg"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input readonly v-model="formInline.msg"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input readonly v-model="formInline.id"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-select readonly v-model="type" class="selectTop">
-              <el-option
-                v-for="item in optionsType"
-                :key="item.type"
-                :label="item.label"
-                :value="item.type"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="住址">
-            <el-input readonly v-model="formInline.address"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input readonly v-model="formInline.mobile"></el-input>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select readonly v-model="state" class="selectTop">
-              <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
-                :label="item.label"
-                :value="item.state"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input v-model="formInline.addtime"></el-input>
-          </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input v-model="formInline.updatetime"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="job" class="selectTop">
-              <el-option
-                v-for="item in optionsJob"
-                :key="item.job"
-                :label="item.label"
-                :value="item.job"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select readonly v-model="web" class="selectTop">
-              <el-option
-                v-for="item in optionsWeb"
-                :key="item.web"
-                :label="item.label"
-                :value="item.web"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>-->
       </el-dialog>
     </div>
   </div>
@@ -462,7 +347,9 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      i: 1,
       dialogVisible: false,
+      asterisk: false,
       dialogAble: false,
       lu: "",
       value: "",
@@ -470,7 +357,6 @@ export default {
       job: "",
       id: "",
       web: "",
-      type: "A1",
       state: "在职",
       value: "",
       text: "人员信息详情",
@@ -484,7 +370,21 @@ export default {
       listIndex: null,
       tableData: [],
       dialogFormVisible: false,
-      formInline: {},
+      formInline: {
+        name: "",
+        age: "",
+        maxage: "",
+        isretired: "",
+        sex: "",
+        tel: "",
+        license: "",
+        idcard: "",
+        address: "",
+        hiretime: "",
+        area: "",
+        param2: "",
+        depart: ""
+      },
       search: {
         name: "",
         param2: "",
@@ -495,10 +395,35 @@ export default {
         pagesize: 13,
         currpage: 1,
         list: []
+      },
+      rules: {
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        sex: [{ required: true, message: "请输入性别", trigger: "blur" }],
+        age: [{ required: true, message: "请输入年龄", trigger: "blur" }],
+        idcard: [
+          { required: true, message: "请输入身份证号码", trigger: "blur" }
+        ],
+        address: [{ required: true, message: "请输入住址", trigger: "blur" }],
+        tel: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
+        hiretime: [
+          { required: true, message: "请选择入职时间", trigger: "blur" }
+        ],
+        license: [
+          { required: true, message: "请选择准驾车型", trigger: "blur" }
+        ],
+        area: [{ required: true, message: "请选择作业区域", trigger: "blur" }],
+        param2: [
+          { required: true, message: "请选择负责道路", trigger: "blur" }
+        ],
+        depart: [{ required: true, message: "请选择归属单位", trigger: "blur" }]
       }
     };
   },
   methods: {
+    // 人员信息导出
+    exportStaff() {
+      location.href = "http://118.31.245.183:10500/userInformation/exportExcel";
+    },
     // 弹窗传值
     pagination(row, _index) {
       console.log(row);
@@ -527,8 +452,15 @@ export default {
     adddate() {
       this.dialogFormVisible = false;
     },
-    deletList() {
-      console.log("删除指定项");
+    deletList(row) {
+      this.$http
+        .post(
+          "userInformation/deleteAllUserInformationBySid",
+          this.$qs.stringify({ sid: row.sid })
+        )
+        .then(res => {
+          this.$options.methods.getAddBook.call(this);
+        });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -544,7 +476,7 @@ export default {
         });
     },
     onSubmit() {
-      this.data.currpage = 1
+      this.data.currpage = 1;
       this.$http
         .post(
           "userInformation/userInformationCriteriaQuery",
@@ -557,6 +489,23 @@ export default {
     },
     nextpage(value) {
       this.data.currpage = value;
+    },
+    submitadd(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.dialogVisible = false;
+          this.$http
+            .post(
+              "/userInformation/addUserInformation",
+              this.$qs.stringify(this.formInline)
+            )
+            .then(res => {
+              this.$options.methods.getAddBook.call(this);
+            });
+        } else {
+          alert("请补全新增信息");
+        }
+      });
     }
   },
   created() {
@@ -569,11 +518,9 @@ export default {
 .search {
   position: relative;
   width: 100%;
-  height: 76px;
   margin-top: 15px;
   .searchTop {
     float: left;
-    margin-bottom: 16px;
   }
   .searchBot {
     .buttonBot {
@@ -605,7 +552,6 @@ export default {
     width: 240px;
   }
   .el-form-item {
-    margin-bottom: 2px;
     .el-input {
       width: 240px;
       height: 32px;
@@ -659,40 +605,6 @@ export default {
   text-align: center;
   margin-top: 32px;
   padding: 0;
-}
-.table {
-  width: 1128px;
-  height: 465px;
-  margin-top: 16px;
-}
-.dialogText {
-  text-align: center;
-}
-.demo-form-inline {
-  text-align: right;
-  .formTop {
-    margin-bottom: 16px;
-  }
-  .el-form-item {
-    margin-bottom: 2px;
-    .el-input {
-      width: 240px;
-      height: 32px;
-    }
-  }
-  .selectTop {
-    width: 240px;
-    height: 32px;
-  }
-  .selectBot {
-    width: 240px;
-    height: 32px;
-  }
-}
-.formButon {
-  width: 127px;
-  height: 40px;
-  text-align: center;
 }
 
 .pagination {
