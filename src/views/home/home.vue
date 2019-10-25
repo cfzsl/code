@@ -46,7 +46,7 @@ export default {
 <style lang="scss">
 .el-header {
   padding: 0;
-  z-index: 999;
+  z-index: 9999;
 }
 .se-container {
   height: calc(100vh - 86px);

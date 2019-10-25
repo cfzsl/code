@@ -153,6 +153,7 @@
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
           </div>
           <div class="list">
@@ -211,6 +212,7 @@
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
           </div>
           <div class="list">
@@ -270,6 +272,7 @@
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
           </div>
           <div class="list">
@@ -324,6 +327,7 @@
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
             <div class="sytime">系统时间：2019-10-13</div>
           </div>
@@ -380,6 +384,7 @@
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
           </div>
           <div class="list">
@@ -424,6 +429,7 @@
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
           </div>
           <div class="list">
@@ -476,6 +482,7 @@
             </el-form-item>
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
           </div>  
           <div class="list">
@@ -537,6 +544,21 @@ export default {
         currpage: 1,
         list: []
       },
+      th: "0",
+      troublesHooting: [
+        {
+          th: "0",
+          label: "全部"
+        },
+        {
+          th: "1",
+          label: "已维修"
+        },
+        {
+          th: "2",
+          label: "未维修"
+        }
+      ],
       // 故障代码
       warning: [
         {
@@ -693,7 +715,7 @@ export default {
           name:'李诞',
           phone:'15975669745',
           consumptionNo: "超过原定使用区域：东营区东营南站",
-          policeDate: "2011-10-09",
+          policeDate: "2019-10-18",
           policeTime: "08:00"
         },
         {
@@ -703,7 +725,7 @@ export default {
           name:'张圆圆',
           phone:'15975659845',
           consumptionNo: "超过原定使用区域：东营区东营南站",
-          policeDate: "2011-10-09",
+          policeDate: "2019-10-16",
           policeTime: "15:25"
         },
         {
@@ -713,7 +735,7 @@ export default {
           name:'刘波',
           phone:'13675667845',
           consumptionNo: "超过原定使用区域：东营区东营南站",
-          policeDate: "2011-10-09",
+          policeDate: "2019-10-14",
           policeTime: "10:35"
         }
       ],
@@ -796,6 +818,8 @@ export default {
     };
   },
   methods: {
+    // 清空
+    onEmpty(){},
     date() {
       for (let i = 1; i < 2; i++) {
         this.data.list.push({
@@ -833,15 +857,20 @@ export default {
       var map = new BMap.Map("allmap");
     },
     getMapMark() {
+      setTimeout(()=>{
+      this.$http.get("/xy/get3wheelCarXY").then(res => {
+          this.position2 = res.data;
+        });
+      },1000)
       setInterval(() => {
-        this.$http.get("xy/get").then(res => {
+        this.$http.get("/xy/get3wheelCarXY").then(res => {
           this.position2 = res.data;
         });
       }, 1000);
     },
   },
   created() {
-    this.getMapMark();
+    // this.getMapMark();
     this.date();
   }
 };
@@ -1021,5 +1050,8 @@ export default {
 }
 .hede {
   color:#000;
+}
+.pagination {
+  text-align: center;
 }
 </style>
