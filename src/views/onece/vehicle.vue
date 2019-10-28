@@ -140,7 +140,7 @@
 
       <!-- 弹框3 -->
       <el-dialog
-        :title=dialog3
+        :title="dialog3"
         :visible.sync="msgeslint"
         @close="msg = {}"
         width="70%"
@@ -993,7 +993,7 @@ export default {
           leave: "08:20"
         }
       ],
-      dialog3: '车况检测报警'
+      dialog3: "车况检测报警"
     };
   },
   created() {
@@ -1009,7 +1009,7 @@ export default {
     showtime() {
       this.time = !this.time;
     },
-    showdialog(v,title) {
+    showdialog(v, title) {
       this.show = v;
       this.dialog3 = title;
     },

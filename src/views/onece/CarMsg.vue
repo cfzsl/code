@@ -119,7 +119,7 @@
         <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
         <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
         <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
-        <el-table-column align="center" label="车况报警">
+        <el-table-column align="center" label="车况异常">
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -128,7 +128,7 @@
             >查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="油耗报警">
+        <el-table-column align="center" label="油耗信息">
           <template>
             <el-button type="primary" size="mini" @click.stop="showWarning">查看</el-button>
           </template>
@@ -252,15 +252,15 @@
             <el-option label="环卫二部" value="环卫二部"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="msg.user" placeholder="请输入司机"></el-input>
-        </el-form-item>
         <el-form-item label="使用区域">
           <el-select v-model="msg.area" placeholder="请选择使用区域" style="width: 100%">
             <el-option label="东营南站" value="东营南站"></el-option>
             <el-option label="西湖公园" value="西湖公园"></el-option>
             <el-option label="翠湖公园" value="翠湖公园"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="指定司机">
+          <el-input v-model="msg.user" placeholder="请输入司机"></el-input>
         </el-form-item>
         <el-form-item label="车辆维修情况">
           <el-input
@@ -279,7 +279,21 @@
     </el-dialog>
 
     <!-- 车况报警 -->
-    <el-dialog title="车况报警" :visible.sync="msgadd">
+    <el-dialog title="车况异常" :visible.sync="msgadd">
+      <div class="abnormalsearch">
+        记录时间段：
+        <el-date-picker
+          v-model="abnormal"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+        <div class="btn">
+          <el-button type="primary">搜索</el-button>
+          <el-button type="primary">清空</el-button>
+        </div>
+      </div>
       <el-form ref="form" :model="msg" label-width="auto" class="msg">
         <div class="list">
           <!-- 此处data应为
@@ -287,27 +301,41 @@
           <el-table :data="warning" border style="width: 100%">
             <el-table-column align="center" prop="number" label="序号"></el-table-column>
             <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-            <el-table-column align="center" prop="company" label="故障信息"></el-table-column>
-            <el-table-column align="center" prop="policeDate" label="报警时间"></el-table-column>
-            <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
+            <el-table-column align="center" prop="policeDate" label="记录时间"></el-table-column>
+            <el-table-column align="center" prop="company" label="异常情况"></el-table-column>
+            <!-- <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
             <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
-            <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
+            <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>-->
           </el-table>
         </div>
       </el-form>
     </el-dialog>
 
     <!-- 油耗 -->
-    <el-dialog title="油耗报警" :visible.sync="showwarning">
+    <el-dialog title="油耗信息" :visible.sync="showwarning">
+      <div class="abnormalsearch">
+        记录时间段：
+        <el-date-picker
+          v-model="abnormal"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+        <div class="btn">
+          <el-button type="primary">搜索</el-button>
+          <el-button type="primary">清空</el-button>
+        </div>
+      </div>
       <div class="list">
         <!-- 此处data应为
         data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
         <el-table :data="oil" border style="width: 100%">
           <el-table-column align="center" prop="id" label="序号"></el-table-column>
-          <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
+          <el-table-column align="center" prop="policeDate" label="记录时间"></el-table-column>
+          <el-table-column align="center" prop="carbrand" label="当日总行程"></el-table-column>
+          <el-table-column align="center" prop="policeTime" label="平均时速（KM/h）"></el-table-column>
           <el-table-column align="center" prop="consumption" label="车辆耗油量（L/100KM）"></el-table-column>
-          <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
-          <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
@@ -364,10 +392,10 @@
       </el-row>
 
       <el-table :data="maintenanceList">
-        <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-        <el-table-column align="center" prop="driver" label="保养人"></el-table-column>
-        <el-table-column align="center" prop="date" label="保养时间"></el-table-column>
-        <el-table-column align="center" prop="content" label="保养描述"></el-table-column>
+        <el-table-column align="center" prop="carbrand" label="序号"></el-table-column>
+        <el-table-column align="center" prop="date" label="维修/保养时间"></el-table-column>
+        <el-table-column align="center" prop="driver" label="类型"></el-table-column>
+        <el-table-column align="center" prop="content" label="保养详情"></el-table-column>
         <el-table-column align="center" label="保养图片">
           <el-image
             class="img"
@@ -402,17 +430,24 @@
 
     <!-- 保险 -->
     <el-dialog title="保险缴纳" :visible.sync="showinsurancea">
+      <div class="abnormalsearch">
+        保险公司：
+        <el-input style="width:190px;margin-right: 10px;" v-model="input" placeholder="请输入内容"></el-input>
+        缴纳日期：
+        <el-date-picker style="width:190px;margin-right: 10px;" v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
+        到期日期：
+        <el-date-picker style="width:190px;" v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
+        <div class="btn">
+          <el-button type="primary">添加</el-button>
+        </div>
+      </div>
       <div class="sytime">系统时间：2019-10-22</div>
       <el-table :data="insurance" border style="width: 100%" @row-click="showadd">
         <el-table-column align="center" prop="id" label="序号"></el-table-column>
-        <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-        <el-table-column align="center" prop="expireday" label="到期剩余天数"></el-table-column>
+        <el-table-column align="center" prop="carbrand" label="记录时间"></el-table-column>
+        <el-table-column align="center" prop="driver" label="保险公司"></el-table-column>
         <el-table-column align="center" prop="effectivedate" label="生效时间"></el-table-column>
         <el-table-column align="center" prop="expiredate" label="到期时间"></el-table-column>
-        <el-table-column align="center" prop="driver" label="负责人"></el-table-column>
-        <el-table-column align="center" label="操作">
-          <el-button type="warning">报警处理</el-button>
-        </el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -652,7 +687,9 @@ export default {
           expiredate: "2017-10-20",
           driver: "李诞"
         }
-      ]
+      ],
+      // 车况异常
+      abnormal: ""
     };
   },
   methods: {
@@ -690,6 +727,8 @@ export default {
     },
     getCarList() {
       this.$http.get("MotorDetail/getAllMotorInformation").then(res => {
+        console.log(res.data);
+        
         this.data.list = res.data;
       });
     },
@@ -766,6 +805,7 @@ export default {
 .img {
   margin-right: 5px;
 }
+
 .imgcontent {
   margin-top: 10px;
   padding-top: 10px;
@@ -777,5 +817,13 @@ export default {
   margin-right: 10px;
   padding-bottom: 10px;
   color: red;
+}
+
+.abnormalsearch {
+  margin-bottom: 10px;
+  .btn {
+    float: right;
+    border-radius: 5px;
+  }
 }
 </style>

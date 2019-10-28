@@ -42,6 +42,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="empty">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -185,7 +186,7 @@
               class="tableButton2"
               type="button"
               size="small"
-              @click="pagination(scope.row, scope.$index)"
+              @click="edit(scope.row, scope.$index)"
             >编辑</el-button>
             <el-button
               class="tableButton3"
@@ -287,7 +288,7 @@
           <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
         </span>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="adddate" class="formButon">保存</el-button>
+          <el-button type="primary" @click="editdata" class="formButon">保存</el-button>
         </span>
       </el-dialog>
 
@@ -371,6 +372,7 @@ export default {
       tableData: [],
       dialogFormVisible: false,
       formInline: {
+        sid: "",
         name: "",
         age: "",
         maxage: "",
@@ -425,7 +427,7 @@ export default {
       location.href = "http://118.31.245.183:10500/userInformation/exportExcel";
     },
     // 弹窗传值
-    pagination(row, _index) {
+    edit(row, _index) {
       console.log(row);
       //记录索引
       this.listIndex = _index;
@@ -434,7 +436,6 @@ export default {
       //显示弹窗
       this.dialogFormVisible = true;
       this.buttonIf = true;
-      console.log(this.dialogFormVisible);
     },
     showdetail(row, _index) {
       //记录索引
@@ -449,8 +450,16 @@ export default {
       console.log("关闭");
       this.buttonIf = false;
     },
-    adddate() {
+    editdata() {
       this.dialogFormVisible = false;
+      this.$http
+        .post(
+          "userInformation/updateUserInformation",
+          this.$qs.stringify(this.formInline)
+        )
+        .then(res => {
+          console.log(res);
+        });
     },
     deletList(row) {
       this.$http
@@ -486,6 +495,15 @@ export default {
           console.log(res);
           this.data.list = res.data;
         });
+    },
+    empty() {
+      this.search = {
+        name: "",
+        param2: "",
+        area: "",
+        depart: ""
+      };
+      this.$options.methods.onSubmit.call(this);
     },
     nextpage(value) {
       this.data.currpage = value;
