@@ -468,7 +468,7 @@
           :scroll-wheel-zoom="true"
         >
           <bm-marker
-            :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
+            :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
             :rotation="polylinePathMarker[0].direction"
             :position="polylinePathMarker[0]"
             :dragging="false"
