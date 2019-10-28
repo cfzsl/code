@@ -65,7 +65,6 @@
     >
       <el-form
         ref="ruleForm"
-        hide-required-asterisk="false"
         :inline="true"
         :rules="rules"
         :model="formInline"
@@ -423,8 +422,14 @@ export default {
   },
   methods: {
     // 人员信息导出
-    exportStaff() {
-      location.href = "http://118.31.245.183:10500/userInformation/exportExcel";
+    exportStaff(v) {
+      if (v == 0) {
+        location.href =
+          "http://118.31.245.183:10500/userInformation/exportExcel";
+      } else if (v == 1) {
+        location.href =
+          "http://118.31.245.183:10500/userInformation/exportExcel";
+      }
     },
     // 弹窗传值
     edit(row, _index) {
@@ -468,7 +473,7 @@ export default {
           this.$qs.stringify({ sid: row.sid })
         )
         .then(res => {
-          this.$options.methods.getAddBook.call(this);
+          this.getAddBook()
         });
     },
     handleSizeChange(val) {
@@ -503,7 +508,7 @@ export default {
         area: "",
         depart: ""
       };
-      this.$options.methods.onSubmit.call(this);
+      this.onSubmit()
     },
     nextpage(value) {
       this.data.currpage = value;
@@ -518,7 +523,7 @@ export default {
               this.$qs.stringify(this.formInline)
             )
             .then(res => {
-              this.$options.methods.getAddBook.call(this);
+              this.getAddBook();
             });
         } else {
           alert("请补全新增信息");

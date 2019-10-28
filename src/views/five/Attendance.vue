@@ -133,21 +133,33 @@
 
         <div class="content">
           <div class="left">
-            <div class="imgset">
+            <div class="titleset">
               <el-row type="flex" class="row-bg" justify="space-around">
                 <el-col :span="6">
                   <div class="grid-content">
-                    <img src="./pie.png" alt />
+                    <div class="title">
+                      <i class="sbox"></i>
+                      本月出勤占比
+                    </div>
+                    <div id="echarts1" style="width: 296px;height:180px;top: -15px"></div>
                   </div>
                 </el-col>
                 <el-col :span="6">
                   <div class="grid-content">
-                    <img src="./work.png" alt />
+                    <div class="title">
+                      <i class="sbox"></i>
+                      本月出勤占比
+                    </div>
+                    <div id="echarts2" style="width: 296px;height:180px;top: -20px"></div>
                   </div>
                 </el-col>
                 <el-col :span="6">
                   <div class="grid-content">
-                    <img src="./monthwork.png" alt />
+                    <div class="title">
+                      <i class="sbox"></i>
+                      本月出勤占比
+                    </div>
+                    <div id="echarts3" style="width: 296px;height:180px;top: -15px"></div>
                   </div>
                 </el-col>
               </el-row>
@@ -349,7 +361,13 @@ export default {
     };
   },
   methods: {
-    drawPie() {
+    drawecharts() {
+      this.drawline();
+      this.drawecharts1();
+      this.drawecharts2();
+      this.drawecharts3();
+    },
+    drawline() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$Echarts.init(document.getElementById("main"));
       // 绘制图表
@@ -461,6 +479,197 @@ export default {
         ]
       });
     },
+    drawecharts1() {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$Echarts.init(document.getElementById("echarts1"));
+      // 绘制图表
+      myChart.setOption({
+        title: {},
+        tooltip: {
+          trigger: "item",
+          formatter: "{b}：{c}%"
+        },
+        legend: {
+          show: false
+        },
+        series: [
+          {
+            type: "pie",
+            radius: ["50%", "70%"],
+            center: ["50%", "60%"],
+            label: {
+              normal: {
+                formatter: "{b}{c}%"
+              }
+            },
+            data: [
+              {
+                value: 69,
+                name: "正常",
+                itemStyle: {
+                  color: "#3b99f1"
+                }
+              },
+              {
+                value: 18,
+                name: "休息",
+                itemStyle: {
+                  color: "#4eb14e"
+                }
+              },
+              {
+                value: 13,
+                name: "请假",
+                itemStyle: {
+                  color: "#f66134"
+                }
+              }
+            ],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              }
+            }
+          }
+        ]
+      });
+    },
+    drawecharts2() {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$Echarts.init(document.getElementById("echarts2"));
+      // 绘制图表
+      myChart.setOption({
+        color: ["#3398DB"],
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            // 坐标轴指示器，坐标轴触发有效
+            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+          },
+          formatter: "{b}：{c}%"
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true
+        },
+        xAxis: [
+          {
+            show: false
+          }
+        ],
+        yAxis: [
+          {
+            type: "category",
+            data: ["请假", "休假", "正常"],
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            name: "直接访问",
+            type: "bar",
+            barWidth: "60%",
+            data: [
+              {
+                name: "请假",
+                value: 8,
+                itemStyle: {
+                  color: "#f66134"
+                }
+              },
+              {
+                name: "休假",
+                value: 10,
+                itemStyle: {
+                  color: "#4eb14e"
+                }
+              },
+              {
+                name: "正常",
+                value: 82,
+                itemStyle: {
+                  color: "#3b99f1"
+                }
+              }
+            ],
+            label: {
+              normal: {
+                show: true,
+                position: "right"
+              }
+            }
+          }
+        ]
+      });
+    },
+    drawecharts3() {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$Echarts.init(document.getElementById("echarts3"));
+      // 绘制图表
+      myChart.setOption({
+        color: ["#3398DB"],
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            // 坐标轴指示器，坐标轴触发有效
+            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+          },
+          formatter: "{b}：{c}%"
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: "category",
+            data: ["6月", "7月", "8月", "9月", "10月"],
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: "value",
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            name: "直接访问",
+            type: "bar",
+            barWidth: "60%",
+            data: [86, 92, 74, 94, 90],
+            label: {
+              normal: {
+                show: true,
+                position: "top"
+              }
+            }
+          }
+        ]
+      });
+    },
     onSubmit() {},
     nextpage(value) {
       this.data.currpage = value;
@@ -471,7 +680,7 @@ export default {
     }
   },
   mounted() {
-    this.drawPie();
+    this.drawecharts();
   }
 };
 </script>
@@ -495,8 +704,25 @@ export default {
     float: left;
     width: 75%;
   }
-  .imgset {
+  .titleset {
     margin-bottom: 30px;
+    .grid-content {
+      border: 1px solid #d2d2d2;
+    }
+    .title {
+      height: 45px;
+      line-height: 45px;
+      padding-left: 10px;
+      background-color: #f0f0f0;
+      .sbox {
+        display: inline-block;
+        width: 5px;
+        height: 15px;
+        vertical-align: text-bottom;
+        background-color: #73aeff;
+        margin-right: 5px;
+      }
+    }
   }
   .item {
     // width: 298px;

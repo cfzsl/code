@@ -8,7 +8,7 @@
       </div>
       <div class="searchbox">
         <span>车辆类型</span>
-        <el-select v-model="search.type">
+        <el-select v-model="search.cartype">
           <el-option label="全部" value></el-option>
           <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
           <el-option label="洒水车" value="洒水车"></el-option>
@@ -59,7 +59,7 @@
 
     <div class="menu">
       <div class="btn">
-        <el-button icon="el-icon-plus" @click="showedit = true">添加车辆信息</el-button>
+        <el-button icon="el-icon-plus" @click="showedit = true;type = 'add'">添加车辆信息</el-button>
         <el-button icon="el-icon-download" @click="msgimport = true">车辆信息导入</el-button>
         <el-button icon="el-icon-upload2" @click="msgexport = true">车辆信息导出</el-button>
       </div>
@@ -111,7 +111,6 @@
         stripe
         border
         style="width: 100%"
-        @row-click="showadd"
       >
         <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
         <el-table-column align="center" prop="shoppingtime" label="购车时间"></el-table-column>
@@ -129,27 +128,32 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="油耗信息">
-          <template>
-            <el-button type="primary" size="mini" @click.stop="showWarning">查看</el-button>
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click.stop="showWarning(scope.row)">查看</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保养记录">
-          <template>
-            <el-button type="primary" size="mini" @click.stop="showmaintenance">查看</el-button>
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click.stop="showmaintenance(scope.row)">查看</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保险缴纳">
-          <template>
-            <el-button type="primary" size="mini" @click.stop="showinsurance">查看</el-button>
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click.stop="showinsurance(scope.row)">查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" fixed="right" width="280px" label="操作">
           <template slot-scope="scope">
             <el-button
               type="primary"
               class="btn"
-              @click.stop="handleEdit(scope.$index, scope.row)"
+              @click.stop="handleDetail(scope.$index, scope.row)"
             >详情</el-button>
+            <el-button
+              type="success"
+              class="btn"
+              @click.stop="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button>
             <el-button
               type="danger"
               class="btn"
@@ -174,7 +178,7 @@
     </div>
 
     <!-- 车辆信息 -->
-    <el-dialog title="车辆信息" width="450px" :visible.sync="showdetail">
+    <el-dialog title="车辆信息" width="450px" :visible.sync="showdetail" @close="msg = {}">
       <el-form ref="form" :model="msg" label-width="auto" class="msg">
         <el-form-item label="车辆信息">
           <el-select disabled v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
@@ -222,59 +226,61 @@
           ></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="showedit = true;showdetail = false">编辑</el-button>
-      </span>
     </el-dialog>
 
     <!-- 车辆编辑 -->
-    <el-dialog title="车辆编辑" width="450px" :visible.sync="showedit" @close="msg = {}">
-      <el-form ref="form" :model="msg" label-width="auto" class="msg">
-        <el-form-item label="车辆信息">
+    <el-dialog
+      title="车辆编辑"
+      width="450px"
+      :visible.sync="showedit"
+      @close="msg = {};$refs['ruleForm'].resetFields();"
+    >
+      <el-form ref="ruleForm" :model="msg" :rules="rules" label-width="auto" class="msg">
+        <el-form-item label="车辆信息" prop="cartype">
           <el-select v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
             <el-option label="垃圾清运车" value="垃圾清运车"></el-option>
             <el-option label="洒水车" value="洒水车"></el-option>
             <el-option label="清扫车" value="清扫车"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="车牌号">
+        <el-form-item label="车牌号" prop="busnumber">
           <el-input v-model="msg.busnumber" placeholder="请输入车牌号"></el-input>
         </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="msg.shoppingtime" placeholder="请输入购车时间"></el-input>
+        <el-form-item label="购车时间" prop="shoppingtime">
+          <el-date-picker v-model="msg.shoppingtime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="资产编号">
+        <el-form-item label="资产编号" prop="member">
           <el-input v-model="msg.member" placeholder="请输入资产编号"></el-input>
         </el-form-item>
-        <el-form-item label="归属单位">
+        <el-form-item label="归属单位" prop="department">
           <el-select v-model="msg.department" placeholder="请选择归属单位" style="width: 100%">
             <el-option label="环卫一部" value="环卫一部"></el-option>
             <el-option label="环卫二部" value="环卫二部"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="使用区域">
+        <el-form-item label="使用区域" prop="area">
           <el-select v-model="msg.area" placeholder="请选择使用区域" style="width: 100%">
             <el-option label="东营南站" value="东营南站"></el-option>
             <el-option label="西湖公园" value="西湖公园"></el-option>
             <el-option label="翠湖公园" value="翠湖公园"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="指定司机">
+        <el-form-item label="指定司机" prop="user">
           <el-input v-model="msg.user" placeholder="请输入司机"></el-input>
         </el-form-item>
-        <el-form-item label="车辆维修情况">
+        <el-form-item label="车辆维修情况" prop="repairdetail">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 2}"
             placeholder="请输入内容"
-            v-model="msg.information"
+            v-model="msg.repairdetail"
             resize="none"
           ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="showedit = false">取消</el-button>
-        <el-button type="primary" @click="showedit = false">提交</el-button>
+        <el-button type="primary" @click="submitForm">提交</el-button>
       </span>
     </el-dialog>
 
@@ -299,10 +305,10 @@
           <!-- 此处data应为
           data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
           <el-table :data="warning" border style="width: 100%">
-            <el-table-column align="center" prop="number" label="序号"></el-table-column>
-            <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-            <el-table-column align="center" prop="policeDate" label="记录时间"></el-table-column>
-            <el-table-column align="center" prop="company" label="异常情况"></el-table-column>
+            <el-table-column align="center" prop="num" label="序号"></el-table-column>
+            <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+            <el-table-column align="center" prop="warmingtime" label="记录时间"></el-table-column>
+            <el-table-column align="center" prop="faultinformation" label="异常情况"></el-table-column>
             <!-- <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
             <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
             <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>-->
@@ -331,11 +337,11 @@
         <!-- 此处data应为
         data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
         <el-table :data="oil" border style="width: 100%">
-          <el-table-column align="center" prop="id" label="序号"></el-table-column>
-          <el-table-column align="center" prop="policeDate" label="记录时间"></el-table-column>
-          <el-table-column align="center" prop="carbrand" label="当日总行程"></el-table-column>
-          <el-table-column align="center" prop="policeTime" label="平均时速（KM/h）"></el-table-column>
-          <el-table-column align="center" prop="consumption" label="车辆耗油量（L/100KM）"></el-table-column>
+          <el-table-column align="center" prop="num" label="序号"></el-table-column>
+          <el-table-column align="center" prop="checkgastime" label="记录时间"></el-table-column>
+          <el-table-column align="center" prop="param1" label="当日总行程"></el-table-column>
+          <el-table-column align="center" prop="param2" label="平均时速（KM/h）"></el-table-column>
+          <el-table-column align="center" prop="gasolineused" label="车辆耗油量（L/100KM）"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
@@ -392,25 +398,22 @@
       </el-row>
 
       <el-table :data="maintenanceList">
-        <el-table-column align="center" prop="carbrand" label="序号"></el-table-column>
-        <el-table-column align="center" prop="date" label="维修/保养时间"></el-table-column>
-        <el-table-column align="center" prop="driver" label="类型"></el-table-column>
-        <el-table-column align="center" prop="content" label="保养详情"></el-table-column>
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
+        <el-table-column align="center" prop="maintaintime" label="维修/保养时间"></el-table-column>
+        <el-table-column align="center" prop="param1" label="类型"></el-table-column>
+        <el-table-column align="center" prop="maintaindiscript" label="保养详情"></el-table-column>
         <el-table-column align="center" label="保养图片">
-          <el-image
-            class="img"
-            style="width: 50px; height: 50px"
-            :src="url1"
-            fit="fill"
-            @click="showimgs(url1)"
-          ></el-image>
-          <el-image
-            class="img"
-            style="width: 50px; height: 50px"
-            :src="url2"
-            fit="fill"
-            @click="showimgs(url2)"
-          ></el-image>
+          <template slot-scope="scope">
+            <el-image
+              v-for="(item, i) in scope.row.maintainfile"
+              :key="i"
+              class="img"
+              style="width: 50px; height: 50px"
+              :src="item"
+              fit="fill"
+              @click="showimgs(item)"
+            ></el-image>
+          </template>
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -432,22 +435,25 @@
     <el-dialog title="保险缴纳" :visible.sync="showinsurancea">
       <div class="abnormalsearch">
         保险公司：
-        <el-input style="width:190px;margin-right: 10px;" v-model="input" placeholder="请输入内容"></el-input>
-        缴纳日期：
-        <el-date-picker style="width:190px;margin-right: 10px;" v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
-        到期日期：
+        <el-input style="width:190px;margin-right: 10px;" v-model="input" placeholder="请输入内容"></el-input>缴纳日期：
+        <el-date-picker
+          style="width:190px;margin-right: 10px;"
+          v-model="value1"
+          type="date"
+          placeholder="选择日期"
+        ></el-date-picker>到期日期：
         <el-date-picker style="width:190px;" v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
         <div class="btn">
           <el-button type="primary">添加</el-button>
         </div>
       </div>
       <div class="sytime">系统时间：2019-10-22</div>
-      <el-table :data="insurance" border style="width: 100%" @row-click="showadd">
-        <el-table-column align="center" prop="id" label="序号"></el-table-column>
-        <el-table-column align="center" prop="carbrand" label="记录时间"></el-table-column>
-        <el-table-column align="center" prop="driver" label="保险公司"></el-table-column>
-        <el-table-column align="center" prop="effectivedate" label="生效时间"></el-table-column>
-        <el-table-column align="center" prop="expiredate" label="到期时间"></el-table-column>
+      <el-table :data="insurance" border style="width: 100%">
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
+        <el-table-column align="center" prop="bxtime" label="记录时间"></el-table-column>
+        <el-table-column align="center" prop="bxcompany" label="保险公司"></el-table-column>
+        <el-table-column align="center" prop="bxtime" label="生效时间"></el-table-column>
+        <el-table-column align="center" prop="bxtimewarng" label="到期时间"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -469,27 +475,18 @@ export default {
         busnumber: "",
         param2: "",
         area: "",
-        department: ""
+        department: "",
+        cartype: ""
       },
       msg: {
-        cartype: "垃圾清运车",
+        cartype: "",
         busnumber: "",
         shoppingtime: "",
         member: "",
-        department: "环卫一部",
+        department: "",
         user: "",
-        area: "东营南站",
-        information: ""
-      },
-      msgold: {
-        cartype: "垃圾清运车",
-        busnumber: "",
-        shoppingtime: "",
-        member: "",
-        department: "环卫一部",
-        user: "",
-        area: "东营南站",
-        information: ""
+        area: "",
+        repairdetail: ""
       },
       msgadd: false,
       msgimport: false,
@@ -501,8 +498,6 @@ export default {
       showdetail: false,
       showedit: false,
       url: "",
-      url1: "http://47.110.160.217:10071/images000/by1.jpg",
-      url2: "http://47.110.160.217:10071/images000/by2.jpg",
       insuranceList: [
         {
           carbrand: "鲁E-562E4",
@@ -523,22 +518,7 @@ export default {
         img: "",
         content: ""
       },
-      maintenanceList: [
-        {
-          carbrand: "鲁E-675G3",
-          date: "2019-01-20",
-          driver: "李诞",
-          content: "更换火花塞",
-          img: ""
-        },
-        {
-          carbrand: "鲁E-675G3",
-          date: "2018-05-20",
-          driver: "刘波",
-          content: "更换发动机机油及滤清器",
-          img: ""
-        }
-      ],
+      maintenanceList: [],
       warningList: [
         {
           remaining: 0,
@@ -558,66 +538,7 @@ export default {
       ],
       // 故障代码
       warning: [
-        {
-          number: 1,
-          type: "垃圾清运车",
-          carbrand: "鲁E-675G3",
-          date: "2010-05-05",
-          num: "环卫-A001",
-          company: "发动机故障",
-          driver: "李诞",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2010-05-03",
-          policeTime: "08:00",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
-        },
-        {
-          number: 2,
-          type: "垃圾运输车",
-          carbrand: "鲁E-675G3",
-          date: "2011-12-22",
-          num: "环卫-A001",
-          company: "手刹故障",
-          driver: "李诞",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2011-12-20",
-          policeTime: "15:30",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
-        },
-        {
-          number: 3,
-          type: "垃圾运输车",
-          carbrand: "鲁E-675G3",
-          date: "2012-10-10",
-          num: "环卫-A001",
-          company: "水温过高",
-          driver: "李诞",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2012-10-09",
-          policeTime: "18:55",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
-        },
-        {
-          number: 4,
-          type: "垃圾运输车",
-          carbrand: "鲁E-675G3",
-          date: "2013-03-20",
-          num: "环卫-A001",
-          company: "机油报警",
-          driver: "李诞",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2013-03-19",
-          policeTime: "10:12",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "已处理"
-        }
+       
       ],
       troublesHooting: [
         {
@@ -661,74 +582,119 @@ export default {
         }
       ],
       // 保险
-      insurance: [
-        {
-          id: 1,
-          carbrand: "鲁E-675G3",
-          expireday: 2,
-          effectivedate: "2018-10-20",
-          expiredate: "2019-10-20",
-          driver: "李诞"
-        },
-        {
-          id: 2,
-          carbrand: "鲁E-675G3",
-          expireday: 0,
-          effectivedate: "2017-10-20",
-          expiredate: "2018-10-20",
-          driver: "李诞"
-        },
-
-        {
-          id: 3,
-          carbrand: "鲁E-675G3",
-          expireday: 0,
-          effectivedate: "2016-10-20",
-          expiredate: "2017-10-20",
-          driver: "李诞"
-        }
-      ],
+      insurance: [],
       // 车况异常
-      abnormal: ""
+      abnormal: "",
+      // 编辑和新增修改
+      type: "add",
+      // 新增判断
+      rules: {
+        cartype: [
+          { required: true, message: "请选择车辆信息", trigger: "blur" }
+        ],
+        busnumber: [
+          { required: true, message: "请输入车牌号", trigger: "blur" }
+        ],
+        shoppingtime: [
+          { required: true, message: "请输入购买时间", trigger: "blur" }
+        ],
+        member: [
+          { required: true, message: "请输入资产编号", trigger: "blur" }
+        ],
+        department: [
+          { required: true, message: "请输入归属单位", trigger: "blur" }
+        ],
+        user: [{ required: true, message: "请输入指定司机", trigger: "blur" }],
+        area: [{ required: true, message: "请选择使用区域", trigger: "blur" }]
+      }
     };
   },
   methods: {
-    showinsurance() {
-      this.showinsurancea = !this.showinsurancea;
-    },
     showimgs(v) {
       this.url = v;
       this.showimg = !this.showimg;
     },
-    showmaintenance() {
-      this.maintenance = !this.maintenance;
+    // 保险缴纳
+    showinsurance(row) {
+      this.showinsurancea = !this.showinsurancea;
+      this.$http
+        .post(
+          "MotorDetail/getBXByBusNumber",
+          this.$qs.stringify({ busNumber: row.busnumber })
+        )
+        .then(res => {
+          this.insurance = res.data;
+        });
     },
-    showWarning() {
+    // 保养记录
+    showmaintenance(row) {
+      console.log(row.busnumber);
+      this.maintenance = !this.maintenance;
+      this.$http
+        .post(
+          "MotorDetail/getBYByBusNumber",
+          this.$qs.stringify({ busNumber: row.busnumber })
+        )
+        .then(res => {
+          for (const key in res.data) {
+            res.data[key].maintainfile = res.data[key].maintainfile.split(";");
+          }
+          this.maintenanceList = res.data;
+        });
+    },
+    // 油耗信息
+    showWarning(row) {
       this.showwarning = !this.showwarning;
+      this.$http
+        .post(
+          "MotorDetail/getYHByBusNumber",
+          this.$qs.stringify({ busNumber: row.busnumber })
+        )
+        .then(res => {
+          this.oil = res.data;
+        });
     },
     nextpage(value) {
       this.data.currpage = value;
     },
-    showadd(row) {
-      console.log(row);
-    },
+    // 车况信息
     carwarning(index, row) {
       this.msg = row;
-      console.log(this.msg);
-
       this.msgadd = !this.msgadd;
+      this.$http
+        .post(
+          "MotorDetail/getConditionByBusNumber",
+          this.$qs.stringify({ busNumber: row.busnumber })
+        )
+        .then(res => {
+          console.log(res.data);
+          
+          this.warning = res.data
+        });
     },
-    handleEdit(index, row) {
+    handleDetail(index, row) {
       this.msg = row;
       this.showdetail = !this.showdetail;
     },
+    handleEdit(index, row) {
+      this.type = "edit";
+      this.msg = row;
+      this.showedit = !this.showedit;
+    },
     handleDelete(index, row) {
-      console.log("删除第" + row.sid + "个信息");
+      console.log(row.sid);
+      this.$http
+        .post(
+          "MotorDetail/deleteMotorInformationBySid",
+          this.$qs.stringify({ sid: row.sid })
+        )
+        .then(res => {
+          console.log(res);
+          this.getCarList();
+        });
     },
     getCarList() {
       this.$http.get("MotorDetail/getAllMotorInformation").then(res => {
-        console.log(res.data);
-        
         this.data.list = res.data;
       });
     },
@@ -739,8 +705,40 @@ export default {
           this.$qs.stringify(this.search)
         )
         .then(res => {
+          console.log(res);
           this.data.list = res.data;
         });
+    },
+    onsubmit() {
+      this.showedit = false;
+      if (this.type == "edit") {
+        console.log("edit");
+        this.$http
+          .post(
+            "MotorDetail/updateMotorInformation",
+            this.$qs.stringify(this.msg)
+          )
+          .then(res => {
+            this.$options.methods.getCarList.call(this);
+          });
+      } else if (this.type == "add") {
+        console.log("add");
+        this.$http
+          .post("MotorDetail/addMotorInformation", this.$qs.stringify(this.msg))
+          .then(res => {
+            this.$options.methods.getCarList.call(this);
+          });
+      }
+    },
+    submitForm() {
+      this.$refs["ruleForm"].validate(valid => {
+        if (valid) {
+          this.onsubmit();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     }
   },
   created() {
