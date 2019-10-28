@@ -759,7 +759,7 @@ export default {
   created() {
     this.date();
     this.getPositions();
-    this.getTricycle();
+    // this.getTricycle();
     this.getpolyline()
   },
 
@@ -820,10 +820,12 @@ export default {
     },
     // 获取三轮车的位置
     getTricycle() {
-      this.$http.post("xy/pedicabDemo").then(res => {
+      setInterval(()=>{
+        this.$http.post("xy/get3wheelCarXY").then(res => {
         console.log(res.data);
         this.positionsCls = res.data;
       });
+      },5000)
     },
     handleSizeChange() {},
     handleCurrentChange() {},
@@ -880,9 +882,6 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
-.BMap_mask > div > div > div {
-  background-image: url("../../assets/img/垃圾运输车.png") !important ;
-}
 .menu {
   padding: 16px 0;
   height: 60px;

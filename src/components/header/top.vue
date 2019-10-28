@@ -12,17 +12,28 @@
     <div class="TopR">
       <div class="right-wrap">
         <div class="po search" @click="screen">
-          <span class="iconfont icon-quanping icon"></span>
-          <span>全屏</span>
+          <div v-show="screenTop">
+            <span class="iconfont icon-quanping icon"></span>
+            <span>全屏</span>
+          </div>
+          <div v-show="!screenTop">
+            <!-- <span class="iconfont icon-quanping icon"></span> -->
+            <span>退出全屏</span>
+          </div>
         </div>
-        <div class="po">
+        <div class="po" @click="refresh">
           <span class="iconfont icon-shuaxin icon"></span>
           <span>刷新</span>
         </div>
-        <div class="po">
+        <div class="po" @click="help = true">
           <span class="iconfont icon-bangzhu icon"></span>
           <span>帮助</span>
         </div>
+
+        <!-- 弹框 -->
+        <el-dialog title="帮助" :visible.sync="help" width="30%">
+          <p>这是一段信息</p>
+        </el-dialog>
         <div>
           <span>当前登录：管理员</span>
         </div>
@@ -35,11 +46,13 @@
 export default {
   data() {
     return {
+      help: false,
+      screenTop: true,
       isFullscreen: false,
       showdown: true,
       open: false,
       animate: false,
-      msg: '公告：智慧环卫综合管理平台有新功能更新！',
+      msg: "公告：智慧环卫综合管理平台有新功能更新！",
       timer: null //在data上定义定时器timer，默认为null
     };
   },
@@ -54,9 +67,11 @@ export default {
       this.showdown = !this.showdown;
       this.$emit("asideOpen", this.open);
     },
+    // 全屏
     screen() {
       let element = document.documentElement;
       if (this.fullscreen) {
+        this.screenTop = true;
         if (document.exitFullscreen) {
           document.exitFullscreen();
         } else if (document.webkitCancelFullScreen) {
@@ -67,6 +82,7 @@ export default {
           document.msExitFullscreen();
         }
       } else {
+        this.screenTop = false;
         if (element.requestFullscreen) {
           element.requestFullscreen();
         } else if (element.webkitRequestFullScreen) {
@@ -79,6 +95,10 @@ export default {
         }
       }
       this.fullscreen = !this.fullscreen;
+    },
+    // 刷新
+    refresh() {
+      location.reload();
     },
     show() {
       if (this.timer != null) return;
@@ -93,7 +113,7 @@ export default {
     }
   },
   created() {
-    this.show()
+    this.show();
   }
 };
 </script>
@@ -179,6 +199,9 @@ export default {
     display: flex;
     justify-content: center;
     align-content: center;
+  }
+  .el-dialog {
+    z-index: 9999 !important;
   }
 }
 </style>

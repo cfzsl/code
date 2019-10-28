@@ -6,20 +6,20 @@
       <div class="searchTop">
         <el-form :inline="true" :model="formInline">
           <el-form-item label="车牌号鲁E-">
-            <el-input class="searchInput" v-model="formInline.user" placeholder="车牌号"></el-input>
+            <el-input class="searchInput" v-model="usernumber" placeholder="车牌号"></el-input>
           </el-form-item>
           <el-form-item label="负责道路">
-            <el-select v-model="lu">
+            <el-select v-model="road">
               <el-option
                 v-for="item in roadList"
                 :key="item.lu"
                 :label="item.label"
-                :value="item.lu"
+                :value="item.label"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="作业区域">
-            <el-select v-model="value">
+            <el-select v-model="area">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -29,12 +29,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="归属单位">
-            <el-select v-model="id">
+            <el-select v-model="unit">
               <el-option
                 v-for="item in optionsList"
                 :key="item.id"
                 :label="item.label"
-                :value="item.id"
+                :value="item.label"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -55,37 +55,39 @@
     <el-dialog title="添加车辆信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
+          <el-select v-model="cartype" class="selectTop">
+            <el-option
+              v-for="item in optionsCar"
+              :key="item.i"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
-          <el-input></el-input>
+          <el-input v-model="number"></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
+          <el-input v-model="shoppingtime"></el-input>
         </el-form-item>
         <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
+          <el-input v-model="parm2"></el-input>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
+          <el-select v-model="department" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
               :label="item.label"
-              :value="item.web"
+              :value="item.label"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
+          <el-input v-model="user"></el-input>
         </el-form-item>
         <el-form-item label="作业区域">
-          <el-select v-model="label" class="selectTop">
+          <el-select v-model="area" class="selectTop">
             <el-option
               v-for="item in optionslu"
               :key="item.lu"
@@ -93,9 +95,6 @@
               :value="item.label"
             ></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -150,12 +149,11 @@
       style="width: 100%"
     >
       <el-table-column align="center" prop="sid" label="序号" width></el-table-column>
-      <el-table-column align="center" prop="carbrand" label="车牌号" width></el-table-column>
-      <el-table-column align="center" prop="date" label="购车时间" width></el-table-column>
-      <el-table-column align="center" prop="num" label="资产编号" width></el-table-column>
-      <el-table-column align="center" prop="company" label="归属单位" width></el-table-column>
-      <el-table-column align="center" prop="driver" label="使用人" width></el-table-column>
-      <el-table-column align="center" prop="phone" label="联系方式" width></el-table-column>
+      <el-table-column align="center" prop="member" label="车牌号" width></el-table-column>
+      <el-table-column align="center" prop="shoppingtime" label="购车时间" width></el-table-column>
+      <el-table-column align="center" prop="parm2" label="资产编号" width></el-table-column>
+      <el-table-column align="center" prop="department" label="归属单位" width></el-table-column>
+      <el-table-column align="center" prop="user" label="使用人" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button
@@ -164,7 +162,7 @@
             size="small"
             @click="pagination(scope.row, scope.$index)"
           >详情</el-button>
-          <el-button class="tableButton2" type="button" @click="deletList" size="small">删除</el-button>
+          <el-button class="tableButton2" type="button" @click="deletList(scope.row, scope.$index)" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -177,22 +175,32 @@
       :page-sizes="[10,20,30,40]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="32"
+      :total="tableData.length"
     ></el-pagination>
     <!-- 弹框 -->
     <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
+      <el-form :inline="true" :model="details" class="demo-form-inline" v-if="buttonIf">
+        <el-form-item label="车辆类型" class="searchType">
+          <el-select v-model="details.cartype" class="selectTop" disabled>
+            <el-option
+              v-for="item in optionsCar"
+              :key="item.i"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="车牌号">
-          <el-input v-model="formInline.carbrand"></el-input>
+          <el-input v-model="details.member" disabled></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
-          <el-input v-model="formInline.date"></el-input>
+          <el-input v-model="details.shoppingtime" disabled></el-input>
         </el-form-item>
         <el-form-item label="资产编号">
-          <el-input v-model="formInline.num"></el-input>
+          <el-input v-model="details.parm2" disabled></el-input>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="formInline.company" class="selectTop" disabled>
+          <el-select v-model="details.department" class="selectTop" disabled>
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -201,25 +209,42 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="使用人">
-          <el-input v-model="formInline.driver"></el-input>
+        <el-form-item label="作业区域">
+          <el-select v-model="details.area" class="selectTop" disabled>
+            <el-option
+              v-for="item in optionslu"
+              :key="item.lu"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.phone"></el-input>
+        <el-form-item label="使用人">
+          <el-input v-model="details.user" disabled></el-input>
         </el-form-item>
       </el-form>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
+      <el-form :inline="true" :model="details" class="demo-form-inline" v-if="!buttonIf">
+        <el-form-item label="车辆类型" class="searchType">
+          <el-select v-model="details.cartype" class="selectTop">
+            <el-option
+              v-for="item in optionsCar"
+              :key="item.i"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="车牌号">
-          <el-input v-model="formInline.carbrand"></el-input>
+          <el-input v-model="details.member"></el-input>
         </el-form-item>
         <el-form-item label="购车时间">
-          <el-input v-model="formInline.date"></el-input>
+          <el-input v-model="details.shoppingtime"></el-input>
         </el-form-item>
         <el-form-item label="资产编号">
-          <el-input v-model="formInline.num"></el-input>
+          <el-input v-model="details.parm2"></el-input>
         </el-form-item>
         <el-form-item label="归属单位">
-          <el-select v-model="formInline.company" class="selectTop">
+          <el-select v-model="details.department" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -228,11 +253,18 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="使用人">
-          <el-input v-model="formInline.driver"></el-input>
+        <el-form-item label="作业区域">
+          <el-select v-model="details.area" class="selectTop">
+            <el-option
+              v-for="item in optionslu"
+              :key="item.lu"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.phone"></el-input>
+        <el-form-item label="使用人">
+          <el-input v-model="details.user"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -247,151 +279,34 @@
 </template>
 
 <script>
-import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      usernumber:"",
+      cartype:"",
+      number:"",
+      shoppingtime:"",
+      department:"",
+      user:"",
+      area:"",
+      parm2:"",
+      road: "",
+      area: "",
+      unit: "",
       text: "车辆信息",
       msgexport: false,
       msgimport: false,
       pagesize: 10,
       currpage: 1,
-      tableData: [
-        {
-          sid: 1,
-          type: "垃圾清运车",
-          carbrand: "鲁E-675G3",
-          date: "2011/10/20",
-          num: "环卫-A001",
-          company: "环卫一部",
-          driver: "李诞",
-          phone: "15375669845",
-          region: "东营南站",
-          service: ""
-        },
-        {
-          sid: 2,
-          type: "洒水车",
-          carbrand: "鲁E-89901",
-          date: "2019/1/10",
-          num: "环卫-A002",
-          company: "环卫一部",
-          driver: "马丽",
-          phone: "17862169704",
-          region: "西湖公园",
-          service: ""
-        },
-        {
-          sid: 3,
-          type: "清扫车",
-          carbrand: "鲁E-81902",
-          date: "2019/1/10",
-          num: "环卫-A003",
-          company: "环卫一部",
-          driver: "张雪",
-          phone: "17862169730",
-          region: "青岛路",
-          service: ""
-        },
-        {
-          sid: 4,
-          type: "垃圾清运车",
-          carbrand: "鲁E-80003",
-          date: "2019/1/10",
-          num: "环卫-A004",
-          company: "环卫一部",
-          driver: "侯吉",
-          phone: "17865461021",
-          region: "济南路",
-          service: ""
-        },
-        {
-          sid: 5,
-          type: "垃圾清运车",
-          carbrand: "鲁E-89999",
-          date: "2019/1/10",
-          num: "环卫-A005",
-          company: "环卫一部",
-          driver: "张茜",
-          phone: "17865461024",
-          region: "滨州路",
-          service: ""
-        },
-        {
-          sid: 6,
-          type: "垃圾清运车",
-          carbrand: "鲁E-55678",
-          date: "2019/1/10",
-          num: "环卫-A006",
-          company: "环卫一部",
-          driver: "王菲",
-          phone: "17865461067",
-          region: "府前大街",
-          service: ""
-        },
-        {
-          sid: 7,
-          type: "垃圾清运车",
-          carbrand: "鲁E-21990",
-          date: "2019/1/10",
-          num: "环卫-A007",
-          company: "环卫一部",
-          driver: "李亚鹏",
-          phone: "17865461072",
-          region: "运河路",
-          service: ""
-        },
-        {
-          sid: 8,
-          type: "垃圾清运车",
-          carbrand: "鲁E-89907",
-          date: "2019/1/10",
-          num: "环卫-A008",
-          company: "环卫二部",
-          driver: "谢依霖",
-          phone: "17865463415",
-          region: "沂河路",
-          service: ""
-        },
-        {
-          sid: 9,
-          type: "垃圾清运车",
-          carbrand: "鲁E-89910",
-          date: "2019/1/10",
-          num: "环卫-A009",
-          company: "环卫二部",
-          driver: "邓超",
-          phone: "17865461159",
-          region: "北一路",
-          service: ""
-        },
-        {
-          sid: 10,
-          type: "洒水车",
-          carbrand: "鲁E-10909",
-          date: "2019/1/10",
-          num: "环卫-A0010",
-          company: "环卫二部",
-          driver: "王伟",
-          phone: "17806261529",
-          region: "井冈山路",
-          service: ""
-        },
-
-        {
-          sid: 11,
-          type: "清扫车",
-          carbrand: "鲁E-77910",
-          date: "2019/1/10",
-          num: "环卫-A011",
-          company: "环卫二部",
-          driver: "徐丽丽",
-          phone: "17806267152",
-          region: "钟山路",
-          service: ""
-        }
-      ],
-      formInline: {},
+      tableData: [],
+      formInline: {
+        member: "",
+        shoppingtime: "",
+        parm2: "",
+        department: "",
+        user: ""
+      },
+      details: {},
       dialogVisible: false,
       i: "0",
       optionsCar: [
@@ -490,29 +405,6 @@ export default {
           label: "龙居镇"
         }
       ],
-      // sk: "0",
-      // optionsWeb: [
-      //   {
-      //     sk: "0",
-      //     label: "全部"
-      //   },
-      //   {
-      //     sk: "1",
-      //     label: "环卫一部"
-      //   },
-      //   {
-      //     sk: "2",
-      //     label: "环卫二部"
-      //   },
-      //   {
-      //     sk: "3",
-      //     label: "环卫三部"
-      //   },
-      //   {
-      //     sk: "4",
-      //     label: "环卫四部"
-      //   }
-      // ],
       lu: "0",
       optionslu: [
         {
@@ -645,43 +537,46 @@ export default {
       dialogFormVisible: false
     };
   },
-  created() {
-    this.getlist();
-  },
   methods: {
     addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
-      console.log("关闭");
+      console.log("切换编辑");
       this.buttonIf = false;
     },
     adddate() {
       this.dialogFormVisible = false;
+      console.log(this.details);
     },
     pagination(row, _index) {
       console.log(row);
       //记录索引
       this.listIndex = _index;
       //记录数据
-      this.formInline = row;
+      this.details = row;
       //显示弹窗
       this.dialogFormVisible = true;
       this.buttonIf = true;
     },
-    deletList() {
-      console.log("删除这一项");
+    deletList(row,_index) {
+      let date={
+        sid:row.sid
+      }
+      console.log(date)
+      this.$http.post("sanitation/car/deleteBySid",this.$qs.stringify(date)).then(res=>{
+        console.log(res.data)
+      })
     },
     handleCurrentChange() {},
     handleSizeChange() {},
-    getlist() {},
+    // 获取列表数据
+    getlist() {
+      this.$http.post("sanitation/car/formSearch").then(res => {
+        console.log(res.data);
+        this.tableData = res.data;
+      });
+    },
     onSubmit() {
       console.log("查啥?");
     }
-  },
-  components: {
-    Table
   }
 };
 </script>
