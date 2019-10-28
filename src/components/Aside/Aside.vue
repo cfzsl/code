@@ -37,7 +37,7 @@
         <span class="iconfont icon-renyuanxinxiguanli"></span>人员信息管理
       </el-menu-item>
       <el-menu-item index="/town/carmsg">
-        <span class="iconfont icon-cheliangxinxiguanli2"></span>车辆信息管理
+        <span class="iconfont icon-cheliangxinxiguanli2"></span>三轮车管理
       </el-menu-item>
       <el-menu-item index="/town/supervision">
         <span class="iconfont icon-richangjianguan"></span>日常监管

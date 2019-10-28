@@ -4,32 +4,34 @@
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
-        <el-form :inline="true" :model="formInline">
+        <el-form :inline="true" :model="formSearch">
           <el-form-item label="姓名" class="msgWc">
-            <el-input v-model="value1"></el-input>
+            <el-input v-model="formSearch.name"></el-input>
           </el-form-item>
           <el-form-item label="区域">
-            <el-select v-model="value">
+            <el-select v-model="formSearch.area">
+              <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in options"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :label="item.area"
+                :value="item.area"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="岗位">
-            <el-select v-model="lu">
+            <el-select v-model="formSearch.job">
+              <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in postList"
                 :key="item.lu"
-                :label="item.label"
-                :value="item.lu"
+                :label="item.job"
+                :value="item.job"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="状态">
-            <el-select v-model="state">
+            <el-select v-model="formSearch.isretired">
               <el-option
                 v-for="item in optionsStated"
                 :key="item.state"
@@ -52,19 +54,25 @@
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加人事信息档案" :visible.sync="dialogVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+    <el-dialog title="添加人事档案" :visible.sync="dialogVisible" width="426px" class="dialogText">
+      <el-form
+        :inline="true"
+        :model="formAdd"
+        ref="ruleForm"
+        :rules="rules"
+        class="demo-form-inline"
+      >
         <el-form-item label="姓名">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input v-model="formAdd.name"></el-input>
         </el-form-item>
         <el-form-item label="年龄">
-          <el-input v-model="formInline.msg"></el-input>
+          <el-input v-model="formAdd.msg"></el-input>
         </el-form-item>
         <el-form-item label="电话">
-          <el-input v-model="formInline.phone"></el-input>
+          <el-input v-model="formAdd.tel"></el-input>
         </el-form-item>
         <el-form-item label="单位">
-          <el-select v-model="formInline.date" class="selectTop">
+          <el-select v-model="formAdd.param2" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
@@ -74,7 +82,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="区域">
-          <el-select v-model="formInline.region" class="selectTop">
+          <el-select v-model="formAdd.area" class="selectTop">
             <el-option
               v-for="item in optionslu"
               :key="item.lu"
@@ -84,15 +92,15 @@
           </el-select>
         </el-form-item>
         <el-form-item label="岗位">
-          <el-select v-model="formInline.job" class="selectTop">
+          <el-select v-model="formAdd.job" class="selectTop">
             <el-option v-for="item in postList" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="学历">
-          <el-input v-model="formInline.education"></el-input>
+          <el-input v-model="formAdd.study"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="formInline.state"  class="selectTop">
+          <el-select v-model="formAdd.isretired" class="selectTop">
             <el-option
               v-for="item in optionsStated"
               :key="item.state"
@@ -102,17 +110,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="基本工资">
-          <el-input v-model="formInline.basepay"></el-input>
+          <el-input v-model="formAdd.basecash"></el-input>
         </el-form-item>
         <el-form-item label="其他补助">
-          <el-input v-model="formInline.subsidies"></el-input>
+          <el-input v-model="formAdd.helpcash"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+        <el-button type="primary" @click="resetForm('ruleForm')" class="formButon">重置</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
+        <el-button type="primary" @click="addCar('ruleForm')" class="formButon">保存</el-button>
       </span>
     </el-dialog>
     <!-- 表格 -->
@@ -121,16 +129,20 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="number" label="序号" width="80px"></el-table-column>
+      <el-table-column align="center" prop="num" label="序号" width="80px"></el-table-column>
       <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
-      <el-table-column align="center" prop="phone" label="电话" width></el-table-column>
-      <el-table-column align="center" prop="date" label="单位" width></el-table-column>
-      <el-table-column align="center" prop="region" label="区域" width></el-table-column>
+      <el-table-column align="center" prop="tel" label="电话" width></el-table-column>
+      <el-table-column align="center" prop="param2" label="单位" width></el-table-column>
+      <el-table-column align="center" prop="area" label="区域" width></el-table-column>
       <el-table-column align="center" prop="job" label="岗位" width="121px"></el-table-column>
-      <el-table-column align="center" prop="education" label="学历" width></el-table-column>
-      <el-table-column align="center" prop="state" label="状态" width></el-table-column>
-      <el-table-column align="center" prop="basepay" label="基本工资(元)" width></el-table-column>
-      <el-table-column align="center" prop="subsidies" label="其他补助(元)" width></el-table-column>
+      <el-table-column align="center" prop="study" label="学历" width></el-table-column>
+      <el-table-column align="center" prop="isretired" label="状态" width>
+        <template slot-scope="scope">
+          <span>{{ scope.row.isretired=="1"? "在职":"离职" }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="basecash" label="基本工资(元)" width></el-table-column>
+      <el-table-column align="center" prop="helpcash" label="其他补助(元)" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="280px">
         <template slot-scope="scope">
           <el-button
@@ -144,7 +156,7 @@
             type="button"
             size="small"
             @click="pagination(scope.row, scope.$index)"
-            v-if="scope.row.join"
+            v-if="scope.row.isretired"
           >设为离职</el-button>
           <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
         </template>
@@ -162,10 +174,10 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="wcList.length"
     ></el-pagination>
-    <!-- 弹框 -->
-    <!-- <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
-        <el-form-item label="姓名">
+    <!--设为离职弹框 -->
+    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="离职日期">
           <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="年龄">
@@ -174,114 +186,9 @@
         <el-form-item label="电话">
           <el-input v-model="formInline.phone"></el-input>
         </el-form-item>
-        <el-form-item label="单位">
-          <el-select v-model="formInline.date" class="selectTop" disabled>
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.web"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="区域">
-          <el-select v-model="formInline.region" class="selectTop" disabled>
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="岗位">
-          <el-select v-model="formInline.job" class="selectTop" disabled>
-            <el-option v-for="item in postList" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="学历">
-          <el-input v-model="formInline.education"></el-input>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="formInline.state"  class="selectTop" disabled>
-            <el-option
-              v-for="item in optionsStated"
-              :key="item.state"
-              :label="item.label"
-              :value="item.state"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="基本工资">
-          <el-input v-model="formInline.basepay"></el-input>
-        </el-form-item>
-        <el-form-item label="其他补助">
-          <el-input v-model="formInline.subsidies"></el-input>
-        </el-form-item>
       </el-form>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-        <el-form-item label="姓名">
-          <el-input v-model="formInline.name"></el-input>
-        </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="formInline.phone"></el-input>
-        </el-form-item>
-        <el-form-item label="单位">
-          <el-select v-model="formInline.date" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.web"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="区域">
-          <el-select v-model="formInline.region" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="岗位">
-          <el-select v-model="formInline.job" class="selectTop">
-            <el-option v-for="item in postList" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="学历">
-          <el-input v-model="formInline.education"></el-input>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="formInline.state"  class="selectTop">
-            <el-option
-              v-for="item in optionsStated"
-              :key="item.state"
-              :label="item.label"
-              :value="item.state"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="formInline.msg"></el-input>
-        </el-form-item>
-        <el-form-item label="基本工资">
-          <el-input v-model="formInline.basepay"></el-input>
-        </el-form-item>
-        <el-form-item label="其他补助">
-          <el-input v-model="formInline.subsidies"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
-      </span>
-    </el-dialog> -->
+      <el-button type="primary" @click="adddate" class="formButon">保存</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -290,19 +197,51 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      value1: "",
+      formSearch: {
+        name: "",
+        area: "",
+        job: "",
+        isretired: ""
+      },
       text: "人事管理详情",
       pagesize: 10,
       currpage: 1,
       tableData: [],
       formInline: {},
       dialogVisible: false,
+      dialogFormVisible: false,
       les: 0,
       progressDate: [
         { les: 0, progress: "未处理" },
         { les: 1, progress: "处理中" },
         { les: 2, progress: "完成" }
       ],
+      formAdd: {
+        name: "",
+        tel: "",
+        area: "",
+        job:'',
+        study: "",
+        param2: "",
+        isretired:'',
+        basecash: "",
+        helpcash:'',
+      },
+      rules: {
+        name: [
+          { required: true, message: "请输入姓名", trigger: "blur" }
+        ],
+        tel: [{ required: true, message: "请输入电话号码", trigger: "blur" }],
+        study: [{ required: true, message: "请输入学历", trigger: "blur" }],
+        isretired: [{ required: true, message: "请输入基本工资", trigger: "blur" }],
+        helpcash: [{ required: true, message: "请输", trigger: "blur" }],
+        param2: [
+          { required: true, message: "请选择归属单位", trigger: "blur" }
+        ],
+        area: [{ required: true, message: "请选择作业区域", trigger: "blur" }],
+        job: [{ required: true, message: "请选择工作岗位", trigger: "blur" }],
+        isretired: [{ required: true, message: "请选择工作状态", trigger: "blur" }],
+      },
       i: "0",
       optionsCar: [
         {
@@ -325,79 +264,71 @@ export default {
       lu: "0",
       postList: [
         {
-          lu: "0",
-          label: "全部"
-        },
-        {
           lu: "1",
-          label: "环卫工"
+          job: "环卫工"
         },
         {
           lu: "2",
-          label: "洒水车司机"
+          job: "洒水车司机"
         },
         {
           lu: "3",
-          label: "垃圾运输车司机"
+          job: "垃圾运输车司机"
         },
         {
           lu: "4",
-          label: "中队长"
+          job: "中队长"
         },
         {
           lu: "5",
-          label: "队长"
+          job: "队长"
         },
         {
           lu: "6",
-          label: "大队长"
+          job: "大队长"
         },
         {
           lu: "7",
-          label: "主管"
+          job: "主管"
         }
       ],
       value: "0",
       options: [
         {
-          value: "0",
-          label: "全部"
-        },
-        {
           value: "1",
-          label: "东营区新区"
+          area: "东营区新区"
         },
         {
           value: "2",
-          label: "文汇街道办事处"
+          area: "文汇街道办事处"
         },
         {
           value: "3",
-          label: "辛店街道办事处"
+          area: "辛店街道办事处"
         },
         {
           value: "4",
-          label: "黄河街道办事处"
+          area: "黄河街道办事处"
         },
         {
           value: "5",
-          label: "圣园街道办事处"
+          area: "圣园街道办事处"
         },
         {
           value: "6",
-          label: "六户镇"
+          area: "六户镇"
         },
         {
           value: "7",
-          label: "牛庄镇"
+          area: "牛庄镇"
         },
         {
           value: "8",
-          label: "史口镇"
+          area: "史口镇"
         },
         {
           value: "9",
-          label: "龙居镇"
+          area: "龙居镇"
         }
       ],
       web: "0",
@@ -542,67 +473,23 @@ export default {
       state: "0",
       optionsStated: [
         {
-          state: "0",
+          state: "1",
           label: "在职"
         },
         {
-          state: "1",
+          state: "0",
           label: "离职"
         }
       ],
       buttonIf: true,
       formInline: {},
       dialogFormVisible: false,
-      wcList: [
-        {
-          number: 1,
-          name: "李诞",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "环卫工",
-          education: "初中",
-          state: "在职",
-          join:true,
-          basepay: "3000",
-          subsidies: "300",
-          msg:'36',
-          policeNode: "10"
-        },
-        {
-          number: 2,
-          name: "张圆圆",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "洒水车司机",
-          education: "大专",
-          state: "在职",
-          join:true,
-          basepay: "3600",
-          subsidies: "500",
-          msg:'42',
-          policeNode: "11"
-        },
-        {
-          number: 3,
-          name: "刘波",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "垃圾运输车司机",
-          education: "高中",
-          state: "离职",
-          join:false,
-          basepay: "3200",
-          subsidies: "600",
-          msg:'54',
-          policeNode: "12"
-        }
-      ]
+      wcList: []
     };
   },
-  created() {},
+  created() {
+    this.getwcList();
+  },
   methods: {
     miStatusColor(item) {
       if (item == 0) {
@@ -612,18 +499,44 @@ export default {
       }
       return "success";
     },
+    getwcList() {
+      this.$http.post("hr/hrinfo/search").then(res => {
+        console.log(res.data);
+        this.wcList = res.data;
+      });
+    },
+    // 添加人事信息
+    addCar(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // alert("submit!");
+          this.dialogVisible = false;
+          this.$http
+            .post("sanitation/car/add", this.$qs.stringify(this.ruleForm))
+            .then(res => {
+              console.log(res.data);
+              this.getlist();
+            })
+            .catch(err => {
+              console.log("请求失败");
+            });
+        } else {
+          // console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    //重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
     addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
       console.log("关闭");
       this.buttonIf = false;
     },
     adddate() {
       this.dialogFormVisible = false;
       this.buttonIf = true;
-
     },
     showdetail(row, _index) {
       // console.log(row);
@@ -632,11 +545,11 @@ export default {
       //记录数据
       this.formInline = row;
       //显示弹窗
-      const id=row.number
-      this.$router.push({path:'/matters/details', query: {id}})
+      const id = row.sid;
+      this.$router.push({ path: "/matters/details", query: { id } });
     },
     pagination(row, _index) {
-      console.log("设为了离职");
+      this.dialogFormVisible = true;
     },
     deletList() {
       console.log("删除这一项");
@@ -644,7 +557,17 @@ export default {
     handleCurrentChange() {},
     handleSizeChange() {},
     onSubmit() {
-      console.log("查啥?");
+      // console.log("查啥?");
+      console.log(this.formSearch);
+      this.$http
+        .post("hr/hrinfo/search", this.$qs.stringify(this.formSearch))
+        .then(res => {
+          console.log(res.data);
+          this.wcList = res.data;
+        })
+        .catch(err => {
+          console.log("请求失败");
+        });
     }
   },
   components: {

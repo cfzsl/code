@@ -277,7 +277,7 @@
           v-for="(item,index) in positionsCls"
           :key="index"
           :position="item"
-          :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 24, height: 24}}"
+          :icon="{url: 'http://118.31.245.183:10500/images000/三轮车.png', size: {width: 24, height: 24}}"
         ></bm-marker>
       </baidu-map>
       <!-- 点聚合 -->
@@ -302,7 +302,7 @@
             v-for="(value,index) in positions"
             :key="index"
             :position="value"
-            :icon="{url: 'http://47.110.160.217:10071/images000/监控.png', size: {width: 38, height: 30}}"
+            :icon="{url: 'http://118.31.245.183:10500/images000/监控.png', size: {width: 38, height: 30}}"
             clicking
             @click="monitoring = true"
           ></bm-marker>
@@ -320,7 +320,7 @@
           v-if="showline"
         >
           <bm-marker
-            :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
+            :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
             :rotation="polylinePathMarker[0].direction"
             :position="polylinePathMarker[0]"
             :dragging="false"
@@ -346,7 +346,7 @@ export default {
     return {
       cssMap: [
         {
-          url: "http://47.110.160.217:10071/images000/监控2.png",
+          url: "http://118.31.245.183:10500/images000/监控2.png",
           size: { width: 62, height: 32 },
           textColor: "#fff",
           padding: "10px"
@@ -759,7 +759,7 @@ export default {
   created() {
     this.date();
     this.getPositions();
-    // this.getTricycle();
+    this.getTricycle();
     this.getpolyline()
   },
 

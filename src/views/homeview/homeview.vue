@@ -8,34 +8,29 @@
       <!-- mark点 -->
       <bm-marker
         :position="{ lng: 118.651704, lat: 37.3801 }"
-        :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
-      >
-      </bm-marker>
+        :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
+      ></bm-marker>
       <bm-marker
         :position="{ lng: 118.520048, lat: 37.399597 }"
-        :icon="{url: 'http://47.110.160.217:10071/images000/清扫车.png', size: {width: 38, height: 30}}"
-      >
-      </bm-marker>
+        :icon="{url: 'http://118.31.245.183:10500/images000/清扫车.png', size: {width: 38, height: 30}}"
+      ></bm-marker>
       <bm-marker
         :position="{ lng: 118.394716, lat: 37.404183 }"
-        :icon="{url: 'http://47.110.160.217:10071/images000/洒水车.png', size: {width: 38, height: 30}}"
-      >
-      </bm-marker>
+        :icon="{url: 'http://118.31.245.183:10500/images000/洒水车.png', size: {width: 38, height: 30}}"
+      ></bm-marker>
       <bm-marker
         :position="{ lng: 118.693672, lat: 37.408082 }"
-        :icon="{url: 'http://47.110.160.217:10071/images000/三轮车.png', size: {width: 38, height: 30}}"
-      >
-      </bm-marker>
+        :icon="{url: 'http://118.31.245.183:10500/images000/三轮车.png', size: {width: 38, height: 30}}"
+      ></bm-marker>
       <bm-marker
         :position="{ lng: 118.598237, lat: 37.463098 }"
-        :icon="{url: 'http://47.110.160.217:10071/images000/对讲机.png', size: {width: 38, height: 30}}"
-      >
-      </bm-marker>
+        :icon="{url: 'http://118.31.245.183:10500/images000/对讲机.png', size: {width: 38, height: 30}}"
+      ></bm-marker>
       <bm-marker
         v-for="item in position2"
         :key="item.code"
         :position="{ lng: item.lng, lat: item.lat }"
-        :icon="{url: 'http://47.110.160.217:10071/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
+        :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
       ></bm-marker>
       <div class="mapList">
         <div class="list">
@@ -55,7 +50,7 @@
           <span>三轮车</span>
         </div>
         <div class="list">
-          <img class='duli' src="../../assets/img/对讲机.png" width="8px" height="24px" alt />
+          <img class="duli" src="../../assets/img/对讲机.png" width="8px" height="24px" alt />
           <span>对讲机</span>
         </div>
       </div>
@@ -133,10 +128,10 @@
         width="70%"
         class="elDialog"
       >
-      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="msgear" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
@@ -178,7 +173,7 @@
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="warning.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -194,18 +189,10 @@
         width="70%"
         class="elDialog"
       >
-        <!-- <el-table :data="warningList" border style="width: 100%">
-          <el-table-column  align="center" prop="carbrand" label="车牌号"></el-table-column>
-          <el-table-column  align="center" prop="driver" label="司机"></el-table-column>
-          <el-table-column  align="center" prop="remaining" label="液位高度"></el-table-column>
-          <el-table-column  align="center" prop="consumption" label="百公里耗油量"></el-table-column>
-          <el-table-column  align="center" prop="maximum" label="最大油量"></el-table-column>
-          <el-table-column  align="center" prop="date" label="报警时间"></el-table-column>
-        </el-table> -->
         <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="msgear" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
@@ -250,22 +237,16 @@
         width="70%"
         class="elDialog"
       >
-      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="msgear" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
             </el-form-item>
             <el-form-item label="保养完成情况" class="Troubleshooting">
               <el-select v-model="th" class="selectTop">
-                <!-- <el-option
-                  v-for="item in troublesHooting"
-                  :key="item.th"
-                  :label="item.label"
-                  :value="item.th"
-                ></el-option>-->
                 <el-option label="/" value="0"></el-option>
                 <el-option label="完成保养" value="1"></el-option>
               </el-select>
@@ -301,7 +282,7 @@
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="maintenance.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -317,10 +298,10 @@
         width="70%"
         class="elDialog"
       >
-      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="msgear" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
@@ -358,7 +339,7 @@
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="insurance.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -374,10 +355,10 @@
         width="70%"
         class="elDialog"
       >
-      <el-form ref="form" border :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" border :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="msgear" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
@@ -390,7 +371,7 @@
           <div class="list">
             <!-- 此处data应为
             data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-             <el-table :data="overAge" border style="width: 100%" @row-click="showadd">
+            <el-table :data="overAge" border style="width: 100%" @row-click="showadd">
               <el-table-column align="center" prop="id" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
               <el-table-column align="center" prop="name" label="姓名"></el-table-column>
@@ -419,10 +400,10 @@
         width="70%"
         class="elDialog"
       >
-      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="msgear" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
@@ -435,12 +416,7 @@
           <div class="list">
             <!-- 此处data应为
             data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table
-              :data="oilday"
-              border
-              style="width: 100%"
-              @row-click="showadd"
-            >
+            <el-table :data="oilday" border style="width: 100%" @row-click="showadd">
               <el-table-column align="center" prop="id" label="序号"></el-table-column>
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
               <el-table-column align="center" prop="consumption" label="归属单位"></el-table-column>
@@ -472,10 +448,10 @@
         width="70%"
         class="elDialog"
       >
-          <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" :model="msg" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="msgear" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
@@ -484,21 +460,16 @@
               <el-button type="primary" @click="onSubmit">查询</el-button>
               <el-button type="primary" @click="onEmpty">清空</el-button>
             </el-form-item>
-          </div>  
+          </div>
           <div class="list">
-            <el-table
-              :data="stagnationList"
-              border
-              style="width: 100%"
-              @row-click="showadd"
-            >
+            <el-table :data="stagnationList" border style="width: 100%" @row-click="showadd">
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
               <el-table-column align="center" prop="driver" label="车辆使用人"></el-table-column>
               <el-table-column align="center" prop="company" label="单位"></el-table-column>
               <el-table-column align="center" prop="phone" label="联系方式"></el-table-column>
               <el-table-column align="center" prop="region" label="停滞点" width="200x"></el-table-column>
               <el-table-column align="center" prop="timeout" label="停滞时长" width="220px"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间" width="200px"></el-table-column>              
+              <el-table-column align="center" prop="policeTime" label="报警时间" width="200px"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -515,7 +486,7 @@
       </el-dialog>
       <!-- <el-input placeholder="请输入车牌号" v-model="input3" class="input-with-select">
         <el-button slot="append" @click="searchMap">搜索</el-button>
-      </el-input> -->
+      </el-input>-->
     </baidu-map>
   </div>
 </template>
@@ -524,10 +495,12 @@
 export default {
   data() {
     return {
-      show: false,
       msg: "",
-      showimgs:'',
-      value1:'',
+      th: "",
+      value1: "",
+      msgear: "",
+      show: false,
+      showimgs: "",
       datemsg: "",
       msgeslint: false,
       msgeslint2: false,
@@ -712,8 +685,8 @@ export default {
           id: 1,
           carbrand: "鲁E-12131",
           consumption: "东营区新区",
-          name:'李诞',
-          phone:'15975669745',
+          name: "李诞",
+          phone: "15975669745",
           consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2019-10-18",
           policeTime: "08:00"
@@ -722,8 +695,8 @@ export default {
           id: 2,
           carbrand: "鲁E-65QQ3",
           consumption: "东营区新区",
-          name:'张圆圆',
-          phone:'15975659845',
+          name: "张圆圆",
+          phone: "15975659845",
           consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2019-10-16",
           policeTime: "15:25"
@@ -732,8 +705,8 @@ export default {
           id: 3,
           carbrand: "鲁E-58965",
           consumption: "东营区新区",
-          name:'刘波',
-          phone:'13675667845',
+          name: "刘波",
+          phone: "13675667845",
           consumptionNo: "超过原定使用区域：东营区东营南站",
           policeDate: "2019-10-14",
           policeTime: "10:35"
@@ -741,7 +714,7 @@ export default {
       ],
       warningList: [
         {
-          remaining: 'MAX',
+          remaining: "MAX",
           consumption: "12L",
           maximum: "80L",
           date: "2019-10-18 18:20",
@@ -755,30 +728,30 @@ export default {
         img: "",
         content: ""
       },
-      overAge:[
+      overAge: [
         {
           id: "1",
           carbrand: "鲁E-1A2G6",
-          name:'李诞',
-          policeDate: '是',
-          police: '2019-10-6',
+          name: "李诞",
+          policeDate: "是",
+          police: "2019-10-6"
         },
         {
           id: "2",
           carbrand: "鲁E-2X5SF",
-          name:'张圆圆',
-          policeDate: '是',
-          police: '2019-10-6',
+          name: "张圆圆",
+          policeDate: "是",
+          police: "2019-10-6"
         },
         {
           id: "3",
           carbrand: "鲁E-S126D",
-          name:'刘波',
-          policeDate: '是',
-          police: '2019-10-6',
-        },
+          name: "刘波",
+          policeDate: "是",
+          police: "2019-10-6"
+        }
       ],
-      stagnationList:[
+      stagnationList: [
         {
           number: 1,
           carbrand: "鲁E-S112D",
@@ -787,7 +760,7 @@ export default {
           phone: "15975669892",
           region: "西湖公园",
           policeTime: "2019-10-09 18:50",
-          timeout:"1小时5分"
+          timeout: "1小时5分"
         },
         {
           number: 2,
@@ -797,7 +770,7 @@ export default {
           phone: "15975669585",
           region: "东营南站",
           policeTime: "2019-10-09 17:54",
-          timeout:"56分"
+          timeout: "56分"
         },
         {
           number: 3,
@@ -807,19 +780,46 @@ export default {
           phone: "13675879845",
           region: "红光渔港",
           policeTime: "2019-10-09 17:54",
-          timeout:"1小时30分"
-        },
+          timeout: "1小时30分"
+        }
       ],
-       data: {
+      data: {
         pagesize: 10,
         currpage: 1,
         list: []
-      },
+      }
     };
+  },
+  // 监听
+  watch: {
+    msgear: function(val) {
+      this.msgear = val;
+      let reg = /^[0-9a-zA-Z]+$/;
+      if (!reg.test(this.msgear)) {
+        this.$message({
+          showClose: true,
+          message: "请输入字母或数子",
+          type: "error"
+        });
+        // alert('请输入字母或数子')
+      } else if (this.msgear.length > 10) {
+        this.$message({
+          showClose: true,
+          message: "请输入不超过10位的数子字母",
+          type: "error"
+        });
+        // alert("请输入不超过10位的数子字母")
+        this.msgear = this.msgear.substr(0, 10);
+      }
+    }
   },
   methods: {
     // 清空
-    onEmpty(){},
+    onEmpty() {
+      this.msgear = "";
+      this.th = "0";
+      this.value1 = "";
+    },
     date() {
       for (let i = 1; i < 2; i++) {
         this.data.list.push({
@@ -837,7 +837,7 @@ export default {
           policedate: "11:35:10",
           service: "超过原定使用区域：东营区东营南站",
           troubleshooting: "未维修",
-          timeout:"1小时"
+          timeout: "1小时"
         });
       }
     },
@@ -857,17 +857,17 @@ export default {
       var map = new BMap.Map("allmap");
     },
     getMapMark() {
-      setTimeout(()=>{
-      this.$http.get("/xy/get3wheelCarXY").then(res => {
+      setTimeout(() => {
+        this.$http.get("/xy/get3wheelCarXY").then(res => {
           this.position2 = res.data;
         });
-      },1000)
+      }, 1000);
       setInterval(() => {
         this.$http.get("/xy/get3wheelCarXY").then(res => {
           this.position2 = res.data;
         });
       }, 1000);
-    },
+    }
   },
   created() {
     // this.getMapMark();
@@ -904,7 +904,7 @@ export default {
     background-color: #ffffff;
     border-radius: 4px;
     align-items: center;
-   justify-content: left;
+    justify-content: left;
     img {
       margin-left: 10px;
     }
@@ -945,7 +945,7 @@ export default {
       display: inline-block;
       // margin-left: 10px !important;
       margin-right: 0 !important;
-      margin:0 auto;
+      margin: 0 auto;
     }
   }
   .oneself {
@@ -1046,10 +1046,10 @@ export default {
   color: red;
 }
 .red {
-  color:red;
+  color: red;
 }
 .hede {
-  color:#000;
+  color: #000;
 }
 .pagination {
   text-align: center;
