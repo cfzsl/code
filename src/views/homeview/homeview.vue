@@ -798,15 +798,17 @@ export default {
       if (!reg.test(this.msgear)) {
         this.$message({
           showClose: true,
-          message: "请输入字母或数子",
-          type: "error"
+          message: "请输入字母或数字",
+          type: "error",
+          offset: 155
         });
         // alert('请输入字母或数子')
       } else if (this.msgear.length > 10) {
         this.$message({
           showClose: true,
-          message: "请输入不超过10位的数子字母",
-          type: "error"
+          message: "请输入不超过10位的数字或字母",
+          type: "error",
+          offset: 155
         });
         // alert("请输入不超过10位的数子字母")
         this.msgear = this.msgear.substr(0, 10);

@@ -2,6 +2,7 @@
   <!-- 出勤统计 -->
   <div>
     <el-tabs value="form">
+      <!-- 左侧表格统计 -->
       <el-tab-pane label="表格统计" name="form">
         <div id="base">
           <!-- 搜索 -->
@@ -37,10 +38,16 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="归属单位">
-                  <el-date-picker v-model="search.date" type="date" placeholder="选择日期"></el-date-picker>
+                  <el-select v-model="search.depart">
+                    <el-option label="全部单位" value></el-option>
+                    <el-option label="环卫一部" value="环卫一部"></el-option>
+                    <el-option label="环卫二部" value="环卫二部"></el-option>
+                    <el-option label="环卫三部" value="环卫三部"></el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">查询</el-button>
+                  <el-button type="primary" @click="getList">查询</el-button>
+                  <el-button type="primary" @click="empty">清空</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -53,15 +60,15 @@
               border
               style="width: 100%"
             >
-              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+              <el-table-column align="center" prop="num" label="序号"></el-table-column>
               <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-              <el-table-column align="center" prop="phone" label="电话"></el-table-column>
-              <el-table-column align="center" prop="company" label="单位"></el-table-column>
+              <el-table-column align="center" prop="tel" label="电话"></el-table-column>
+              <el-table-column align="center" prop="depart" label="单位"></el-table-column>
               <el-table-column align="center" prop="area" label="区域"></el-table-column>
               <el-table-column align="center" prop="job" label="岗位"></el-table-column>
-              <el-table-column align="center" prop="work" label="出勤天数"></el-table-column>
-              <el-table-column align="center" prop="rest" label="休息天数"></el-table-column>
-              <el-table-column align="center" prop="leave" label="请假天数"></el-table-column>
+              <el-table-column align="center" prop="actuallyday" label="出勤天数"></el-table-column>
+              <el-table-column align="center" prop="relaxday" label="休息天数"></el-table-column>
+              <el-table-column align="center" prop="outworkday" label="请假天数"></el-table-column>
               <el-table-column align="center" fixed="right" label="操作">
                 <template slot-scope="scope">
                   <el-button
@@ -97,11 +104,11 @@
             >
               <div class="title">
                 出勤
-                <span style="color: blue">{{ row.work }}</span>
+                <span style="color: blue">{{ row.actuallyday }}</span>
                 天，休息
-                <span style="color: green">{{ row.rest }}</span>
+                <span style="color: green">{{ row.relaxday }}</span>
                 天，请假
-                <span style="color: red">{{ row.leave }}</span>
+                <span style="color: red">{{ row.outworkday }}</span>
                 天
               </div>
               <div class="datepicker">
@@ -121,7 +128,9 @@
         </div>
       </el-tab-pane>
 
+      <!-- 右侧图表 -->
       <el-tab-pane label="图表统计" name="chart">
+        <!-- 查询 -->
         <div class="search">
           <div class="searchbox">
             <span>月份</span>
@@ -131,7 +140,9 @@
           <el-button type="primary" class="btn">查询</el-button>
         </div>
 
+        <!-- 内容部分 -->
         <div class="content">
+          <!-- 左侧图表 -->
           <div class="left">
             <div class="titleset">
               <el-row type="flex" class="row-bg" justify="space-around">
@@ -170,6 +181,7 @@
             </div>
           </div>
 
+          <!-- 右侧文本 -->
           <div style="float: left;">
             <div class="item">
               <!-- <div class="title">请假</div>
@@ -237,123 +249,12 @@ export default {
         name: "",
         area: "",
         job: "",
-        date: ""
+        depart: ""
       },
       data: {
         pagesize: 13,
         currpage: 1,
-        list: [
-          {
-            sid: 1,
-            name: "李诞",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 25,
-            rest: 2,
-            leave: 1
-          },
-          {
-            sid: 2,
-            name: "马丽",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 21,
-            rest: 3,
-            leave: 4
-          },
-          {
-            sid: 3,
-            name: "张雪",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 23,
-            rest: 3,
-            leave: 5
-          },
-          {
-            sid: 4,
-            name: "侯吉",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 21,
-            rest: 3,
-            leave: 4
-          },
-          {
-            sid: 5,
-            name: "张茜",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 26,
-            rest: 1,
-            leave: 2
-          },
-          {
-            sid: 6,
-            name: "王菲",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 25,
-            rest: 2,
-            leave: 3
-          },
-          {
-            sid: 7,
-            name: "李亚鹏",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 25,
-            rest: 2,
-            leave: 2
-          },
-          {
-            sid: 8,
-            name: "谢依霖",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 27,
-            rest: 3,
-            leave: 0
-          },
-          {
-            sid: 9,
-            name: "邓超",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 23,
-            rest: 4,
-            leave: 1
-          },
-          {
-            sid: 10,
-            name: "王伟",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区新区",
-            job: "环卫工",
-            work: 27,
-            rest: 2,
-            leave: 1
-          }
-        ]
+        list: []
       },
       detail: false,
       row: {},
@@ -361,12 +262,14 @@ export default {
     };
   },
   methods: {
+    // 图标渲染总函数
     drawecharts() {
       this.drawline();
       this.drawecharts1();
       this.drawecharts2();
       this.drawecharts3();
     },
+    // 折线图
     drawline() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$Echarts.init(document.getElementById("main"));
@@ -479,6 +382,7 @@ export default {
         ]
       });
     },
+    // 饼状图
     drawecharts1() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$Echarts.init(document.getElementById("echarts1"));
@@ -536,6 +440,7 @@ export default {
         ]
       });
     },
+    // 横向柱状图
     drawecharts2() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$Echarts.init(document.getElementById("echarts2"));
@@ -611,6 +516,7 @@ export default {
         ]
       });
     },
+    // 纵向柱状图
     drawecharts3() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$Echarts.init(document.getElementById("echarts3"));
@@ -670,10 +576,30 @@ export default {
         ]
       });
     },
-    onSubmit() {},
+    // 获取列表
+    getList() {
+      this.data.currpage = 1;
+      this.$http
+        .post("hr/attendent/search", this.$qs.stringify(this.search))
+        .then(res => {
+          this.data.list = res.data;
+        });
+    },
+    // 清空查询
+    empty() {
+      this.search = {
+        name: "",
+        area: "",
+        job: "",
+        depart: ""
+      };
+      this.getList();
+    },
+    // 翻页
     nextpage(value) {
       this.data.currpage = value;
     },
+    // 显示表格统计详情
     showdetail(row, index) {
       this.detail = !this.detail;
       this.row = row;
@@ -681,6 +607,7 @@ export default {
   },
   mounted() {
     this.drawecharts();
+    this.getList();
   }
 };
 </script>

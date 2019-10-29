@@ -4,12 +4,12 @@
     <div class="menu">
       <div class="btn">
         <el-button @click="msgse">历史轨迹播放</el-button>
-        <el-button @click="msgerr = true">路线异常报警</el-button>
+        <el-button @click="abnormalroute">路线异常报警</el-button>
         <el-button @click="msgeslint = true">车况检测和预警</el-button>
         <el-button @click="showmsgedate">车辆考勤和工作量</el-button>
       </div>
 
-      <!-- 弹窗1 -->
+      <!-- 历史轨迹播放弹窗 -->
       <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="mapview">
@@ -91,19 +91,19 @@
         </el-form>
       </el-dialog>
 
-      <!-- 弹窗2 -->
+      <!-- 路线异常报警弹窗 -->
       <el-dialog title="路线异常报警" :visible.sync="msgerr" @close="msg = {}" width="70%">
         <el-divider class="divider"></el-divider>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg">
+        <el-form ref="form" :model="search" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="search.busnumber" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
-              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker v-model="search.date" type="date" placeholder class="msgDatePicker"></el-date-picker>
             </el-form-item>
             <el-form-item class="msgButton">
-              <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
+              <el-button type="primary" @click="searchroute" class="button">查询</el-button>
             </el-form-item>
           </div>
           <div class="list">
@@ -113,13 +113,15 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="company" label="归属单位"></el-table-column>
-              <el-table-column align="center" prop="driver" label="指定司机"></el-table-column>
-              <el-table-column align="center" prop="phone" label="联系电话"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
-              <el-table-column align="center" prop="service" label="线路异常情况" width="436px"></el-table-column>
+              <el-table-column align="center" prop="num" label="序号"></el-table-column>
+              <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
+              <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
+              <el-table-column align="center" prop="param3" label="联系电话"></el-table-column>
+              <el-table-column align="center" prop="param4" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="service" label="线路异常情况" width="436px">
+                <template slot-scope="scope">超出原定区域：{{ scope.row.area }}</template>
+              </el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -138,7 +140,7 @@
         </el-form>
       </el-dialog>
 
-      <!-- 弹框3 -->
+      <!-- 车况检测报警弹框 -->
       <el-dialog
         :title="dialog3"
         :visible.sync="msgeslint"
@@ -348,7 +350,7 @@
         </el-form>
       </el-dialog>
 
-      <!-- 弹窗4 -->
+      <!-- 车辆考勤和工作量弹窗 -->
       <el-dialog
         title="车辆考勤和工作量"
         append-to-body
@@ -772,6 +774,10 @@ export default {
         currpage: 1,
         list: []
       },
+      search: {
+        busnumber: "",
+        date: ""
+      },
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
@@ -1131,6 +1137,28 @@ export default {
     },
     addPolylinePoint() {
       this.polylinePath.push({ lng: 116.404, lat: 39.915 });
+    },
+    // 路线异常
+    abnormalroute() {
+      this.msgerr = !this.msgerr;
+      this.$http.get("manage/roadExceptionWarmingCriteriaQuery").then(res => {
+        this.data.list = res.data;
+      });
+    },
+    // 路线异常查询
+    searchroute() {
+      this.$http
+        .post(
+          "manage/roadExceptionWarmingCriteriaQuery",
+          this.$qs.stringify(this.search)
+        )
+        .then(res => {
+          this.data.list = res.data;
+        });
+    },
+    // 下一页
+    nextpage(value) {
+      this.data.currpage = value;
     }
   }
 };
@@ -1206,8 +1234,12 @@ export default {
   }
 }
 
-.pagination {
-  margin-left: 45%;
+.msg {
+  overflow: hidden;
+  .pagination {
+    margin-top: 10px;
+    float: right;
+  }
 }
 
 .Troubleshooting {

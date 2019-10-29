@@ -47,13 +47,85 @@
         </el-form>
       </div>
     </div>
+
     <!-- 按钮 -->
     <div class="searchBot" style="float: right;margin-bottom: 10px;">
-      <el-button class="buttonBot" @click="dialogVisible = true;">添加人员信息</el-button>
+      <el-button icon="el-icon-plus" class="buttonBot" @click="dialogVisible = true;">添加人员信息</el-button>
       <el-button class="buttonBot">导入模板下载</el-button>
-      <el-button class="buttonBot" @click="dialogAble = true">人员信息导入</el-button>
-      <el-button class="buttonBotLast" @click="exportStaff">导出全员信息</el-button>
+      <el-upload
+        class="upload-demo"
+        action="http://118.31.245.183:10500/userInformation/importExcel"
+        :on-success="success"
+        :show-file-list="false"
+        :limit="1"
+        style="float: right;"
+      >
+        <el-button icon="el-icon-upload2" class="buttonBot">人员信息导入</el-button>
+      </el-upload>
+      <el-button icon="el-icon-download" class="buttonBotLast" @click="exportStaff">导出全员信息</el-button>
     </div>
+
+    <!-- 列表 -->
+    <div id="table">
+      <el-table
+        :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        border
+        style="width: 100%"
+      >
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
+        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+        <el-table-column align="center" prop="area" label="区域"></el-table-column>
+        <el-table-column align="center" prop="param2" label="负责道路"></el-table-column>
+        <el-table-column align="center" prop="depart" label="单位"></el-table-column>
+        <el-table-column align="center" prop="hiretime" label="入职时间"></el-table-column>
+        <el-table-column align="center" prop="leavetime" label="离职时间"></el-table-column>
+        <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+        <el-table-column align="center" label="是否超龄">
+          <template slot-scope="scope">
+            <!-- <span style="margin-left: 10px">{{ scope.row.isretired ? '否' : '是' }}</span> -->
+            <span style="margin-left: 10px" v-if="scope.row.isretired === '否'">否</span>
+            <span style="margin-left: 10px" v-else-if="scope.row.isretired === '是'">是</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" fixed="right" label="操作" width="280px">
+          <template slot-scope="scope">
+            <el-button
+              class="tableButton1"
+              type="button"
+              size="small"
+              @click="showdetail(scope.row, scope.$index)"
+            >详情</el-button>
+            <el-button
+              class="tableButton2"
+              type="button"
+              size="small"
+              @click="edit(scope.row, scope.$index)"
+            >编辑</el-button>
+            <el-button
+              class="tableButton3"
+              type="button"
+              @click="deletList(scope.row)"
+              size="small"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <el-pagination
+        :current-page="data.currpage"
+        :page-size="data.pagesize"
+        :pager-count="21"
+        layout="total, prev, pager, next"
+        :total="data.list.length"
+        @prev-click="nextpage"
+        @next-click="nextpage"
+        @current-change="nextpage"
+      ></el-pagination>
+    </div>
+
     <!-- 添加人员信息 -->
     <el-dialog
       title="添加人员信息"
@@ -140,205 +212,136 @@
       </span>
     </el-dialog>
 
-    <!-- 导入人员信息 -->
-    <el-dialog title="导入人员信息" :visible.sync="dialogAble" width="426px" class="dialogText">
-      <el-divider></el-divider>
+    <!-- 编辑弹框 -->
+    <el-dialog
+      :title="text"
+      :visible.sync="dialogFormVisible"
+      width="426px"
+      class="dialogText"
+      @close="formInline = {}"
+    >
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="姓名">
+          <el-input v-model="formInline.name" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-input v-model="formInline.sex" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="年龄">
+          <el-input v-model="formInline.age" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="证件号">
+          <el-input v-model="formInline.idcard" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="准驾车型">
+          <el-select v-model="formInline.license" class="selectTop">
+            <el-option label="A1" value="A1"></el-option>
+            <el-option label="A2" value="A2"></el-option>
+            <el-option label="B1" value="B1"></el-option>
+            <el-option label="B2" value="B2"></el-option>
+            <el-option label="C1" value="C1"></el-option>
+            <el-option label="C2" value="C2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="住址">
+          <el-input v-model="formInline.address" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input v-model="formInline.tel" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="formInline.workstatus" class="selectTop">
+            <el-option label="在职" value="1"></el-option>
+            <el-option label="离职" value="0"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职时间">
+          <el-input v-model="formInline.hiretime" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="离职时间">
+          <el-input v-model="formInline.leavetime" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="作业区域">
+          <el-select v-model="formInline.area" class="selectTop">
+            <el-option label="全部区域" value></el-option>
+            <el-option label="东营区新区" value="东营区新区"></el-option>
+            <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
+            <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
+            <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
+            <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
+            <el-option label="六户镇" value="六户镇"></el-option>
+            <el-option label="史口镇" value="史口镇"></el-option>
+            <el-option label="牛庄镇" value="牛庄镇"></el-option>
+            <el-option label="龙居镇" value="龙居镇"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="归属单位">
+          <el-select v-model="formInline.depart" class="selectTop">
+            <el-option label="全部部门" value></el-option>
+            <el-option label="环卫一部" value="环卫一部"></el-option>
+            <el-option label="环卫二部" value="环卫二部"></el-option>
+            <el-option label="环卫三部" value="环卫三部"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
+        <el-button type="primary" @click="editdata" class="formButon">保存</el-button>
       </span>
     </el-dialog>
 
-    <!-- 列表 -->
-    <div id="table">
-      <el-table
-        :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
-        border
-        style="width: 100%"
-      >
-        <el-table-column align="center" prop="num" label="序号"></el-table-column>
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="area" label="区域"></el-table-column>
-        <el-table-column align="center" prop="param2" label="负责道路"></el-table-column>
-        <el-table-column align="center" prop="depart" label="单位"></el-table-column>
-        <el-table-column align="center" prop="hiretime" label="入职时间"></el-table-column>
-        <el-table-column align="center" prop="leavetime" label="离职时间"></el-table-column>
-        <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
-        <el-table-column align="center" label="是否超龄">
-          <template slot-scope="scope">
-            <!-- <span style="margin-left: 10px">{{ scope.row.isretired ? '否' : '是' }}</span> -->
-            <span style="margin-left: 10px" v-if="scope.row.isretired == '0'">否</span>
-            <span style="margin-left: 10px" v-else-if="scope.row.isretired == '1'">是</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" fixed="right" label="操作" width="280px">
-          <template slot-scope="scope">
-            <el-button
-              class="tableButton1"
-              type="button"
-              size="small"
-              @click="showdetail(scope.row, scope.$index)"
-            >详情</el-button>
-            <el-button
-              class="tableButton2"
-              type="button"
-              size="small"
-              @click="edit(scope.row, scope.$index)"
-            >编辑</el-button>
-            <el-button
-              class="tableButton3"
-              type="button"
-              @click="deletList(scope.row)"
-              size="small"
-            >删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 分页 -->
-      <div class="pagination">
-        <el-pagination
-          :current-page="data.currpage"
-          :page-size="data.pagesize"
-          :pager-count="21"
-          layout="total, prev, pager, next"
-          :total="data.list.length"
-          @prev-click="nextpage"
-          @next-click="nextpage"
-          @current-change="nextpage"
-        ></el-pagination>
-      </div>
-
-      <!-- 弹框 -->
-      <!-- 编辑 -->
-      <el-dialog
-        :title="text"
-        :visible.sync="dialogFormVisible"
-        width="426px"
-        class="dialogText"
-        @close="formInline = {}"
-      >
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="姓名">
-            <el-input v-model="formInline.name" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="性别">
-            <el-input v-model="formInline.sex" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input v-model="formInline.age" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input v-model="formInline.idcard" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-select v-model="formInline.license" class="selectTop">
-              <el-option label="A1" value="A1"></el-option>
-              <el-option label="A2" value="A2"></el-option>
-              <el-option label="B1" value="B1"></el-option>
-              <el-option label="B2" value="B2"></el-option>
-              <el-option label="C1" value="C1"></el-option>
-              <el-option label="C2" value="C2"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="住址">
-            <el-input v-model="formInline.address" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input v-model="formInline.tel" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="state" class="selectTop">
-              <el-option label="在职" value="在职"></el-option>
-              <el-option label="离职" value="离职"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input v-model="formInline.hiretime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input v-model="formInline.leavetime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="job" class="selectTop">
-              <el-option label="全部区域" value></el-option>
-              <el-option label="东营区新区" value="东营区新区"></el-option>
-              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
-              <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
-              <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
-              <el-option label="六户镇" value="六户镇"></el-option>
-              <el-option label="史口镇" value="史口镇"></el-option>
-              <el-option label="牛庄镇" value="牛庄镇"></el-option>
-              <el-option label="龙居镇" value="龙居镇"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="formInline.depart" class="selectTop">
-              <el-option label="全部部门" value></el-option>
-              <el-option label="环卫一部" value="环卫一部"></el-option>
-              <el-option label="环卫二部" value="环卫二部"></el-option>
-              <el-option label="环卫三部" value="环卫三部"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="delect-footer">
-          <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
-        </span>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="editdata" class="formButon">保存</el-button>
-        </span>
-      </el-dialog>
-
-      <!-- 详情 -->
-      <el-dialog
-        :title="text"
-        :visible.sync="detail"
-        width="426px"
-        class="dialogText"
-        @close="formInline = {}"
-      >
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="姓名">
-            <el-input readonly v-model="formInline.name" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="性别">
-            <el-input readonly v-model="formInline.sex" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input readonly v-model="formInline.age" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input readonly v-model="formInline.idcard" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-input readonly v-model="formInline.license" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="住址">
-            <el-input readonly v-model="formInline.address" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input readonly v-model="formInline.tel" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-input readonly v-model="formInline.workstatus" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input readonly v-model="formInline.hiretime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input readonly v-model="formInline.leavetime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-input readonly v-model="formInline.area" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-input readonly v-model="formInline.depart"></el-input>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
-    </div>
+    <!-- 详情弹框 -->
+    <el-dialog
+      :title="text"
+      :visible.sync="detail"
+      width="426px"
+      class="dialogText"
+      @close="formInline = {}"
+    >
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="姓名">
+          <el-input readonly v-model="formInline.name" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-input readonly v-model="formInline.sex" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="年龄">
+          <el-input readonly v-model="formInline.age" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="证件号">
+          <el-input readonly v-model="formInline.idcard" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="准驾车型">
+          <el-input readonly v-model="formInline.license" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="住址">
+          <el-input readonly v-model="formInline.address" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input readonly v-model="formInline.tel" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select disabled v-model="formInline.workstatus" class="selectTop">
+            <el-option label="在职" value="1"></el-option>
+            <el-option label="离职" value="0"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职时间">
+          <el-input readonly v-model="formInline.hiretime" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="离职时间">
+          <el-input readonly v-model="formInline.leavetime" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="作业区域">
+          <el-input readonly v-model="formInline.area" class="inputL"></el-input>
+        </el-form-item>
+        <el-form-item label="归属单位">
+          <el-input readonly v-model="formInline.depart"></el-input>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -347,7 +350,6 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      i: 1,
       dialogVisible: false,
       asterisk: false,
       dialogAble: false,
@@ -384,7 +386,9 @@ export default {
         hiretime: "",
         area: "",
         param2: "",
-        depart: ""
+        depart: "",
+        workstatus: "",
+        area: ""
       },
       search: {
         name: "",
@@ -422,16 +426,27 @@ export default {
   },
   methods: {
     // 人员信息导出
-    exportStaff(v) {
-      if (v == 0) {
-        location.href =
-          "http://118.31.245.183:10500/userInformation/exportExcel";
-      } else if (v == 1) {
-        location.href =
-          "http://118.31.245.183:10500/userInformation/exportExcel";
+    exportStaff() {
+      location.href = "http://192.168.8.126:8080/userInformation/exportExcel";
+    },
+    // 人员信息导入 导入成功回调函数
+    success(response, file) {
+      console.log(response);
+      if (response.status == 1) {
+        this.$message({
+          message: "导入成功",
+          type: "success",
+          offset: 155
+        });
+      } else if (response.status == 0) {
+        this.$message({
+          message: "导入失败，请重试",
+          type: "error",
+          offset: 155
+        });
       }
     },
-    // 弹窗传值
+    // 列表编辑按钮
     edit(row, _index) {
       console.log(row);
       //记录索引
@@ -440,8 +455,8 @@ export default {
       this.formInline = row;
       //显示弹窗
       this.dialogFormVisible = true;
-      this.buttonIf = true;
     },
+    // 列表详情
     showdetail(row, _index) {
       //记录索引
       this.listIndex = _index;
@@ -450,11 +465,7 @@ export default {
       //显示弹窗
       this.detail = !this.detail;
     },
-    addDo() {
-      //关闭弹窗
-      console.log("关闭");
-      this.buttonIf = false;
-    },
+    // 编辑保存
     editdata() {
       this.dialogFormVisible = false;
       this.$http
@@ -463,25 +474,36 @@ export default {
           this.$qs.stringify(this.formInline)
         )
         .then(res => {
-          console.log(res);
+          this.$message({
+            type: "success",
+            message: "编辑成功!",
+            offset: 155
+          });
         });
     },
+    // 列表删除按钮
     deletList(row) {
-      this.$http
-        .post(
-          "userInformation/deleteAllUserInformationBySid",
-          this.$qs.stringify({ sid: row.sid })
-        )
-        .then(res => {
-          this.getAddBook()
+      this.$confirm("是否删除词条数据", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.$http
+          .post(
+            "userInformation/deleteAllUserInformationBySid",
+            this.$qs.stringify({ sid: row.sid })
+          )
+          .then(res => {
+            this.getAddBook();
+          });
+        this.$message({
+          type: "success",
+          message: "删除成功!",
+          offset: 155
         });
+      });
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
+    // 获取列表
     getAddBook() {
       this.$http
         .get("userInformation/userInformationCriteriaQuery")
@@ -489,6 +511,7 @@ export default {
           this.data.list = res.data;
         });
     },
+    // 查询按钮
     onSubmit() {
       this.data.currpage = 1;
       this.$http
@@ -501,6 +524,7 @@ export default {
           this.data.list = res.data;
         });
     },
+    // 清空查询
     empty() {
       this.search = {
         name: "",
@@ -508,11 +532,13 @@ export default {
         area: "",
         depart: ""
       };
-      this.onSubmit()
+      this.onSubmit();
     },
+    // 下一页
     nextpage(value) {
       this.data.currpage = value;
     },
+    // 添加新增
     submitadd(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -524,6 +550,11 @@ export default {
             )
             .then(res => {
               this.getAddBook();
+              this.$message({
+                type: "success",
+                message: "新增成功!",
+                offset: 155
+              });
             });
         } else {
           alert("请补全新增信息");

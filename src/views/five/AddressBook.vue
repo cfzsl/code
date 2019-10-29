@@ -1,6 +1,7 @@
 <template>
   <!-- 通讯录 -->
   <div>
+    <!-- 查询 -->
     <div class="search">
       <div class="searchbox">
         <span>姓名</span>
@@ -44,21 +45,23 @@
       </div>
 
       <el-button type="primary" class="btn" @click="serachAddBook">查询</el-button>
+      <el-button type="primary" @click="empty">清空</el-button>
     </div>
 
+    <!-- 导出 -->
     <div class="menu">
       <div class="btn">
         <el-button icon="el-icon-plus">导出通讯录</el-button>
       </div>
     </div>
 
+    <!-- 列表 -->
     <div class="list">
       <el-table
         :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
         border
         stripe
         style="width: 100%"
-        @row-click="showadd"
       >
         <el-table-column align="center" prop="sid" label="序号"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
@@ -70,6 +73,7 @@
       </el-table>
     </div>
 
+    <!-- 分页 -->
     <div class="pagination">
       <el-pagination
         :current-page="data.currpage"
@@ -113,13 +117,11 @@ export default {
     };
   },
   methods: {
-    onSubmit() {},
+    // 翻页
     nextpage(value) {
       this.data.currpage = value;
     },
-    showadd(row) {
-      console.log(row);
-    },
+    // 获取列表数据
     getAddBook() {
       this.$http
         .get("userInformation/userInformationCriteriaQuery")
@@ -127,8 +129,9 @@ export default {
           this.data.list = res.data;
         });
     },
+    // 查询列表数据
     serachAddBook() {
-      this.data.currpage = 1
+      this.data.currpage = 1;
       this.$http
         .post(
           "userInformation/userInformationCriteriaQuery",
@@ -137,6 +140,16 @@ export default {
         .then(res => {
           this.data.list = res.data;
         });
+    },
+    // 清空查询
+    empty() {
+      this.search = {
+        name: "",
+        area: "",
+        param3: "",
+        depart: ""
+      };
+      this.getAddBook();
     }
   },
   created() {

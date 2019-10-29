@@ -1,6 +1,7 @@
 <template>
   <!-- 车辆信息管理 -->
   <div>
+    <!-- 搜索 -->
     <div class="search">
       <div class="searchbox">
         <span>车牌号鲁E-</span>
@@ -55,20 +56,22 @@
         </el-select>
       </div>
       <el-button type="primary" class="btn" @click="searchBtn">查询</el-button>
+      <el-button type="primary" @click="empty">清空</el-button>
     </div>
 
+    <!-- 导出按钮 -->
     <div class="menu">
       <div class="btn">
         <el-button icon="el-icon-plus" @click="showedit = true;type = 'add'">添加车辆信息</el-button>
-        <el-button icon="el-icon-download" @click="msgimport = true">车辆信息导入</el-button>
-        <el-button icon="el-icon-upload2" @click="msgexport = true">车辆信息导出</el-button>
+        <el-button icon="el-icon-download" @click="msgexport = true">车辆信息导出</el-button>
+        <el-button icon="el-icon-upload2" @click="msgimport = true">车辆信息导入</el-button>
       </div>
 
       <!-- 信息导出 -->
       <el-dialog title="信息导出" :visible.sync="msgexport" width="15%" center>
         <div class="download">
           <div>全部信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
+          <el-button type="primary" size="mini" @click="exportmsg">导出</el-button>
         </div>
         <div class="download">
           <div>垃圾清运车信息模版</div>
@@ -85,26 +88,36 @@
       </el-dialog>
 
       <!-- 信息导入 -->
-      <el-dialog title="信息导入" :visible.sync="msgimport" width="15%" center>
+      <el-dialog title="信息导入" :visible.sync="msgimport" width="30%" center>
         <div class="download">
           <div>全部信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
+          <el-upload
+            class="upload-demo"
+            action="http://118.31.245.183:10500/MotorDetail/importExcel"
+            :on-success="success"
+            :show-file-list="false"
+            :limit="1"
+            style="float: right;"
+          >
+            <el-button type="primary" size="mini">上传</el-button>
+          </el-upload>
         </div>
         <div class="download">
           <div>垃圾清运车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
+          <el-button type="primary" size="mini">上传</el-button>
         </div>
         <div class="download">
           <div>清扫车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
+          <el-button type="primary" size="mini">上传</el-button>
         </div>
         <div class="download">
           <div>洒水车信息模版</div>
-          <el-button type="primary" size="mini">下载</el-button>
+          <el-button type="primary" size="mini">上传</el-button>
         </div>
       </el-dialog>
     </div>
 
+    <!-- 列表 -->
     <div class="list">
       <el-table
         :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
@@ -117,7 +130,7 @@
         <el-table-column align="center" prop="member" label="资产编号"></el-table-column>
         <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
         <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
-        <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+        <el-table-column align="center" prop="param3" label="联系方式"></el-table-column>
         <el-table-column align="center" label="车况异常">
           <template slot-scope="scope">
             <el-button
@@ -164,6 +177,7 @@
       </el-table>
     </div>
 
+    <!-- 分页 -->
     <div class="pagination">
       <el-pagination
         :current-page="data.currpage"
@@ -206,7 +220,7 @@
           <el-input readonly v-model="msg.user" placeholder="请输入司机"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input readonly v-model="msg.tel" placeholder="请输入联系方式"></el-input>
+          <el-input readonly v-model="msg.param3" placeholder="请输入联系方式"></el-input>
         </el-form-item>
         <el-form-item label="使用区域">
           <el-select disabled v-model="msg.area" placeholder="请选择使用区域" style="width: 100%">
@@ -221,7 +235,7 @@
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 2}"
             placeholder="请输入内容"
-            v-model="msg.information"
+            v-model="msg.repairdetail"
             resize="none"
           ></el-input>
         </el-form-item>
@@ -229,12 +243,7 @@
     </el-dialog>
 
     <!-- 车辆编辑 -->
-    <el-dialog
-      title="车辆编辑"
-      width="450px"
-      :visible.sync="showedit"
-      @close="msg = {};$refs['ruleForm'].resetFields();"
-    >
+    <el-dialog title="车辆编辑" width="450px" :visible.sync="showedit" @close="msg = {};">
       <el-form ref="ruleForm" :model="msg" :rules="rules" label-width="auto" class="msg">
         <el-form-item label="车辆信息" prop="cartype">
           <el-select v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
@@ -309,9 +318,6 @@
             <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
             <el-table-column align="center" prop="warmingtime" label="记录时间"></el-table-column>
             <el-table-column align="center" prop="faultinformation" label="异常情况"></el-table-column>
-            <!-- <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
-            <el-table-column align="center" prop="date" label="维修日期"></el-table-column>
-            <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>-->
           </el-table>
         </div>
       </el-form>
@@ -537,9 +543,7 @@ export default {
         }
       ],
       // 故障代码
-      warning: [
-       
-      ],
+      warning: [],
       troublesHooting: [
         {
           th: "0",
@@ -610,6 +614,11 @@ export default {
     };
   },
   methods: {
+    myheaders() {
+      return {
+        "Content-Type": "application/json"
+      };
+    },
     showimgs(v) {
       this.url = v;
       this.showimg = !this.showimg;
@@ -654,6 +663,7 @@ export default {
           this.oil = res.data;
         });
     },
+    // 下一页
     nextpage(value) {
       this.data.currpage = value;
     },
@@ -668,36 +678,59 @@ export default {
         )
         .then(res => {
           console.log(res.data);
-          
-          this.warning = res.data
+          this.warning = res.data;
         });
     },
+    // 显示详情
     handleDetail(index, row) {
       this.msg = row;
       this.showdetail = !this.showdetail;
     },
+    // 显示编辑
     handleEdit(index, row) {
       this.type = "edit";
       this.msg = row;
       this.showedit = !this.showedit;
     },
+    // 删除
     handleDelete(index, row) {
       console.log(row.sid);
-      this.$http
-        .post(
-          "MotorDetail/deleteMotorInformationBySid",
-          this.$qs.stringify({ sid: row.sid })
-        )
-        .then(res => {
-          console.log(res);
-          this.getCarList();
+      this.$confirm("此操作将删除此数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$http
+            .post(
+              "MotorDetail/deleteMotorInformationBySid",
+              this.$qs.stringify({ sid: row.sid })
+            )
+            .then(res => {
+              console.log(res);
+              this.getCarList();
+            });
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+            offset: 155
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+            offset: 155
+          });
         });
     },
+    // 获取列表
     getCarList() {
       this.$http.get("MotorDetail/getAllMotorInformation").then(res => {
         this.data.list = res.data;
       });
     },
+    // 搜索按钮
     searchBtn() {
       this.$http
         .post(
@@ -705,10 +738,21 @@ export default {
           this.$qs.stringify(this.search)
         )
         .then(res => {
-          console.log(res);
           this.data.list = res.data;
         });
     },
+    // 清空查询
+    empty() {
+      this.search = {
+        busnumber: "",
+        param2: "",
+        area: "",
+        department: "",
+        cartype: ""
+      };
+      this.searchBtn();
+    },
+    // 编辑/新增提交
     onsubmit() {
       this.showedit = false;
       if (this.type == "edit") {
@@ -720,6 +764,13 @@ export default {
           )
           .then(res => {
             this.$options.methods.getCarList.call(this);
+
+            this.$message({
+              type: "success",
+              showClose: true,
+              message: "编辑成功",
+              offset: 155
+            });
           });
       } else if (this.type == "add") {
         console.log("add");
@@ -727,9 +778,16 @@ export default {
           .post("MotorDetail/addMotorInformation", this.$qs.stringify(this.msg))
           .then(res => {
             this.$options.methods.getCarList.call(this);
+            this.$message({
+              type: "success",
+              showClose: true,
+              message: "新增成功",
+              offset: 155
+            });
           });
       }
     },
+    // 表单验证
     submitForm() {
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
@@ -739,6 +797,30 @@ export default {
           return false;
         }
       });
+    },
+    // 信息导出
+    exportmsg() {
+      location.href =
+        "http://192.168.8.126:8080/MotorDetail/exportMotorDetailExcel";
+    },
+    // 信息导入
+    success(response, file) {
+      console.log(response.status);
+      if (response.status == "1") {
+        this.$message({
+          message: "导入成功",
+          type: "success",
+          offset: 155
+        });
+      } else if (response.status == "0") {
+        this.$message({
+          message: "导入失败，请重试",
+          type: "error",
+          offset: 155
+        });
+      }
+      this.getCarList();
+      this.msgimport = !this.msgimport;
     }
   },
   created() {
