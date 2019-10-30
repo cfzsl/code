@@ -6,46 +6,49 @@
       <div class="searchTop">
         <el-form :inline="true" :model="formInline">
           <el-form-item label="姓名" class="msgWc">
-            <el-input v-model="value1"></el-input>
+            <el-input v-model="formInline.name"></el-input>
           </el-form-item>
           <el-form-item label="区域">
-            <el-select v-model="value">
+            <el-select v-model="formInline.area">
+              <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in options"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :label="item.area"
+                :value="item.area"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="岗位">
-            <el-select v-model="lu">
+            <el-select v-model="formInline.job">
+              <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in postList"
                 :key="item.lu"
-                :label="item.label"
-                :value="item.lu"
+                :label="item.job"
+                :value="item.job"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="日期" class="msgDate">
-            <el-date-picker v-model="date" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            <el-date-picker v-model="formInline.sendtime" type="date" placeholder class="msgDatePicker"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onEmpty">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加薪资档案</el-button>
+        <!-- <el-button class="buttonBot" @click="dialogVisible = true">添加薪资档案</el-button> -->
         <el-button class="buttonBot">导入模板下载</el-button>
         <el-button class="buttonBot">薪资信息介绍</el-button>
         <el-button class="buttonBotLast">薪资信息导出</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加人事信息档案" :visible.sync="dialogVisible" width="426px" class="dialogText">
+    <!-- <el-dialog title="添加薪资档案" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="姓名">
           <el-input v-model="formInline.name"></el-input>
@@ -107,44 +110,45 @@
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
     <!-- 表格 -->
     <el-table
       :data="salaryList.slice((currpage - 1) * pagesize, currpage * pagesize)"
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="number" label="序号" width="80px"></el-table-column>
+      <el-table-column align="center" prop="num" label="序号" width="80px"></el-table-column>
       <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
-      <el-table-column align="center" prop="basepay" label="基本工资(元)" width></el-table-column>
-      <el-table-column align="center" prop="subsidies" label="其他补助(元)" width></el-table-column>
-      <el-table-column align="center" prop="trafficpay" label="交通补助(元)" width></el-table-column>
-      <el-table-column align="center" prop="communication" label="通讯补助(元)" width></el-table-column>
-      <el-table-column align="center" prop="bonus" label="奖金(元)" width></el-table-column>
-      <el-table-column align="center" prop="jobdate" label="应上班天数" width></el-table-column>
-      <el-table-column align="center" prop="education" label="实际上班天数" width></el-table-column>
-      <el-table-column align="center" prop="leave" label="请假扣款(元)" width></el-table-column>
-      <el-table-column align="center" prop="retire" label="退休保险" width></el-table-column>
-      <el-table-column align="center" prop="medical" label="医疗保险" width></el-table-column>
-      <el-table-column align="center" prop="unemployment" label="失业保险" width></el-table-column>
-      <el-table-column align="center" prop="realwages" label="实发工资(元)" width></el-table-column>
+      <el-table-column align="center" prop="basecash" label="基本工资(元)" width></el-table-column>
+      <el-table-column align="center" prop="helpcash" label="其他补助(元)" width></el-table-column>
+      <el-table-column align="center" prop="trafficcash" label="交通补助(元)" width></el-table-column>
+      <el-table-column align="center" prop="callcash" label="通讯补助(元)" width></el-table-column>
+      <el-table-column align="center" prop="awardcash" label="奖金(元)" width></el-table-column>
+      <el-table-column align="center" prop="baseday" label="应上班天数" width></el-table-column>
+      <el-table-column align="center" prop="actuallyday" label="实际上班天数" width></el-table-column>
+      <el-table-column align="center" prop="relaxday" label="请假天数" width></el-table-column>
+      <el-table-column align="center" prop="relaxcash" label="请假扣款(元)" width></el-table-column>
+      <el-table-column align="center" prop="retiresafe" label="退休保险" width></el-table-column>
+      <el-table-column align="center" prop="hospitalsafe" label="医疗保险" width></el-table-column>
+      <el-table-column align="center" prop="outworksafe" label="失业保险" width></el-table-column>
+      <el-table-column align="center" prop="actuallycash" label="实发工资(元)" width></el-table-column>
       <el-table-column align="center" label="发放情况" width>
         <template slot-scope="scope">
-          <span :class="scope.row.grant?'hede':'green'">{{scope.row.status}}</span>
+          <span :class="scope.row.issend=='0'?'hede':'green'">{{scope.row.issend=='0'?'待发送':'已发送'}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="time" label="发放时间" width></el-table-column>
+      <el-table-column align="center" prop="sendtime" label="发放时间" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button
-            v-if="scope.row.grant"
+            v-show="scope.row.issend"
             class="tableButton1"
             type="button"
             size="small"
             @click="showdetail(scope.row, scope.$index)"
-          >薪资发放</el-button>
+          >待发放</el-button>
           <el-button
-            v-else-if="!scope.row.grant"
+            v-show="!scope.row.issend"
             class="tableButton2"
             type="button"
             size="small"
@@ -157,8 +161,9 @@
     <el-pagination
       class="paginationList"
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      @prev-click="nextpage"
+      @next-click="nextpage"
+      @current-change="nextpage"
       :page-sizes="[5,10]"
       :page-size="pagesize"
       :current-page="currpage"
@@ -293,14 +298,17 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      date:"",
-      value1: "",
-      text: "人事管理详情",
       pagesize: 10,
       currpage: 1,
       tableData: [],
-      formInline: {},
+      formInline: {
+        name:'',
+        area:'',
+        job:'',
+        sendtime:''
+      },
       dialogVisible: false,
+      dialogFormVisible: false,
       les: 0,
       progressDate: [
         { les: 0, progress: "未处理" },
@@ -329,79 +337,71 @@ export default {
       lu: "0",
       postList: [
         {
-          lu: "0",
-          label: "全部"
-        },
-        {
           lu: "1",
-          label: "环卫工"
+          job: "环卫工"
         },
         {
           lu: "2",
-          label: "洒水车司机"
+          job: "洒水车司机"
         },
         {
           lu: "3",
-          label: "垃圾运输车司机"
+          job: "垃圾运输车司机"
         },
         {
           lu: "4",
-          label: "中队长"
+          job: "中队长"
         },
         {
           lu: "5",
-          label: "队长"
+          job: "队长"
         },
         {
           lu: "6",
-          label: "大队长"
+          job: "大队长"
         },
         {
           lu: "7",
-          label: "主管"
+          job: "主管"
         }
       ],
       value: "0",
       options: [
         {
-          value: "0",
-          label: "全部"
-        },
-        {
           value: "1",
-          label: "东营区新区"
+          area: "东营区新区"
         },
         {
           value: "2",
-          label: "文汇街道办事处"
+          area: "文汇街道办事处"
         },
         {
           value: "3",
-          label: "辛店街道办事处"
+          area: "辛店街道办事处"
         },
         {
           value: "4",
-          label: "黄河街道办事处"
+          area: "黄河街道办事处"
         },
         {
           value: "5",
-          label: "圣园街道办事处"
+          area: "圣园街道办事处"
         },
         {
           value: "6",
-          label: "六户镇"
+          area: "六户镇"
         },
         {
           value: "7",
-          label: "牛庄镇"
+          area: "牛庄镇"
         },
         {
           value: "8",
-          label: "史口镇"
+          area: "史口镇"
         },
         {
           value: "9",
-          label: "龙居镇"
+          area: "龙居镇"
         }
       ],
       web: "0",
@@ -555,70 +555,12 @@ export default {
         }
       ],
       buttonIf: true,
-      formInline: {},
-      dialogFormVisible: false,
-      salaryList: [
-        {
-          number: 1,
-          name: "李诞",
-          basepay: "3000",
-          subsidies: "300",
-          trafficpay: "200",
-          communication: "/",
-          bonus: "/",
-          jobdate: "26",
-          education: "25",
-          leave: "-115.3",
-          retire: "",
-          medical: "",
-          unemployment: "",
-          realwages: "2642.7",
-          status: "待发",
-          time: "2019-10-13",
-          grant: true
-        },
-        {
-          number: 2,
-          name: "张圆圆",
-          basepay: "3600",
-          subsidies: "500",
-          trafficpay: "200",
-          communication: "/",
-          bonus: "/",
-          jobdate: "26",
-          education: "26",
-          leave: "0",
-          retire: "",
-          medical: "",
-          unemployment: "",
-          realwages: "2842.7",
-          status: "待发",
-          time: "2019-10-13",
-          grant: true
-        },
-        {
-          number: 3,
-          name: "刘波",
-          basepay: "3200",
-          subsidies: "600",
-          trafficpay: "200",
-          communication: "200",
-          bonus: "/",
-          jobdate: "26",
-          education: "26",
-          leave: "0",
-          retire: "",
-          medical: "",
-          unemployment: "",
-          realwages: "2842.7",
-          status: "已发",
-          time: "2019-10-13",
-          grant: false
-        }
-      ]
+      salaryList: []
     };
   },
-  created() {},
+  created() {
+    this.getSalaryList();
+  },
   methods: {
     miStatusColor(item) {
       if (item == 0) {
@@ -628,11 +570,40 @@ export default {
       }
       return "success";
     },
+    //查询
+    onSubmit() {
+      console.log(this.formInline)
+      this.$http.post('hr/bonus/search',this.$qs.stringify(this.formInline)).then(res=>{
+        console.log(res.data)
+        this.salaryList=res.data
+      }).catch(err=>{
+        console.log('请求失败')
+      })
+    },
+    // 清空
+    onEmpty() {
+      this.formInline={
+        name:'',
+        area:'',
+        job:'',
+        sendtime:''
+      }
+      this.getSalaryList();
+    },
+    // 获取列表
+    getSalaryList(){
+      this.$http.post('hr/bonus/search').then(res=>{
+        console.log(res.data)
+        this.salaryList=res.data
+      }).catch(err=>{
+        console.log('请求失败')
+      })
+    },
+    //分页
+    nextpage(value) {
+      this.currpage = value;
+    },
     addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
       console.log("关闭");
       this.buttonIf = false;
     },
@@ -649,17 +620,6 @@ export default {
       //显示弹窗
       this.dialogFormVisible = true;
     },
-    pagination(row, _index) {
-      console.log("设为了离职");
-    },
-    deletList() {
-      console.log("删除这一项");
-    },
-    handleCurrentChange() {},
-    handleSizeChange() {},
-    onSubmit() {
-      console.log("查啥?");
-    }
   },
   components: {
     Table

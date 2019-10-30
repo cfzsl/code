@@ -270,6 +270,8 @@
         scroll-wheel-zoom
         v-if="showmap"
       >
+        <!-- 控件 -->
+        <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-navigation>
         <el-input placeholder="请输入车牌号" v-model="input1" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
@@ -760,7 +762,7 @@ export default {
     this.date();
     this.getPositions();
     this.getTricycle();
-    this.getpolyline()
+    this.getpolyline();
   },
 
   components: {
@@ -820,12 +822,12 @@ export default {
     },
     // 获取三轮车的位置
     getTricycle() {
-      setInterval(()=>{
+      setInterval(() => {
         this.$http.post("xy/get3wheelCarXY").then(res => {
-        console.log(res.data);
-        this.positionsCls = res.data;
-      });
-      },5000)
+          console.log(res.data);
+          this.positionsCls = res.data;
+        });
+      }, 5000);
     },
     handleSizeChange() {},
     handleCurrentChange() {},

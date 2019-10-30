@@ -107,13 +107,14 @@ export default {
     return {};
   },
   methods: {
+    //展开
     handleOpen(key, keyPath) {
       this.$router.push(key);
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
-
+    //
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
       // this.$router.push(key);
     }
   },

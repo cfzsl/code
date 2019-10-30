@@ -8,41 +8,43 @@
     <div class="center">
       <div class="head">
         <div class="basic">基本信息</div>
-        <div class="modify" @click="loderOne = true">修 改</div>
+        <div class="modify" @click="loderOne = true">
+          <span class="iconfont icon-bianji"></span>修 改
+        </div>
       </div>
 
       <!-- 基本信息弹框 -->
-      <el-dialog title="基本信息" :visible.sync="loderOne" center width="20%">
+      <el-dialog title="基本信息" :visible.sync="loderOne" center width="400px">
         <el-form :inline="true" :model="detail" class="demo-form-inline">
           <el-form-item label="姓名">
             <el-input v-model="detail.name"></el-input>
           </el-form-item>
           <el-form-item label="性别">
-            <el-input v-model="detail.gender"></el-input>
+            <el-input v-model="detail.sex"></el-input>
           </el-form-item>
           <el-form-item label="年龄">
-            <el-input v-model="detail.msg"></el-input>
+            <el-input v-model="detail.age"></el-input>
           </el-form-item>
           <el-form-item label="电话">
-            <el-input v-model="detail.phone"></el-input>
+            <el-input v-model="detail.tel"></el-input>
           </el-form-item>
           <el-form-item label="单位">
-            <el-select v-model="detail.date" class="selectTop">
+            <el-select v-model="detail.depart2" class="selectTop">
               <el-option
                 v-for="item in optionsWeb"
                 :key="item.web"
-                :label="item.label"
-                :value="item.web"
+                :label="item.depart2"
+                :value="item.depart2"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="区域">
-            <el-select v-model="detail.region" class="selectTop">
+            <el-select v-model="detail.area" class="selectTop">
               <el-option
                 v-for="item in optionslu"
                 :key="item.lu"
-                :label="item.label"
-                :value="item.lu"
+                :label="item.area"
+                :value="item.area"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -51,16 +53,16 @@
               <el-option
                 v-for="item in postList"
                 :key="item.lu"
-                :label="item.label"
-                :value="item.lu"
+                :label="item.job"
+                :value="item.job"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="学历">
-            <el-input v-model="detail.education"></el-input>
+            <el-input v-model="detail.study"></el-input>
           </el-form-item>
           <el-form-item label="状态">
-            <el-select v-model="detail.state" class="selectTop">
+            <el-select v-model="detail.isretired" class="selectTop">
               <el-option
                 v-for="item in optionsStated"
                 :key="item.state"
@@ -70,22 +72,22 @@
             </el-select>
           </el-form-item>
           <el-form-item label="婚姻状况">
-            <el-select v-model="marriage" class="selectTop">
+            <el-select v-model="detail.married" class="selectTop">
               <el-option label="已婚" value="已婚"></el-option>
               <el-option label="未婚" value="未婚"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="紧急联系人">
-            <el-input v-model="detail.emergency"></el-input>
+            <el-input v-model="detail.contact1"></el-input>
           </el-form-item>
           <el-form-item label="身体状况">
-            <el-input v-model="detail.physical"></el-input>
+            <el-input v-model="detail.body"></el-input>
           </el-form-item>
           <el-form-item label="入职时间">
-            <el-input v-model="detail.time"></el-input>
+            <el-input v-model="detail.hiretime"></el-input>
           </el-form-item>
           <el-form-item label="离职时间">
-            <el-input v-model="detail.deiltime"></el-input>
+            <el-input v-model="detail.firetime"></el-input>
           </el-form-item>
           <el-form-item label="住址">
             <el-input v-model="detail.address"></el-input>
@@ -95,104 +97,76 @@
           <el-button type="primary" @click="loderOne = false" class="formButon">取消</el-button>
         </span>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="loderOne = false" class="formButon">保存</el-button>
+          <el-button type="primary" @click="addDetail" class="formButon">保存</el-button>
         </span>
       </el-dialog>
       <div class="table">
-        <el-row>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">姓名：{{detail.name}}</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">性别：男</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">年龄：{{detail.msg}}</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">岗位：{{detail.job}}</div>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">单位：{{detail.date}}</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">区域：{{detail.region}}</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">学历：{{detail.education}}</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">电话：{{detail.phone}}</div>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">部门：环卫部</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">婚姻状况：已婚</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">紧急联系人：刘月15087635633</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">身体状态：良</div>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">入职时间：2016-9-10</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">状态：{{detail.state}}</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">离职时间：——</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">住址：东营区滨湖大道花园社区1栋2单元302</div>
-          </el-col>
-        </el-row>
+        <table width="100%" height="209px">
+          <tr>
+            <td>姓名：{{detail.name}}</td>
+            <td>性别：{{detail.sex}}</td>
+            <td>年龄：{{detail.age}}</td>
+            <td>岗位：{{detail.job}}</td>
+          </tr>
+          <tr>
+            <td>单位：{{detail.depart2}}</td>
+            <td>区域：{{detail.area}}</td>
+            <td>学历：{{detail.study}}</td>
+            <td>电话：{{detail.tel}}</td>
+          </tr>
+          <tr>
+            <td>部门：{{detail.param2}}</td>
+            <td>婚姻状况：{{detail.married}}</td>
+            <td>紧急联系人: {{detail.contact1}}</td>
+            <td>身体状态：{{detail.body}}</td>
+          </tr>
+          <tr>
+            <td>入职时间：{{detail.hiretime}}</td>
+            <td>状态：{{detail.isretired=="1"?"在职":"离职"}}</td>
+            <td>离职时间：{{detail.firetime}}</td>
+            <td>住址：{{detail.address}}</td>
+          </tr>
+        </table>
       </div>
       <div class="head">
         <div class="basic">薪资待遇</div>
-        <div class="modify" @click="loderTown =true">修改</div>
+        <div class="modify" @click="loderTown =true">
+          <span class="iconfont icon-bianji"></span>修改
+        </div>
       </div>
 
       <!-- 薪资待遇弹框 -->
-      <el-dialog title="基本信息" :visible.sync="loderTown" center width="22%">
-        <el-form :inline="true" :model="detail" class="demo-form-inline">
-          <el-form-item label="基本工资">
-            <el-input v-model="detail.basepay"></el-input>
+      <el-dialog title="基本信息" :visible.sync="loderTown" center width="410px">
+        <el-form :inline="true" :model="bonusList" class="demo-form-inline">
+          <el-form-item label="基本工资/元">
+            <el-input v-model="bonusList.basecash"></el-input>
           </el-form-item>
-          <el-form-item label="用餐补助">
-            <el-input v-model="detail.meals"></el-input>
+          <el-form-item label="用餐补助/元">
+            <el-input v-model="bonusList.helpcash"></el-input>
           </el-form-item>
-          <el-form-item label="交通补助">
-            <el-input v-model="detail.traffic"></el-input>
+          <el-form-item label="交通补助/元">
+            <el-input v-model="bonusList.trafficcash"></el-input>
           </el-form-item>
-          <el-form-item label="通信补助">
-            <el-input v-model="detail.signal"></el-input>
+          <el-form-item label="通信补助/元">
+            <el-input v-model="bonusList.callcash"></el-input>
           </el-form-item>
           <el-form-item label="是否缴纳社保">
-            <el-select v-model="social" class="selectTop">
+            <el-select v-model="bonusList.hassafe" class="selectTop">
               <el-option label="是" value="是"></el-option>
               <el-option label="否" value="否"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="是否缴纳公积金">
-            <el-select v-model="fund" class="selectTop">
+            <el-select v-model="bonusList.hasfund" class="selectTop">
               <el-option label="是" value="是"></el-option>
               <el-option label="否" value="否"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="每月休息">
-            <el-input v-model="rest"></el-input>
+          <el-form-item label="每月休息(天)">
+            <el-input v-model="bonusList.relaxdayinmonth"></el-input>
           </el-form-item>
           <el-form-item label="上班时间">
-            <el-input v-model="jobtime"></el-input>
+            <el-input v-model="bonusList.worktime"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="delect-footer">
@@ -203,34 +177,20 @@
         </span>
       </el-dialog>
       <div class="table">
-        <el-row>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">基本工资：{{detail.basepay}}元/月</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">用餐补助：300元/月</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">交通补助: 200元/元</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">通讯补助：/</div>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">是否缴纳保险：是</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">是否缴纳公积金：否</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple">每月休息：4天</div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light">上班时间：6:00-12:00 13:00-15:00</div>
-          </el-col>
-        </el-row>
+        <table width="100%" height="104px">
+          <tr>
+            <td>基本工资：{{bonusList.basecash}}元/月</td>
+            <td>用餐补助：{{bonusList.helpcash}}元/月</td>
+            <td>交通补助: {{bonusList.trafficcash}}元/月</td>
+            <td>通讯补助：{{bonusList.callcash}}元/月</td>
+          </tr>
+          <tr>
+            <td>是否缴纳社保：{{bonusList.hassafe}}</td>
+            <td>是否缴纳公积金：{{bonusList.hasfund}}</td>
+            <td>每月休息：{{bonusList.relaxdayinmonth}}天</td>
+            <td>上班时间：{{bonusList.worktime}}</td>
+          </tr>
+        </table>
       </div>
       <div class="contract">合同文件</div>
       <el-upload
@@ -248,7 +208,7 @@
       </el-upload>
       <div class="head">
         <div class="basic">备注</div>
-        <div class="modify" @click="remark = true">添加备注</div>
+        <div class="modify" @click="remark = true">+添加备注</div>
       </div>
 
       <!-- 弹框 -->
@@ -272,190 +232,164 @@
 export default {
   data() {
     return {
+      fileList:[],
+      rest:'',
+      jobtime:'',
       marriage: "",
       social: "",
       fund: "",
       loderTown: false,
       loderOne: false,
-      remark:false,
+      remark: false,
       remarks: [{ id: 1, text: "2018年度被评为部门优秀员工" }],
       // 上传文件列表
-      fileList: [],
-      text:"",
+      text: "",
       textarea: "",
       id: "",
       detail: {},
-      wcList: [
-        {
-          number: 1,
-          name: "李诞",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "环卫工",
-          education: "初中",
-          state: "在职",
-          basepay: "3000",
-          subsidies: "300",
-          msg: "36",
-          policeNode: "10"
-        },
-        {
-          number: 2,
-          name: "张圆圆",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "洒水车司机",
-          education: "大专",
-          state: "在职",
-          basepay: "3600",
-          subsidies: "500",
-          msg: "42",
-          policeNode: "11"
-        },
-        {
-          number: 3,
-          name: "刘波",
-          phone: "15375669845",
-          date: "环卫1部",
-          region: "东营区",
-          job: "垃圾运输车司机",
-          education: "高中",
-          state: "离职",
-          basepay: "3200",
-          subsidies: "600",
-          msg: "54",
-          policeNode: "12"
-        }
-      ],
-      web: "0",
+      bonusList:{},
       optionsWeb: [
         {
-          web: "0",
-          label: "全部"
-        },
-        {
           web: "1",
-          label: "环卫一部"
+          depart2: "环卫一部"
         },
         {
           web: "2",
-          label: "环卫二部"
+          depart2: "环卫二部"
         },
         {
           web: "3",
-          label: "环卫三部"
+          depart2: "环卫三部"
         },
         {
           web: "4",
-          label: "环卫四部"
+          depart2: "环卫四部"
         }
       ],
-      lu: "0",
       optionslu: [
         {
-          lu: "0",
-          label: "全部"
-        },
-        {
           lu: "1",
-          label: "东营区新区"
+          area: "东营区新区"
         },
         {
           lu: "2",
-          label: "文汇街道办事处"
+          area: "文汇街道办事处"
         },
         {
           lu: "3",
-          label: "辛店街道办事处"
+          area: "辛店街道办事处"
         },
         {
           lu: "4",
-          label: "黄河街道办事处"
+          area: "黄河街道办事处"
         },
         {
           lu: "5",
-          label: "圣园街道办事处"
+          area: "圣园街道办事处"
         },
         {
           lu: "6",
-          label: "六户镇"
+          area: "六户镇"
         },
         {
           lu: "7",
-          label: "牛庄镇"
+          area: "牛庄镇"
         },
         {
           lu: "8",
-          label: "史口镇"
+          area: "史口镇"
         },
         {
           lu: "9",
-          label: "龙居镇"
+          area: "龙居镇"
         }
       ],
       optionsStated: [
         {
           state: "0",
-          label: "在职"
+          label: "离职"
         },
         {
           state: "1",
-          label: "离职"
+          label: "在职"
         }
       ],
       postList: [
         {
-          lu: "0",
-          label: "全部"
-        },
-        {
           lu: "1",
-          label: "环卫工"
+          job: "环卫工"
         },
         {
           lu: "2",
-          label: "洒水车司机"
+          job: "洒水车司机"
         },
         {
           lu: "3",
-          label: "垃圾运输车司机"
+          job: "垃圾运输车司机"
         },
         {
           lu: "4",
-          label: "中队长"
+          job: "中队长"
         },
         {
           lu: "5",
-          label: "队长"
+          job: "队长"
         },
         {
           lu: "6",
-          label: "大队长"
+          job: "大队长"
         },
         {
           lu: "7",
-          label: "主管"
+          job: "主管"
         }
       ]
     };
   },
   created() {
     this.getId();
-    this.getdetail();
+    this.getDetail();
+    this.getBonus();
   },
 
   methods: {
-    
+    //修改个人详情
+    addDetail(){
+      this.$http.post('hr/hrinfo/update',this.$qs.stringify(this.detail)).then(res=>{
+        console.log(res.data)
+        this.loderOne=false
+      }).catch(err=>{
+        console.log('修改失败')
+      })
+    },
+    //获取个人详情
+    getDetail() {
+      let _date = {
+        sid: this.id
+      };
+      this.$http.post("hr/hrinfo/getBySid", this.$qs.stringify(_date)).then(res=>{
+        this.detail=res.data
+        console.log(res.data)
+      })
+    },
+    //获取个人奖金详情
+    getBonus(){
+      let _date = {
+        sid: this.id
+      };
+      this.$http.post("hr/bonus/getBySid", this.$qs.stringify(_date)).then(res=>{
+        this.bonusList=res.data
+        console.log(res.data)
+      })
+    },
     // 添加备注
     addRemark() {
-      let i=2
+      let i = 2;
       this.remarks.push({
-          id:i++,
-          text: this.textarea
-        })
-      this.remark= false
+        id: i++,
+        text: this.textarea
+      });
+      this.remark = false;
     },
     //点击文件列表中已上传的文件时的钩子
     handlePreview(file) {
@@ -476,10 +410,6 @@ export default {
           files.length
         } 个文件，共选择了 ${files.length + fileList.length} 个文件`
       );
-    },
-    //遍历过滤
-    getdetail() {
-      this.detail = this.wcList.filter(item => item.number == this.id)[0];
     },
     gozero() {
       this.$router.push({
@@ -534,6 +464,15 @@ export default {
   }
   .table {
     margin-bottom: 50px;
+    table {
+      border-collapse: collapse;
+      border: none;
+    }
+    td {
+      width: 25%;
+      border: solid #d2d2d2 1px;
+      padding-left: 15px;
+    }
   }
   .el-upload-dragger {
     width: 100% !important;
@@ -555,14 +494,6 @@ export default {
       display: inline-block;
       margin-left: 10px !important;
     }
-  }
-}
-.el-col {
-  border: 1px solid #ccc;
-  height: 50px;
-  line-height: 50px;
-  div {
-    margin-left: 10px;
   }
 }
 .upload {

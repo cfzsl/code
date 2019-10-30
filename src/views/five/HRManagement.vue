@@ -42,6 +42,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onEmpty">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -58,48 +59,48 @@
       <el-form
         :inline="true"
         :model="formAdd"
-        ref="ruleForm"
-        :rules="rules"
+        ref="formAdd"
+        :rules="rulesAdd"
         class="demo-form-inline"
       >
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="name">
           <el-input v-model="formAdd.name"></el-input>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="formAdd.msg"></el-input>
+        <el-form-item label="年龄" prop="age">
+          <el-input v-model="formAdd.age"></el-input>
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="formAdd.tel"></el-input>
+        <el-form-item label="电话" prop="tel">
+          <el-input v-model="formAdd.tel" prop="name"></el-input>
         </el-form-item>
-        <el-form-item label="单位">
+        <el-form-item label="单位" prop="param2">
           <el-select v-model="formAdd.param2" class="selectTop">
             <el-option
               v-for="item in optionsWeb"
               :key="item.web"
-              :label="item.label"
-              :value="item.web"
+              :label="item.param2"
+              :value="item.param2"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="区域">
+        <el-form-item label="区域" prop="area">
           <el-select v-model="formAdd.area" class="selectTop">
             <el-option
               v-for="item in optionslu"
               :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
+              :label="item.area"
+              :value="item.area"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="岗位">
+        <el-form-item label="岗位" prop="job">
           <el-select v-model="formAdd.job" class="selectTop">
-            <el-option v-for="item in postList" :key="item.lu" :label="item.label" :value="item.lu"></el-option>
+            <el-option v-for="item in postList" :key="item.lu" :label="item.job" :value="item.job"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="学历">
+        <el-form-item label="学历" prop="study">
           <el-input v-model="formAdd.study"></el-input>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" prop="isretired">
           <el-select v-model="formAdd.isretired" class="selectTop">
             <el-option
               v-for="item in optionsStated"
@@ -109,18 +110,18 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="基本工资">
+        <el-form-item label="基本工资" prop="basecash">
           <el-input v-model="formAdd.basecash"></el-input>
         </el-form-item>
-        <el-form-item label="其他补助">
+        <el-form-item label="其他补助" prop="helpcash">
           <el-input v-model="formAdd.helpcash"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="resetForm('ruleForm')" class="formButon">重置</el-button>
+        <el-button type="primary" @click="resetForm('formAdd')" class="formButon">重置</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addCar('ruleForm')" class="formButon">保存</el-button>
+        <el-button type="primary" @click="addCar('formAdd')" class="formButon">保存</el-button>
       </span>
     </el-dialog>
     <!-- 表格 -->
@@ -158,7 +159,12 @@
             @click="pagination(scope.row, scope.$index)"
             v-if="scope.row.isretired"
           >设为离职</el-button>
-          <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
+          <el-button
+            class="tableButton3"
+            type="button"
+            @click="deletList(scope.row, scope.$index)"
+            size="small"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -166,8 +172,9 @@
     <el-pagination
       class="paginationList"
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      @prev-click="nextpage"
+      @next-click="nextpage"
+      @current-change="nextpage"
       :page-sizes="[5,10]"
       :page-size="pagesize"
       :current-page="currpage"
@@ -176,15 +183,32 @@
     ></el-pagination>
     <!--设为离职弹框 -->
     <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form :inline="true" :model="formQuit" class="demo-form-inline quit">
         <el-form-item label="离职日期">
-          <el-input v-model="formInline.name"></el-input>
+          <el-date-picker v-model="formQuit.date" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="formInline.msg"></el-input>
+        <el-form-item label="离职原因">
+          <el-input v-model="formInline.leaving"></el-input>
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="formInline.phone"></el-input>
+        <el-form-item label="上传照片">
+          <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="3"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+          >
+            <el-input v-model="formInline.textname" class="input-with-select">
+              <el-button slot="append" type="primary" class="inputImg">上传图片</el-button>
+            </el-input>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="备注信息">
+          <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="formInline.textarea" class="textarea"></el-input>
         </el-form-item>
       </el-form>
       <el-button type="primary" @click="adddate" class="formButon">保存</el-button>
@@ -197,6 +221,9 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      // 上传图片列表
+      fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+
       formSearch: {
         name: "",
         area: "",
@@ -207,7 +234,12 @@ export default {
       pagesize: 10,
       currpage: 1,
       tableData: [],
-      formInline: {},
+      formQuit: {
+        date: "",
+        leaving: "",
+        textname:'',
+        textarea: ""
+      },
       dialogVisible: false,
       dialogFormVisible: false,
       les: 0,
@@ -218,29 +250,35 @@ export default {
       ],
       formAdd: {
         name: "",
+        age:'',
         tel: "",
         area: "",
-        job:'',
+        job: "",
         study: "",
         param2: "",
-        isretired:'',
+        isretired: "",
         basecash: "",
-        helpcash:'',
+        helpcash: ""
       },
-      rules: {
-        name: [
-          { required: true, message: "请输入姓名", trigger: "blur" }
-        ],
+      rulesAdd: {
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        age: [{ required: true, message: "请输入年龄", trigger: "blur" }],
         tel: [{ required: true, message: "请输入电话号码", trigger: "blur" }],
         study: [{ required: true, message: "请输入学历", trigger: "blur" }],
-        isretired: [{ required: true, message: "请输入基本工资", trigger: "blur" }],
-        helpcash: [{ required: true, message: "请输", trigger: "blur" }],
+        basecash: [
+          { required: true, message: "请输入基本工资", trigger: "blur" }
+        ],
+        helpcash: [
+          { required: true, message: "请输入工作补助", trigger: "blur" }
+        ],
         param2: [
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
         area: [{ required: true, message: "请选择作业区域", trigger: "blur" }],
         job: [{ required: true, message: "请选择工作岗位", trigger: "blur" }],
-        isretired: [{ required: true, message: "请选择工作状态", trigger: "blur" }],
+        isretired: [
+          { required: true, message: "请选择工作状态", trigger: "blur" }
+        ]
       },
       i: "0",
       optionsCar: [
@@ -335,66 +373,66 @@ export default {
       optionsWeb: [
         {
           web: "0",
-          label: "全部"
+          param2: "全部"
         },
         {
           web: "1",
-          label: "环卫一部"
+          param2: "环卫一部"
         },
         {
           web: "2",
-          label: "环卫二部"
+          param2: "环卫二部"
         },
         {
           web: "3",
-          label: "环卫三部"
+          param2: "环卫三部"
         },
         {
           web: "4",
-          label: "环卫四部"
+          param2: "环卫四部"
         }
       ],
       lu: "0",
       optionslu: [
         {
           lu: "0",
-          label: "全部"
+          area: "全部"
         },
         {
           lu: "1",
-          label: "东营区新区"
+          area: "东营区新区"
         },
         {
           lu: "2",
-          label: "文汇街道办事处"
+          area: "文汇街道办事处"
         },
         {
           lu: "3",
-          label: "辛店街道办事处"
+          area: "辛店街道办事处"
         },
         {
           lu: "4",
-          label: "黄河街道办事处"
+          area: "黄河街道办事处"
         },
         {
           lu: "5",
-          label: "圣园街道办事处"
+          area: "圣园街道办事处"
         },
         {
           lu: "6",
-          label: "六户镇"
+          area: "六户镇"
         },
         {
           lu: "7",
-          label: "牛庄镇"
+          area: "牛庄镇"
         },
         {
           lu: "8",
-          label: "史口镇"
+          area: "史口镇"
         },
         {
           lu: "9",
-          label: "龙居镇"
+          area: "龙居镇"
         }
       ],
       id: "0",
@@ -417,29 +455,6 @@ export default {
         },
         {
           id: "4",
-          label: "环卫四部"
-        }
-      ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
           label: "环卫四部"
         }
       ],
@@ -491,6 +506,27 @@ export default {
     this.getwcList();
   },
   methods: {
+    // 上传图片
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      );
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    // 切换页面
+    nextpage(value) {
+      this.currpage = value;
+    },
     miStatusColor(item) {
       if (item == 0) {
         return "danger";
@@ -512,13 +548,13 @@ export default {
           // alert("submit!");
           this.dialogVisible = false;
           this.$http
-            .post("sanitation/car/add", this.$qs.stringify(this.ruleForm))
+            .post("hr/hrinfo/add", this.$qs.stringify(this.formAdd))
             .then(res => {
               console.log(res.data);
-              this.getlist();
-            })
-            .catch(err => {
-              console.log("请求失败");
+              this.$http.post("hr/hrinfo/search").then(res => {
+                console.log(res.data);
+                this.wcList = res.data;
+              });
             });
         } else {
           // console.log("error submit!!");
@@ -551,23 +587,41 @@ export default {
     pagination(row, _index) {
       this.dialogFormVisible = true;
     },
-    deletList() {
-      console.log("删除这一项");
+    // 删除
+    deletList(row, _index) {
+      let _date = {
+        sid: row.sid
+      };
+      this.$http
+        .post("hr/hrinfo/delete", this.$qs.stringify(_date))
+        .then(res => {
+          console.log(res.data);
+          this.getwcList();
+        });
     },
-    handleCurrentChange() {},
-    handleSizeChange() {},
+    // 查询
     onSubmit() {
       // console.log("查啥?");
       console.log(this.formSearch);
       this.$http
         .post("hr/hrinfo/search", this.$qs.stringify(this.formSearch))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.wcList = res.data;
         })
         .catch(err => {
           console.log("请求失败");
         });
+    },
+    //清空
+    onEmpty(){
+      this.formSearch={
+        name: "",
+        area: "",
+        job: "",
+        isretired: ""
+      },
+    this.getwcList();
     }
   },
   components: {
@@ -619,7 +673,7 @@ export default {
     width: 240px;
   }
   .el-form-item {
-    margin-bottom: 2px;
+    margin-bottom: 15px;
     .el-input {
       width: 240px;
       height: 32px;
@@ -629,6 +683,9 @@ export default {
     width: 240px;
     height: 32px;
   }
+}
+.quit {
+  text-align: left;
 }
 .formButon {
   width: 127px;
@@ -665,5 +722,15 @@ export default {
 .tableButton3 {
   background-color: #f66134;
   color: #fff;
+}
+.inputImg {
+  background-color: #3b99f1 !important;
+  color: #fff !important;
+  border-radius: 0px 4px 4px 0;
+}
+.textarea {
+  width: 386px;
+  resize:none;
+  border:none;
 }
 </style>

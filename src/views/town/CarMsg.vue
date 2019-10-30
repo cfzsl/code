@@ -6,7 +6,7 @@
       <div class="searchTop">
         <el-form :inline="true" :model="usearch">
           <el-form-item label="车牌号鲁E-">
-            <el-input class="searchInput" v-model="usearch.number" placeholder="车牌号"></el-input>
+            <el-input class="searchInput" v-model="number" placeholder="车牌号"></el-input>
           </el-form-item>
           <el-form-item label="负责道路">
             <el-select v-model="usearch.road" filterable>
@@ -43,6 +43,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onEmpty">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -311,6 +312,7 @@ export default {
     return {
       dialogFormVisible: false,
       dialogVisible: false,
+      number: "",
       usearch: {
         number: "",
         road: "",
@@ -600,8 +602,33 @@ export default {
         }
       ],
       buttonIf: false,
-      formInline: {},
+      formInline: {}
     };
+  },
+  // 监听
+  watch: {
+    number: function(val) {
+      this.usearch.number = val;
+      let reg = /^[0-9a-zA-Z]+$/;
+      if (!reg.test(val)) {
+        this.$message({
+          showClose: true,
+          message: "请输入字母或数子",
+          type: "error",
+          offset: 152
+        });
+        // alert('请输入字母或数子')
+      } else if (val.length > 10) {
+        this.$message({
+          showClose: true,
+          message: "请输入不超过10位的数子字母",
+          type: "error",
+          offset: 152
+        });
+        // alert("请输入不超过10位的数子字母")
+        this.usearch.msgear = this.usearch.msgear.substr(0, 10);
+      }
+    }
   },
   methods: {
     // 切换页面
@@ -609,6 +636,7 @@ export default {
       this.currpage = value;
     },
     addCar(formName) {
+      console.log(this.ruleForm)
       this.$refs[formName].validate(valid => {
         if (valid) {
           // alert("submit!");
@@ -632,11 +660,6 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    // 添加车辆信息
-    addDo() {
-      console.log("切换编辑");
-      this.buttonIf = false;
-    },
     //修改详情
     adddate(formName) {
       console.log(this.details);
@@ -658,6 +681,9 @@ export default {
           return false;
         }
       });
+    },
+    addDo(){
+      this.buttonIf = false;
     },
     pagination(row, _index) {
       this.dialogFormVisible = true;
@@ -690,6 +716,7 @@ export default {
         this.tableData = res.data;
       });
     },
+    // 查询
     onSubmit() {
       // console.log("查啥?");
       console.log(this.usearch);
@@ -702,6 +729,16 @@ export default {
         .catch(err => {
           console.log("请求失败");
         });
+    },
+    // 清空
+    onEmpty() {
+      this.usearch = {
+        number: "",
+        road: "",
+        area: "",
+        depart: ""
+      },
+      this.getlist();
     }
   },
   created() {
