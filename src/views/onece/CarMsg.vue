@@ -62,7 +62,10 @@
     <!-- 导出按钮 -->
     <div class="menu">
       <div class="btn">
-        <el-button icon="el-icon-plus" @click="showedit = true;type = 'add'">添加车辆信息</el-button>
+        <el-button
+          icon="el-icon-plus"
+          @click="showedit = true;type = 'add';addedittitle = '车辆信息新增';"
+        >添加车辆信息</el-button>
         <el-button icon="el-icon-download" @click="msgexport = true">车辆信息导出</el-button>
         <el-button icon="el-icon-upload2" @click="msgimport = true">车辆信息导入</el-button>
       </div>
@@ -243,7 +246,7 @@
     </el-dialog>
 
     <!-- 车辆编辑 -->
-    <el-dialog title="车辆编辑" width="450px" :visible.sync="showedit" @close="msg = {};">
+    <el-dialog :title="addedittitle" width="450px" :visible.sync="showedit" @close="msg = {};">
       <el-form ref="ruleForm" :model="msg" :rules="rules" label-width="auto" class="msg">
         <el-form-item label="车辆信息" prop="cartype">
           <el-select v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
@@ -294,11 +297,11 @@
     </el-dialog>
 
     <!-- 车况报警 -->
-    <el-dialog title="车况异常" :visible.sync="msgadd">
+    <el-dialog title="车况异常" :visible.sync="showcondition">
       <div class="abnormalsearch">
         记录时间段：
         <el-date-picker
-          v-model="abnormal"
+          v-model="condition.search.date"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
@@ -309,11 +312,13 @@
           <el-button type="primary">清空</el-button>
         </div>
       </div>
-      <el-form ref="form" :model="msg" label-width="auto" class="msg">
+      <el-form ref="form" label-width="auto" class="msg">
         <div class="list">
-          <!-- 此处data应为
-          data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-          <el-table :data="warning" border style="width: 100%">
+          <el-table
+            :data="condition.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+            border
+            style="width: 100%"
+          >
             <el-table-column align="center" prop="num" label="序号"></el-table-column>
             <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
             <el-table-column align="center" prop="warmingtime" label="记录时间"></el-table-column>
@@ -328,7 +333,7 @@
       <div class="abnormalsearch">
         记录时间段：
         <el-date-picker
-          v-model="abnormal"
+          v-model="oil.search.date"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
@@ -340,9 +345,11 @@
         </div>
       </div>
       <div class="list">
-        <!-- 此处data应为
-        data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-        <el-table :data="oil" border style="width: 100%">
+        <el-table
+          :data="oil.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+          border
+          style="width: 100%"
+        >
           <el-table-column align="center" prop="num" label="序号"></el-table-column>
           <el-table-column align="center" prop="checkgastime" label="记录时间"></el-table-column>
           <el-table-column align="center" prop="param1" label="当日总行程"></el-table-column>
@@ -357,23 +364,30 @@
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="6">
           <div class="grid-content bg-purple">
-            <el-form label-position="right" label-width="80px" :model="maintenanceMsg">
+            <el-form label-position="right" label-width="80px" :model="maintenanceList.addmsg">
               <el-form-item label="日期">
                 <el-date-picker
                   style="width:150px"
-                  v-model="maintenanceMsg.date"
+                  v-model="maintenanceList.addmsg.date"
                   type="date"
                   placeholder="选择日期"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="负责人">
-                <el-input v-model="maintenanceMsg.driver"></el-input>
+              <el-form-item label="类型">
+                <el-select v-model="maintenanceList.addmsg.type" placeholder="请选择">
+                  <el-option label="维修" value="维修"></el-option>
+                  <el-option label="保养" value="保养"></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="上传图片">
                 <el-upload
+                  ref="uploadimg"
                   class="upload-demo"
                   action="https://jsonplaceholder.typicode.com/posts/"
+                  :file-list="maintenanceList.addmsg.fileList"
+                  :on-success="uploadimg"
                   multiple
+                  :auto-upload="false"
                   :limit="3"
                 >
                   <el-button size="medium" type="primary">点击上传</el-button>
@@ -384,12 +398,12 @@
         </el-col>
         <el-col :span="13">
           <div class="grid-content">
-            <el-form label-position="right" label-width="80px" :model="maintenanceMsg">
+            <el-form label-position="right" label-width="80px" :model="maintenanceList.addmsg">
               <el-form-item label="保养内容">
                 <el-input
                   type="textarea"
                   resize="none"
-                  v-model="maintenanceMsg.content"
+                  v-model="maintenanceList.addmsg.content"
                   :autosize="{ minRows: 7, maxRows: 4}"
                 ></el-input>
               </el-form-item>
@@ -398,12 +412,14 @@
         </el-col>
         <el-col :span="5" :offset="1">
           <div class="grid-content bg-purple">
-            <el-button type="primary" style="width: 90%">添加</el-button>
+            <el-button type="primary" style="width: 90%" @click="uploadmaintenanceMsg">添加</el-button>
           </div>
         </el-col>
       </el-row>
 
-      <el-table :data="maintenanceList">
+      <el-table
+        :data="maintenanceList.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+      >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="maintaintime" label="维修/保养时间"></el-table-column>
         <el-table-column align="center" prop="param1" label="类型"></el-table-column>
@@ -441,20 +457,33 @@
     <el-dialog title="保险缴纳" :visible.sync="showinsurancea">
       <div class="abnormalsearch">
         保险公司：
-        <el-input style="width:190px;margin-right: 10px;" v-model="input" placeholder="请输入内容"></el-input>缴纳日期：
+        <el-input
+          style="width:190px;margin-right: 10px;"
+          v-model="insurance.search.company"
+          placeholder="请输入内容"
+        ></el-input>缴纳日期：
         <el-date-picker
           style="width:190px;margin-right: 10px;"
-          v-model="value1"
+          v-model="insurance.search.datejn"
           type="date"
           placeholder="选择日期"
         ></el-date-picker>到期日期：
-        <el-date-picker style="width:190px;" v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker
+          style="width:190px;"
+          v-model="insurance.search.datedq"
+          type="date"
+          placeholder="选择日期"
+        ></el-date-picker>
         <div class="btn">
           <el-button type="primary">添加</el-button>
         </div>
       </div>
       <div class="sytime">系统时间：2019-10-22</div>
-      <el-table :data="insurance" border style="width: 100%">
+      <el-table
+        :data="insurance.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        border
+        style="width: 100%"
+      >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="bxtime" label="记录时间"></el-table-column>
         <el-table-column align="center" prop="bxcompany" label="保险公司"></el-table-column>
@@ -470,13 +499,7 @@
 export default {
   data() {
     return {
-      input: null,
-      radio: "0",
-      data: {
-        pagesize: 14,
-        currpage: 1,
-        list: []
-      },
+      // 首屏搜索
       search: {
         busnumber: "",
         param2: "",
@@ -484,6 +507,7 @@ export default {
         department: "",
         cartype: ""
       },
+      // 首屏新增/详情/编辑
       msg: {
         cartype: "",
         busnumber: "",
@@ -494,103 +518,50 @@ export default {
         area: "",
         repairdetail: ""
       },
-      msgadd: false,
-      msgimport: false,
-      msgexport: false,
-      showwarning: false,
-      maintenance: false,
-      showimg: false,
-      showinsurancea: false,
-      showdetail: false,
-      showedit: false,
-      url: "",
-      insuranceList: [
-        {
-          carbrand: "鲁E-562E4",
-          company: "太平洋保险",
-          effectivedate: "2019-02-30",
-          warningdate: "2020-10-15"
-        },
-        {
-          carbrand: "鲁E-359Y5",
-          company: "太平洋保险",
-          effectivedate: "2018-05-10",
-          warningdate: "2019-09-19"
-        }
-      ],
-      maintenanceMsg: {
-        date: "",
-        driver: "",
-        img: "",
-        content: ""
+      // 分页效果
+      data: {
+        pagesize: 14,
+        currpage: 1,
+        list: []
       },
-      maintenanceList: [],
-      warningList: [
-        {
-          remaining: 0,
-          consumption: 0,
-          maximum: 0,
-          date: "0",
-          carbrand: "鲁E-432R9",
-          driver: "李诞"
-        }
-      ],
-      carmsg: [
-        {
-          carbrand: "鲁E-432R9",
-          driver: "李诞",
-          engine: true
-        }
-      ],
-      // 故障代码
-      warning: [],
-      troublesHooting: [
-        {
-          th: "0",
-          label: "全部"
-        },
-        {
-          th: "1",
-          label: "已维修"
-        },
-        {
-          th: "2",
-          label: "未维修"
-        }
-      ],
-      value1: "",
-      value2: "",
-      th: "0",
-      // 油耗
-      oil: [
-        {
-          id: 1,
-          carbrand: "鲁E-675G3",
-          consumption: "35 (标准值 ≤ 25)",
-          policeDate: "2019-07-15",
-          policeTime: "08:00"
-        },
-        {
-          id: 2,
-          carbrand: "鲁E-675G3",
-          consumption: "30 (标准值 ≤ 25)",
-          policeDate: "2019-08-20",
-          policeTime: "15:25"
-        },
-        {
-          id: 3,
-          carbrand: "鲁E-675G3",
-          consumption: "26 (标准值 ≤ 25)",
-          policeDate: "2019-10-11",
-          policeTime: "10:35"
-        }
-      ],
-      // 保险
-      insurance: [],
       // 车况异常
-      abnormal: "",
-      // 编辑和新增修改
+      condition: {
+        search: {
+          date: ""
+        },
+        list: []
+      },
+      // 油耗
+      oil: {
+        search: {
+          date: ""
+        },
+        list: []
+      },
+      // 保养记录
+      maintenanceList: {
+        addmsg: {
+          date: "",
+          type: "",
+          content: "",
+          fileList: []
+        },
+        list: []
+      },
+      // 保养记录 点击后大图片
+      url: "",
+      // 保险
+      insurance: {
+        search: {
+          company: "",
+          datejn: "",
+          datedq: ""
+        },
+        list: []
+      },
+      // 编辑和新增修改切换及标题
       type: "add",
+      addedittitle: "",
       // 新增判断
       rules: {
         cartype: [
@@ -610,15 +581,23 @@ export default {
         ],
         user: [{ required: true, message: "请输入指定司机", trigger: "blur" }],
         area: [{ required: true, message: "请选择使用区域", trigger: "blur" }]
-      }
+      },
+      // 图片上传列表
+      fileList: [],
+      // 弹出层切换
+      showcondition: false,
+      msgimport: false,
+      msgexport: false,
+      showwarning: false,
+      maintenance: false,
+      showimg: false,
+      showinsurancea: false,
+      showdetail: false,
+      showedit: false
     };
   },
   methods: {
-    myheaders() {
-      return {
-        "Content-Type": "application/json"
-      };
-    },
+    // 保养记录显示具体图片
     showimgs(v) {
       this.url = v;
       this.showimg = !this.showimg;
@@ -632,7 +611,7 @@ export default {
           this.$qs.stringify({ busNumber: row.busnumber })
         )
         .then(res => {
-          this.insurance = res.data;
+          this.insurance.list = res.data;
         });
     },
     // 保养记录
@@ -648,7 +627,7 @@ export default {
           for (const key in res.data) {
             res.data[key].maintainfile = res.data[key].maintainfile.split(";");
           }
-          this.maintenanceList = res.data;
+          this.maintenanceList.list = res.data;
         });
     },
     // 油耗信息
@@ -660,7 +639,7 @@ export default {
           this.$qs.stringify({ busNumber: row.busnumber })
         )
         .then(res => {
-          this.oil = res.data;
+          this.oil.list = res.data;
         });
     },
     // 下一页
@@ -670,15 +649,14 @@ export default {
     // 车况信息
     carwarning(index, row) {
       this.msg = row;
-      this.msgadd = !this.msgadd;
+      this.showcondition = !this.showcondition;
       this.$http
         .post(
           "MotorDetail/getConditionByBusNumber",
           this.$qs.stringify({ busNumber: row.busnumber })
         )
         .then(res => {
-          console.log(res.data);
-          this.warning = res.data;
+          this.condition.list = res.data;
         });
     },
     // 显示详情
@@ -689,6 +667,7 @@ export default {
     // 显示编辑
     handleEdit(index, row) {
       this.type = "edit";
+      this.addedittitle = "车辆信息编辑";
       this.msg = row;
       this.showedit = !this.showedit;
     },
@@ -756,7 +735,6 @@ export default {
     onsubmit() {
       this.showedit = false;
       if (this.type == "edit") {
-        console.log("edit");
         this.$http
           .post(
             "MotorDetail/updateMotorInformation",
@@ -773,7 +751,6 @@ export default {
             });
           });
       } else if (this.type == "add") {
-        console.log("add");
         this.$http
           .post("MotorDetail/addMotorInformation", this.$qs.stringify(this.msg))
           .then(res => {
@@ -821,6 +798,19 @@ export default {
       }
       this.getCarList();
       this.msgimport = !this.msgimport;
+    },
+    // 保养记录上传
+    uploadmaintenanceMsg() {
+      this.$refs.uploadimg.submit();
+      this.$message({
+        message: "添加记录成功",
+        type: "success",
+        offset: 165
+      });
+    },
+    // 图片上传成功回调
+    uploadimg(response, file, fileList) {
+      maintenanceList.addmsg.fileList = [];
     }
   },
   created() {

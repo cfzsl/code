@@ -24,7 +24,7 @@
       </div>
       <div class="searchbox">
         <span>岗位</span>
-        <el-select v-model="search.param3">
+        <el-select v-model="search.job">
           <el-option label="全部岗位" value></el-option>
           <el-option label="环卫工人" value="环卫工人"></el-option>
           <el-option label="洒水车司机" value="洒水车司机"></el-option>
@@ -104,7 +104,7 @@ export default {
       search: {
         name: "",
         area: "",
-        param3: "",
+        job: "",
         depart: ""
       },
       showedit: false,

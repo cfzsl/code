@@ -10,34 +10,34 @@
           <el-form-item label="负责道路">
             <el-select v-model="search.param2">
               <el-option label="全部道路" value></el-option>
-              <el-option label="庐山路" value="庐山路"></el-option>
-              <el-option label="宁阳路" value="宁阳路"></el-option>
-              <el-option label="新泰路" value="新泰路"></el-option>
-              <el-option label="北一路" value="北一路"></el-option>
-              <el-option label="北二路" value="北二路"></el-option>
-              <el-option label="黄河路" value="黄河路"></el-option>
+              <el-option
+                v-for="(item, i) in dropDown.road"
+                :key="i"
+                :label="item.param2"
+                :value="item.param2"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="作业区域">
             <el-select v-model="search.area">
               <el-option label="全部区域" value></el-option>
-              <el-option label="东营区新区" value="东营区新区"></el-option>
-              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
-              <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
-              <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
-              <el-option label="六户镇" value="六户镇"></el-option>
-              <el-option label="史口镇" value="史口镇"></el-option>
-              <el-option label="牛庄镇" value="牛庄镇"></el-option>
-              <el-option label="龙居镇" value="龙居镇"></el-option>
+              <el-option
+                v-for="(item, i) in dropDown.area"
+                :key="i"
+                :label="item.area"
+                :value="item.area"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="归属单位">
             <el-select v-model="search.depart">
               <el-option label="全部部门" value></el-option>
-              <el-option label="环卫一部" value="环卫一部"></el-option>
-              <el-option label="环卫二部" value="环卫二部"></el-option>
-              <el-option label="环卫三部" value="环卫三部"></el-option>
+              <el-option
+                v-for="(item, i) in dropDown.depart"
+                :key="i"
+                :label="item.depart"
+                :value="item.depart"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -128,7 +128,7 @@
 
     <!-- 添加人员信息 -->
     <el-dialog
-      title="添加人员信息"
+      title="人员信息添加"
       :visible.sync="dialogVisible"
       width="426px"
       top="100px"
@@ -214,7 +214,7 @@
 
     <!-- 编辑弹框 -->
     <el-dialog
-      :title="text"
+      title="人员信息编辑"
       :visible.sync="dialogFormVisible"
       width="426px"
       class="dialogText"
@@ -256,7 +256,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间">
-          <el-input v-model="formInline.hiretime" class="inputL"></el-input>
+          <!-- <el-input v-model="formInline.hiretime" class="inputL"></el-input> -->
+          <el-date-picker
+            v-model="formInline.hiretime"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="离职时间">
           <el-input v-model="formInline.leavetime" class="inputL"></el-input>
@@ -294,7 +300,7 @@
 
     <!-- 详情弹框 -->
     <el-dialog
-      :title="text"
+      title="人员信息详情"
       :visible.sync="detail"
       width="426px"
       class="dialogText"
@@ -351,27 +357,9 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      asterisk: false,
-      dialogAble: false,
-      lu: "",
-      value: "",
-      web: "",
-      job: "",
-      id: "",
-      web: "",
-      state: "在职",
-      value: "",
-      text: "人员信息详情",
-      buttonIf: true,
       detail: false,
-      job: "",
-      id: "",
-      web: "",
-      pagesize: 10,
-      currpage: 1,
-      listIndex: null,
-      tableData: [],
       dialogFormVisible: false,
+      // 新增
       formInline: {
         sid: "",
         name: "",
@@ -390,17 +378,20 @@ export default {
         workstatus: "",
         area: ""
       },
+      // 搜索
       search: {
         name: "",
         param2: "",
         area: "",
         depart: ""
       },
+      // 列表数据及分页
       data: {
         pagesize: 13,
         currpage: 1,
         list: []
       },
+      // 表单验证规则
       rules: {
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         sex: [{ required: true, message: "请输入性别", trigger: "blur" }],
@@ -421,6 +412,15 @@ export default {
           { required: true, message: "请选择负责道路", trigger: "blur" }
         ],
         depart: [{ required: true, message: "请选择归属单位", trigger: "blur" }]
+      },
+      // 搜索区域下拉菜单
+      dropDown: {
+        // 搜索道路下拉框
+        road: [],
+        // 搜索区域下拉框
+        depart: [],
+        // 搜索单位下拉框
+        area: []
       }
     };
   },
@@ -448,9 +448,6 @@ export default {
     },
     // 列表编辑按钮
     edit(row, _index) {
-      console.log(row);
-      //记录索引
-      this.listIndex = _index;
       //记录数据
       this.formInline = row;
       //显示弹窗
@@ -458,8 +455,6 @@ export default {
     },
     // 列表详情
     showdetail(row, _index) {
-      //记录索引
-      this.listIndex = _index;
       //记录数据
       this.formInline = row;
       //显示弹窗
@@ -560,10 +555,25 @@ export default {
           alert("请补全新增信息");
         }
       });
+    },
+    // 获取下拉菜单
+    getDropDown() {
+      this.$http.get("userInformation/getEmployeeRoad").then(res => {
+        this.dropDown.road = res.data;
+        console.log(res);
+        
+      });
+      this.$http.get("userInformation/getEmployeeDepart").then(res => {
+        this.dropDown.depart = res.data;
+      });
+      this.$http.get("userInformation/getEmployeeArea").then(res => {
+        this.dropDown.area = res.data;
+      });
     }
   },
   created() {
     this.getAddBook();
+    this.getDropDown();
   }
 };
 </script>

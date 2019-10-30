@@ -3,47 +3,47 @@
   <div id="vehicle">
     <div class="menu">
       <div class="btn">
-        <el-button @click="msgse">历史轨迹播放</el-button>
-        <el-button @click="abnormalroute">路线异常报警</el-button>
-        <el-button @click="msgeslint = true">车况检测和预警</el-button>
-        <el-button @click="showmsgedate">车辆考勤和工作量</el-button>
+        <el-button @click="msgse();">历史轨迹播放</el-button>
+        <el-button @click="abnormalroute();msgerr = !msgerr;">路线异常报警</el-button>
+        <el-button @click="showmsgeslint();msgeslint = !msgeslint;">车况检测和预警</el-button>
+        <el-button @click="showmsgedate();msgedate = !msgedate;">车辆考勤和工作量</el-button>
       </div>
 
       <!-- 历史轨迹播放弹窗 -->
-      <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msg = {}" width="70%">
+      <el-dialog title="历史轨迹播放" :visible.sync="msgserach" width="70%">
         <el-divider class="divider"></el-divider>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="mapview">
+        <el-form ref="form" :model="history" label-width="auto" class="msg" v-if="mapview">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="history.search.busnumber" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="车辆类型" class="searchType">
-              <el-select v-model="i" class="selectTop">
+              <el-select v-model="history.search.cartype" class="selectTop">
                 <el-option
-                  v-for="item in optionsCar"
-                  :key="item.i"
+                  v-for="(item, i) in optionsCar"
+                  :key="i"
                   :label="item.label"
-                  :value="item.i"
+                  :value="item.value"
                 ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="作业区域" class="searchJob">
-              <el-select v-model="job" class="selectTop">
+              <el-select v-model="history.search.area" class="selectTop">
                 <el-option
-                  v-for="item in listSearch()"
-                  :key="item.job"
+                  v-for="(item, i) in listSearch()"
+                  :key="i"
                   :label="item.label"
-                  :value="item.job"
+                  :value="item.value"
                 ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属单位" class="searchWeb">
-              <el-select v-model="web" class="selectTop">
+              <el-select v-model="history.search.depart" class="selectTop">
                 <el-option
-                  v-for="item in optionsWeb"
-                  :key="item.web"
+                  v-for="(item, i) in optionsWeb"
+                  :key="i"
                   :label="item.label"
-                  :value="item.web"
+                  :value="item.value"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -51,12 +51,12 @@
               <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
             </el-form-item>
           </div>
+
           <div class="list">
             <el-table
-              :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              :data="history.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
               border
               style="width: 100%"
-              @row-click="showadd"
             >
               <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
               <el-table-column align="center" prop="company" label="归属单位"></el-table-column>
@@ -75,6 +75,7 @@
               </el-table-column>
             </el-table>
           </div>
+
           <!-- 分页 -->
           <div class="pagination">
             <el-pagination
@@ -82,7 +83,7 @@
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="history.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -92,26 +93,32 @@
       </el-dialog>
 
       <!-- 路线异常报警弹窗 -->
-      <el-dialog title="路线异常报警" :visible.sync="msgerr" @close="msg = {}" width="70%">
+      <el-dialog title="路线异常报警" :visible.sync="msgerr" width="70%">
         <el-divider class="divider"></el-divider>
-        <el-form ref="form" :model="search" label-width="auto" class="msg">
+        <el-form ref="form" :model="route" label-width="auto" class="msg">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="search.busnumber" class="searchInputNumber"></el-input>
+              <el-input v-model="route.search.busnumber" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
-              <el-date-picker v-model="search.date" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="route.search.param4"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item class="msgButton">
-              <el-button type="primary" @click="searchroute" class="button">查询</el-button>
+              <el-button type="primary" @click="abnormalroute" class="button">查询</el-button>
             </el-form-item>
           </div>
+
           <div class="list">
             <el-table
-              :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              :data="route.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
               border
               style="width: 100%"
-              @row-click="showadd"
             >
               <el-table-column align="center" prop="num" label="序号"></el-table-column>
               <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
@@ -131,7 +138,7 @@
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="route.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -141,13 +148,7 @@
       </el-dialog>
 
       <!-- 车况检测报警弹框 -->
-      <el-dialog
-        :title="dialog3"
-        :visible.sync="msgeslint"
-        @close="msg = {}"
-        width="70%"
-        class="elDialog"
-      >
+      <el-dialog :title="dialog3" :visible.sync="msgeslint" width="70%" class="elDialog">
         <div class="searchDialogBot">
           <el-button class="buttonBot" @click="showdialog(1,'车况检测报警')">车况检测报警</el-button>
           <el-button class="buttonBot" @click="showdialog(2,'油耗超标报警')">油耗超标报警</el-button>
@@ -156,51 +157,59 @@
         </div>
         <el-divider class="divider"></el-divider>
 
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-if="show == 1">
+        <el-form ref="form" :model="detection" label-width="auto" class="msg" v-if="show == 1">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="detection.search.busnumber" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="detection.search.warmingtime"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item label="故障维修结果" class="Troubleshooting">
-              <el-select v-model="th" class="selectTop">
+              <el-select v-model="detection.search.result" class="selectTop">
                 <el-option
-                  v-for="item in troublesHooting"
-                  :key="item.th"
+                  v-for="(item,i) in troublesHooting"
+                  :key="i"
                   :label="item.label"
-                  :value="item.th"
+                  :value="item.value"
                 ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item class="msgButton">
-              <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
+              <el-button type="primary" @click="showmsgeslint" class="button">查询</el-button>
             </el-form-item>
           </div>
+
           <div class="list">
-            <!-- 此处data应为
-            data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table :data="warning" border style="width: 100%" @row-click="showadd">
-              <el-table-column align="center" prop="number" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="company" label="故障信息"></el-table-column>
-              <el-table-column align="center" prop="date" label="报警日期"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
-              <el-table-column align="center" prop="driver" label="维修人员"></el-table-column>
-              <el-table-column align="center" prop="policeDate" label="维修日期"></el-table-column>
-              <el-table-column align="center" prop="troubleshooting" label="故障维修结果" width="239px"></el-table-column>
+            <el-table
+              :data="detection.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              border
+              style="width: 100%"
+            >
+              <el-table-column align="center" prop="num" label="序号"></el-table-column>
+              <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="faultinformation" label="故障信息"></el-table-column>
+              <el-table-column align="center" prop="warmingtime" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="repairperson" label="维修人员"></el-table-column>
+              <el-table-column align="center" prop="repairtime" label="维修日期"></el-table-column>
+              <el-table-column align="center" prop="result" label="故障维修结果" width="239px"></el-table-column>
             </el-table>
           </div>
+
           <!-- 分页 -->
-          <!-- 修改类名 margin-left: 45% -->
           <div class="pagination">
             <el-pagination
               :current-page="data.currpage"
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="detection.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -208,27 +217,34 @@
           </div>
         </el-form>
 
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 2">
+        <el-form ref="form" :model="oil" label-width="auto" class="msg" v-else-if="show == 2">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="oil.search.busnumber" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="oil.search.warmingtime"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item class="msgButton">
-              <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
+              <el-button type="primary" @click="showdialog(2)" class="button">查询</el-button>
             </el-form-item>
           </div>
           <div class="list">
-            <!-- 此处data应为
-            data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table :data="oil" border style="width: 100%" @row-click="showadd">
-              <el-table-column align="center" prop="id" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="consumption" label="车辆耗油量（L/100KM）"></el-table-column>
-              <el-table-column align="center" prop="policeDate" label="报警日期"></el-table-column>
-              <el-table-column align="center" prop="policeTime" label="报警时间"></el-table-column>
+            <el-table
+              :data="oil.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              border
+              style="width: 100%"
+            >
+              <el-table-column align="center" prop="num" label="序号"></el-table-column>
+              <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="gasolineused" label="车辆耗油量（L/100KM）"></el-table-column>
+              <el-table-column align="center" prop="warmingtime" label="报警日期"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -239,7 +255,7 @@
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="oil.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -247,24 +263,30 @@
           </div>
         </el-form>
 
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 3">
+        <el-form
+          ref="form"
+          :model="maintenance"
+          label-width="auto"
+          class="msg"
+          v-else-if="show == 3"
+        >
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="maintenance.search.number" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="maintenance.search.opreatetime"
+                type="date"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item label="保养完成情况" class="Troubleshooting">
-              <el-select v-model="th" class="selectTop">
-                <!-- <el-option
-                  v-for="item in troublesHooting"
-                  :key="item.th"
-                  :label="item.label"
-                  :value="item.th"
-                ></el-option>-->
-                <el-option label="/" value="0"></el-option>
-                <el-option label="完成保养" value="1"></el-option>
+              <el-select v-model="maintenance.search.complete" class="selectTop">
+                <el-option label="全部" value></el-option>
+                <el-option label="完成保养" value="完成保养"></el-option>
+                <el-option label="未完成保养" value="未完成保养"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item class="msgButton">
@@ -272,28 +294,29 @@
             </el-form-item>
           </div>
           <div class="list">
-            <!-- 此处data应为
-            data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table :data="maintenance" border style="width: 100%" @row-click="showadd">
-              <el-table-column align="center" prop="id" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="policeDate" label="上次保养时间"></el-table-column>
-              <el-table-column align="center" prop="maintenance" label="上次保养公里数"></el-table-column>
-              <el-table-column align="center" prop="travel" label="已行驶公里数"></el-table-column>
-              <el-table-column align="center" prop="excess" label="超限公里数"></el-table-column>
-              <el-table-column align="center" prop="driver" label="保养负责人"></el-table-column>
-              <el-table-column align="center" prop="fulfill" label="保养完成情况"></el-table-column>
+            <el-table
+              :data="maintenance.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              border
+              style="width: 100%"
+            >
+              <el-table-column align="center" prop="num" label="序号"></el-table-column>
+              <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="opreatetime" label="上次保养时间"></el-table-column>
+              <el-table-column align="center" prop="param2" label="上次保养公里数"></el-table-column>
+              <el-table-column align="center" prop="param3" label="已行驶公里数"></el-table-column>
+              <el-table-column align="center" prop="param4" label="超限公里数"></el-table-column>
+              <el-table-column align="center" prop="dutyoffice" label="保养负责人"></el-table-column>
+              <el-table-column align="center" prop="param5" label="保养完成情况"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
-          <!-- 修改类名 margin-left: 45% -->
           <div class="pagination">
             <el-pagination
               :current-page="data.currpage"
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="maintenance.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -301,47 +324,50 @@
           </div>
         </el-form>
 
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="show == 4">
+        <el-form ref="form" :model="insurance" label-width="auto" class="msg" v-else-if="show == 4">
           <div class="search">
             <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="insurance.search.busnumber" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
-              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="insurance.search.bxtimewarng"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item class="msgButton">
-              <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
+              <el-button type="primary" @click="showdialog(4)" class="button">查询</el-button>
             </el-form-item>
             <div class="sytime">系统时间：2019-10-13</div>
           </div>
           <div class="list">
-            <!-- 此处data应为
-            data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)-->
-            <el-table :data="insurance" border style="width: 100%" @row-click="showadd">
-              <el-table-column align="center" prop="id" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" label="到期剩余天数" prop="expireday" width>
-                <template slot-scope="scope">
-                  <span :class="scope.row.expireday<10?'red':'hed'">{{scope.row.expireday}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="effectivedate" label="生效时间"></el-table-column>
-              <el-table-column align="center" prop="expiredate" label="到期时间"></el-table-column>
-              <el-table-column align="center" prop="driver" label="负责人"></el-table-column>
+            <el-table
+              :data="insurance.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              border
+              style="width: 100%"
+            >
+              <el-table-column align="center" prop="num" label="序号"></el-table-column>
+              <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="days" label="到期剩余天数"></el-table-column>
+              <el-table-column align="center" prop="bxtime" label="生效时间"></el-table-column>
+              <el-table-column align="center" prop="bxtimewarng" label="到期时间"></el-table-column>
+              <el-table-column align="center" prop="opreateperson" label="负责人"></el-table-column>
               <el-table-column align="center" label="操作">
                 <el-button type="warning">报警处理</el-button>
               </el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
-          <!-- 修改类名 margin-left: 45% -->
           <div class="pagination">
             <el-pagination
               :current-page="data.currpage"
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="insurance.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
@@ -351,60 +377,59 @@
       </el-dialog>
 
       <!-- 车辆考勤和工作量弹窗 -->
-      <el-dialog
-        title="车辆考勤和工作量"
-        append-to-body
-        :visible.sync="msgedate"
-        @close="msg = {}"
-        width="70%"
-      >
+      <el-dialog title="车辆考勤和工作量" append-to-body :visible.sync="msgedate" width="70%">
         <div class="searchDialogbtn">
           <el-button class="buttonBot" @click="work()">车辆考勤</el-button>
           <el-button class="buttonBot" @click="total()">车辆工作总量</el-button>
         </div>
-        <el-divider class="divider"></el-divider>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-show="flow">
+
+        <el-form ref="form" :model="attendance" label-width="auto" class="msg" v-show="flow">
           <div class="search">
             <el-form-item label="车牌号 鲁E- " class="searchInput">
-              <el-input v-model="msg.number" class="searchInputNumber"></el-input>
+              <el-input v-model="attendance.search.busnumber" class="searchInputNumber"></el-input>
             </el-form-item>
             <el-form-item label="运转站" class="Troubleshooting stations">
-              <el-select v-model="s" class="selectTop">
-                <el-option
-                  v-for="item in station"
-                  :key="item.s"
-                  :label="item.label"
-                  :value="item.s"
-                ></el-option>
+              <el-select v-model="attendance.search.transferspoint" class="selectTop">
+                <el-option label="全部" value></el-option>
+                <el-option v-for="(item, i) in station" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="司机" class="Troubleshooting msgnumber">
-              <el-input v-model="msg.number" class="TroubleshootingInput"></el-input>
+              <el-input v-model="attendance.search.users" class="TroubleshootingInput"></el-input>
             </el-form-item>
             <el-form-item label="日期" class="msgDate">
-              <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
+              <el-date-picker
+                v-model="attendance.search.datetime"
+                type="date"
+                placeholder
+                value-format="yyyy-MM-dd"
+                class="msgDatePicker"
+              ></el-date-picker>
             </el-form-item>
             <el-form-item class="msgButton">
-              <el-button type="primary" @click="onSubmit" class="button">查询</el-button>
+              <el-button type="primary" @click="showmsgedate" class="button">查询</el-button>
             </el-form-item>
           </div>
+
           <div class="list">
             <el-table
-              :data="Attendance.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+              :data="attendance.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
               border
               style="width: 100%"
-              @row-click="showadd"
             >
-              <el-table-column align="center" prop="id" label="序号"></el-table-column>
-              <el-table-column align="center" prop="carbrand" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="company" label="归属单位"></el-table-column>
-              <el-table-column align="center" prop="driver" label="指定司机"></el-table-column>
-              <el-table-column align="center" prop="phone" label="联系电话"></el-table-column>
-              <el-table-column align="center" prop="transport" label="转运站"></el-table-column>
-              <el-table-column align="center" prop="Clearance" label="垃圾清运次数"></el-table-column>
-              <el-table-column align="center" prop="tonnage" label="垃圾清运量（吨）"></el-table-column>
+              <el-table-column align="center" prop="num" label="序号"></el-table-column>
+              <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="depart" label="归属单位"></el-table-column>
+              <el-table-column align="center" prop="datetime" label="日期"></el-table-column>
+              <el-table-column align="center" prop="users" label="指定司机"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系电话"></el-table-column>
+              <el-table-column align="center" prop="transferspoint" label="转运站"></el-table-column>
+              <el-table-column align="center" prop="count" label="垃圾清运次数"></el-table-column>
+              <el-table-column align="center" prop="weight" label="垃圾清运量（吨）"></el-table-column>
               <el-table-column align="center" label="具体时间">
-                <el-button @click="showtime">打卡时间</el-button>
+                <template slot-scope="scope">
+                  <el-button @click="showtime(scope.row)">打卡时间</el-button>
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -415,27 +440,27 @@
               :page-size="data.pagesize"
               :pager-count="5"
               layout="total, prev, pager, next"
-              :total="data.list.length"
+              :total="attendance.list.length"
               @prev-click="nextpage"
               @next-click="nextpage"
               @current-change="nextpage"
             ></el-pagination>
           </div>
         </el-form>
-        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-show="!flow">
+        <el-form ref="form" label-width="auto" class="msg" v-show="!flow">
           <div>
             <div class="left">
               <div class="leftboder">
                 <div class="textone">总司机数（个）</div>
-                <div class="texttown">62</div>
+                <div class="texttown">{{ this.totalWork.left.userNumber }}</div>
               </div>
               <div class="leftboder">
                 <div class="textone">转运站数（个）</div>
-                <div class="texttown">23</div>
+                <div class="texttown">{{ this.totalWork.left.pointNumber }}</div>
               </div>
               <div class="leftboder">
                 <div class="textone">总车辆（个）</div>
-                <div class="texttown">62</div>
+                <div class="texttown">{{ this.totalWork.left.userNumber }}</div>
               </div>
               <div id="main" style="width: 450px;height:200px;"></div>
             </div>
@@ -455,7 +480,7 @@
         </el-row>
 
         <el-table :data="detailtime" style="width: 100%">
-          <el-table-column prop="arrivals" label="到达时间"></el-table-column>
+          <el-table-column prop="arrive" label="到达时间"></el-table-column>
           <el-table-column prop="leave" label="离开时间"></el-table-column>
         </el-table>
       </el-dialog>
@@ -470,9 +495,9 @@
           :scroll-wheel-zoom="true"
         >
           <bm-marker
-            :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
-            :rotation="polylinePathMarker[0].direction"
-            :position="polylinePathMarker[0]"
+            v-if="history.marker"
+            :icon="history.icon"
+            :position="polylinePathMarker"
             :dragging="false"
           ></bm-marker>
           <bm-polyline
@@ -481,19 +506,514 @@
             :stroke-opacity="0.5"
             :stroke-weight="3"
             :editing="false"
-            @lineupdate="updatePolylinePath"
           ></bm-polyline>
+          <bml-lushu
+            :path="polylinePath"
+            :icon="history.icon"
+            :play="history.play"
+            :speed="history.speed"
+            :rotation="true"
+          ></bml-lushu>
         </baidu-map>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { BmlLushu } from "vue-baidu-map";
 var echarts = require("echarts");
 export default {
+  components: {
+    BmlLushu
+  },
   data() {
     return {
-      radio: "0",
+      // 车况检测标题切换
+      dialog3: "车况检测报警",
+      // 弹框分页
+      data: {
+        pagesize: 10,
+        currpage: 1,
+        list: []
+      },
+      // 历史轨迹
+      history: {
+        search: {
+          busnumber: "",
+          cartype: "",
+          area: "",
+          depart: ""
+        },
+        list: [
+          {
+            sid: 1,
+            number: 1,
+            type: "垃圾运输车",
+            carbrand: "鲁E-563D3",
+            date: "2011.10.20",
+            num: "环卫-A001",
+            company: "环卫",
+            driver: "李诞",
+            phone: "15375669845",
+            region: "东营南站",
+            policeTime: "2011.10.20",
+            service: "超出原定使用区域：东营区东营南站",
+            troubleshooting: "未维修"
+          }
+        ],
+        icon: {
+          url: "http://118.31.245.183:10500/images000/垃圾运输车big.png",
+          size: { width: 38, height: 30 }
+        },
+        play: false,
+        speed: 2000,
+        marker: true
+      },
+      // 历史轨迹定时器
+      timer: null,
+      // 历史轨迹回放
+      polylinePath: [{ lng: "", lat: "" }],
+      polylinePathMarker: [{ lng: "", lat: "" }],
+      // 历史轨迹下拉框
+      optionsCar: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "垃圾清运车",
+          label: "垃圾清运车"
+        },
+        {
+          value: "清扫车",
+          label: "清扫车"
+        },
+        {
+          value: "洒水车",
+          label: "洒水车"
+        }
+      ],
+      optionsJob: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "东营区新区",
+          label: "东营区新区"
+        },
+        {
+          value: "文化街道办事处",
+          label: "文化街道办事处"
+        },
+        {
+          value: "新店街道办事处",
+          label: "新店街道办事处"
+        },
+        {
+          value: "黄河街道办事处",
+          label: "黄河街道办事处"
+        },
+        {
+          value: "胜利街道办事处",
+          label: "胜利街道办事处"
+        },
+        {
+          value: "六户镇",
+          label: "六户镇"
+        },
+        {
+          value: "牛庄镇",
+          label: "牛庄镇"
+        },
+        {
+          value: "8",
+          label: "史口镇"
+        },
+        {
+          value: "龙居镇",
+          label: "龙居镇"
+        },
+        {
+          value: "庐山路",
+          label: "庐山路"
+        },
+        {
+          value: "宁阳路",
+          label: "宁阳路"
+        },
+        {
+          value: "新泰路",
+          label: "新泰路"
+        },
+        {
+          value: "北一路",
+          label: "北一路"
+        },
+        {
+          value: "北二路",
+          label: "北二路"
+        },
+        {
+          value: "黄河路",
+          label: "黄河路"
+        },
+        {
+          value: "龙居镇",
+          label: "龙居镇"
+        },
+        {
+          value: "淄博路",
+          label: "淄博路"
+        },
+        {
+          value: "济南路",
+          label: "济南路"
+        },
+        {
+          value: "中转站1",
+          label: "中转站1"
+        },
+        {
+          value: "中转站2",
+          label: "中转站2"
+        }
+      ],
+      optionsJob23: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "东营区新区",
+          label: "东营区新区"
+        },
+        {
+          value: "文化街道办事处",
+          label: "文化街道办事处"
+        },
+        {
+          value: "新店街道办事处",
+          label: "新店街道办事处"
+        },
+        {
+          value: "黄河街道办事处",
+          label: "黄河街道办事处"
+        },
+        {
+          value: "胜利街道办事处",
+          label: "胜利街道办事处"
+        },
+        {
+          value: "六户镇",
+          label: "六户镇"
+        },
+        {
+          value: "牛庄镇",
+          label: "牛庄镇"
+        },
+        {
+          value: "史口镇",
+          label: "史口镇"
+        },
+        {
+          value: "龙居镇",
+          label: "龙居镇"
+        },
+        {
+          value: "庐山路",
+          label: "庐山路"
+        },
+        {
+          value: "宁阳路",
+          label: "宁阳路"
+        },
+        {
+          value: "新泰路",
+          label: "新泰路"
+        },
+        {
+          value: "北一路",
+          label: "北一路"
+        },
+        {
+          value: "北二路",
+          label: "北二路"
+        },
+        {
+          value: "黄河路",
+          label: "黄河路"
+        },
+        {
+          value: "龙居镇",
+          label: "龙居镇"
+        },
+        {
+          value: "淄博路",
+          label: "淄博路"
+        },
+        {
+          value: "济南路",
+          label: "济南路"
+        }
+      ],
+      optionsJob1: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "中转站1",
+          label: "中转站1"
+        },
+        {
+          value: "中转站2",
+          label: "中转站2"
+        }
+      ],
+      optionsWeb: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "环卫一部",
+          label: "环卫一部"
+        },
+        {
+          value: "环卫二部",
+          label: "环卫二部"
+        },
+        {
+          value: "环卫三部",
+          label: "环卫三部"
+        },
+        {
+          value: "环卫四部",
+          label: "环卫四部"
+        }
+      ],
+      // 路线异常
+      route: {
+        search: {
+          busnumber: "",
+          param4: ""
+        },
+        list: []
+      },
+      // 车况检测
+      detection: {
+        search: {
+          busnumber: "",
+          date: "",
+          result: ""
+        },
+        list: [
+          {
+            number: 1,
+            type: "垃圾运输车",
+            carbrand: "鲁E-559F3",
+            date: "2019-10-20",
+            num: "环卫-A001",
+            company: "发动机故障",
+            driver: "张毅",
+            phone: "15375669845",
+            region: "东营南站",
+            policeDate: "2019-10-21",
+            policeTime: "08:00",
+            service: "超出原定使用区域：东营区东营南站",
+            troubleshooting: "未处理"
+          },
+          {
+            number: 2,
+            type: "垃圾运输车",
+            carbrand: "鲁E-37588",
+            date: "2019-10-15",
+            num: "环卫-A001",
+            company: "手刹故障",
+            driver: "张毅",
+            phone: "15375669845",
+            region: "东营南站",
+            policeDate: "2019-10-16",
+            policeTime: "15:30",
+            service: "超出原定使用区域：东营区东营南站",
+            troubleshooting: "未处理"
+          },
+          {
+            number: 3,
+            type: "垃圾运输车",
+            carbrand: "鲁E-A3250",
+            date: "2019-10-18",
+            num: "环卫-A001",
+            company: "水温过高",
+            driver: "张毅",
+            phone: "15375669845",
+            region: "东营南站",
+            policeDate: "2019-10-19",
+            policeTime: "18:55",
+            service: "超出原定使用区域：东营区东营南站",
+            troubleshooting: "未处理"
+          },
+          {
+            number: 4,
+            type: "垃圾运输车",
+            carbrand: "鲁E-325AA",
+            date: "2019-10-20",
+            num: "环卫-A001",
+            company: "机油报警",
+            driver: "张毅",
+            phone: "15375669845",
+            region: "东营南站",
+            policeDate: "2019-10-22",
+            policeTime: "10:12",
+            service: "超出原定使用区域：东营区东营南站",
+            troubleshooting: "未处理"
+          }
+        ]
+      },
+      // 车况下拉框
+      troublesHooting: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "已维修",
+          label: "已维修"
+        },
+        {
+          value: "未维修",
+          label: "未维修"
+        }
+      ],
+      // 油耗信息
+      oil: {
+        search: {
+          busnumber: "",
+          date: ""
+        },
+        list: []
+      },
+      // 保养预警
+      maintenance: {
+        search: {
+          busnumber: "",
+          date: "",
+          complete: ""
+        },
+        list: [
+          {
+            id: 1,
+            carbrand: "鲁E-859Q9",
+            policeDate: "2019-10-07",
+            maintenance: 27850,
+            travel: 37980,
+            excess: 130,
+            driver: "李诞",
+            fulfill: "未保养"
+          },
+          {
+            id: 2,
+            carbrand: "鲁E-B5277",
+            policeDate: "2019-01-08",
+            maintenance: 25800,
+            travel: 36200,
+            excess: 400,
+            driver: "李诞",
+            fulfill: "未保养"
+          },
+          {
+            id: 3,
+            carbrand: "鲁E-589A5",
+            policeDate: "2011-10-09",
+            maintenance: 25600,
+            travel: 35900,
+            excess: 300,
+            driver: "李诞",
+            fulfill: "未保养"
+          }
+        ]
+      },
+      // 保险到期
+      insurance: {
+        search: {
+          busnumber: "",
+          date: ""
+        },
+        list: [
+          {
+            id: 1,
+            carbrand: "鲁E-594D3",
+            expireday: 30,
+            effectivedate: "2018-11-13",
+            expiredate: "2019-11-12",
+            driver: "李诞"
+          },
+          {
+            id: 2,
+            carbrand: "鲁E-668D5",
+            expireday: 35,
+            effectivedate: "2018-10-28",
+            expiredate: "2019-10-27",
+            driver: "李诞"
+          },
+
+          {
+            id: 3,
+            carbrand: "鲁E-294F3",
+            expireday: 7,
+            effectivedate: "2018-10-20",
+            expiredate: "2019-10-19",
+            driver: "李诞"
+          }
+        ]
+      },
+      // 车辆考勤
+      attendance: {
+        search: {
+          busnumber: "",
+          datetime: "",
+          user: "",
+          transferspoint: ""
+        },
+        list: [
+          {
+            id: 1,
+            carbrand: "鲁E-859QQ",
+            company: "环卫",
+            driver: "李诞",
+            phone: 15375669845,
+            transport: "新泰路生活垃圾中转站",
+            Clearance: 3,
+            tonnage: 5
+          },
+          {
+            id: 2,
+            carbrand: "鲁E-213AD",
+            company: "环卫",
+            driver: "张兆",
+            phone: 15065667823,
+            transport: "济南路生活垃圾中转站",
+            Clearance: 3,
+            tonnage: 8
+          }
+        ]
+      },
+      // 车辆考勤下拉框
+      station: [
+        {
+          value: "",
+          label: "全部"
+        }
+      ],
+      // 车辆考勤打卡时间
+      detailtime: [],
+      // 车辆考勤工作总量
+      totalWork: {
+        left: {},
+        right: []
+      },
+      // 弹出层切换
       show: 1,
       flow: true,
       mapview: true,
@@ -506,543 +1026,109 @@ export default {
       mapLine: false,
       msgedate: false,
       time: false,
-      input3: "",
-      s: "0",
-      station: [
-        {
-          s: "0",
-          label: "全部"
-        },
-        {
-          s: "1",
-          label: "新泰路生活垃圾中转站"
-        },
-        {
-          s: "2",
-          label: "济南路生活垃圾中转站"
-        },
-        {
-          s: "3",
-          label: "北二路生活垃圾中转站"
-        },
-        {
-          s: "4",
-          label: "牛庄镇生活垃圾中转站"
-        },
-        {
-          s: "5",
-          label: "六户镇生活垃圾中转站"
-        }
-      ],
-      th: "0",
-      troublesHooting: [
-        {
-          th: "0",
-          label: "全部"
-        },
-        {
-          th: "1",
-          label: "已维修"
-        },
-        {
-          th: "2",
-          label: "未维修"
-        }
-      ],
-      i: "0",
-      optionsCar: [
-        {
-          i: "0",
-          label: "全部"
-        },
-        {
-          i: "1",
-          label: "垃圾清运车"
-        },
-        {
-          i: "2",
-          label: "清扫车"
-        },
-        {
-          i: "3",
-          label: "洒水车"
-        }
-      ],
-      job: "0",
-      optionsJob: [
-        {
-          job: "0",
-          label: "全部"
-        },
-        {
-          job: "1",
-          label: "东营区新区"
-        },
-        {
-          job: "2",
-          label: "文化街道办事处"
-        },
-        {
-          job: "3",
-          label: "新店街道办事处"
-        },
-        {
-          job: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          job: "5",
-          label: "胜利街道办事处"
-        },
-        {
-          job: "6",
-          label: "六户镇"
-        },
-        {
-          job: "7",
-          label: "牛庄镇"
-        },
-        {
-          job: "8",
-          label: "史口镇"
-        },
-        {
-          job: "9",
-          label: "龙居镇"
-        },
-        {
-          job: "10",
-          label: "庐山路"
-        },
-        {
-          job: "11",
-          label: "宁阳路"
-        },
-        {
-          job: "12",
-          label: "新泰路"
-        },
-        {
-          job: "13",
-          label: "北一路"
-        },
-        {
-          job: "14",
-          label: "北二路"
-        },
-        {
-          job: "15",
-          label: "黄河路"
-        },
-        {
-          job: "16",
-          label: "龙居镇"
-        },
-        {
-          job: "17",
-          label: "淄博路"
-        },
-        {
-          job: "18",
-          label: "济南路"
-        },
-        {
-          job: "19",
-          label: "中转站1"
-        },
-        {
-          job: "20",
-          label: "中转站2"
-        }
-      ],
-      optionsJob23: [
-        {
-          job: "0",
-          label: "全部"
-        },
-        {
-          job: "1",
-          label: "东营区新区"
-        },
-        {
-          job: "2",
-          label: "文化街道办事处"
-        },
-        {
-          job: "3",
-          label: "新店街道办事处"
-        },
-        {
-          job: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          job: "5",
-          label: "胜利街道办事处"
-        },
-        {
-          job: "6",
-          label: "六户镇"
-        },
-        {
-          job: "7",
-          label: "牛庄镇"
-        },
-        {
-          job: "8",
-          label: "史口镇"
-        },
-        {
-          job: "9",
-          label: "龙居镇"
-        },
-        {
-          job: "10",
-          label: "庐山路"
-        },
-        {
-          job: "11",
-          label: "宁阳路"
-        },
-        {
-          job: "12",
-          label: "新泰路"
-        },
-        {
-          job: "13",
-          label: "北一路"
-        },
-        {
-          job: "14",
-          label: "北二路"
-        },
-        {
-          job: "15",
-          label: "黄河路"
-        },
-        {
-          job: "16",
-          label: "龙居镇"
-        },
-        {
-          job: "17",
-          label: "淄博路"
-        },
-        {
-          job: "18",
-          label: "济南路"
-        }
-      ],
-      optionsJob1: [
-        {
-          job: "0",
-          label: "中转站1"
-        },
-        {
-          job: "1",
-          label: "中转站2"
-        }
-      ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
-          label: "环卫四部"
-        }
-      ],
-      msg: {
-        number: ""
-      },
-      data: {
-        pagesize: 10,
-        currpage: 1,
-        list: []
-      },
-      search: {
-        busnumber: "",
-        date: ""
-      },
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
-        },
-        shortcuts: [
-          {
-            text: "今天",
-            onClick(picker) {
-              picker.$emit("pick", new Date());
-            }
-          },
-          {
-            text: "昨天",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit("pick", date);
-            }
-          },
-          {
-            text: "一周前",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", date);
-            }
-          }
-        ]
-      },
-      value1: "",
-      value2: "",
-      timer: null,
-      polylinePath: [{ lng: "", lat: "", direction: 0 }],
-      polylinePathMarker: [{ lng: "", lat: "", direction: 0 }],
-      num: 0.001,
-      // 故障代码
-      warning: [
-        {
-          number: 1,
-          type: "垃圾运输车",
-          carbrand: "鲁E-559F3",
-          date: "2019-10-20",
-          num: "环卫-A001",
-          company: "发动机故障",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-21",
-          policeTime: "08:00",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        },
-        {
-          number: 2,
-          type: "垃圾运输车",
-          carbrand: "鲁E-37588",
-          date: "2019-10-15",
-          num: "环卫-A001",
-          company: "手刹故障",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-16",
-          policeTime: "15:30",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        },
-        {
-          number: 3,
-          type: "垃圾运输车",
-          carbrand: "鲁E-A3250",
-          date: "2019-10-18",
-          num: "环卫-A001",
-          company: "水温过高",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-19",
-          policeTime: "18:55",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        },
-        {
-          number: 4,
-          type: "垃圾运输车",
-          carbrand: "鲁E-325AA",
-          date: "2019-10-20",
-          num: "环卫-A001",
-          company: "机油报警",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-22",
-          policeTime: "10:12",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        }
-      ],
-      // 油耗
-      oil: [
-        {
-          id: 1,
-          carbrand: "鲁E-259X3",
-          consumption: "35 (标准值 ≤ 25)",
-          policeDate: "2019-07-15",
-          policeTime: "08:00"
-        },
-        {
-          id: 2,
-          carbrand: "鲁E-996D5",
-          consumption: "30 (标准值 ≤ 25)",
-          policeDate: "2019-08-20",
-          policeTime: "15:25"
-        },
-        {
-          id: 3,
-          carbrand: "鲁E-783F6",
-          consumption: "26 (标准值 ≤ 25)",
-          policeDate: "2019-10-11",
-          policeTime: "10:35"
-        }
-      ],
-      // 保养
-      maintenance: [
-        {
-          id: 1,
-          carbrand: "鲁E-859Q9",
-          policeDate: "2019-10-07",
-          maintenance: 27850,
-          travel: 37980,
-          excess: 130,
-          driver: "李诞",
-          fulfill: "未保养"
-        },
-        {
-          id: 2,
-          carbrand: "鲁E-B5277",
-          policeDate: "2019-01-08",
-          maintenance: 25800,
-          travel: 36200,
-          excess: 400,
-          driver: "李诞",
-          fulfill: "未保养"
-        },
-        {
-          id: 3,
-          carbrand: "鲁E-589A5",
-          policeDate: "2011-10-09",
-          maintenance: 25600,
-          travel: 35900,
-          excess: 300,
-          driver: "李诞",
-          fulfill: "未保养"
-        }
-      ],
-      // 保险
-      insurance: [
-        {
-          id: 1,
-          carbrand: "鲁E-594D3",
-          expireday: 30,
-          effectivedate: "2018-11-13",
-          expiredate: "2019-11-12",
-          driver: "李诞"
-        },
-        {
-          id: 2,
-          carbrand: "鲁E-668D5",
-          expireday: 35,
-          effectivedate: "2018-10-28",
-          expiredate: "2019-10-27",
-          driver: "李诞"
-        },
-
-        {
-          id: 3,
-          carbrand: "鲁E-294F3",
-          expireday: 7,
-          effectivedate: "2018-10-20",
-          expiredate: "2019-10-19",
-          driver: "李诞"
-        }
-      ],
-      // 考勤
-      Attendance: [
-        {
-          id: 1,
-          carbrand: "鲁E-859QQ",
-          company: "环卫",
-          driver: "李诞",
-          phone: 15375669845,
-          transport: "新泰路生活垃圾中转站",
-          Clearance: 3,
-          tonnage: 5
-        },
-        {
-          id: 2,
-          carbrand: "鲁E-213AD",
-          company: "环卫",
-          driver: "张兆",
-          phone: 15065667823,
-          transport: "济南路生活垃圾中转站",
-          Clearance: 3,
-          tonnage: 8
-        }
-      ],
-      // 抵达时间
-      detailtime: [
-        {
-          arrivals: "05:50",
-          leave: "06:00"
-        },
-        {
-          arrivals: "07:00",
-          leave: "07:09"
-        },
-        {
-          arrivals: "08:10",
-          leave: "08:20"
-        }
-      ],
-      dialog3: "车况检测报警"
+      test: []
     };
   },
   created() {
     this.getpolyline();
-    this.date();
+    this.getDropDown();
   },
   mounted() {},
   methods: {
+    // 考勤列表
     showmsgedate() {
-      this.msgedate = !this.msgedate;
+      this.$http
+        .post(
+          "manage/transferAttendanceCriteriaQuery",
+          this.$qs.stringify(this.attendance.search)
+        )
+        .then(res => {
+          this.attendance.list = res.data;
+        });
     },
-    drawBar() {},
-    showtime() {
+    // 考勤打卡
+    showtime(row) {
       this.time = !this.time;
+      this.$http
+        .post(
+          "manage/getTransferAttendanceTime",
+          this.$qs.stringify({
+            busnumber: row.busnumber,
+            datetime: row.datetime
+          })
+        )
+        .then(res => {
+          this.detailtime = res.data;
+        });
     },
+    // 显示车况检测
+    showmsgeslint() {
+      this.$http
+        .post(
+          "manage/carConditionCriteriaQuery",
+          this.$qs.stringify(this.detection.search)
+        )
+        .then(res => {
+          console.log(res.data);
+          this.detection.list = res.data;
+        });
+    },
+    // 车况检测切换
     showdialog(v, title) {
       this.show = v;
       this.dialog3 = title;
+      switch (v) {
+        case 1:
+          this.$http.get("manage/carConditionCriteriaQuery").then(res => {
+            console.log(res.data);
+            this.detection.list = res.data;
+          });
+          break;
+        case 2:
+          this.$http
+            .post(
+              "manage/youHaoCriteriaQuery",
+              this.$qs.stringify(this.oil.search)
+            )
+            .then(res => {
+              console.log(res.data);
+              this.oil.list = res.data;
+            });
+          break;
+        case 3:
+          this.$http.get("manage/baoYangCriteriaQuery").then(res => {
+            console.log(res.data);
+            this.maintenance.list = res.data;
+          });
+          break;
+        case 4:
+          this.$http
+            .post(
+              "manage/baoXianCriteriaQuery",
+              this.$qs.stringify(this.insurance.search)
+            )
+            .then(res => {
+              console.log(res.data);
+              this.insurance.list = res.data;
+            });
+          break;
+      }
     },
-    focus(e) {
-      console.log(e.target);
-      console.log(this);
-    },
+    // 历史轨迹获取
     getpolyline() {
       this.$http.get("xy/demo").then(res => {
         this.polylinePath = res.data;
-        this.polylinePathMarker = res.data;
+        this.polylinePathMarker = res.data[0];
       });
     },
+    // 回放
     huifang() {
-      this.$http.get("xy/demo").then(res => {
-        this.polylinePathMarker = res.data;
-      });
-      clearInterval(this.timer);
+      this.getpolyline();
+      this.history.marker = false;
+      this.history.play ? "不进行操作" : (this.history.play = true);
       this.msgserach = !this.msgserach;
-      this.timer = setInterval(() => {
-        if (this.polylinePathMarker.length != 1) {
-          this.polylinePathMarker.splice(0, 1);
-        } else if (this.polylinePathMarker.length == 1) {
-          clearInterval(this.timer);
-        }
-      }, 500);
     },
+    // 渲染地图
     draw({ el, BMap, map }) {
       let lng = this.polylinePath[0].lng;
       let lat = this.polylinePath[0].lat;
@@ -1050,12 +1136,15 @@ export default {
       el.style.left = pixel.x + "px";
       el.style.top = pixel.y + "px";
     },
+    // 历史轨迹显示
     msgse() {
       this.msgserach = !this.msgserach;
     },
+    // 考勤切换
     work() {
       this.flow = true;
     },
+    // 考勤工作量切换
     total() {
       this.flow = false;
       // 基于准备好的dom，初始化echarts实例
@@ -1093,74 +1182,57 @@ export default {
           }
         ]
       });
+      this.$http.get("manage/getTransfersPointNumberAndUser").then(res => {
+        this.totalWork.left = res.data
+      });
     },
+    // 切换作业区域
     listSearch() {
-      if (this.i == 0) {
+      if (this.history.search.cartype === "") {
         return this.optionsJob;
-      } else if (this.i == 2 || this.i == 3) {
+      } else if (
+        this.history.search.cartype === "清扫车" ||
+        this.history.search.cartype === "洒水车"
+      ) {
         return this.optionsJob23;
-      } else if (this.i == 1) {
+      } else if (this.history.search.cartype === "垃圾清运车") {
         return this.optionsJob1;
       }
     },
+    // 查询按钮
     onSubmit() {},
-    showadd() {},
-    handleEdit(_index, row) {
-      this.msgserach = false;
-      this.mapLine = true;
-    },
-    searchMap() {
-      console.log("百度地图搜索");
-    },
-    nextpage() {},
-    date() {
-      for (let i = 1; i < 2; i++) {
-        this.data.list.push({
-          sid: i,
-          number: i,
-          type: "垃圾运输车",
-          carbrand: "鲁E-563D3",
-          date: "2011.10.20",
-          num: "环卫-A001",
-          company: "环卫",
-          driver: "李诞",
-          phone: "15375669845",
-          region: "东营南站",
-          policeTime: "2011.10.20",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未维修"
-        });
-      }
-    },
-    updatePolylinePath(e) {
-      this.polylinePath = e.target.getPath();
-    },
-    addPolylinePoint() {
-      this.polylinePath.push({ lng: 116.404, lat: 39.915 });
-    },
     // 路线异常
     abnormalroute() {
-      this.msgerr = !this.msgerr;
-      this.$http.get("manage/roadExceptionWarmingCriteriaQuery").then(res => {
-        this.data.list = res.data;
-      });
+      this.$http
+        .post(
+          "manage/roadExceptionWarmingCriteriaQuery",
+          this.$qs.stringify(this.route.search)
+        )
+        .then(res => {
+          this.route.list = res.data;
+        });
     },
     // 路线异常查询
     searchroute() {
       this.$http
         .post(
           "manage/roadExceptionWarmingCriteriaQuery",
-          this.$qs.stringify(this.search)
+          this.$qs.stringify(this.route.search)
         )
         .then(res => {
-          console.log(res);
-          
-          this.data.list = res.data;
+          this.route.list = res.data;
         });
     },
     // 下一页
     nextpage(value) {
       this.data.currpage = value;
+    },
+    // 下拉框获取
+    getDropDown() {
+      this.$http.get("manage/getTransfersPoints").then(res => {
+        this.station = res.data;
+        console.log(res);
+      });
     }
   }
 };
@@ -1293,7 +1365,7 @@ export default {
     }
     .texttown {
       width: 175px;
-      height: 155px;
+      height: 150px;
       background: inherit;
       background-color: rgba(255, 255, 255, 1);
       border-top: 0px;
