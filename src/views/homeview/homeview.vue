@@ -105,67 +105,67 @@
       </div>
       <!-- 按钮 -->
       <div class="button">
-        <div @click="getabnormal" class="buttonrow">
+        <div @click="msgeslint = true" class="buttonrow">
           <div class="buttonrowL oneself">
             <span class="iconfont icon-huaban"></span>
             <span>车况异常</span>
           </div>
           <div class="buttonrowR oneselfnew">
-            <span>3</span>
+            <span>{{abnormalList.length}}</span>
           </div>
         </div>
-        <div @click="getOli" class="buttonrow">
+        <div @click="msgeslint2 = true" class="buttonrow">
           <div class="buttonrowL townself">
             <span class="iconfont icon-huaban"></span>
             <span>油耗超标</span>
           </div>
           <div class="buttonrowR townselfnew">
-            <span>3</span>
+            <span>{{oli.length}}</span>
           </div>
         </div>
-        <div @click="getMaintainList" class="buttonrow">
+        <div @click="msgeslint3 = true" class="buttonrow">
           <div class="buttonrowL threeself">
             <span class="iconfont icon-huaban"></span>
             <span>保养到期</span>
           </div>
           <div class="buttonrowR threeselfnew">
-            <span>3</span>
+            <span>{{maintainList.length}}</span>
           </div>
         </div>
-        <div @click="getInsuranceList" class="buttonrow">
+        <div @click="msgeslint4 = true" class="buttonrow">
           <div class="buttonrowL fourself">
             <span class="iconfont icon-huaban"></span>
             <span>保险到期</span>
           </div>
           <div class="buttonrowR fourselfnew">
-            <span>2</span>
+            <span>{{insuranceList.length}}</span>
           </div>
         </div>
-        <div @click="getOverageList" class="buttonrow">
+        <div @click="msgeslint5 = true" class="buttonrow">
           <div class="buttonrowL fifself">
             <span class="iconfont icon-huaban"></span>
             <span>人员超龄</span>
           </div>
           <div class="buttonrowR fifselfnew">
-            <span>3</span>
+            <span>{{overageList.length}}</span>
           </div>
         </div>
-        <div @click="getTransboundaryList" class="buttonrow">
+        <div @click="msgeslint6 = true" class="buttonrow">
           <div class="buttonrowL sixself">
             <span class="iconfont icon-huaban"></span>
             <span>越界</span>
           </div>
           <div class="buttonrowR sixselfnew">
-            <span>3</span>
+            <span>{{transboundaryList.length}}</span>
           </div>
         </div>
-        <div @click="getStagnationList" class="buttonrow">
+        <div @click="msgeslint7 = true" class="buttonrow">
           <div class="buttonrowL sevenself">
             <span class="iconfont icon-huaban"></span>
             <span>停滞超限</span>
           </div>
           <div class="buttonrowR sevenselfnew">
-            <span>3</span>
+            <span>{{stagnationList.length}}</span>
           </div>
         </div>
       </div>
@@ -654,70 +654,7 @@ export default {
         number: "",
         warningdate: "",
         fixstatus: ""
-      },
-      // 故障代码
-      warning: [
-        {
-          number: 1,
-          type: "垃圾运输车",
-          carbrand: "鲁E-559F3",
-          date: "2019-10-18",
-          num: "环卫-A001",
-          company: "发动机故障",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-19",
-          policeTime: "08:00",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        },
-        {
-          number: 2,
-          type: "垃圾运输车",
-          carbrand: "鲁E-37588",
-          date: "2019-10-20",
-          num: "环卫-A001",
-          company: "手刹故障",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-21",
-          policeTime: "15:30",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        },
-        {
-          number: 3,
-          type: "垃圾运输车",
-          carbrand: "鲁E-A3250",
-          date: "2019-10-15",
-          num: "环卫-A001",
-          company: "水温过高",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-16",
-          policeTime: "18:55",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        },
-        {
-          number: 4,
-          type: "垃圾运输车",
-          carbrand: "鲁E-325AA",
-          date: "2019-10-20",
-          num: "环卫-A001",
-          company: "机油报警",
-          driver: "张毅",
-          phone: "15375669845",
-          region: "东营南站",
-          policeDate: "2019-10-22",
-          policeTime: "10:12",
-          service: "超出原定使用区域：东营区东营南站",
-          troubleshooting: "未处理"
-        }
-      ],
+      },  
       // 油耗
       oli: [],
       consumption: {
@@ -799,6 +736,16 @@ export default {
       }
     }
   },
+  created(){
+    // this.getMapMark();
+    this.getabnormal();
+    this.getOli();
+    this.getMaintainList();
+    this.getInsuranceList();
+    this.getOverageList();
+    this.getTransboundaryList();
+    this.getStagnationList();
+  },
   methods: {
     // 信息窗体
     infoWindowClose(markers) {
@@ -809,7 +756,6 @@ export default {
     },
     //车况异常
     getabnormal() {
-      this.msgeslint = true;
       this.$http
         .post("hw/main/listCarError", this.$qs.stringify(this.abnormal))
         .then(res => {
@@ -831,7 +777,6 @@ export default {
     },
     //油耗
     getOli() {
-      this.msgeslint2 = true;
       this.$http
         .post("hw/main/listOilOut", this.$qs.stringify(this.consumption))
         .then(res => {
@@ -852,7 +797,6 @@ export default {
     },
     //保养到期
     getMaintainList() {
-      this.msgeslint3 = true;
       this.$http
         .post("hw/main/listMaintain", this.$qs.stringify(this.maintain))
         .then(res => {
@@ -874,7 +818,6 @@ export default {
     },
     //保险到期
     getInsuranceList() {
-      this.msgeslint4 = true;
       this.$http
         .post("hw/main/listMainSafe", this.$qs.stringify(this.insurance))
         .then(res => {
@@ -895,7 +838,6 @@ export default {
     },
     //人员超龄
     getOverageList() {
-      this.msgeslint5 = true;
       this.$http
         .post("hw/main/listMainOutage", this.$qs.stringify(this.overage))
         .then(res => {
@@ -916,7 +858,6 @@ export default {
     },
     //越界
     getTransboundaryList() {
-      this.msgeslint6 = true;
       this.$http
         .post("hw/main/listMainOutArea", this.$qs.stringify(this.transboundary))
         .then(res => {
@@ -937,7 +878,6 @@ export default {
     },
     //停滞超限
     getStagnationList() {
-      this.msgeslint7 = true;
       this.$http
         .post("hw/main/listMainFreeze", this.$qs.stringify(this.stagnation))
         .then(res => {
@@ -977,9 +917,6 @@ export default {
       }, 1000);
     }
   },
-  created() {
-    // this.getMapMark();
-  }
 };
 </script>
 
