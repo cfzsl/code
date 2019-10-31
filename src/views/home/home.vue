@@ -65,7 +65,7 @@ export default {
   margin: 0;
 }
 
-.el-button-group {
-  display: none;
-}
+// .el-button-group {
+//   display: none;
+// }
 </style>

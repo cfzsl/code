@@ -30,7 +30,6 @@
           :text="item.wcname"
           :status="item.wcStatus"
           :position="{lng:item.x, lat:item.y}"
-          @click="click1"
         ></my-overlay>
       </baidu-map>
     </div>
@@ -69,10 +68,6 @@ export default {
     };
   },
   methods: {
-    click1() {
-      console.log(1);
-      
-    },
     getwcList() {
       this.$http.get("map/getPosition").then(res => {
         this.positions = res.data;

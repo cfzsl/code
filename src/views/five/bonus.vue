@@ -31,7 +31,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="日期" class="msgDate">
-            <el-date-picker v-model="formInline.sendtime" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            <el-date-picker v-model="formInline.sendtime" value-format='yyyy-MM-dd' type="date" placeholder class="msgDatePicker"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>

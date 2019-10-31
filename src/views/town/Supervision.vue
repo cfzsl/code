@@ -164,7 +164,7 @@
             </el-form-item>
             <el-form-item label="报警日期" class="msgDate">
               <el-date-picker
-                v-model="stagnation.logdate"
+                v-model="stagnation.logtime"
                 type="date"
                 value-format='yyyy-MM-dd'
                 placeholder
@@ -254,7 +254,7 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="dailyList.length"
 
-            
+
           ></el-pagination>
         </el-form>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="!flow">
@@ -340,10 +340,10 @@
           :scroll-wheel-zoom="true"
           v-if="showline"
         >
-          <bm-marker
-            :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车big.png', size: {width: 38, height: 30}}"
-            :rotation="polylinePathMarker[0].direction"
-            :position="polylinePathMarker[0]"
+        <bm-marker
+            v-if="history.marker"
+            :icon="history.icon"
+            :position="polylinePathMarker"
             :dragging="false"
           ></bm-marker>
           <bm-polyline
@@ -352,8 +352,14 @@
             :stroke-opacity="0.5"
             :stroke-weight="3"
             :editing="false"
-            @lineupdate="updatePolylinePath"
           ></bm-polyline>
+          <bml-lushu
+            :path="polylinePath"
+            :icon="history.icon"
+            :play="history.play"
+            :speed="history.speed"
+            :rotation="true"
+          ></bml-lushu>
         </baidu-map>
       </div>
     </div>
@@ -361,6 +367,7 @@
 </template>
 <script>
 import "videojs-contrib-hls";
+import { BmlLushu } from "vue-baidu-map";
 import { BmlMarkerClusterer } from "vue-baidu-map";
 export default {
   data() {
@@ -400,6 +407,39 @@ export default {
             withCredentials: false
           }
         }
+      },
+      // 历史轨迹
+      history: {
+        search: {
+          busnumber: "",
+          cartype: "",
+          area: "",
+          depart: ""
+        },
+        list: [
+          {
+            sid: 1,
+            number: 1,
+            type: "垃圾运输车",
+            carbrand: "鲁E-563D3",
+            date: "2011.10.20",
+            num: "环卫-A001",
+            company: "环卫",
+            driver: "李诞",
+            phone: "15375669845",
+            region: "东营南站",
+            policeTime: "2011.10.20",
+            service: "超出原定使用区域：东营区东营南站",
+            troubleshooting: "未维修"
+          }
+        ],
+        icon: {
+          url: "http://118.31.245.183:10500/images000/垃圾运输车big.png",
+          size: { width: 38, height: 30 }
+        },
+        play: false,
+        speed: 2000,
+        marker: true
       },
       showmark: false,
       showline: false,
@@ -723,7 +763,8 @@ export default {
   },
 
   components: {
-    BmlMarkerClusterer
+    BmlMarkerClusterer,
+    BmlLushu
   },
   methods: {
     showClc() {
@@ -741,28 +782,22 @@ export default {
       this.msgserach = true;
     },
     // 历史轨迹播放
+    // 历史轨迹获取
     getpolyline() {
       this.$http.get("xy/demo").then(res => {
         this.polylinePath = res.data;
-        this.polylinePathMarker = res.data;
+        this.polylinePathMarker = res.data[0];
       });
     },
+    // 回放
     huifang() {
       this.showmap = false;
       this.showmark = false;
       this.showline = true;
-      this.$http.get("xy/demo").then(res => {
-        this.polylinePathMarker = res.data;
-      });
-      clearInterval(this.timer);
+      this.getpolyline();
+      this.history.marker = false;
+      this.history.play ? "不进行操作" : (this.history.play = true);
       this.msgserach = !this.msgserach;
-      this.timer = setInterval(() => {
-        if (this.polylinePathMarker.length != 1) {
-          this.polylinePathMarker.splice(0, 1);
-        } else if (this.polylinePathMarker.length == 1) {
-          clearInterval(this.timer);
-        }
-      }, 500);
     },
     // 获取监控地址
     getPositions() {

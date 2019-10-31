@@ -272,24 +272,7 @@ export default {
       value: new Date(),
       date: "",
       // 日历
-      calendarData: [
-        // { months: ["10"], days: ["02"], things: "出勤" },
-        // { months: ["10"], days: ["03"], things: "出勤" },
-        // { months: ["10"], days: ["04"], things: "出勤" },
-        // { months: ["10"], days: ["05"], things: "病假" },
-        // { months: ["10"], days: ["06"], things: "休息" },
-        // { months: ["10"], days: ["07"], things: "出勤" },
-        // { months: ["10"], days: ["08"], things: "出勤" },
-        // { months: ["10"], days: ["09"], things: "出勤" },
-        // { months: ["10"], days: ["10"], things: "出勤" },
-        // { months: ["10"], days: ["11"], things: "出勤" },
-        // { months: ["10"], days: ["12"], things: "出勤" },
-        // { months: ["10"], days: ["13"], things: "休息" },
-        // { months: ["10"], days: ["14"], things: "出勤" },
-        // { months: ["10"], days: ["15"], things: "出勤" },
-        // { months: ["10"], days: ["16"], things: "出勤" },
-        // { months: ["10"], days: ["17"], things: "出勤" }
-      ],
+      calendarData: [],
       fileList: [],
       rest: "",
       jobtime: "",
@@ -420,11 +403,11 @@ export default {
       month = month < 10 ? "0" + month : month;
       day = day < 10 ? "0" + day : day;
       this.date = year + "-" + month + "-" + day;
-      // console.log(this.date)
+      console.log(this.date)
       let _date={
         time: this.date
       }
-      this.$http.post('hr/hrinfo/mkCalendar').then(res=>{
+      this.$http.post('hr/hrinfo/mkCalendar',this.$qs.stringify(_date)).then(res=>{
         console.log(res.data)
         this.calendarData=res.data
       })
