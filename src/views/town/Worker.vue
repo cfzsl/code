@@ -49,10 +49,10 @@
     </div>
     <!-- 按钮 -->
     <div class="searchBot" style="float: right;margin-bottom: 10px;">
-      <el-button class="buttonBot" @click="dialogVisible = true">添加人员信息</el-button>
+      <el-button class="buttonBot" icon="el-icon-plus" @click="dialogVisible = true">添加人员信息</el-button>
       <el-button class="buttonBot">导入模板下载</el-button>
-      <el-button class="buttonBot" @click="dialogAble = true">人员信息导入</el-button>
-      <el-button class="buttonBotLast">导出全员信息</el-button>
+      <el-button icon="el-icon-upload2" class="buttonBot" @click="dialogAble = true">人员信息导入</el-button>
+      <el-button icon="el-icon-download" class="buttonBotLast">导出全员信息</el-button>
     </div>
     <!-- 弹窗1 -->
     <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">

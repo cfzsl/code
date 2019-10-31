@@ -856,7 +856,7 @@ export default {
     searchMap() {},
     nextpage() {},
     map_init() {
-      var map = new BMap.Map("allmap");
+      // var map = new BMap.Map("allmap");
     },
     getMapMark() {
       setTimeout(() => {
@@ -880,6 +880,8 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .bdMap {
+  width: 100%;
+  height: 746px;
   .map {
     position: relative;
     width: 100%;

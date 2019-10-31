@@ -5,7 +5,7 @@ Vue.use(Router);
 
 export default new Router({
   // mode: "history",
-  mode: 'hash',
+  mode: "hash",
   base: process.env.BASE_URL,
   routes: [
     {
@@ -14,36 +14,25 @@ export default new Router({
       component: () => import("./views/home/home.vue"),
       redirect: "/login",
       children: [
-       
         {
           path: "/homeview",
           name: "homeview",
-          component: () => import("./views/homeview/homeview.vue"),
+          component: () => import("./views/homeview/homeview.vue")
         },
         {
-          path: "/onece",
-          name: "onece",
-          component: () => import("./views/onece/index.vue"),
+          path: "/onece/base",
+          name: "base",
+          component: () => import("./views/onece/base.vue")
         },
         {
-          path:"/onece/base",
-          name:"base",
-          component: () =>import("./views/onece/base.vue")
+          path: "/onece/carmsg",
+          name: "carmsg",
+          component: () => import("./views/onece/CarMsg.vue")
         },
         {
-          path:"/onece/carmsg",
-          name:"carmsg",
-          component: () =>import("./views/onece/CarMsg.vue")
-        },
-        {
-          path:"/onece/vehicle",
-          name:"vehicle",
-          component: () =>import("./views/onece/vehicle.vue")
-        },
-        {
-          path: "/town",
-          name: "town",
-          component: () => import("./views/town/index.vue")
+          path: "/onece/vehicle",
+          name: "vehicle",
+          component: () => import("./views/onece/vehicle.vue")
         },
         {
           path: "/town/worker",
@@ -59,11 +48,6 @@ export default new Router({
           path: "/town/supervision",
           name: "supervision",
           component: () => import("./views/town/Supervision.vue")
-        },
-        {
-          path: "/welcom",
-          name: "welcom",
-          component: () => import("./views/three/index.vue")
         },
         {
           path: "/welcom/wcmap",
@@ -91,11 +75,6 @@ export default new Router({
           component: () => import("./views/three/LED.vue")
         },
         {
-          path: "/business",
-          name: "business",
-          component: () => import("./views/four/index.vue")
-        },
-        {
           path: "/business/process",
           name: "process",
           component: () => import("./views/four/process.vue")
@@ -104,11 +83,6 @@ export default new Router({
           path: "/business/project",
           name: "project",
           component: () => import("./views/four/project.vue")
-        },
-        {
-          path: "/matters",
-          name: "matters",
-          component: () => import("./views/five/index.vue")
         },
         {
           path: "/Recruitment",

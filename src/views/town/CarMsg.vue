@@ -168,13 +168,13 @@
         <template slot-scope="scope">
           <el-button
             class="tableButton1"
-            type="button"
+            type="primary"
             size="small"
             @click="pagination(scope.row, scope.$index)"
           >详情</el-button>
           <el-button
             class="tableButton2"
-            type="button"
+            type="danger"
             @click="deletList(scope.row, scope.$index)"
             size="small"
           >删除</el-button>

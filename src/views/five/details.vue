@@ -224,6 +224,43 @@
       <div class="addRemark">
         <span v-for="(item,id) in remarks" :key="id">{{item.id}}.{{item.text}}</span>
       </div>
+      <div class="head">
+        <div class="basic">出勤记录</div>
+      </div>
+      <el-calendar v-model="value">
+        <template slot="dateCell" slot-scope="{date, data}">
+          <!--自定义内容-->
+          <div class="calendar-flex">
+            <div class="calendar-day">{{ data.day.split('-').slice(2).join('-') }}</div>
+            <div v-for="(item,index) in calendarData" :key="index">
+              <div v-if="(item.months).indexOf(data.day.split('-').slice(1)[0])!=-1">
+                <div
+                  class="is-button"
+                  v-if="(item.days).indexOf(data.day.split('-').slice(2).join('-'))!=-1"
+                >
+                  <el-button
+                    v-if="item.things==='出勤'"
+                    class="is-selected"
+                    type="primary"
+                  >{{item.things}}</el-button>
+                  <el-button
+                    v-if="item.things==='病假'"
+                    class="is-selected"
+                    type="warning"
+                  >{{item.things}}</el-button>
+                  <el-button
+                    v-if="item.things==='休息'"
+                    class="is-selected"
+                    type="success"
+                  >{{item.things}}</el-button>
+                </div>
+                <div v-else></div>
+              </div>
+              <div v-else></div>
+            </div>
+          </div>
+        </template>
+      </el-calendar>
     </div>
   </div>
 </template>
@@ -232,9 +269,30 @@
 export default {
   data() {
     return {
-      fileList:[],
-      rest:'',
-      jobtime:'',
+      value: new Date(),
+      date: "",
+      // 日历
+      calendarData: [
+        // { months: ["10"], days: ["02"], things: "出勤" },
+        // { months: ["10"], days: ["03"], things: "出勤" },
+        // { months: ["10"], days: ["04"], things: "出勤" },
+        // { months: ["10"], days: ["05"], things: "病假" },
+        // { months: ["10"], days: ["06"], things: "休息" },
+        // { months: ["10"], days: ["07"], things: "出勤" },
+        // { months: ["10"], days: ["08"], things: "出勤" },
+        // { months: ["10"], days: ["09"], things: "出勤" },
+        // { months: ["10"], days: ["10"], things: "出勤" },
+        // { months: ["10"], days: ["11"], things: "出勤" },
+        // { months: ["10"], days: ["12"], things: "出勤" },
+        // { months: ["10"], days: ["13"], things: "休息" },
+        // { months: ["10"], days: ["14"], things: "出勤" },
+        // { months: ["10"], days: ["15"], things: "出勤" },
+        // { months: ["10"], days: ["16"], things: "出勤" },
+        // { months: ["10"], days: ["17"], things: "出勤" }
+      ],
+      fileList: [],
+      rest: "",
+      jobtime: "",
       marriage: "",
       social: "",
       fund: "",
@@ -247,7 +305,7 @@ export default {
       textarea: "",
       id: "",
       detail: {},
-      bonusList:{},
+      bonusList: {},
       optionsWeb: [
         {
           web: "1",
@@ -350,37 +408,62 @@ export default {
     this.getId();
     this.getDetail();
     this.getBonus();
+    this.getCalendarData();
   },
 
   methods: {
-    //修改个人详情
-    addDetail(){
-      this.$http.post('hr/hrinfo/update',this.$qs.stringify(this.detail)).then(res=>{
+    //获取考勤日期
+    getCalendarData() {
+      let year = this.value.getFullYear();
+      let month = this.value.getMonth() + 1;
+      let day = this.value.getDate();
+      month = month < 10 ? "0" + month : month;
+      day = day < 10 ? "0" + day : day;
+      this.date = year + "-" + month + "-" + day;
+      // console.log(this.date)
+      let _date={
+        time: this.date
+      }
+      this.$http.post('hr/hrinfo/mkCalendar').then(res=>{
         console.log(res.data)
-        this.loderOne=false
-      }).catch(err=>{
-        console.log('修改失败')
+        this.calendarData=res.data
       })
+    },
+    //修改个人详情
+    addDetail() {
+      this.$http
+        .post("hr/hrinfo/update", this.$qs.stringify(this.detail))
+        .then(res => {
+          console.log(res.data);
+          this.loderOne = false;
+        })
+        .catch(err => {
+          console.log("修改失败");
+        });
     },
     //获取个人详情
     getDetail() {
       let _date = {
         sid: this.id
       };
-      this.$http.post("hr/hrinfo/getBySid", this.$qs.stringify(_date)).then(res=>{
-        this.detail=res.data
-        console.log(res.data)
-      })
+      this.$http
+        .post("hr/hrinfo/getBySid", this.$qs.stringify(_date))
+        .then(res => {
+          this.detail = res.data;
+          console.log(res.data);
+        });
     },
     //获取个人奖金详情
-    getBonus(){
+    getBonus() {
       let _date = {
         sid: this.id
       };
-      this.$http.post("hr/bonus/getBySid", this.$qs.stringify(_date)).then(res=>{
-        this.bonusList=res.data
-        console.log(res.data)
-      })
+      this.$http
+        .post("hr/bonus/getBySid", this.$qs.stringify(_date))
+        .then(res => {
+          this.bonusList = res.data;
+          console.log(res.data);
+        });
     },
     // 添加备注
     addRemark() {
@@ -484,6 +567,7 @@ export default {
   }
   .addRemark {
     display: flex;
+    margin-bottom: 50px;
     flex-wrap: wrap;
     justify-content: flex-start;
     width: 100%;
@@ -514,6 +598,19 @@ export default {
   .selectBot {
     width: 240px;
     height: 32px;
+  }
+}
+.calendar-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .calendar-day {
+    text-align: center;
+    margin-top: 15px;
+  }
+  .is-button {
+    margin-top: 5px;
+    margin-left: 10px;
   }
 }
 </style>
