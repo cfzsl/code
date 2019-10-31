@@ -253,6 +253,8 @@
             :page-size="10"
             layout="total, sizes, prev, pager, next, jumper"
             :total="dailyList.length"
+
+            
           ></el-pagination>
         </el-form>
         <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="!flow">
