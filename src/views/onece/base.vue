@@ -427,7 +427,7 @@ export default {
   methods: {
     // 人员信息导出
     exportStaff() {
-      location.href = "http://192.168.8.126:8080/userInformation/exportExcel";
+      location.href = "http://118.31.245.183:10500/userInformation/exportExcel";
     },
     // 人员信息导入 导入成功回调函数
     success(response, file) {

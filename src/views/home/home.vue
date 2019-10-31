@@ -64,4 +64,8 @@ export default {
 .el-divider--horizontal {
   margin: 0;
 }
+
+.el-button-group {
+  display: none;
+}
 </style>

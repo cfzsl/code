@@ -616,7 +616,6 @@ export default {
     },
     // 保养记录
     showmaintenance(row) {
-      console.log(row.busnumber);
       this.maintenance = !this.maintenance;
       this.$http
         .post(
@@ -717,6 +716,7 @@ export default {
           this.$qs.stringify(this.search)
         )
         .then(res => {
+          console.log(res);
           this.data.list = res.data;
         });
     },
@@ -778,7 +778,7 @@ export default {
     // 信息导出
     exportmsg() {
       location.href =
-        "http://192.168.8.126:8080/MotorDetail/exportMotorDetailExcel";
+        "http://118.31.245.183:10500/MotorDetail/exportMotorDetailExcel";
     },
     // 信息导入
     success(response, file) {

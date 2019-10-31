@@ -4,12 +4,12 @@
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
-        <el-form :inline="true" :model="formInline">
+        <el-form :inline="true" :model="search">
           <el-form-item label="公厕名" class="msgWc">
-            <el-input v-model="value1"></el-input>
+            <el-input v-model="search.name"></el-input>
           </el-form-item>
           <el-form-item label="上报时间" class="msgDate">
-            <el-date-picker v-model="date" type="date" placeholder class="msgDatePicker"></el-date-picker>
+            <el-date-picker v-model="search.date" type="date" placeholder class="msgDatePicker"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -74,7 +74,7 @@
     </el-dialog>
     <!-- 表格 -->
     <el-table
-      :data="wcList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+      :data="wcList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       border
       style="width: 100%"
     >
@@ -91,397 +91,90 @@
     </el-table>
     <!-- 分页 -->
     <el-pagination
+      :current-page="data.currpage"
+      :page-size="data.pagesize"
       class="paginationList"
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      @prev-click="nextpage"
+      @next-click="nextpage"
+      @current-change="nextpage"
       :page-sizes="[10,20,30,40]"
-      :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="32">
-    </el-pagination>
-    <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
-        </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
-        </el-form-item>
-        <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
-        </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.web"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="i" class="selectTop">
-            <el-option v-for="item in optionsCar" :key="item.i" :label="item.label" :value="item.i"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车牌号">
-          <el-input v-model="formInline.name"></el-input>
-        </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="formInline.usg"></el-input>
-        </el-form-item>
-        <el-form-item label="资产编号">
-          <el-input v-model="formInline.msg"></el-input>
-        </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.web"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="指定司机">
-          <el-input v-model="formInline.id"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="lu" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.lu"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆维修情况">
-          <el-input v-model="formInline.text" class="inputText"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
-      </span>
-    </el-dialog>
+      :total="wcList.length"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
-import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      date:"",
-      value1: "",
-      text: "添加车辆信息",
-      pagesize: 10,
-      currpage: 1,
-      tableData: [],
-      formInline: {},
+      // 搜索
+      search: {
+        name: "",
+        date: ""
+      },
+      // 分页
+      data: {
+        currpage: 1,
+        pagesize: 10
+      },
+      // 显示添加
       dialogVisible: false,
-      les: 0,
-      progressDate: [
-        { les: 0, progress: "未处理" },
-        { les: 1, progress: "处理中" },
-        { les: 2, progress: "完成" }
-      ],
-      i: "0",
-      optionsCar: [
-        {
-          i: "0",
-          label: "全部"
-        },
-        {
-          i: "1",
-          label: "垃圾清运车"
-        },
-        {
-          i: "2",
-          label: "清扫车"
-        },
-        {
-          i: "3",
-          label: "洒水车"
-        }
-      ],
-      lu: "0",
-      value: "0",
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
-          label: "环卫四部"
-        }
-      ],
-      lu: "0",
-      optionslu: [
-        {
-          lu: "0",
-          label: "全部"
-        },
-        {
-          lu: "1",
-          label: "东营区新区"
-        },
-        {
-          lu: "2",
-          label: "文汇街道办事处"
-        },
-        {
-          lu: "3",
-          label: "辛店街道办事处"
-        },
-        {
-          lu: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          lu: "5",
-          label: "圣园街道办事处"
-        },
-        {
-          lu: "6",
-          label: "六户镇"
-        },
-        {
-          lu: "7",
-          label: "牛庄镇"
-        },
-        {
-          lu: "8",
-          label: "史口镇"
-        },
-        {
-          lu: "9",
-          label: "龙居镇"
-        }
-      ],
-      id: "0",
-      optionsList: [
-        {
-          id: "0",
-          label: "全部"
-        },
-        {
-          id: "1",
-          label: "环卫一部"
-        },
-        {
-          id: "2",
-          label: "环卫二部"
-        },
-        {
-          id: "3",
-          label: "环卫三部"
-        },
-        {
-          id: "4",
-          label: "环卫四部"
-        }
-      ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
-          label: "环卫四部"
-        }
-      ],
-      type: "0",
-      optionsType: [
-        {
-          type: "0",
-          label: "A1"
-        },
-        {
-          type: "1",
-          label: "A2"
-        },
-        {
-          type: "2",
-          label: "B1"
-        },
-        {
-          type: "3",
-          label: "B2"
-        },
-        {
-          type: "4",
-          label: "C1"
-        },
-        {
-          type: "5",
-          label: "C2"
-        }
-      ],
-      state: "0",
-      optionsStated: [
-        {
-          state: "0",
-          label: "在职"
-        },
-        {
-          state: "1",
-          label: "离职"
-        }
-      ],
-      buttonIf: false,
+      // 添加弹窗数据
       formInline: {},
-      dialogFormVisible: false,
       wcList: [
         {
           number: 1,
           wcid: "火车站公厕",
-          date:"东营丛林绿化工程有限责任公司",
+          date: "东营丛林绿化工程有限责任公司",
           name: "毛文平",
           phone: "13361503999",
           nh: "5.2ppm",
           hs: "1.0ppm",
           cnumber: "25",
           snumber: "50",
-          update:"2019/10/11 12:08:50",
-          policeNode: "10",
+          update: "2019/10/11 12:08:50",
+          policeNode: "10"
         },
         {
           number: 2,
           wcid: "体育公园公厕",
-          date:"东营丛林绿化工程有限责任公司",
+          date: "东营丛林绿化工程有限责任公司",
           name: "毛文平",
           phone: "13361503999",
           nh: "5.2ppm",
           hs: "1.0ppm",
           cnumber: "25",
           snumber: "50",
-          update:"2019/10/11 12:08:50",
-          policeNode: "11",
+          update: "2019/10/11 12:08:50",
+          policeNode: "11"
         },
         {
           number: 3,
           wcid: "北二路中石化公厕",
-          date:"东营丛林绿化工程有限责任公司",
+          date: "东营丛林绿化工程有限责任公司",
           name: "毛文平",
           phone: "13361503999",
           nh: "5.2ppm",
           hs: "1.0ppm",
           cnumber: "25",
           snumber: "50",
-          update:"2019/10/11 12:08:50",
-          policeNode: "12",
-        },
+          update: "2019/10/11 12:08:50",
+          policeNode: "12"
+        }
       ]
     };
   },
-  created() {
-  },
+  created() {},
   methods: {
-    miStatusColor(item) {
-      if (item == 0) {
-        return "danger";
-      } else if (item == 1) {
-        return "primary";
-      }
-      return "success";
+    // 下一页
+    nextpage(value) {
+      this.data.currpage = value;
     },
-    addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
-      console.log("关闭");
-      this.buttonIf = false;
-    },
-    adddate() {
-      this.dialogFormVisible = false;
-    },
-    pagination(row, _index) {
-      console.log(row);
-      //记录索引
-      this.listIndex = _index;
-      //记录数据
-      this.formInline = row;
-      //显示弹窗
-      this.dialogFormVisible = true;
-      this.buttonIf = true;
-    },
-    deletList() {
-      console.log("删除这一项");
-    },
-    handleCurrentChange() {},
-    handleSizeChange() {},
     onSubmit() {
       console.log("查啥?");
     }
-  },
-  components: {
-    Table
   }
 };
 </script>
@@ -515,11 +208,6 @@ export default {
     }
   }
 }
-.table {
-  width: 1128px;
-  height: 465px;
-  margin-top: 16px;
-}
 .dialogText {
   text-align: center;
 }
@@ -544,13 +232,6 @@ export default {
   width: 127px;
   height: 40px;
   text-align: center;
-}
-.pagination {
-  float: right;
-  margin-right: 16px;
-}
-.table {
-  width: 100%;
 }
 .delect-footer {
   float: left;

@@ -1129,13 +1129,13 @@ export default {
       this.msgserach = !this.msgserach;
     },
     // 渲染地图
-    draw({ el, BMap, map }) {
-      let lng = this.polylinePath[0].lng;
-      let lat = this.polylinePath[0].lat;
-      const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat));
-      el.style.left = pixel.x + "px";
-      el.style.top = pixel.y + "px";
-    },
+    // draw({ el, BMap, map }) {
+    //   let lng = this.polylinePath[0].lng;
+    //   let lat = this.polylinePath[0].lat;
+    //   const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat));
+    //   el.style.left = pixel.x + "px";
+    //   el.style.top = pixel.y + "px";
+    // },
     // 历史轨迹显示
     msgse() {
       this.msgserach = !this.msgserach;

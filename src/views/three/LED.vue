@@ -4,17 +4,18 @@
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
-        <el-form :inline="true" :model="formInline">
+        <el-form :inline="true" :model="search">
           <el-form-item label="公厕名" class="msgWc">
-            <el-input v-model="value1"></el-input>
+            <el-input v-model="search.name"></el-input>
           </el-form-item>
           <el-form-item label="管养单位">
-            <el-select v-model="lu">
+            <el-select v-model="search.depart">
+              <el-option label="全部" value></el-option>
               <el-option
-                v-for="item in options"
-                :key="item.lu"
+                v-for="(item, i) in options"
+                :key="i"
                 :label="item.label"
-                :value="item.lu"
+                :value="item.label"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -25,134 +26,72 @@
       </div>
       <!-- 按钮 -->
       <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true"
-          >设置电子屏幕</el-button
-        >
+        <el-button class="buttonBot" @click="dialogVisible = true">设置电子屏幕</el-button>
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog
-      title="LED电子屏内容编辑"
-      :visible.sync="dialogVisible"
-      width="426px"
-      class="dialogText"
-    >
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-input
-          type="textarea"
-          :rows="2"
-          placeholder="请输入LED电子屏的展示内容"
-          v-model="textarea"
-        ></el-input>
+    <el-dialog title="LED电子屏内容编辑" :visible.sync="dialogVisible" width="426px" class="dialogText">
+      <el-form :inline="true" class="demo-form-inline">
+        <el-input type="textarea" :rows="2" placeholder="请输入LED电子屏的展示内容" v-model="textarea"></el-input>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false"
-          >发送</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false">发送</el-button>
       </span>
     </el-dialog>
     <!-- 表格 -->
     <el-table
-      :data="wcList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+      :data="wcList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       border
       style="width: 100%"
     >
-      <el-table-column
-        align="center"
-        type="selection"
-        width="40"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="wcid"
-        label="公厕名"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="date"
-        label="管养单位"
-        width="282"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="state"
-        label="状态"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="name"
-        label="联络人"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="phone"
-        label="电话"
-        width
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="text"
-        label="电子屏内容"
-        width="282"
-      ></el-table-column>
+      <el-table-column align="center" type="selection" width="40"></el-table-column>
+      <el-table-column align="center" prop="wcid" label="公厕名" width></el-table-column>
+      <el-table-column align="center" prop="date" label="管养单位" width="282"></el-table-column>
+      <el-table-column align="center" prop="state" label="状态" width></el-table-column>
+      <el-table-column align="center" prop="name" label="联络人" width></el-table-column>
+      <el-table-column align="center" prop="phone" label="电话" width></el-table-column>
+      <el-table-column align="center" prop="text" label="电子屏内容" width="282"></el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
+      :current-page="data.currpage"
+      :page-size="data.pagesize"
       class="paginationList"
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="10"
+      :page-sizes="[10,20,30,40]"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="32"
+      :total="wcList.length"
     ></el-pagination>
   </div>
 </template>
 
 <script>
-import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      // 搜索
+      search: {
+        name: "",
+        depart: ""
+      },
+      // 设置屏幕弹窗
       textarea: "",
-      value1: "",
-      i: "",
-      text: "添加车辆信息",
-      pagesize: 10,
-      currpage: 1,
-      tableData: [],
+      // 分页
+      data: {
+        pagesize: 10,
+        currpage: 1
+      },
+
       formInline: {},
       dialogVisible: false,
-      les: 0,
-      lu: "0",
       options: [
         {
-          lu: "0",
           label: "东营丛林绿化工程有限责任公司"
         },
         {
-          lu: "1",
           label: "东营卓越环境工程有限责任公司"
         }
       ],
-      state: "0",
-      optionsStated: [
-        {
-          state: "0",
-          label: "开放使用"
-        },
-        {
-          state: "1",
-          label: "暂停使用"
-        }
-      ],
-      buttonIf: false,
-      formInline: {},
-      dialogFormVisible: false,
       wcList: [
         {
           number: 1,
@@ -192,47 +131,10 @@ export default {
   },
   created() {},
   methods: {
-    miStatusColor(item) {
-      if (item == 0) {
-        return "danger";
-      } else if (item == 1) {
-        return "primary";
-      }
-      return "success";
-    },
-    addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
-      console.log("关闭");
-      this.buttonIf = false;
-    },
-    adddate() {
-      this.dialogFormVisible = false;
-    },
-    pagination(row, _index) {
-      console.log(row);
-      //记录索引
-      this.listIndex = _index;
-      //记录数据
-      this.formInline = row;
-      //显示弹窗
-      this.dialogFormVisible = true;
-      this.buttonIf = true;
-    },
-    deletList() {
-      console.log("删除这一项");
-    },
-    handleCurrentChange() {},
-    handleSizeChange() {},
     onSubmit() {
       console.log("查啥?");
     }
   },
-  components: {
-    Table
-  }
 };
 </script>
 
@@ -265,11 +167,6 @@ export default {
     }
   }
 }
-.table {
-  width: 1128px;
-  height: 465px;
-  margin-top: 16px;
-}
 .dialogText {
   text-align: center;
 }
@@ -290,24 +187,9 @@ export default {
     height: 32px;
   }
 }
-.formButon {
-  width: 127px;
-  height: 40px;
-  text-align: center;
-}
 .pagination {
   float: right;
   margin-right: 16px;
-}
-.table {
-  width: 100%;
-}
-.delect-footer {
-  float: left;
-  margin-left: 10px;
-}
-.inputText {
-  width: 240px;
 }
 .paginationList {
   text-align: center;

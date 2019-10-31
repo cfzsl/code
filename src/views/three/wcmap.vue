@@ -12,59 +12,26 @@
         <div class="mapIcon">
           <div class="mapcenter">
             <i class="mapimgone"></i>
-            <span>&nbsp &nbsp &nbsp公厕数据未开启</span>
+            <span>&nbsp; &nbsp; &nbsp;公厕数据未开启</span>
           </div>
           <div class="mapcenter">
             <i class="mapimgtown"></i>
-            <span>&nbsp &nbsp &nbsp公厕数据正常</span>
+            <span>&nbsp; &nbsp; &nbsp;公厕数据正常</span>
           </div>
           <div class="mapcenter">
             <i class="mapimgthree"></i>
-            <span>&nbsp &nbsp &nbsp公厕数据超标报警</span>
+            <span>&nbsp; &nbsp; &nbsp;公厕数据超标报警</span>
           </div>
         </div>
-        <bm-marker
-          :position="{ lng: 118.550303, lat: 37.465282}"
-          :labelStyle="{color: 'orange', fontSize : '24px'}"
-        ></bm-marker>
+        <bm-marker :position="test" :labelStyle="{color: 'orange', fontSize : '24px'}"></bm-marker>
         <my-overlay
           v-for="(item,index) in positions"
           :key="index"
-          v-text="item.text"
-          :position="{lng:item.lng, lat:item.lat}"
-          :active="active"
-          @mouseover.native="active = true"
-          @mouseleave.native="active = false"
-          @click="infoWindow"
-        >
-          <!-- <bm-info-window
-            title="智慧公厕详情"
-            :position="item"
-            :show="show"
-            @close="infoWindowClose"
-          >
-            <el-divider></el-divider>
-            <p>厕所名称:公厕详情</p>
-            <p>管养单位:东营市卓越环境工程有限公司</p>
-            <div>
-              <span>负责人:毛文平</span>
-              <span>负责人电话:13361503999</span>
-            </div>
-            <p>地址:蒙山路与黄河路路口的西北角</p>
-            <div>
-              <span>当前状态:</span>
-              <span>开放使用</span>
-            </div>
-            <p>服务:生活垃圾收集点,第三卫生间</p>
-            <p>最后接收数据时间:2019-10-19 11:19:06</p>
-            <el-table :data="tableData" border style="width: 100%">
-              <el-table-column prop="date" label="分类" width="60"></el-table-column>
-              <el-table-column prop="name" label="男厕" width="140"></el-table-column>
-              <el-table-column prop="address" label="女厕" width="140"></el-table-column>
-            </el-table>
-          </bm-info-window> -->
-        </my-overlay>
-        <!-- 信息弹窗 -->
+          :text="item.wcname"
+          :status="item.wcStatus"
+          :position="{lng:item.x, lat:item.y}"
+          @click="click1"
+        ></my-overlay>
       </baidu-map>
     </div>
   </div>
@@ -75,7 +42,6 @@ import MyOverlay from "@/components/MyOverlay/MyOverlay.vue";
 export default {
   data() {
     return {
-      show:false,
       tableData: [
         {
           date: "硫化氢",
@@ -98,26 +64,106 @@ export default {
           address: "17.5"
         }
       ],
-      active: false,
-      positions: [
-        { lng: 118.496593, lat: 37.474549, text:"裕华南公厕" },
-        { lng: 118.496553, lat: 37.476699, text:"裕华北公厕"},
-        { lng: 118.493386, lat: 37.464995, text:"胜利广场公厕"},
-        { lng: 118.533078, lat: 37.464312, text:"体育公园公厕"},
-        {lng: 118.550734, lat: 37.469664,  text:"新区公厕"}
-      ]
+      positions: [],
+      test: {}
     };
   },
   methods: {
-    infoWindow() {
-      this.show = true;
-    },
-    infoWindowClose() {
-      this.show = false;
+    click1() {
+      console.log(1);
+      
     },
     getwcList() {
-      this.$http
+      this.$http.get("map/getPosition").then(res => {
+        this.positions = res.data;
+        console.log(this.positions);
+      });
+    },
+    /**
+     * WGS84转GCj02
+     * 火星坐标系 (GCJ-02) 与百度坐标系 (BD-09) 的转换
+     * @param lng
+     * @param lat
+     * @returns {*[]}
+     */
+    wgs84togcj02tobd09(lng, lat) {
+      const xPI = (3.14159265358979324 * 3000.0) / 180.0;
+      const PI = 3.1415926535897932384626;
+      const a = 6378245.0;
+      const ee = 0.00669342162296594323;
+      // WGS84转GCj02
+      let dlat = this.transformlat(lng - 105.0, lat - 35.0);
+      let dlng = this.transformlng(lng - 105.0, lat - 35.0);
+      let radlat = (lat / 180.0) * PI;
+      let magic = Math.sin(radlat);
+      magic = 1 - ee * magic * magic;
+      let sqrtmagic = Math.sqrt(magic);
+      dlat = (dlat * 180.0) / (((a * (1 - ee)) / (magic * sqrtmagic)) * PI);
+      dlng = (dlng * 180.0) / ((a / sqrtmagic) * Math.cos(radlat) * PI);
+      let mglat = lat + dlat;
+      let mglng = lng + dlng;
+      // 火星坐标系 (GCJ-02) 与百度坐标系 (BD-09) 的转换
+      let z =
+        Math.sqrt(mglng * mglng + mglat * mglat) +
+        0.00002 * Math.sin(mglat * xPI);
+      let theta = Math.atan2(mglat, mglng) + 0.000003 * Math.cos(mglng * xPI);
+      let bdlng = z * Math.cos(theta) + 0.0065;
+      let bdlat = z * Math.sin(theta) + 0.006;
+      // return [bdlng, bdlat]
+      return { lng: bdlng, lat: bdlat };
+    },
+    transformlat(lng, lat) {
+      const PI = 3.1415926535897932384626;
+      let ret =
+        -100.0 +
+        2.0 * lng +
+        3.0 * lat +
+        0.2 * lat * lat +
+        0.1 * lng * lat +
+        0.2 * Math.sqrt(Math.abs(lng));
+      ret +=
+        ((20.0 * Math.sin(6.0 * lng * PI) + 20.0 * Math.sin(2.0 * lng * PI)) *
+          2.0) /
+        3.0;
+      ret +=
+        ((20.0 * Math.sin(lat * PI) + 40.0 * Math.sin((lat / 3.0) * PI)) *
+          2.0) /
+        3.0;
+      ret +=
+        ((160.0 * Math.sin((lat / 12.0) * PI) +
+          320 * Math.sin((lat * PI) / 30.0)) *
+          2.0) /
+        3.0;
+      return ret;
+    },
+    transformlng(lng, lat) {
+      const PI = 3.1415926535897932384626;
+      let ret =
+        300.0 +
+        lng +
+        2.0 * lat +
+        0.1 * lng * lng +
+        0.1 * lng * lat +
+        0.1 * Math.sqrt(Math.abs(lng));
+      ret +=
+        ((20.0 * Math.sin(6.0 * lng * PI) + 20.0 * Math.sin(2.0 * lng * PI)) *
+          2.0) /
+        3.0;
+      ret +=
+        ((20.0 * Math.sin(lng * PI) + 40.0 * Math.sin((lng / 3.0) * PI)) *
+          2.0) /
+        3.0;
+      ret +=
+        ((150.0 * Math.sin((lng / 12.0) * PI) +
+          300.0 * Math.sin((lng / 30.0) * PI)) *
+          2.0) /
+        3.0;
+      return ret;
     }
+  },
+  created() {
+    this.getwcList();
+    // this.test = this.wgs84togcj02tobd09(114.41166666666666, 30.482222222222223);
   },
   components: {
     MyOverlay

@@ -21,8 +21,8 @@ import hls from 'videojs-contrib-hls';
 Vue.prototype.$Echarts = Echarts;
 
 Axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-Axios.defaults.baseURL = 'http://192.168.8.109:8877/' // 路路
-// Axios.defaults.baseURL = 'http://192.168.8.126:8080/' // 升龙
+// Axios.defaults.baseURL = 'http://192.168.8.109:8877/' // 路路
+Axios.defaults.baseURL = 'http://192.168.8.126:8080/' // 升龙
 // Axios.defaults.baseURL = 'http://118.31.245.183:10500/'
 
 Vue.prototype.$http = Axios

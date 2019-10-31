@@ -66,9 +66,9 @@
         <el-table-column align="center" prop="sid" label="序号"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="tel" label="电话"></el-table-column>
-        <el-table-column align="center" prop="param2" label="道路"></el-table-column>
+        <el-table-column align="center" prop="road" label="道路"></el-table-column>
         <el-table-column align="center" prop="area" label="区域"></el-table-column>
-        <el-table-column align="center" prop="param3" label="岗位"></el-table-column>
+        <el-table-column align="center" prop="job" label="岗位"></el-table-column>
         <el-table-column align="center" prop="depart" label="部门"></el-table-column>
       </el-table>
     </div>
@@ -123,20 +123,17 @@ export default {
     },
     // 获取列表数据
     getAddBook() {
-      this.$http
-        .get("userInformation/userInformationCriteriaQuery")
-        .then(res => {
-          this.data.list = res.data;
-        });
+      this.$http.get("hr/addresslist/search").then(res => {
+        console.log(res);
+
+        this.data.list = res.data;
+      });
     },
     // 查询列表数据
     serachAddBook() {
       this.data.currpage = 1;
       this.$http
-        .post(
-          "userInformation/userInformationCriteriaQuery",
-          this.$qs.stringify(this.search)
-        )
+        .post("hr/addresslist/search", this.$qs.stringify(this.search))
         .then(res => {
           this.data.list = res.data;
         });

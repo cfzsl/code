@@ -1,64 +1,73 @@
 <template>
-  <bm-overlay
-    ref="customOverlay"
-    :class="{sample: true, green: true, active}"
-    pane="labelPane"
-    @draw="draw">
-    <div v-text="text" @click="handleClick"></div>
-  </bm-overlay>
+    <bm-overlay
+      ref="customOverlay"
+      v-if="this.status == '2'"
+      class="sample green"
+      pane="labelPane"
+      @draw="draw"
+    >
+      <div v-text="text" @click="handleClick"></div>
+    </bm-overlay>
+    <bm-overlay
+      ref="customOverlay"
+      v-else-if="this.status == '1'"
+      class="sample red"
+      pane="labelPane"
+      @draw="draw"
+    >
+      <div v-text="text" @click="handleClick"></div>
+    </bm-overlay>
+    <bm-overlay
+      ref="customOverlay"
+      v-else-if="this.status == '0'"
+      class="sample grey"
+      pane="labelPane"
+      @draw="draw"
+    >
+      <div v-text="text" @click="handleClick"></div>
+    </bm-overlay>
 </template>
 
 <script>
 export default {
-  props: ['text', 'position', 'active'],
+  data() {
+    return {
+      showdetail: false,
+      formInline: ""
+    };
+  },
+  props: ["text", "position", "status"],
   watch: {
-    position: {
-      handler () {
-        this.$refs.customOverlay.reload()
-      },
-      deep: true,
-      BMap:''
-    }
+    // position: {
+    //   handler() {
+    //     this.$refs.customOverlay.reload();
+    //   },
+    //   deep: true
+    // }
   },
   methods: {
-    handleClick () {
-      this.$emit('mapPositions',this.position)
-    },
-    draw ({el, BMap, map}) {
-      this.BMap=BMap
-      const {lng, lat} = this.position
-      const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat))
-      el.style.left = pixel.x - 62 + 'px'
-      el.style.top = pixel.y - 18 + 'px'
-    },
-    // 弹窗颜色
-    bgimg () {
-      if (this.status == 2) {
-        this.green = true
-      } else if (status == 0) {
-        this.grey = true
-      } else if (status == 1) {
-        this.red = true
-      }
+    handleClick() {},
+    draw({ el, BMap, map }) {
+      this.BMap = BMap;
+      const { lng, lat } = this.position;
+      const pixel = map.pointToOverlayPixel(new BMap.Point(lng, lat));
+      el.style.left = pixel.x - 16 + "px";
+      el.style.top = pixel.y - 36 + "px";
     }
   },
-  created(){
-  }
-}
+  created() {}
+};
 </script>
 
 <style>
 .sample {
-  margin-left: 43px;
-  padding-left: 25px;
-  margin-top: 22px;
-  width: 126px;
+  padding-left: 30px;
+  width: 130px;
   height: 36px;
   line-height: 30px;
   color: #fff;
   position: absolute;
   overflow: hidden;
-  text-align: center;
 }
 .green {
   background-image: url("../../assets/img/marker_background_green.png");

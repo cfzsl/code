@@ -1,30 +1,32 @@
 <template>
-  <!-- 值班人员管理 -->
-  <div id="Personnel">
+  <!-- 公厕管理 -->
+  <div id="WcSupervision">
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
-        <el-form :inline="true" :model="formInline">
+        <el-form :inline="true" :model="search">
           <el-form-item label="公厕名" class="msgWc">
-            <el-input v-model="value1"></el-input>
+            <el-input v-model="search.name"></el-input>
           </el-form-item>
           <el-form-item label="管养单位">
-            <el-select v-model="lu">
+            <el-select v-model="search.depart">
+              <el-option label="全部" value></el-option>
               <el-option
-                v-for="item in options"
-                :key="item.lu"
+                v-for="(item, i) in options"
+                :key="i"
                 :label="item.label"
-                :value="item.lu"
+                :value="item.label"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="状态">
-            <el-select v-model="state">
+            <el-select v-model="search.state">
+              <el-option label="全部" value></el-option>
               <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
+                v-for="(item, i) in optionSe"
+                :key="i"
                 :label="item.label"
-                :value="item.state"
+                :value="item.label"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -41,38 +43,47 @@
         <el-button class="buttonBotLast">导出全员信息</el-button>
       </div>
     </div>
-    <!-- 弹窗 -->
-    <el-dialog title="添加值班人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
+
+    <!-- 新增弹窗 -->
+    <el-dialog
+      title="添加公厕信息"
+      :visible.sync="dialogVisible"
+      width="426px"
+      class="dialogText"
+      @close="formInline = {}"
+    >
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="公厕名">
-          <el-input v-model="formInline.wcid"></el-input>
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="管养单位">
-          <el-select v-model="lu" class="selectTop">
-            <el-option v-for="item in options" :key="item.web" :label="item.label" :value="item.lu"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="state" class="selectTop">
+          <el-select v-model="formInline.depart" class="selectTop">
             <el-option
-              v-for="item in optionsStated"
-              :key="item.state"
+              v-for="(item, i) in options"
+              :key="i"
               :label="item.label"
-              :value="item.state"
+              :value="item.label"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-input v-model="formInline.state"></el-input>
+        <el-form-item label="开放状态">
+          <el-select v-model="formInline.state" class="selectTop">
+            <el-option
+              v-for="(item, i) in optionSe"
+              :key="i"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input v-model="formInline.cnumber"></el-input>
+          <el-input v-model="formInline.cnumber" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="服务">
-          <el-input v-model="formInline.snumber"></el-input>
+          <el-input v-model="formInline.snumber" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="联络人">
-          <el-input v-model="formInline.name"></el-input>
+          <el-input v-model="formInline.name" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="电话">
           <el-input v-model="formInline.phone" class="inputText"></el-input>
@@ -85,14 +96,15 @@
         <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
       </span>
     </el-dialog>
+
     <!-- 表格 -->
     <el-table
-      :data="wcList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+      :data="wcList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       border
       style="width: 100%"
     >
       <el-table-column align="center" prop="wcid" label="公厕名" width></el-table-column>
-      <el-table-column align="center" prop="date" label="管养单位" width></el-table-column>
+      <el-table-column align="center" prop="depart" label="管养单位" width></el-table-column>
       <el-table-column align="center" prop="state" label="状态" width></el-table-column>
       <el-table-column align="center" prop="cnumber" label="地址" width></el-table-column>
       <el-table-column align="center" prop="snumber" label="服务" width></el-table-column>
@@ -104,84 +116,117 @@
             class="tableButton2"
             type="button"
             size="small"
+            @click="detail(scope.row, scope.$index)"
+          >详情</el-button>
+          <el-button
+            class="tableButton2"
+            type="button"
+            size="small"
             @click="pagination(scope.row, scope.$index)"
           >编辑</el-button>
           <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+
     <!-- 分页 -->
     <el-pagination
+      :current-page="data.currpage"
+      :page-size="data.pagesize"
       class="paginationList"
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
       :page-sizes="[10,20,30,40]"
-      :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="32"
+      :total="wcList.length"
     ></el-pagination>
-    <!-- 弹框 -->
-    <el-dialog title="值班人员详情" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="buttonIf">
+
+    <!-- 详情弹框 -->
+    <el-dialog
+      title="公厕详情"
+      :visible.sync="dialogFormdetail"
+      width="426px"
+      class="dialogText"
+      @close="formInline = {}"
+    >
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="公厕名">
-          <el-input v-model="formInline.wcid"></el-input>
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="管养单位">
-          <el-select v-model="lu" class="selectTop" disabled>
-            <el-option v-for="item in options" :key="item.web" :label="item.label" :value="item.lu"></el-option>
+          <el-select v-model="formInline.depart" class="selectTop">
+            <el-option
+              v-for="(item, i) in options"
+              :key="i"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="state" class="selectTop" disabled>
+        <el-form-item label="开放状态">
+          <el-select v-model="formInline.state" class="selectTop" disabled>
             <el-option
-              v-for="item in optionsStated"
-              :key="item.state"
+              v-for="(item, i) in optionSe"
+              :key="i"
               :label="item.label"
-              :value="item.state"
+              :value="item.label"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input v-model="formInline.cnumber"></el-input>
+          <el-input v-model="formInline.cnumber" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="服务">
-          <el-input v-model="formInline.snumber"></el-input>
+          <el-input v-model="formInline.snumber" class="inputText"></el-input>
         </el-form-item>
-        <el-form-item label="联系人">
-          <el-input v-model="formInline.name"></el-input>
+        <el-form-item label="联络人">
+          <el-input v-model="formInline.name" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="电话">
           <el-input v-model="formInline.phone" class="inputText"></el-input>
         </el-form-item>
       </el-form>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
+    </el-dialog>
+
+    <!-- 编辑弹框 -->
+    <el-dialog
+      title="公厕编辑"
+      :visible.sync="dialogFormVisible"
+      width="426px"
+      class="dialogText"
+      @close="formInline = {}"
+    >
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="公厕名">
-          <el-input v-model="formInline.wcid"></el-input>
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="管养单位">
-          <el-select v-model="lu" class="selectTop">
-            <el-option v-for="item in options" :key="item.web" :label="item.label" :value="item.lu"></el-option>
+          <el-select v-model="formInline.depart" class="selectTop">
+            <el-option
+              v-for="(item, i) in options"
+              :key="i"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="state" class="selectTop">
+        <el-form-item label="开放状态">
+          <el-select v-model="formInline.state" class="selectTop">
             <el-option
-              v-for="item in optionsStated"
-              :key="item.state"
+              v-for="(item, i) in optionSe"
+              :key="i"
               :label="item.label"
-              :value="item.state"
+              :value="item.label"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input v-model="formInline.cnumber"></el-input>
+          <el-input v-model="formInline.cnumber" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="服务">
-          <el-input v-model="formInline.snumber"></el-input>
+          <el-input v-model="formInline.snumber" class="inputText"></el-input>
         </el-form-item>
-        <el-form-item label="联系人">
-          <el-input v-model="formInline.name"></el-input>
+        <el-form-item label="联络人">
+          <el-input v-model="formInline.name" class="inputText"></el-input>
         </el-form-item>
         <el-form-item label="电话">
           <el-input v-model="formInline.phone" class="inputText"></el-input>
@@ -191,56 +236,76 @@
         <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-        <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>
+        <el-button type="primary" class="formButon">保存</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      value1: "",
-      text: "添加车辆信息",
-      pagesize: 10,
-      currpage: 1,
-      tableData: [],
-      formInline: {},
+      // 搜索
+      search: {
+        name: "",
+        depart: "",
+        state: ""
+      },
+      // 分页
+      data: {
+        pagesize: 10,
+        currpage: 1
+      },
+      // 公厕详情/编辑弹框
+      ifshow: true,
+      // 公厕添加弹框
       dialogVisible: false,
-      les: 0,
-      lu: "0",
+      // 管养单位下拉框
       options: [
         {
-          lu: "0",
+          value: "东营丛林绿化工程有限责任公司",
           label: "东营丛林绿化工程有限责任公司"
         },
         {
-          lu: "1",
+          value: "东营卓越环境工程有限责任公司",
           label: "东营卓越环境工程有限责任公司"
         }
       ],
-      state: "0",
-      optionsStated: [
+      // 状态下拉框
+      optionSe: [
         {
-          state: "0",
+          state: "开放使用",
           label: "开放使用"
         },
         {
-          state: "1",
+          state: "即将开放",
+          label: "即将开放"
+        },
+        {
+          state: "暂停使用",
           label: "暂停使用"
         }
       ],
-      buttonIf: false,
-      formInline: {},
+      // 详情页数据
+      formInline: {
+        name: "",
+        depart: "",
+        state: "",
+        cnumber: "",
+        snumber: "",
+        name: "",
+        phone: ""
+      },
+      // 详情页弹框
+      dialogFormdetail: false,
+      // 编辑页弹框
       dialogFormVisible: false,
       wcList: [
         {
           number: 1,
           wcid: "火车站公厕",
-          date: "东营丛林绿化工程有限责任公司",
+          depart: "东营丛林绿化工程有限责任公司",
           name: "毛文平",
           state: "开放使用",
           phone: "13361503999",
@@ -250,7 +315,7 @@ export default {
         {
           number: 2,
           wcid: "体育公园公厕",
-          date: "东营丛林绿化工程有限责任公司",
+          depart: "东营丛林绿化工程有限责任公司",
           name: "毛文平",
           state: "开放使用",
           phone: "13361503999",
@@ -260,7 +325,7 @@ export default {
         {
           number: 3,
           wcid: "北二路中石化公厕",
-          date: "东营丛林绿化工程有限责任公司",
+          depart: "东营丛林绿化工程有限责任公司",
           name: "毛文平",
           state: "开放使用",
           phone: "13361503999",
@@ -272,47 +337,30 @@ export default {
   },
   created() {},
   methods: {
-    miStatusColor(item) {
-      if (item == 0) {
-        return "danger";
-      } else if (item == 1) {
-        return "primary";
-      }
-      return "success";
-    },
-    addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
-      console.log("关闭");
-      this.buttonIf = false;
-    },
-    adddate() {
-      this.dialogFormVisible = false;
-    },
-    pagination(row, _index) {
+    // 表格详情按钮
+    detail(row) {
       console.log(row);
-      //记录索引
-      this.listIndex = _index;
       //记录数据
       this.formInline = row;
-      //显示弹窗
-
-      this.dialogFormVisible = true;
-      this.buttonIf = true;
+      //显示详情弹窗
+      this.dialogFormdetail = true;
     },
+    // 表格编辑按钮
+    pagination(row) {
+      console.log(row);
+      //记录数据
+      this.formInline = row;
+      //显示编辑弹窗
+      this.dialogFormVisible = true;
+    },
+    // 表格删除按钮
     deletList() {
       console.log("删除这一项");
     },
-    handleCurrentChange() {},
-    handleSizeChange() {},
+    // 查询按钮
     onSubmit() {
       console.log("查啥?");
     }
-  },
-  components: {
-    Table
   }
 };
 </script>
@@ -346,11 +394,6 @@ export default {
     }
   }
 }
-.table {
-  width: 1128px;
-  height: 465px;
-  margin-top: 16px;
-}
 .dialogText {
   text-align: center;
 }
@@ -375,13 +418,6 @@ export default {
   width: 127px;
   height: 40px;
   text-align: center;
-}
-.pagination {
-  float: right;
-  margin-right: 16px;
-}
-.table {
-  width: 100%;
 }
 .delect-footer {
   float: left;

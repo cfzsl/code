@@ -121,7 +121,40 @@
                 <el-button type="primary">查询</el-button>
               </div>
               <div class="content">
-                <img src="./month.png" />
+                <el-calendar v-model="calendarvalue" @prevMonth="selectDate">
+                  <!--自定义内容-->
+                  <template slot="dateCell" slot-scope="{date, data}">
+                    <div class="calendar-flex">
+                      <div class="calendar-day">{{ data.day.split('-').slice(2).join('-') }}</div>
+                      <div v-for="(item,index) in calendarData" :key="index">
+                        <div v-if="(item.months).indexOf(data.day.split('-').slice(1)[0])!=-1">
+                          <div
+                            class="is-button"
+                            v-if="(item.days).indexOf(data.day.split('-').slice(2).join('-'))!=-1"
+                          >
+                            <el-button
+                              v-if="item.things==='出勤'"
+                              class="is-selected"
+                              type="primary"
+                            >{{item.things}}</el-button>
+                            <el-button
+                              v-if="item.things==='病假'"
+                              class="is-selected"
+                              type="warning"
+                            >{{item.things}}</el-button>
+                            <el-button
+                              v-if="item.things==='休息'"
+                              class="is-selected"
+                              type="success"
+                            >{{item.things}}</el-button>
+                          </div>
+                          <div v-else></div>
+                        </div>
+                        <div v-else></div>
+                      </div>
+                    </div>
+                  </template>
+                </el-calendar>
               </div>
             </el-dialog>
           </div>
@@ -258,10 +291,31 @@ export default {
       },
       detail: false,
       row: {},
-      dialogdate: ""
+      dialogdate: "",
+      calendarvalue: new Date(),
+      calendardate: "",
+      calendarData: []
     };
   },
   methods: {
+    //获取考勤日期
+    getCalendarData() {
+      let year = this.calendarvalue.getFullYear();
+      let month = this.calendarvalue.getMonth() + 1;
+      let day = this.calendarvalue.getDate();
+      month = month < 10 ? "0" + month : month;
+      day = day < 10 ? "0" + day : day;
+      this.calendardate = year + "-" + month + "-" + day;
+      this.$http
+        .post(
+          "hr/hrinfo/mkCalendar",
+          this.$qs.stringify({ time: this.calendardate })
+        )
+        .then(res => {
+          console.log(res.data);
+          this.calendarData = res.data;
+        });
+    },
     // 图标渲染总函数
     drawecharts() {
       this.drawline();
@@ -603,7 +657,14 @@ export default {
     showdetail(row, index) {
       this.detail = !this.detail;
       this.row = row;
-    }
+      this.getCalendarData();
+    },
+    // 切换月份
+    selectDate(type) {
+      console.log(type);
+      console.log(1);
+      
+    },
   },
   mounted() {
     this.drawecharts();
@@ -684,4 +745,19 @@ export default {
     text-align: center;
   }
 }
+
+.calendar-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .calendar-day {
+    text-align: center;
+    margin-top: 15px;
+  }
+  .is-button {
+    margin-top: 5px;
+    margin-left: 10px;
+  }
+}
+
 </style>
