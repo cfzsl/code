@@ -13,7 +13,19 @@
       <span class="iconfont icon-shouye"></span>
       <span>首页</span>
     </el-menu-item>
-    <el-submenu index="/onece/base">
+    <el-menu-item index="/onece/carmsg">
+        <span class="iconfont icon-cheliangxinxiguanli"></span>环卫车辆管理
+      </el-menu-item>
+    <el-menu-item index="/town/carmsg">
+        <span class="iconfont icon-cheliangxinxiguanli2"></span>三轮车管理
+    </el-menu-item>
+    <el-menu-item index="/town/supervision">
+        <span class="iconfont icon-cheliangxinxiguanli2"></span>道路信息管理
+    </el-menu-item>  
+    <el-menu-item index="/welcom/WcSupervision">
+        <span class="iconfont icon-shouye"></span>公厕管理
+      </el-menu-item>
+    <!-- <el-submenu index="/onece/base">
       <template slot="title">
         <span class="iconfont icon-huanweicheguanli"></span>
         <span>环卫车辆管理</span>
@@ -28,8 +40,8 @@
         <span class="iconfont icon-cheliangzonghejianguan"></span>车辆综合监管
       </el-menu-item>
     </el-submenu>
-    <el-submenu index="/town/worker">
-      <template slot="title">
+    <el-submenu index="/town/worker"> -->
+      <!-- <template slot="title">
         <span class="iconfont icon-huanweigongguanli"></span>
         <span>环卫工管理</span>
       </template>
@@ -42,8 +54,8 @@
       <el-menu-item index="/town/supervision">
         <span class="iconfont icon-richangjianguan"></span>日常监管
       </el-menu-item>
-    </el-submenu>
-    <el-submenu index="/welcom/wcmap">
+    </el-submenu> -->
+    <!-- <el-submenu index="/welcom/wcmap">
       <template slot="title">
         <span class="iconfont icon-gongceguanli"></span>
         <span>公厕管理</span>
@@ -63,23 +75,11 @@
       <el-menu-item index="/welcom/LED">
         <span class="iconfont icon-LEDdianziping"></span>LED电子屏管理
       </el-menu-item>
-    </el-submenu>
-    <el-submenu index="/business/process">
-      <template slot="title">
-        <span class="iconfont icon-yewuchuli"></span>
-        <span>业务处理</span>
-      </template>
-      <el-menu-item index="/business/process">
-        <span class="iconfont icon-yewuchuli"></span>业务处理表
-      </el-menu-item>
-      <el-menu-item title="未完成" index="/business/project">
-        <span class="iconfont icon-xinchouguanli"></span>绩效考核表
-      </el-menu-item>
-    </el-submenu>
+    </el-submenu> -->
     <el-submenu index="/matters/HRManagement">
       <template slot="title">
         <span class="iconfont icon-renshiguanli"></span>
-        <span>人事管理与通讯</span>
+        <span>人事管理</span>
       </template>
       <el-menu-item index="/matters/HRManagement">
         <span class="iconfont icon-renyuanxinxiguanli"></span>人事信息管理
@@ -93,11 +93,28 @@
       <el-menu-item index="/Recruitment">
         <span class="iconfont icon-zhaopinguanli"></span>招聘管理
       </el-menu-item>
-
       <el-menu-item index="/AddressBook">
         <span class="iconfont icon-tongxunlu"></span>通讯录
       </el-menu-item>
     </el-submenu>
+    <el-menu-item index="/business/process">
+        <span class="iconfont icon-yewuchuli"></span>质量安全管理
+    </el-menu-item>
+    <!-- <el-submenu index="/business/process">
+      <template slot="title">
+        <span class="iconfont icon-yewuchuli"></span>
+        <span>业务处理</span>
+      </template>
+      <el-menu-item index="/business/process">
+        <span class="iconfont icon-yewuchuli"></span>业务处理表
+      </el-menu-item>
+      <el-menu-item title="未完成" index="/business/project">
+        <span class="iconfont icon-xinchouguanli"></span>绩效考核表
+      </el-menu-item>
+    </el-submenu> -->
+    <el-menu-item index="/town/worker">
+        <span class="iconfont icon-renyuanxinxiguanli"></span>系统通知
+      </el-menu-item>
   </el-menu>
 </template>
 
