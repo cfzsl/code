@@ -1,560 +1,451 @@
 <template>
-  <!-- 业务处理 -->
-  <div id="process">
+  <!-- 招聘信息管理 -->
+  <div>
     <!-- 搜索 -->
     <div class="search">
-      <div class="searchTop">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="区域范围">
-            <el-select v-model="value">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="道路名称">
-            <el-select v-model="lu">
-              <el-option
-                v-for="item in roadList"
-                :key="item.lu"
-                :label="item.label"
-                :value="item.lu"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="上报时间" class="msgDate">
-            <el-date-picker v-model="value1" type="date" placeholder class="msgDatePicker"></el-date-picker>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-          </el-form-item>
-        </el-form>
+      <div class="searchbox">
+        <span>姓名</span>
+        <el-input v-model="search.user" placeholder="请输入姓名" style="width: 130px"></el-input>
+      </div>
+      <div class="searchbox">
+        <span>归属单位</span>
+        <el-select v-model="search.type">
+          <el-option label="全部" value></el-option>
+          <el-option label="环卫一部" value="环卫一部"></el-option>
+          <el-option label="环卫二部" value="环卫二部"></el-option>
+        </el-select>
+      </div>
+      <div class="searchbox">
+        <span>处理结果</span>
+        <el-select v-model="search.work">
+          <el-option label="全部" value></el-option>
+          <el-option label="已处理" value="已处理"></el-option>
+          <el-option label="未处理" value="未处理"></el-option>
+        </el-select>
+      </div>
+      <div class="searchbox">
+        日期
+        <el-date-picker
+          v-model="value1"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
       </div>
 
+      <el-button type="primary" class="btn">查询</el-button>
     </div>
-    <!-- 表格 -->
-    <el-table
-      :data="tableData.slice((currpage - 1) * pagesize, currpage * pagesize)"
-      border
-      style="width: 100%"
-    >
-      <el-table-column align="center" prop="les" label="进度条" width>
-        <template>
-          <el-button
-            size="small"
-            :type="miStatusColor(les)"
-          >{{progressDate[les].progress}}</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="carid" label="问题编号" width></el-table-column>
-      <el-table-column align="center" prop="date" label="问题描述" width></el-table-column>
-      <el-table-column align="center" prop="city" label="区域范围" width></el-table-column>
-      <el-table-column align="center" prop="province" label="道路名称" width></el-table-column>
-      <el-table-column align="center" prop="zipiphone" label="上报时间" width></el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width>
-        <template slot-scope="scope">
-          <el-button
-            class="tableButton1"
-            type="button"
-            size="small"
-            @click="pagination(scope.row,scope.$index)"
-          >处理</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+
+    <!-- 按钮 -->
+    <div class="menu">
+      <div class="filter">共反馈5个问题，已解决4个，未解决1个</div>
+
+      <div class="btn">
+        <el-button icon="el-icon-plus" @click="feedback = true">新建反馈</el-button>
+        <el-button icon="el-icon-plus">导出数据</el-button>
+      </div>
+    </div>
+
+    <!-- 列表 -->
+    <div class="list">
+      <el-table
+        :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        border
+      >
+        <el-table-column align="center" prop="sid" label="日期"></el-table-column>
+        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+        <el-table-column align="center" prop="phone" label="归属单位"></el-table-column>
+        <el-table-column align="center" prop="company" label="岗位"></el-table-column>
+        <el-table-column align="center" prop="area" label="问题详情"></el-table-column>
+        <el-table-column align="center" prop="job" label="发生地点"></el-table-column>
+        <el-table-column align="center" prop="education" label="现场照片"></el-table-column>
+        <el-table-column align="center" prop="entryTime" label="反馈人"></el-table-column>
+        <el-table-column align="center" prop="age" label="处理结果"></el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="showdetail(scope.row)">详情</el-button>
+            <el-button type="primary" @click="showprocess(scope.row)">处理</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <!-- 分页 -->
-    <el-pagination
-      class="paginationList"
-      background
-      :total="tableData.length"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10,20,30,40]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-    ></el-pagination>
-    <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="上传图片" class="searchType">
-                   <el-upload
-  class="avatar-uploader"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :show-file-list="false"
-  :on-success="handleAvatarSuccess"
-  :before-upload="beforeAvatarUpload">
-  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-</el-upload>
-        </el-form-item>
-        <el-form-item label="处理过程">
-          <el-input
-  type="textarea"
-  :rows="2"
-  placeholder="请输入内容"
-  v-model="textarea">
-</el-input>
-        </el-form-item>
+    <div class="pagination">
+      <el-pagination
+        :current-page="data.currpage"
+        :page-size="data.pagesize"
+        :pager-count="21"
+        layout="total, prev, pager, next"
+        :total="data.list.length"
+        @prev-click="nextpage"
+        @next-click="nextpage"
+        @current-change="nextpage"
+      ></el-pagination>
+    </div>
+
+    <!-- 新建反馈 -->
+    <el-dialog title="新建反馈" width="650px" :visible.sync="feedback" @close="msg = {}">
+      <el-form :inline="true" style="overflow: hidden;">
+        <div class="feedbackbox">
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="12">
+              <el-form-item label="反馈日期">
+                <el-date-picker v-model="feedback.date" type="date" placeholder="选择日期"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="姓名">
+                <el-input v-model="feedback.name" placeholder="请输入姓名"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="feedbackbox">
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="12">
+              <el-form-item label="所属单位">
+                <el-select v-model="search.department">
+                  <el-option label="全部" value></el-option>
+                  <el-option label="环卫一部" value="环卫一部"></el-option>
+                  <el-option label="环卫二部" value="环卫二部"></el-option>
+                  <el-option label="环卫三部" value="环卫三部"></el-option>
+                  <el-option label="环卫四部" value="环卫四部"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="岗位">
+                <el-select v-model="search.job">
+                  <el-option label="全部岗位" value></el-option>
+                  <el-option label="环卫工人" value="环卫工人"></el-option>
+                  <el-option label="洒水车司机" value="洒水车司机"></el-option>
+                  <el-option label="清运车司机" value="清运车司机"></el-option>
+                  <el-option label="清扫车司机" value="清扫车司机"></el-option>
+                  <el-option label="中队长" value="中队长"></el-option>
+                  <el-option label="队员" value="队员"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="问题详情">
+            <el-input
+              type="textarea"
+              resize="none"
+              style="width: 500px;vertical-align:text-top;"
+              :rows="2"
+              placeholder="请输入问题详情"
+              v-model="feedback.content"
+            ></el-input>
+          </el-form-item>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="发生地点">
+            <el-input style="width: 500px" v-model="feedback.didian" placeholder="请输入发生地点"></el-input>
+          </el-form-item>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="上传图片">
+            <el-upload
+              ref="upload"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :auto-upload="false"
+              style="float: left"
+            >
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            </el-upload>
+          </el-form-item>
+        </div>
+        <el-form-item style="float:right">
+          <el-button type="primary" @click="feedback = false">取消</el-button>
+          <el-button type="primary" @click="feedback = false">提交</el-button>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogFormVisible=false" class="formButon">取消</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary"  @click="addDo" class="formButon">确认</el-button>
-      </span>
+    </el-dialog>
+
+    <!-- 反馈详情 -->
+    <el-dialog title="反馈详情" width="650px" :visible.sync="feedbackdetails" @close="msg = {}">
+      <el-form :inline="true" style="overflow: hidden;">
+        <div class="feedbackbox">
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="12">
+              <el-form-item label="反馈日期">
+                <el-date-picker v-model="feedback.date" type="date" placeholder="选择日期"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="姓名">
+                <el-input v-model="feedback.name" placeholder="请输入姓名"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="feedbackbox">
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="12">
+              <el-form-item label="所属单位">
+                <el-select v-model="search.department">
+                  <el-option label="全部" value></el-option>
+                  <el-option label="环卫一部" value="环卫一部"></el-option>
+                  <el-option label="环卫二部" value="环卫二部"></el-option>
+                  <el-option label="环卫三部" value="环卫三部"></el-option>
+                  <el-option label="环卫四部" value="环卫四部"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="岗位">
+                <el-select v-model="search.job">
+                  <el-option label="全部岗位" value></el-option>
+                  <el-option label="环卫工人" value="环卫工人"></el-option>
+                  <el-option label="洒水车司机" value="洒水车司机"></el-option>
+                  <el-option label="清运车司机" value="清运车司机"></el-option>
+                  <el-option label="清扫车司机" value="清扫车司机"></el-option>
+                  <el-option label="中队长" value="中队长"></el-option>
+                  <el-option label="队员" value="队员"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="问题详情">
+            <el-input
+              type="textarea"
+              resize="none"
+              style="width: 500px;vertical-align:text-top;"
+              :rows="2"
+              placeholder="请输入问题详情"
+              v-model="feedback.content"
+            ></el-input>
+          </el-form-item>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="发生地点">
+            <el-input style="width: 500px" v-model="feedback.didian" placeholder="请输入发生地点"></el-input>
+          </el-form-item>
+        </div>
+        <div class="feedbackbox">
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="12">
+              <el-form-item label="反馈人">
+                <el-date-picker v-model="feedback.date" type="date" placeholder="选择日期"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="处理结果">
+                <el-select v-model="search.department">
+                  <el-option label="已处理" value="已处理"></el-option>
+                  <el-option label="未处理" value="未处理"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="详情描述（处理）">
+            <el-input style="width: 100%" v-model="feedback.didian" placeholder="请输入发生地点"></el-input>
+          </el-form-item>
+        </div>
+        <div class="feedbackbox">
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="12">
+              <el-form-item label="问题照片"></el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="处理后照片"></el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+      </el-form>
+    </el-dialog>
+
+    <!-- 处理 -->
+    <el-dialog title="问题处理" width="650px" :visible.sync="process" @close="msg = {}">
+      <el-form ref="form" label-width="80px" style="overflow: hidden;">
+        <el-form-item label="处理状态">
+          <el-radio-group v-model="processmsg.status">
+            <el-radio label="已处理">已处理</el-radio>
+            <el-radio label="未处理">未处理</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="详情内容">
+          <el-input type="textarea" resize="none" v-model="processmsg.content"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">立即创建</el-button>
+          <el-button>取消</el-button>
+        </el-form-item>
+        <el-form-item label="上传图片">
+          <el-upload
+            ref="upload"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :auto-upload="false"
+            style="float: left"
+          >
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+          </el-upload>
+        </el-form-item>
+        <el-form-item style="float:right">
+          <el-button type="primary" @click="feedback = false">取消</el-button>
+          <el-button type="primary" @click="feedback = false">提交</el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
   </div>
 </template>
 
+
 <script>
-import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      input: null,
+      radio: "0",
+      data: {
+        pagesize: 14,
+        currpage: 1,
+        list: [
+          {
+            sid: 1,
+            name: "李诞",
+            phone: "15375669845",
+            company: "环卫一部",
+            area: "东营区",
+            job: "环卫工",
+            education: "初中",
+            entryTime: "2019-10-20",
+            age: "36"
+          },
+          {
+            sid: 2,
+            name: "张圆圆",
+            phone: "15386966974",
+            company: "环卫二部",
+            area: "东营区",
+            job: "扫水车司机",
+            education: "大专",
+            entryTime: "2019-09-15",
+            age: "36"
+          },
+          {
+            sid: 3,
+            name: "刘波",
+            phone: "15304937816",
+            company: "环卫三部",
+            area: "滨州区",
+            job: "垃圾运输车司机",
+            education: "高中",
+            entryTime: "2019-08-02",
+            age: "36"
+          }
+        ]
+      },
+      search: {
+        type: "",
+        work: "",
+        road: "",
+        company: ""
+      },
+      // 新建查询
+      addfeedback: {
+        date: "",
+        name: "",
+        area: "",
+        job: "",
+        content: "",
+        didian: "",
+        imglist: []
+      },
+      // 处理信息
+      processmsg: {
+        status: "",
+        content: "",
+        imglist: []
+      },
+      feedback: false,
+      feedbackdetails: false,
+      process: false,
+      insuranceList: [
+        {
+          carbrand: "鲁E-562E4",
+          company: "太平洋保险",
+          effectivedate: "2019-02-30",
+          warningdate: "2020-10-15"
+        },
+        {
+          carbrand: "鲁E-359Y5",
+          company: "太平洋保险",
+          effectivedate: "2018-05-10",
+          warningdate: "2019-09-19"
+        }
+      ],
       value1: "",
-      textarea:'',
-      imageUrl: '',
-      text: "业务处理",
-      pagesize: 10,
-      currpage: 1,
-      tableData: [
-        {
-          carid: "20191018",
-          date: "钟山路路口堆放建筑垃圾",
-          city: "东营区新区",
-          province: "钟山路",
-          zipiphone: "2019-10-18 18:06",
-          msg: "否"
-        },
-        {
-          carid: "20191017",
-          date: "香山路中段卫生打扫很差",
-          city: "东营区新区",
-          province: "香山路",
-          zipiphone: "2019-10-17 18:06",
-          msg: "否"
-        },
-        
-      ],
-      formInline: {},
-      dialogVisible: false,
-      les:0,
-      progressDate:[
-        {les:0,progress:'未处理'},
-        {les:1,progress:'处理中'},
-        {les:2,progress:'完成'},
-      ],
-      i: "0",
-      optionsCar: [
-        {
-          i: "0",
-          label: "全部"
-        },
-        {
-          i: "1",
-          label: "垃圾清运车"
-        },
-        {
-          i: "2",
-          label: "清扫车"
-        },
-        {
-          i: "3",
-          label: "洒水车"
-        }
-      ],
-      lu: "0",
-      roadList: [
-        {
-          lu: "0",
-          label: "全部"
-        },
-        {
-          lu: "1",
-          label: "庐山路"
-        },
-        {
-          lu: "2",
-          label: "宁阳路"
-        },
-        {
-          lu: "3",
-          label: "新泰路"
-        },
-        {
-          lu: "4",
-          label: "北一路"
-        },
-        {
-          lu: "5",
-          label: "北二路"
-        },
-        {
-          lu: "6",
-          label: "黄河路"
-        }
-      ],
-      value: "0",
-      options: [
-        {
-          value: "0",
-          label: "全部"
-        },
-        {
-          value: "1",
-          label: "东营区新区"
-        },
-        {
-          value: "2",
-          label: "文汇街道办事处"
-        },
-        {
-          value: "3",
-          label: "辛店街道办事处"
-        },
-        {
-          value: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          value: "5",
-          label: "圣园街道办事处"
-        },
-        {
-          value: "6",
-          label: "六户镇"
-        },
-        {
-          value: "7",
-          label: "牛庄镇"
-        },
-        {
-          value: "8",
-          label: "史口镇"
-        },
-        {
-          value: "9",
-          label: "龙居镇"
-        }
-      ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
-          label: "环卫四部"
-        }
-      ],
-      lu: "0",
-      optionslu: [
-        {
-          lu: "0",
-          label: "全部"
-        },
-        {
-          lu: "1",
-          label: "东营区新区"
-        },
-        {
-          lu: "2",
-          label: "文汇街道办事处"
-        },
-        {
-          lu: "3",
-          label: "辛店街道办事处"
-        },
-        {
-          lu: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          lu: "5",
-          label: "圣园街道办事处"
-        },
-        {
-          lu: "6",
-          label: "六户镇"
-        },
-        {
-          lu: "7",
-          label: "牛庄镇"
-        },
-        {
-          lu: "8",
-          label: "史口镇"
-        },
-        {
-          lu: "9",
-          label: "龙居镇"
-        }
-      ],
-      id: "0",
-      optionsList: [
-        {
-          id: "0",
-          label: "全部"
-        },
-        {
-          id: "1",
-          label: "环卫一部"
-        },
-        {
-          id: "2",
-          label: "环卫二部"
-        },
-        {
-          id: "3",
-          label: "环卫三部"
-        },
-        {
-          id: "4",
-          label: "环卫四部"
-        }
-      ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
-          label: "环卫四部"
-        }
-      ],
-      type: "0",
-      optionsType: [
-        {
-          type: "0",
-          label: "A1"
-        },
-        {
-          type: "1",
-          label: "A2"
-        },
-        {
-          type: "2",
-          label: "B1"
-        },
-        {
-          type: "3",
-          label: "B2"
-        },
-        {
-          type: "4",
-          label: "C1"
-        },
-        {
-          type: "5",
-          label: "C2"
-        }
-      ],
-      state: "0",
-      optionsStated: [
-        {
-          state: "0",
-          label: "在职"
-        },
-        {
-          state: "1",
-          label: "离职"
-        }
-      ],
-      buttonIf: false,
-      formInline: {},
-      dialogFormVisible: false
+      value2: "",
+      msg: {
+        number: ""
+      },
+      th: "0"
     };
   },
   methods: {
-    miStatusColor(item) {
-      if(item==0) {
-        return 'danger'
-      }else if(item==1)  {
-        return 'primary'
-      }
-      return 'success'
+    onSubmit() {},
+    nextpage(value) {
+      this.data.currpage = value;
     },
-    handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
-      },
-    addDo() {
-      this.dialogFormVisible = false;
-      console.log("关闭");
-      this.buttonIf = false;
+    // 显示详情
+    showdetail(row) {
+      this.feedbackdetails = !this.feedbackdetails;
     },
-    adddate() {
-      this.dialogFormVisible = false;
-    },
-    pagination(row, _index) {
-      console.log(row);
-      //记录索引
-      this.listIndex = _index;
-      //记录数据
-      this.formInline = row;
-      //显示弹窗
-      this.dialogFormVisible = true;
-      this.buttonIf = true;
-    },
-    deletList() {
-      console.log("删除这一项");
-    },
-    handleCurrentChange() {},
-    handleSizeChange() {},
-    onSubmit() {
-      console.log("查啥?");
+    // 显示处理
+    showprocess(row) {
+      this.process = !this.process;
     }
   },
-  components: {
-    Table
-  }
+  created() {}
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
+<style lang="scss" scoped>
 .search {
-  position: relative;
-  width: 100%;
-  height: 76px;
-  margin-top: 16px;
-  .searchTop {
+  padding: 20px 0;
+  .searchbox {
     float: left;
-    margin-bottom: 16px;
-  }
-  .searchBot {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    .buttonBot {
-      width: 92px;
-      height: 25px;
-      font-size: 12px;
-      padding: 0;
-    }
-    .buttonBotLast {
-      width: 92px;
-      height: 25px;
-      font-size: 12px;
-      padding: 0;
-      margin: 0;
+    padding-left: 20px;
+    margin-left: 20px;
+    span {
+      margin-right: 10px;
     }
   }
-}
-.table {
-  width: 1128px;
-  height: 465px;
-  margin-top: 16px;
-}
-.dialogText {
-  text-align: center;
-}
-.demo-form-inline {
-  text-align: left;
-  .selectTop {
-    width: 240px;
+  .btn {
+    margin-left: 15px;
   }
-  .el-form-item {
-    margin-bottom: 2px;
-    .el-input {
-      width: 240px;
-      height: 32px;
-    }
-  }
-  .selectBot {
-    width: 240px;
-    height: 32px;
-  }
-}
-.formButon {
-  width: 127px;
-  height: 40px;
-  text-align: center;
-}
-.pagination {
-  float: right;
-  margin-right: 16px;
-}
-.table {
-  width: 100%;
-}
-.delect-footer {
-  float: left;
-  margin-left: 10px;
-}
-.inputText {
-  width: 240px;
 }
 
-.avatar-uploader .el-upload {
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+.menu {
+  .filter {
+    float: left;
   }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
+  .btn {
+    float: right;
+    margin-bottom: 10px;
   }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
+}
+
+.list {
+  .btn {
+    width: 50px;
+    margin-left: 0;
     text-align: center;
   }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-  .avatar-uploader-icon {
-    border: 1px dashed #ccc !important;
-  }
-  .paginationList {
-  text-align: center;
-  margin-top: 32px;
-  padding: 0;
+}
+
+.pagination {
+  float: right;
+  margin-right: 25px;
+  padding-top: 20px;
 }
 </style>

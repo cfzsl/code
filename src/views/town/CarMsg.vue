@@ -3,59 +3,160 @@
   <div id="carmsg">
     <!-- 搜索 -->
     <div class="search">
-      <div class="searchTop">
-        <el-form :inline="true" :model="usearch">
-          <el-form-item label="车牌号鲁E-">
-            <el-input class="searchInput" v-model="number" placeholder="车牌号"></el-input>
-          </el-form-item>
-          <el-form-item label="负责道路">
-            <el-select v-model="usearch.road" filterable>
-              <el-option label="全部" value></el-option>
-              <el-option
-                v-for="item in roadList"
-                :key="item.rd"
-                :label="item.road"
-                :value="item.road"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="usearch.area">
-              <el-option label="全部" value></el-option>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.area"
-                :value="item.area"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="usearch.depart">
-              <el-option label="全部" value></el-option>
-              <el-option
-                v-for="item in optionsList"
-                :key="item.id"
-                :label="item.depart"
-                :value="item.depart"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-            <el-button type="primary" @click="onEmpty">清空</el-button>
-          </el-form-item>
-        </el-form>
+      <div class="searchbox">
+        <span>车牌号鲁E-</span>
+        <el-input v-model="search.busnumber" placeholder="请输入车牌号" style="width: 130px"></el-input>
       </div>
-      <!-- 按钮 -->
-      <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加车辆信息</el-button>
-        <el-button class="buttonBot" @click="msgimport = true">导入模板下载</el-button>
-        <el-button class="buttonBot">人员信息导入</el-button>
-        <el-button class="buttonBotLast" @click="msgexport = true">导出全员信息</el-button>
+      <div class="searchbox">
+        <span>使用人</span>
+        <el-input v-model="search.user" placeholder="请输入使用人" style="width: 130px"></el-input>
+      </div>
+      <div class="searchbox">
+        <span>所属单位</span>
+        <el-select v-model="search.department">
+          <el-option label="全部" value></el-option>
+          <el-option label="环卫一部" value="环卫一部"></el-option>
+          <el-option label="环卫二部" value="环卫二部"></el-option>
+          <el-option label="环卫三部" value="环卫三部"></el-option>
+          <el-option label="环卫四部" value="环卫四部"></el-option>
+        </el-select>
+      </div>
+      <el-button type="primary" class="btn" @click="onSubmit">查询</el-button>
+      <el-button type="primary" @click="onEmpty">清空</el-button>
+    </div>
+
+    <!-- 导出按钮 -->
+    <div class="menu">
+      <div class="btn">
+        <el-button icon="el-icon-plus" @click="dialogVisible = true">添加车辆信息</el-button>
+        <el-button icon="el-icon-download" @click="msgexport = true">车辆信息导出</el-button>
+        <el-button icon="el-icon-upload2" @click="msgimport = true">车辆信息导入</el-button>
       </div>
     </div>
-    <!-- 弹窗 -->
+
+    <!-- 表格 -->
+    <el-table
+      :data="data.list.slice((currpage - 1) * pagesize, currpage * pagesize)"
+      border
+      style="width: 100%"
+    >
+      <el-table-column align="center" prop="member" label="车牌号"></el-table-column>
+      <el-table-column align="center" prop="shoppingtime" label="购车时间"></el-table-column>
+      <el-table-column align="center" prop="parm2" label="资产编号"></el-table-column>
+      <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
+      <el-table-column align="center" prop="user" label="使用人"></el-table-column>
+      <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+      <el-table-column align="center" label="交接记录">
+        <template slot-scope="scope">
+          <el-button
+            class="tableButton1"
+            type="primary"
+            size="small"
+            @click="showhandover(scope.row, scope.$index)"
+          >详情</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="电池更换记录">
+        <template slot-scope="scope">
+          <el-button
+            class="tableButton1"
+            type="primary"
+            size="small"
+            @click="showBattery(scope.row, scope.$index)"
+          >详情</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="维修记录">
+        <template slot-scope="scope">
+          <el-button
+            class="tableButton1"
+            type="primary"
+            size="small"
+            @click="showservice(scope.row, scope.$index)"
+          >详情</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作">
+        <template slot-scope="scope">
+          <el-button
+            class="tableButton1"
+            type="primary"
+            size="small"
+            @click="pagination(scope.row, scope.$index)"
+          >编辑</el-button>
+          <el-button
+            class="tableButton2"
+            type="danger"
+            @click="deletList(scope.row, scope.$index)"
+            size="small"
+          >删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+      class="paginationList"
+      background
+      :current-page="data.currpage"
+      :page-size="data.pagesize"
+      @prev-click="nextpage"
+      @next-click="nextpage"
+      @current-change="nextpage"
+      :page-sizes="[10,20,30,40]"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="data.list.length"
+    ></el-pagination>
+
+    <!-- 信息导出 -->
+    <el-dialog title="信息导出" :visible.sync="msgexport" width="15%" center>
+      <div class="download">
+        <div>全部信息模版</div>
+        <el-button type="primary" size="mini">导出</el-button>
+      </div>
+      <div class="download">
+        <div>垃圾清运车信息模版</div>
+        <el-button type="primary" size="mini">导出</el-button>
+      </div>
+      <div class="download">
+        <div>清扫车信息模版</div>
+        <el-button type="primary" size="mini">导出</el-button>
+      </div>
+      <div class="download">
+        <div>洒水车信息模版</div>
+        <el-button type="primary" size="mini">导出</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 信息导入 -->
+    <el-dialog title="信息导入" :visible.sync="msgimport" width="30%" center>
+      <div class="download">
+        <div>全部信息模版</div>
+        <el-upload
+          class="upload-demo"
+          action="http://118.31.245.183:10500/MotorDetail/importExcel"
+          :show-file-list="false"
+          :limit="1"
+          style="float: right;"
+        >
+          <el-button type="primary" size="mini">上传</el-button>
+        </el-upload>
+      </div>
+      <div class="download">
+        <div>垃圾清运车信息模版</div>
+        <el-button type="primary" size="mini">上传</el-button>
+      </div>
+      <div class="download">
+        <div>清扫车信息模版</div>
+        <el-button type="primary" size="mini">上传</el-button>
+      </div>
+      <div class="download">
+        <div>洒水车信息模版</div>
+        <el-button type="primary" size="mini">上传</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 添加车辆信息 -->
     <el-dialog title="添加车辆信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
       <el-form
         :inline="true"
@@ -64,16 +165,6 @@
         :rules="rules"
         class="demo-form-inline"
       >
-        <el-form-item label="车辆类型" class="searchType" prop="cartype">
-          <el-select v-model="ruleForm.cartype" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="车牌号" prop="mumber">
           <el-input v-model="ruleForm.mumber"></el-input>
         </el-form-item>
@@ -85,26 +176,14 @@
         </el-form-item>
         <el-form-item label="归属单位" prop="department">
           <el-select v-model="ruleForm.department" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
+            <el-option label="item.label" value="item.label"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="指定司机" prop="user">
           <el-input v-model="ruleForm.user"></el-input>
         </el-form-item>
-        <el-form-item label="作业区域" prop="area">
-          <el-select v-model="ruleForm.area" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
-          </el-select>
+        <el-form-item label="联系方式" prop="user">
+          <el-input v-model="ruleForm.tel"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -114,149 +193,16 @@
         <el-button type="primary" @click="addCar('ruleForm')" class="formButon">保存</el-button>
       </span>
     </el-dialog>
-    <!-- 弹框2 -->
-    <el-dialog title="信息导入" :visible.sync="msgimport" width="15%" center>
-      <div class="download">
-        <div>全部信息模版</div>
-        <el-button type="primary" size="mini">下载</el-button>
-      </div>
-      <div class="download">
-        <div>垃圾运输车信息模版</div>
-        <el-button type="primary" size="mini">下载</el-button>
-      </div>
-      <div class="download">
-        <div>清扫车信息模版</div>
-        <el-button type="primary" size="mini">下载</el-button>
-      </div>
-      <div class="download">
-        <div>洒水车信息模版</div>
-        <el-button type="primary" size="mini">下载</el-button>
-      </div>
-    </el-dialog>
-    <!-- 弹框3 -->
-    <el-dialog title="信息导出" :visible.sync="msgexport" width="15%" center>
-      <div class="download">
-        <div>全部信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-      <div class="download">
-        <div>垃圾运输车信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-      <div class="download">
-        <div>清扫车信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-      <div class="download">
-        <div>洒水车信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-    </el-dialog>
-    <!-- 表格 -->
-    <el-table
-      :data="tableData.slice((currpage - 1) * pagesize, currpage * pagesize)"
-      border
-      style="width: 100%"
-    >
-      <el-table-column align="center" prop="num" label="序号" width></el-table-column>
-      <el-table-column align="center" prop="member" label="车牌号" width></el-table-column>
-      <el-table-column align="center" prop="shoppingtime" label="购车时间" width></el-table-column>
-      <el-table-column align="center" prop="parm2" label="资产编号" width></el-table-column>
-      <el-table-column align="center" prop="department" label="归属单位" width></el-table-column>
-      <el-table-column align="center" prop="user" label="使用人" width></el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width>
-        <template slot-scope="scope">
-          <el-button
-            class="tableButton1"
-            type="primary"
-            size="small"
-            @click="pagination(scope.row, scope.$index)"
-          >详情</el-button>
-          <el-button
-            class="tableButton2"
-            type="danger"
-            @click="deletList(scope.row, scope.$index)"
-            size="small"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <el-pagination
-      class="paginationList"
-      background
-      @prev-click="nextpage"
-      @next-click="nextpage"
-      @current-change="nextpage"
-      :page-sizes="[10,20,30,40]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="tableData.length"
-    ></el-pagination>
-    <!-- 弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="details" class="demo-form-inline" v-if="buttonIf">
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="details.cartype" class="selectTop" disabled>
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车牌号">
-          <el-input v-model="details.member" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="购车时间">
-          <el-input v-model="details.shoppingtime" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="资产编号">
-          <el-input v-model="details.parm2" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="details.department" class="selectTop" disabled>
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="details.area" class="selectTop" disabled>
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="使用人">
-          <el-input v-model="details.user" disabled></el-input>
-        </el-form-item>
-      </el-form>
+
+    <!-- 编辑车辆信息 -->
+    <el-dialog title="车辆编辑" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
       <el-form
         :inline="true"
         :model="details"
         ref="ruleDetails"
         :rules="detail"
         class="demo-form-inline"
-        v-if="!buttonIf"
       >
-        <el-form-item label="车辆类型" class="searchType">
-          <el-select v-model="details.cartype" class="selectTop">
-            <el-option
-              v-for="item in optionsCar"
-              :key="item.i"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="车牌号">
           <el-input v-model="details.member"></el-input>
         </el-form-item>
@@ -268,26 +214,14 @@
         </el-form-item>
         <el-form-item label="归属单位">
           <el-select v-model="details.department" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="details.area" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
+            <el-option label="item.label" value="item.label"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="使用人">
           <el-input v-model="details.user"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input v-model="details.tel"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -303,6 +237,124 @@
         >保存</el-button>
       </span>
     </el-dialog>
+
+    <!-- 交接记录 -->
+    <el-dialog title="交接记录" :visible.sync="handover.show">
+      <el-row type="flex" class="row-bg" justify="space-between">
+        <el-col :span="6">
+          <div class="grid-content bg-purple">
+            <el-form label-position="right" label-width="100px" :model="handover.addmsg">
+              <el-form-item label="日期">
+                <el-date-picker
+                  style="width:150px"
+                  v-model="handover.addmsg.date"
+                  type="date"
+                  placeholder="选择日期"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="上一使用人">
+                <el-input v-model="handover.addmsg.name" style="width:150px"></el-input>
+              </el-form-item>
+              <el-form-item label="下一使用人">
+                <el-input v-model="handover.addmsg.name" style="width:150px"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+        <el-col :span="13">
+          <div class="grid-content">
+            <el-form label-position="right" label-width="80px" :model="handover.addmsg">
+              <el-form-item label="备注">
+                <el-input
+                  type="textarea"
+                  resize="none"
+                  v-model="handover.addmsg.content"
+                  :autosize="{ minRows: 7, maxRows: 4}"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+        <el-col :span="5" :offset="1">
+          <div class="grid-content bg-purple">
+            <el-button type="primary" style="width: 90%">添加</el-button>
+          </div>
+        </el-col>
+      </el-row>
+
+      <el-table
+        :data="handover.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+      >
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
+        <el-table-column align="center" prop="maintaintime" label="维修/保养时间"></el-table-column>
+        <el-table-column align="center" prop="param1" label="类型"></el-table-column>
+        <el-table-column align="center" prop="maintaindiscript" label="保养详情"></el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!-- 更换记录 -->
+    <el-dialog title="电池更换记录" :visible.sync="battery.show">
+      <div class="title">
+        <el-form :model="formLabelAlign">
+          <el-form-item label="日期">
+            <el-date-picker v-model="battery.addmsg.date" type="date" placeholder="选择日期"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="更换原因">
+            <el-input style="width: 200px" v-model="battery.addmsg.type" placeholder="请输入更换原因"></el-input>
+          </el-form-item>
+          <el-form-item label="更换详情">
+            <el-input style="width: 200px" v-model="battery.addmsg.content" placeholder="请输入更换详情"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button style="float:right; margin-right:20px" type="primary">添加</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <el-table
+        :data="battery.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+      >
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
+        <el-table-column align="center" prop="maintaintime" label="日期"></el-table-column>
+        <el-table-column align="center" prop="param1" label="更换详情"></el-table-column>
+        <el-table-column align="center" prop="maintaindiscript" label="更换原因"></el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!-- 维修记录 -->
+    <el-dialog title="维修记录" :visible.sync="service.show">
+      <div class="title">
+        <div class="titlebox">
+          日期
+          <el-date-picker v-model="service.addmsg.date" type="date" placeholder="选择日期"></el-date-picker>
+        </div>
+        <div class="titlebox">
+          维修人
+          <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修人"></el-input>
+        </div>
+        <div class="titlebox">
+          维修原因
+          <el-input style="width: 200px" v-model="service.addmsg.type" placeholder="请输入维修原因"></el-input>
+        </div>
+        <div class="titlebox">
+          维修结果
+          <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修结果"></el-input>
+        </div>
+        <div>
+          <el-button style="float:right; margin-right:20px" type="primary">添加</el-button>
+        </div>
+      </div>
+
+      <el-table
+        :data="service.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+      >
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
+        <el-table-column align="center" prop="maintaintime" label="日期"></el-table-column>
+        <el-table-column align="center" prop="maintaintime" label="维修人"></el-table-column>
+        <el-table-column align="center" prop="param1" label="维修原因"></el-table-column>
+        <el-table-column align="center" prop="maintaindiscript" label="维修结果"></el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -310,21 +362,51 @@
 export default {
   data() {
     return {
+      // 首屏搜索
+      search: {
+        busnumber: "",
+        user: "",
+        department: ""
+      },
+      // 列表数据
+      data: {
+        pagesize: 10,
+        currpage: 1,
+        list: []
+      },
+      // 交接记录
+      handover: {
+        show: false,
+        addmsg: {
+          Predecessor: "",
+          Next: "",
+          date: "",
+          content: ""
+        },
+        list: []
+      },
+      // 电池更换
+      battery: {
+        show: false,
+        addmsg: {
+          date: "",
+          type: "",
+          content: ""
+        },
+        list: []
+      },
+      // 维修
+      service: {
+        show: false,
+        addmsg: {},
+        list: []
+      },
       dialogFormVisible: false,
       dialogVisible: false,
-      number: "",
-      usearch: {
-        number: "",
-        road: "",
-        area: "",
-        depart: ""
-      },
-      text: "车辆详情",
       msgexport: false,
       msgimport: false,
       pagesize: 10,
       currpage: 1,
-      tableData: [],
       ruleForm: {
         cartype: "",
         mumber: "",
@@ -335,9 +417,6 @@ export default {
         area: ""
       },
       rules: {
-        cartype: [
-          { required: true, message: "请选择车辆类型", trigger: "blur" }
-        ],
         mumber: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
         shoppingtime: [
           {
@@ -351,8 +430,7 @@ export default {
         department: [
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
-        parm2: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
-        area: [{ required: true, message: "请选择作业区域", trigger: "blur" }]
+        tel: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
       },
       formInline: {
         cartype: "",
@@ -384,251 +462,34 @@ export default {
         parm2: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
         area: [{ required: true, message: "请选择作业区域", trigger: "blur" }]
       },
-
-      i: "0",
-      optionsCar: [
-        {
-          i: "0",
-          label: ""
-        },
-        {
-          i: "1",
-          label: "垃圾清运车"
-        },
-        {
-          i: "2",
-          label: "清扫车"
-        },
-        {
-          i: "3",
-          label: "洒水车"
-        },
-        {
-          i: "3",
-          label: "三轮车"
-        }
-      ],
-      rd: "0",
-      roadList: [
-        {
-          rd: "1",
-          road: "庐山路"
-        },
-        {
-          rd: "2",
-          road: "宁阳路"
-        },
-        {
-          rd: "3",
-          road: "新泰路"
-        },
-        {
-          rd: "4",
-          road: "北一路"
-        },
-        {
-          rd: "5",
-          road: "北二路"
-        },
-        {
-          rd: "6",
-          road: "黄河路"
-        }
-      ],
-      value: "0",
-      options: [
-        {
-          value: "1",
-          area: "东营区新区"
-        },
-        {
-          value: "2",
-          area: "文汇街道办事处"
-        },
-        {
-          value: "3",
-          area: "辛店街道办事处"
-        },
-        {
-          value: "4",
-          area: "黄河街道办事处"
-        },
-        {
-          value: "5",
-          area: "圣园街道办事处"
-        },
-        {
-          value: "6",
-          area: "六户镇"
-        },
-        {
-          value: "7",
-          area: "牛庄镇"
-        },
-        {
-          value: "8",
-          area: "史口镇"
-        },
-        {
-          value: "9",
-          area: "龙居镇"
-        },
-        {
-          value: "10",
-          area: "新泰路"
-        }
-      ],
-      lu: "0",
-      optionslu: [
-        {
-          lu: "0",
-          label: "全部"
-        },
-        {
-          lu: "1",
-          label: "东营区新区"
-        },
-        {
-          lu: "2",
-          label: "文汇街道办事处"
-        },
-        {
-          lu: "3",
-          label: "辛店街道办事处"
-        },
-        {
-          lu: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          lu: "5",
-          label: "圣园街道办事处"
-        },
-        {
-          lu: "6",
-          label: "六户镇"
-        },
-        {
-          lu: "7",
-          label: "牛庄镇"
-        },
-        {
-          lu: "8",
-          label: "史口镇"
-        },
-        {
-          lu: "9",
-          label: "龙居镇"
-        }
-      ],
-      id: "0",
-      optionsList: [
-        {
-          id: "1",
-          depart: "环卫一部"
-        },
-        {
-          id: "2",
-          depart: "环卫二部"
-        },
-        {
-          id: "3",
-          depart: "环卫三部"
-        },
-        {
-          id: "4",
-          depart: "环卫四部"
-        }
-      ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          label: "全部"
-        },
-        {
-          web: "1",
-          label: "环卫一部"
-        },
-        {
-          web: "2",
-          label: "环卫二部"
-        },
-        {
-          web: "3",
-          label: "环卫三部"
-        },
-        {
-          web: "4",
-          label: "环卫四部"
-        }
-      ],
-      type: "0",
-      optionsType: [
-        {
-          type: "0",
-          label: "A1"
-        },
-        {
-          type: "1",
-          label: "A2"
-        },
-        {
-          type: "2",
-          label: "B1"
-        },
-        {
-          type: "3",
-          label: "B2"
-        },
-        {
-          type: "4",
-          label: "C1"
-        },
-        {
-          type: "5",
-          label: "C2"
-        }
-      ],
-      state: "0",
-      optionsStated: [
-        {
-          state: "0",
-          label: "在职"
-        },
-        {
-          state: "1",
-          label: "离职"
-        }
-      ],
       buttonIf: false,
       formInline: {}
     };
   },
   // 监听
   watch: {
-    number: function(val) {
-      this.usearch.number = val;
-      let reg = /^[0-9a-zA-Z]+$/;
-      if (!reg.test(val)) {
-        this.$message({
-          showClose: true,
-          message: "请输入字母或数子",
-          type: "error",
-          offset: 152
-        });
-        // alert('请输入字母或数子')
-      } else if (val.length > 10) {
-        this.$message({
-          showClose: true,
-          message: "请输入不超过10位的数子字母",
-          type: "error",
-          offset: 152
-        });
-        // alert("请输入不超过10位的数子字母")
-        this.usearch.msgear = this.usearch.msgear.substr(0, 10);
-      }
-    }
+    // number: function(val) {
+    //   this.usearch.number = val;
+    //   let reg = /^[0-9a-zA-Z]+$/;
+    //   if (!reg.test(val)) {
+    //     this.$message({
+    //       showClose: true,
+    //       message: "请输入字母或数子",
+    //       type: "error",
+    //       offset: 152
+    //     });
+    //     // alert('请输入字母或数子')
+    //   } else if (val.length > 10) {
+    //     this.$message({
+    //       showClose: true,
+    //       message: "请输入不超过10位的数子字母",
+    //       type: "error",
+    //       offset: 152
+    //     });
+    //     // alert("请输入不超过10位的数子字母")
+    //     this.usearch.msgear = this.usearch.msgear.substr(0, 10);
+    //   }
+    // }
   },
   methods: {
     // 切换页面
@@ -636,7 +497,7 @@ export default {
       this.currpage = value;
     },
     addCar(formName) {
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       this.$refs[formName].validate(valid => {
         if (valid) {
           // alert("submit!");
@@ -682,7 +543,7 @@ export default {
         }
       });
     },
-    addDo(){
+    addDo() {
       this.buttonIf = false;
     },
     pagination(row, _index) {
@@ -713,18 +574,16 @@ export default {
     getlist() {
       this.$http.post("sanitation/car/formSearch").then(res => {
         console.log(res.data);
-        this.tableData = res.data;
+        this.data.list = res.data;
       });
     },
     // 查询
     onSubmit() {
-      // console.log("查啥?");
-      console.log(this.usearch);
       this.$http
-        .post("sanitation/car/formSearch", this.$qs.stringify(this.usearch))
+        .post("sanitation/car/formSearch", this.$qs.stringify())
         .then(res => {
           console.log(res.data);
-          this.tableData = res.data;
+          this.data.list = res.data;
         })
         .catch(err => {
           console.log("请求失败");
@@ -732,13 +591,19 @@ export default {
     },
     // 清空
     onEmpty() {
-      this.usearch = {
-        number: "",
-        road: "",
-        area: "",
-        depart: ""
-      },
       this.getlist();
+    },
+    // 显示交接记录
+    showhandover() {
+      this.handover.show = !this.handover.show;
+    },
+    // 显示电池更换记录
+    showBattery() {
+      this.battery.show = !this.battery.show;
+    },
+    // 显示维修记录
+    showservice() {
+      this.service.show = !this.service.show;
     }
   },
   created() {
@@ -749,33 +614,29 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
 .search {
-  position: relative;
-  width: 100%;
-  height: 76px;
-  margin-top: 16px;
-  .searchTop {
+  padding: 20px 0;
+  .searchbox {
     float: left;
-    margin-bottom: 16px;
+    padding-left: 10px;
+    span {
+      padding-right: 10px;
+    }
   }
-  .searchBot {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    .buttonBot {
-      width: 92px;
-      height: 25px;
-      font-size: 12px;
-      padding: 0;
-    }
-    .buttonBotLast {
-      width: 92px;
-      height: 25px;
-      font-size: 12px;
-      padding: 0;
-      margin: 0;
-    }
+  .btn {
+    margin-left: 15px;
   }
 }
+
+.menu {
+  .filter {
+    float: left;
+  }
+  .btn {
+    float: right;
+    margin-bottom: 10px;
+  }
+}
+
 .paginationList {
   text-align: center;
   margin-top: 32px;
@@ -833,6 +694,11 @@ export default {
   }
   button {
     float: right;
+  }
+}
+.title {
+  .titlebox {
+    margin: 10px 0;
   }
 }
 </style>

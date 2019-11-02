@@ -82,9 +82,8 @@
         <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
         <el-table-column align="center" label="是否超龄">
           <template slot-scope="scope">
-            <!-- <span style="margin-left: 10px">{{ scope.row.isretired ? '否' : '是' }}</span> -->
-            <span style="margin-left: 10px" v-if="scope.row.isretired === '否'">否</span>
-            <span style="margin-left: 10px" v-else-if="scope.row.isretired === '是'">是</span>
+            <span style="margin-left: 10px" v-if="scope.row.isretired === '0'">否</span>
+            <span style="margin-left: 10px" v-else-if="scope.row.isretired === '1'">是</span>
           </template>
         </el-table-column>
         <el-table-column align="center" fixed="right" label="操作" width="280px">
@@ -561,7 +560,6 @@ export default {
       this.$http.get("userInformation/getEmployeeRoad").then(res => {
         this.dropDown.road = res.data;
         console.log(res);
-        
       });
       this.$http.get("userInformation/getEmployeeDepart").then(res => {
         this.dropDown.depart = res.data;

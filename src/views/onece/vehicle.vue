@@ -1404,15 +1404,10 @@ export default {
     left: 300px;
   }
 }
+
 .map {
   position: relative;
   height: 100%;
-  .BMap_cpyCtrl {
-    display: none !important;
-  }
-  .anchorBL {
-    display: none !important;
-  }
 }
 
 .BMap_Marker {

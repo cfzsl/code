@@ -17,20 +17,6 @@
         </el-select>
       </div>
       <div class="searchbox">
-        <span>负责道路</span>
-        <el-select v-model="search.param2">
-          <el-option label="全部" value></el-option>
-          <el-option label="庐山路" value="庐山路"></el-option>
-          <el-option label="宁阳路" value="宁阳路"></el-option>
-          <el-option label="新泰路" value="新泰路"></el-option>
-          <el-option label="北一路" value="北一路"></el-option>
-          <el-option label="北二路" value="北二路"></el-option>
-          <el-option label="黄河路" value="黄河路"></el-option>
-          <el-option label="济南路" value="济南路"></el-option>
-          <el-option label="淄博路" value="淄博路"></el-option>
-        </el-select>
-      </div>
-      <div class="searchbox">
         <span>作业区域</span>
         <el-select v-model="search.area">
           <el-option label="全部" value></el-option>
@@ -134,28 +120,19 @@
         <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
         <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
         <el-table-column align="center" prop="param3" label="联系方式"></el-table-column>
-        <el-table-column align="center" label="车况异常">
+        <el-table-column align="center" label="维修保养">
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              size="mini"
-              @click.stop="carwarning(scope.$index, scope.row)"
-            >查看</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="油耗信息">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click.stop="showWarning(scope.row)">查看</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="保养记录">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click.stop="showmaintenance(scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" @click.stop="showmaintenance(scope.row)">详情</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保险缴纳">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click.stop="showinsurance(scope.row)">查看</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="历史行车轨迹">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click.stop="showWarning(scope.row)">查看</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" fixed="right" width="280px" label="操作">
@@ -185,7 +162,6 @@
       <el-pagination
         :current-page="data.currpage"
         :page-size="data.pagesize"
-        :pager-count="21"
         layout="total, prev, pager, next"
         :total="data.list.length"
         @prev-click="nextpage"
@@ -259,7 +235,12 @@
           <el-input v-model="msg.busnumber" placeholder="请输入车牌号"></el-input>
         </el-form-item>
         <el-form-item label="购车时间" prop="shoppingtime">
-          <el-date-picker v-model="msg.shoppingtime" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker
+            v-model="msg.shoppingtime"
+            type="date"
+            placeholder="选择日期"
+            style="width: 332px;"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="资产编号" prop="member">
           <el-input v-model="msg.member" placeholder="请输入资产编号"></el-input>
@@ -280,14 +261,8 @@
         <el-form-item label="指定司机" prop="user">
           <el-input v-model="msg.user" placeholder="请输入司机"></el-input>
         </el-form-item>
-        <el-form-item label="车辆维修情况" prop="repairdetail">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 2}"
-            placeholder="请输入内容"
-            v-model="msg.repairdetail"
-            resize="none"
-          ></el-input>
+        <el-form-item label="联系方式" prop="tel">
+          <el-input v-model="msg.tel" placeholder="请输入联系方式"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -296,71 +271,52 @@
       </span>
     </el-dialog>
 
-    <!-- 车况报警 -->
-    <el-dialog title="车况异常" :visible.sync="showcondition">
+    <!-- 历史行车轨迹 -->
+    <el-dialog title="历史行车轨迹" :visible.sync="showwarning">
       <div class="abnormalsearch">
-        记录时间段：
-        <el-date-picker
-          v-model="condition.search.date"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-        <div class="btn">
-          <el-button type="primary">搜索</el-button>
-          <el-button type="primary">清空</el-button>
-        </div>
-      </div>
-      <el-form ref="form" label-width="auto" class="msg">
-        <div class="list">
-          <el-table
-            :data="condition.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
-            border
-            style="width: 100%"
-          >
-            <el-table-column align="center" prop="num" label="序号"></el-table-column>
-            <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
-            <el-table-column align="center" prop="warmingtime" label="记录时间"></el-table-column>
-            <el-table-column align="center" prop="faultinformation" label="异常情况"></el-table-column>
-          </el-table>
-        </div>
-      </el-form>
-    </el-dialog>
-
-    <!-- 油耗 -->
-    <el-dialog title="油耗信息" :visible.sync="showwarning">
-      <div class="abnormalsearch">
-        记录时间段：
-        <el-date-picker
-          v-model="oil.search.date"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-        <div class="btn">
-          <el-button type="primary">搜索</el-button>
-          <el-button type="primary">清空</el-button>
-        </div>
+        <span style="margin-right: 10px">
+          类型
+          <el-select v-model="history.search.type" placeholder="请选择">
+            <el-option label="全部" value></el-option>
+            <el-option label="正常行驶" value="正常行驶"></el-option>
+            <el-option label="越界行驶" value="越界行驶"></el-option>
+          </el-select>
+        </span>
+        <span>
+          记录时间段
+          <el-date-picker
+            v-model="history.search.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
+          <div class="btn">
+            <el-button type="primary">搜索</el-button>
+            <el-button type="primary">清空</el-button>
+          </div>
+        </span>
       </div>
       <div class="list">
         <el-table
-          :data="oil.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+          :data="history.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
           border
           style="width: 100%"
         >
           <el-table-column align="center" prop="num" label="序号"></el-table-column>
           <el-table-column align="center" prop="checkgastime" label="记录时间"></el-table-column>
-          <el-table-column align="center" prop="param1" label="当日总行程"></el-table-column>
-          <el-table-column align="center" prop="param2" label="平均时速（KM/h）"></el-table-column>
-          <el-table-column align="center" prop="gasolineused" label="车辆耗油量（L/100KM）"></el-table-column>
+          <el-table-column align="center" prop="param1" label="类型"></el-table-column>
+          <el-table-column align="center" label="行车轨迹">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click.stop="showhistory(scope.row)">播放行车轨迹</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </el-dialog>
 
-    <!-- 保养记录 -->
-    <el-dialog title="保养记录" :visible.sync="maintenance">
+    <!-- 维修保养 -->
+    <el-dialog title="维修保养" :visible.sync="maintenance">
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="6">
           <div class="grid-content bg-purple">
@@ -375,6 +331,7 @@
               </el-form-item>
               <el-form-item label="类型">
                 <el-select v-model="maintenanceList.addmsg.type" placeholder="请选择">
+                  <el-option label="全部" value></el-option>
                   <el-option label="维修" value="维修"></el-option>
                   <el-option label="保养" value="保养"></el-option>
                 </el-select>
@@ -416,6 +373,31 @@
           </div>
         </el-col>
       </el-row>
+
+      <div class="abnormalsearch" style="margin: 10px 0">
+        <span style="margin-right: 10px">
+          类型
+          <el-select v-model="maintenanceList.search.type" placeholder="请选择">
+            <el-option label="全部" value></el-option>
+            <el-option label="维修" value="维修"></el-option>
+            <el-option label="保养" value="保养"></el-option>
+          </el-select>
+        </span>
+        <span>
+          记录时间段
+          <el-date-picker
+            v-model="maintenanceList.search.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
+          <div class="btn">
+            <el-button type="primary">搜索</el-button>
+            <el-button type="primary">清空</el-button>
+          </div>
+        </span>
+      </div>
 
       <el-table
         :data="maintenanceList.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
@@ -502,7 +484,6 @@ export default {
       // 首屏搜索
       search: {
         busnumber: "",
-        param2: "",
         area: "",
         department: "",
         cartype: ""
@@ -516,7 +497,8 @@ export default {
         department: "",
         user: "",
         area: "",
-        repairdetail: ""
+        repairdetail: "",
+        tel: ""
       },
       // 分页效果
       data: {
@@ -531,12 +513,19 @@ export default {
         },
         list: []
       },
-      // 油耗
-      oil: {
+      // 历史行车轨迹
+      history: {
         search: {
-          date: ""
+          date: "",
+          type: ""
         },
-        list: []
+        list: [
+          {
+            num: "1",
+            checkgastime: "2019-11-02",
+            param1: "正常行驶"
+          }
+        ]
       },
       // 保养记录
       maintenanceList: {
@@ -545,6 +534,10 @@ export default {
           type: "",
           content: "",
           fileList: []
+        },
+        search: {
+          type: "",
+          date: ""
         },
         list: []
       },
@@ -580,12 +573,12 @@ export default {
           { required: true, message: "请输入归属单位", trigger: "blur" }
         ],
         user: [{ required: true, message: "请输入指定司机", trigger: "blur" }],
+        tel: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
         area: [{ required: true, message: "请选择使用区域", trigger: "blur" }]
       },
       // 图片上传列表
       fileList: [],
       // 弹出层切换
-      showcondition: false,
       msgimport: false,
       msgexport: false,
       showwarning: false,
@@ -629,34 +622,25 @@ export default {
           this.maintenanceList.list = res.data;
         });
     },
-    // 油耗信息
+    // 历史行车轨迹
     showWarning(row) {
       this.showwarning = !this.showwarning;
-      this.$http
-        .post(
-          "MotorDetail/getYHByBusNumber",
-          this.$qs.stringify({ busNumber: row.busnumber })
-        )
-        .then(res => {
-          this.oil.list = res.data;
-        });
+      // this.$http
+      //   .post(
+      //     "MotorDetail/getYHByBusNumber",
+      //     this.$qs.stringify({ busNumber: row.busnumber })
+      //   )
+      //   .then(res => {
+      //     this.history.list = res.data;
+      //   });
+    },
+    // 播放行车轨迹
+    showhistory(row) {
+      this.$router.push({ name: "vehicle" });
     },
     // 下一页
     nextpage(value) {
       this.data.currpage = value;
-    },
-    // 车况信息
-    carwarning(index, row) {
-      this.msg = row;
-      this.showcondition = !this.showcondition;
-      this.$http
-        .post(
-          "MotorDetail/getConditionByBusNumber",
-          this.$qs.stringify({ busNumber: row.busnumber })
-        )
-        .then(res => {
-          this.condition.list = res.data;
-        });
     },
     // 显示详情
     handleDetail(index, row) {
@@ -895,5 +879,9 @@ export default {
     float: right;
     border-radius: 5px;
   }
+}
+
+.row-bg {
+  border-bottom: 1px solid #d2d2d2;
 }
 </style>
