@@ -22,9 +22,12 @@
     <el-menu-item index="/town/supervision">
         <span class="iconfont icon-cheliangxinxiguanli2"></span>道路信息管理
     </el-menu-item>  
-    <el-menu-item index="/welcom/WcSupervision">
-        <span class="iconfont icon-shouye"></span>公厕管理
+    <a href="http://47.110.160.217:5080/">
+      <el-menu-item>
+        <span class="iconfont icon-shouye"></span>
+        公厕管理
       </el-menu-item>
+    </a>
     <!-- <el-submenu index="/onece/base">
       <template slot="title">
         <span class="iconfont icon-huanweicheguanli"></span>
@@ -95,6 +98,9 @@
       </el-menu-item>
       <el-menu-item index="/AddressBook">
         <span class="iconfont icon-tongxunlu"></span>通讯录
+      </el-menu-item>
+      <el-menu-item index="/logList">
+        <span class="iconfont icon-tongxunlu"></span>操作日志
       </el-menu-item>
     </el-submenu>
     <el-menu-item index="/business/process">
