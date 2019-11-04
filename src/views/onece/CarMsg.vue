@@ -625,14 +625,6 @@ export default {
     // 历史行车轨迹
     showWarning(row) {
       this.showwarning = !this.showwarning;
-      // this.$http
-      //   .post(
-      //     "MotorDetail/getYHByBusNumber",
-      //     this.$qs.stringify({ busNumber: row.busnumber })
-      //   )
-      //   .then(res => {
-      //     this.history.list = res.data;
-      //   });
     },
     // 播放行车轨迹
     showhistory(row) {

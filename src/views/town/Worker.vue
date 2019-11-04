@@ -1,45 +1,21 @@
 <template>
-  <!-- 环卫工人员信息 -->
+  <!-- 系统通知 -->
   <div id="base">
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
         <el-form :inline="true" :model="formInline">
-          <el-form-item label="姓名">
-            <el-input class="searchInput" v-model="search.name" placeholder="姓名"></el-input>
+          <el-form-item label="日期">
+            <el-date-picker
+              v-model="search.date"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            ></el-date-picker>
           </el-form-item>
-          <el-form-item label="负责道路">
-            <el-select v-model="search.param2">
-              <el-option label="全部道路" value></el-option>
-              <el-option label="庐山路" value="庐山路"></el-option>
-              <el-option label="宁阳路" value="宁阳路"></el-option>
-              <el-option label="新泰路" value="新泰路"></el-option>
-              <el-option label="北一路" value="北一路"></el-option>
-              <el-option label="北二路" value="北二路"></el-option>
-              <el-option label="黄河路" value="黄河路"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="search.area">
-              <el-option label="全部区域" value></el-option>
-              <el-option label="东营区新区" value="东营区新区"></el-option>
-              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
-              <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
-              <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
-              <el-option label="六户镇" value="六户镇"></el-option>
-              <el-option label="史口镇" value="史口镇"></el-option>
-              <el-option label="牛庄镇" value="牛庄镇"></el-option>
-              <el-option label="龙居镇" value="龙居镇"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="search.depart">
-              <el-option label="全部部门" value></el-option>
-              <el-option label="环卫一部" value="环卫一部"></el-option>
-              <el-option label="环卫二部" value="环卫二部"></el-option>
-              <el-option label="环卫三部" value="环卫三部"></el-option>
-            </el-select>
+          <el-form-item label="标题">
+            <el-input class="searchInput" v-model="search.title" placeholder="请输入标题"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -47,96 +23,12 @@
         </el-form>
       </div>
     </div>
+
     <!-- 按钮 -->
     <div class="searchBot" style="float: right;margin-bottom: 10px;">
-      <el-button class="buttonBot" icon="el-icon-plus" @click="dialogVisible = true">添加人员信息</el-button>
-      <el-button class="buttonBot">导入模板下载</el-button>
-      <el-button icon="el-icon-upload2" class="buttonBot" @click="dialogAble = true">人员信息导入</el-button>
-      <el-button icon="el-icon-download" class="buttonBotLast">导出全员信息</el-button>
+      <el-button class="buttonBot" icon="el-icon-plus" @click="dialogVisible = true">新建通知</el-button>
+      <el-button icon="el-icon-download" class="buttonBotLast">导出数据</el-button>
     </div>
-    <!-- 弹窗1 -->
-    <el-dialog title="添加人员信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="姓名">
-          <el-input v-model="formInline.name"></el-input>
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-input v-model="formInline.usg"></el-input>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="formInline.msg"></el-input>
-        </el-form-item>
-        <el-form-item label="证件号">
-          <el-input v-model="formInline.id"></el-input>
-        </el-form-item>
-        <el-form-item label="准驾车型">
-          <el-select v-model="type" class="selectTop">
-            <el-option label="A1" value="A1"></el-option>
-            <el-option label="A2" value="A2"></el-option>
-            <el-option label="B1" value="B1"></el-option>
-            <el-option label="B2" value="B2"></el-option>
-            <el-option label="C1" value="C1"></el-option>
-            <el-option label="C2" value="C2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="住址">
-          <el-input v-model="formInline.address"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="formInline.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="state" class="selectTop">
-            <el-option label="在职" value></el-option>
-            <el-option label="离职" value="离职"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="入职时间">
-          <el-input v-model="formInline.addtime"></el-input>
-        </el-form-item>
-        <el-form-item label="离职时间">
-          <el-input v-model="formInline.updatetime"></el-input>
-        </el-form-item>
-        <el-form-item label="作业区域">
-          <el-select v-model="job" class="selectTop">
-            <el-option label="全部区域" value></el-option>
-            <el-option label="东营区新区" value="东营区新区"></el-option>
-            <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-            <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
-            <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
-            <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
-            <el-option label="六户镇" value="六户镇"></el-option>
-            <el-option label="史口镇" value="史口镇"></el-option>
-            <el-option label="牛庄镇" value="牛庄镇"></el-option>
-            <el-option label="龙居镇" value="龙居镇"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="归属单位">
-          <el-select v-model="web" class="selectTop">
-            <el-option label="全部部门" value></el-option>
-            <el-option label="环卫一部" value="环卫一部"></el-option>
-            <el-option label="环卫二部" value="环卫二部"></el-option>
-            <el-option label="环卫三部" value="环卫三部"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
-      </span>
-    </el-dialog>
-    <!-- 弹窗2 -->
-    <el-dialog title="导入人员信息" :visible.sync="dialogAble" width="426px" class="dialogText">
-      <el-divider></el-divider>
-      <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false" class="formButon">保存</el-button>
-      </span>
-    </el-dialog>
 
     <!-- 列表 -->
     <div id="table">
@@ -145,22 +37,12 @@
         border
         style="width: 100%"
       >
-        <el-table-column align="center" prop="sid" label="序号"></el-table-column>
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="area" label="区域"></el-table-column>
-        <el-table-column align="center" prop="param2" label="负责道路"></el-table-column>
-        <el-table-column align="center" prop="depart" label="单位"></el-table-column>
-        <el-table-column align="center" prop="hiretime" label="入职时间"></el-table-column>
-        <el-table-column align="center" prop="leavetime" label="离职时间"></el-table-column>
-        <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
-        <el-table-column align="center" label="是否超龄">
-          <template slot-scope="scope">
-            <!-- <span style="margin-left: 10px">{{ scope.row.isretired ? '否' : '是' }}</span> -->
-            <span style="margin-left: 10px" v-if="scope.row.isretired == '0'">否</span>
-            <span style="margin-left: 10px" v-else-if="scope.row.isretired == '1'">是</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" fixed="right" label="操作" width="280px">
+        <el-table-column align="center" prop="sid" label="通知时间"></el-table-column>
+        <el-table-column align="center" prop="name" label="通知标题"></el-table-column>
+        <el-table-column align="center" prop="area" label="通知类型"></el-table-column>
+        <el-table-column align="center" prop="param2" label="通知用户"></el-table-column>
+        <el-table-column align="center" prop="depart" label="状态"></el-table-column>
+        <el-table-column align="center" fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button
               class="tableButton1"
@@ -173,288 +55,193 @@
               type="button"
               size="small"
               @click="pagination(scope.row, scope.$index)"
-            >编辑</el-button>
-            <el-button class="tableButton3" type="button" @click="deletList" size="small">删除</el-button>
+            >发布</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页 -->
-      <div class="pagination">
-        <el-pagination
-          :current-page="data.currpage"
-          :page-size="data.pagesize"
-          :pager-count="21"
-          layout="total, prev, pager, next"
-          :total="data.list.length"
-          @prev-click="nextpage"
-          @next-click="nextpage"
-          @current-change="nextpage"
-        ></el-pagination>
-      </div>
+    </div>
 
-      <!-- 弹框 -->
-      <!-- 编辑 -->
-      <el-dialog
-        :title="text"
-        :visible.sync="dialogFormVisible"
-        width="426px"
-        class="dialogText"
-        @close="formInline = {}"
-      >
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="姓名">
-            <el-input v-model="formInline.name" class="inputL"></el-input>
+    <!-- 分页 -->
+    <div class="pagination">
+      <el-pagination
+        :current-page="data.currpage"
+        :page-size="data.pagesize"
+        :pager-count="21"
+        layout="total, prev, pager, next"
+        :total="data.list.length"
+        @prev-click="nextpage"
+        @next-click="nextpage"
+        @current-change="nextpage"
+      ></el-pagination>
+    </div>
+
+    <!-- 新建通知 -->
+    <el-dialog title="新建通知" :visible.sync="dialogVisible" width="705px" class="dialogText">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <div class="newbox">
+          <el-form-item label="通知标题">
+            <el-input style="width:548px" maxlength="20" show-word-limit v-model="formInline.title"></el-input>
           </el-form-item>
-          <el-form-item label="性别">
-            <el-input v-model="formInline.sex" class="inputL"></el-input>
+        </div>
+        <div class="newbox">
+          <el-form-item label="通知内容">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 7, maxRows: 7}"
+              style="width: 548px"
+              resize="none"
+              maxlength="200"
+              show-word-limit
+              v-model="formInline.detail"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="年龄">
-            <el-input v-model="formInline.age" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input v-model="formInline.idcard" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-select v-model="type" class="selectTop">
-              <el-option label="A1" value="A1"></el-option>
-              <el-option label="A2" value="A2"></el-option>
-              <el-option label="B1" value="B1"></el-option>
-              <el-option label="B2" value="B2"></el-option>
-              <el-option label="C1" value="C1"></el-option>
-              <el-option label="C2" value="C2"></el-option>
+        </div>
+        <div class="newbox">
+          <el-form-item label="通知类型">
+            <el-select v-model="formInline.type" class="selectTop" @change="clearchange">
+              <el-option label="部门通知" value="部门通知"></el-option>
+              <el-option label="区域通知" value="区域通知"></el-option>
+              <el-option label="岗位通知" value="岗位通知"></el-option>
+              <el-option label="个人通知" value="个人通知"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="住址">
-            <el-input v-model="formInline.address" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input v-model="formInline.tel" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="state" class="selectTop">
-              <el-option label="在职" value ="在职"></el-option>
-              <el-option label="离职" value="离职"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input v-model="formInline.hiretime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input v-model="formInline.leavetime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="job" class="selectTop">
-              <el-option label="全部区域" value></el-option>
-              <el-option label="东营区新区" value="东营区新区"></el-option>
-              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
-              <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
-              <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
-              <el-option label="六户镇" value="六户镇"></el-option>
-              <el-option label="史口镇" value="史口镇"></el-option>
-              <el-option label="牛庄镇" value="牛庄镇"></el-option>
-              <el-option label="龙居镇" value="龙居镇"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="web" class="selectTop">
-              <el-option label="全部部门" value></el-option>
+        </div>
+        <div class="newbox">
+          <el-form-item v-if="formInline.type === '部门通知'" label="部门通知">
+            <el-select v-model="formInline.content" class="selectTop">
+              <el-option label="所有部门" value></el-option>
               <el-option label="环卫一部" value="环卫一部"></el-option>
               <el-option label="环卫二部" value="环卫二部"></el-option>
               <el-option label="环卫三部" value="环卫三部"></el-option>
             </el-select>
           </el-form-item>
-        </el-form>
-        <!-- <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-          <el-form-item label="姓名">
-            <el-input v-model="formInline.name"></el-input>
-          </el-form-item>
-          <el-form-item label="性别">
-            <el-input v-model="formInline.sex"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input v-model="formInline.age"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input v-model="formInline.idcard"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-select v-model="type" class="selectTop">
-              <el-option
-                v-for="item in optionsType"
-                :key="item.type"
-                :label="item.label"
-                :value="item.type"
-              ></el-option>
+          <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
+            <el-select v-model="formInline.content" class="selectTop">
+              <el-option label="所有区域" value></el-option>
+              <el-option label="东营区新区" value="东营区新区"></el-option>
+              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
+              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="住址">
-            <el-input v-model="formInline.address"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input v-model="formInline.mobile"></el-input>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="state" class="selectTop">
-              <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
-                :label="item.label"
-                :value="item.state"
-              ></el-option>
+          <el-form-item v-else-if="formInline.type === '岗位通知'" label="岗位通知">
+            <el-select v-model="formInline.content" class="selectTop">
+              <el-option label="所有岗位" value></el-option>
+              <el-option label="环卫工" value="环卫工"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input v-model="formInline.addtime"></el-input>
+          <el-form-item v-else-if="formInline.type === '个人通知'" label="个人通知">
+            <el-autocomplete
+              style="width: 240px"
+              v-model="formInline.content"
+              placeholder="请输入关键字搜索"
+              :fetch-suggestions="querySearch"
+            ></el-autocomplete>
           </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input v-model="formInline.updatetime"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="job" class="selectTop">
-              <el-option
-                v-for="item in optionsJob"
-                :key="item.job"
-                :label="item.label"
-                :value="item.job"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select v-model="web" class="selectTop">
-              <el-option
-                v-for="item in optionsWeb"
-                :key="item.web"
-                :label="item.label"
-                :value="item.web"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>-->
-        <span slot="footer" class="delect-footer">
-          <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
-        </span>
-        <span slot="footer" class="dialog-footer">
-          <!-- <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-          <el-button type="primary" v-else-if="!buttonIf" @click="adddate" class="formButon">保存</el-button>-->
-          <el-button type="primary" @click="adddate" class="formButon">保存</el-button>
-        </span>
-      </el-dialog>
+        </div>
+      </el-form>
+      <span slot="footer">
+        <el-button type="primary" @click="dialogVisible = false" class="formButon">取消</el-button>
+      </span>
+      <span slot="footer">
+        <el-button type="primary" @click="onSubimt" class="formButon">保存</el-button>
+      </span>
+    </el-dialog>
 
-      <!-- 详情 -->
-      <el-dialog
-        :title="text"
-        :visible.sync="detail"
-        width="426px"
-        class="dialogText"
-        @close="formInline = {}"
-      >
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="姓名">
-            <el-input readonly v-model="formInline.name" class="inputL"></el-input>
+    <!-- 通知详情 -->
+    <el-dialog title="通知详情" :visible.sync="detail" width="705px" class="dialogText">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <div class="newbox">
+          <el-form-item label="通知日期">
+            <el-date-picker readonly v-model="formInline.date" type="date" placeholder="选择日期"></el-date-picker>
           </el-form-item>
-          <el-form-item label="性别">
-            <el-input readonly v-model="formInline.sex" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input readonly v-model="formInline.age" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input readonly v-model="formInline.idcard" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-input readonly v-model="formInline.license" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="住址">
-            <el-input readonly v-model="formInline.address" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input readonly v-model="formInline.tel" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-input readonly v-model="formInline.workstatus" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input readonly v-model="formInline.hiretime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input readonly v-model="formInline.leavetime" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-input readonly v-model="formInline.area" class="inputL"></el-input>
-          </el-form-item>
-          <el-form-item label="归属单位">
-            <el-input readonly v-model="formInline.depart"></el-input>
-          </el-form-item>
-        </el-form>
-        <!-- <el-form :inline="true" :model="formInline" class="demo-form-inline" v-if="!buttonIf">
-          <el-form-item label="姓名">
-            <el-input readonly v-model="formInline.name"></el-input>
-          </el-form-item>
-          <el-form-item label="性别">
-            <el-input readonly v-model="formInline.usg"></el-input>
-          </el-form-item>
-          <el-form-item label="年龄">
-            <el-input readonly v-model="formInline.msg"></el-input>
-          </el-form-item>
-          <el-form-item label="证件号">
-            <el-input readonly v-model="formInline.id"></el-input>
-          </el-form-item>
-          <el-form-item label="准驾车型">
-            <el-select readonly v-model="type" class="selectTop">
-              <el-option
-                v-for="item in optionsType"
-                :key="item.type"
-                :label="item.label"
-                :value="item.type"
-              ></el-option>
+          <el-form-item label="通知状态">
+            <el-select style="width: 240px" v-model="formInline.status" disabled placeholder="请选择">
+              <el-option label="已发布" value="已发布"></el-option>
+              <el-option label="未发布" value="未发布"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="住址">
-            <el-input readonly v-model="formInline.address"></el-input>
+        </div>
+        <div class="newbox">
+          <el-form-item label="通知标题">
+            <el-input
+              readonly
+              style="width:558px"
+              maxlength="20"
+              show-word-limit
+              v-model="formInline.title"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="联系方式">
-            <el-input readonly v-model="formInline.mobile"></el-input>
+        </div>
+        <div class="newbox">
+          <el-form-item label="通知内容">
+            <el-input
+              readonly
+              type="textarea"
+              :autosize="{ minRows: 7, maxRows: 7}"
+              style="width: 558px"
+              resize="none"
+              maxlength="200"
+              show-word-limit
+              v-model="formInline.detail"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="状态">
-            <el-select readonly v-model="state" class="selectTop">
-              <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
-                :label="item.label"
-                :value="item.state"
-              ></el-option>
+        </div>
+        <div class="newbox">
+          <el-form-item label="通知类型">
+            <el-select v-model="formInline.type" disabled class="selectTop" @change="clearchange">
+              <el-option label="部门通知" value="部门通知"></el-option>
+              <el-option label="区域通知" value="区域通知"></el-option>
+              <el-option label="岗位通知" value="岗位通知"></el-option>
+              <el-option label="个人通知" value="个人通知"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="入职时间">
-            <el-input v-model="formInline.addtime"></el-input>
-          </el-form-item>
-          <el-form-item label="离职时间">
-            <el-input v-model="formInline.updatetime"></el-input>
-          </el-form-item>
-          <el-form-item label="作业区域">
-            <el-select v-model="job" class="selectTop">
-              <el-option
-                v-for="item in optionsJob"
-                :key="item.job"
-                :label="item.label"
-                :value="item.job"
-              ></el-option>
+        </div>
+        <div class="newbox">
+          <el-form-item v-if="formInline.type === '部门通知'" label="部门通知">
+            <el-select v-model="formInline.content" disabled class="selectTop">
+              <el-option label="所有部门" value></el-option>
+              <el-option label="环卫一部" value="环卫一部"></el-option>
+              <el-option label="环卫二部" value="环卫二部"></el-option>
+              <el-option label="环卫三部" value="环卫三部"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="归属单位">
-            <el-select readonly v-model="web" class="selectTop">
-              <el-option
-                v-for="item in optionsWeb"
-                :key="item.web"
-                :label="item.label"
-                :value="item.web"
-              ></el-option>
+          <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
+            <el-select v-model="formInline.content" disabled class="selectTop">
+              <el-option label="所有区域" value></el-option>
+              <el-option label="东营区新区" value="东营区新区"></el-option>
+              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
+              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
             </el-select>
           </el-form-item>
-        </el-form>-->
-      </el-dialog>
-    </div>
+          <el-form-item v-else-if="formInline.type === '岗位通知'" label="岗位通知">
+            <el-select v-model="formInline.content" disabled class="selectTop">
+              <el-option label="所有岗位" value></el-option>
+              <el-option label="环卫工" value="环卫工"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-else-if="formInline.type === '个人通知'" label="个人通知">
+            <el-autocomplete
+              disabled
+              style="width: 240px"
+              v-model="formInline.content"
+              placeholder="请输入关键字搜索"
+              :fetch-suggestions="querySearch"
+            ></el-autocomplete>
+          </el-form-item>
+        </div>
+      </el-form>
+    </el-dialog>
+
+    <!-- 通知发布 -->
+    <el-dialog title="通知发布" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
+      <el-date-picker style="width:390px" v-model="submitdate" type="datetime" placeholder="选择日期时间"></el-date-picker>
+      <span slot="footer">
+        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
+      </span>
+      <span slot="footer">
+        <el-button type="primary" @click="adddate" class="formButon">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -463,40 +250,80 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      dialogVisible: false,
-      dialogAble: false,
-      lu: "",
-      value: "",
-      web: "",
-      job: "",
-      id: "",
-      web: "",
-      type: "A1",
-      state: "在职",
-      value: "",
-      text: "人员信息详情",
-      buttonIf: true,
+      // 新建通知
+      formInline: {
+        title: "",
+        detail: "",
+        type: "部门通知",
+        content: "",
+        status: "已发布",
+        date: "2019-11-04"
+      },
       detail: false,
-      job: "",
-      id: "",
-      web: "",
-      pagesize: 10,
-      currpage: 1,
-      listIndex: null,
-      tableData: [],
+      dialogVisible: false,
       dialogFormVisible: false,
-      formInline: {},
       search: {
-        name: "",
-        param2: "",
-        area: "",
-        depart: ""
+        title: "",
+        date: ""
       },
       data: {
         pagesize: 13,
         currpage: 1,
         list: []
-      }
+      },
+      // 新建通知名字模糊搜索
+      restaurants: [
+        { value: "三全鲜食（北新泾店）" },
+        { value: "Hot honey 首尔炸鸡（仙霞路）" },
+        { value: "新旺角茶餐厅" },
+        { value: "泷千家(天山西路店)" },
+        { value: "胖仙女纸杯蛋糕（上海凌空店）" },
+        { value: "贡茶" },
+        { value: "豪大大香鸡排超级奶爸" },
+        { value: "茶芝兰（奶茶，手抓饼）" },
+        { value: "十二泷町" },
+        { value: "星移浓缩咖啡" },
+        { value: "阿姨奶茶/豪大大" },
+        { value: "新麦甜四季甜品炸鸡" },
+        { value: "Monica摩托主题咖啡店" },
+        { value: "浮生若茶（凌空soho店）" },
+        { value: "NONO JUICE  鲜榨果汁" },
+        { value: "CoCo都可(北新泾店）" },
+        { value: "快乐柠檬（神州智慧店）" },
+        { value: "Merci Paul cafe" },
+        { value: "猫山王（西郊百联店）" },
+        { value: "枪会山" },
+        { value: "纵食" },
+        { value: "钱记" },
+        { value: "壹杯加" },
+        { value: "唦哇嘀咖" },
+        { value: "爱茜茜里(西郊百联)" },
+        { value: "爱茜茜里(近铁广场)" },
+        { value: "鲜果榨汁（金沙江路和美广店）" },
+        { value: "开心丽果（缤谷店）" },
+        { value: "超级鸡车（丰庄路店）" },
+        { value: "妙生活果园（北新泾店）" },
+        { value: "香宜度麻辣香锅" },
+        { value: "凡仔汉堡（老真北路店）" },
+        { value: "港式小铺" },
+        { value: "蜀香源麻辣香锅（剑河路店）" },
+        { value: "北京饺子馆" },
+        { value: "饭典*新简餐（凌空SOHO店）" },
+        { value: "焦耳·川式快餐（金钟路店）" },
+        { value: "动力鸡车" },
+        { value: "浏阳蒸菜" },
+        { value: "四海游龙（天山西路店）" },
+        { value: "樱花食堂（凌空店）" },
+        { value: "壹分米客家传统调制米粉(天山店)" },
+        { value: "福荣祥烧腊（平溪路店）" },
+        { value: "速记黄焖鸡米饭" },
+        { value: "红辣椒麻辣烫" },
+        { value: "(小杨生煎)西郊百联餐厅" },
+        { value: "阳阳麻辣烫" },
+        { value: "南拳妈妈龙虾盖浇饭" }
+      ],
+      // 发布时间
+      submitdate: ""
     };
   },
   methods: {
@@ -516,7 +343,7 @@ export default {
       //记录索引
       this.listIndex = _index;
       //记录数据
-      this.formInline = row;
+      // this.formInline = row;
       //显示弹窗
       this.detail = !this.detail;
     },
@@ -548,7 +375,7 @@ export default {
         });
     },
     onSubmit() {
-      this.data.currpage = 1
+      this.data.currpage = 1;
       this.$http
         .post(
           "userInformation/userInformationCriteriaQuery",
@@ -560,6 +387,31 @@ export default {
     },
     nextpage(value) {
       this.data.currpage = value;
+    },
+    // test
+    querySearch(queryString, cb) {
+      var restaurants = this.restaurants;
+      var results = queryString
+        ? restaurants.filter(this.createFilter(queryString))
+        : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return restaurant => {
+        return (
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
+          0
+        );
+      };
+    },
+    // 清空下拉框所选值
+    clearchange() {
+      this.formInline.content = "";
+    },
+    // 新建提交
+    onSubimt() {
+      console.log(this.formInline);
     }
   },
   created() {
@@ -599,42 +451,12 @@ export default {
   height: 465px;
   margin-top: 16px;
 }
-.dialogText {
-  text-align: center;
-}
-.demo-form-inline {
-  text-align: right;
-  .selectTop {
-    width: 240px;
-  }
-  .el-form-item {
-    margin-bottom: 2px;
-    .el-input {
-      width: 240px;
-      height: 32px;
-      padding: 0 !important;
-    }
-  }
-  .selectBot {
-    width: 240px;
-    height: 32px;
-  }
-}
-.formButon {
-  width: 127px;
-  height: 40px;
-  text-align: center;
-}
 .pagination {
   float: right;
   margin-right: 16px;
 }
 .table {
   width: 100%;
-}
-.delect-footer {
-  float: left;
-  margin-left: 10px;
 }
 
 .tableButton3 {
@@ -669,19 +491,9 @@ export default {
   margin-top: 16px;
 }
 .dialogText {
-  text-align: center;
-}
-.demo-form-inline {
-  text-align: right;
-  .formTop {
-    margin-bottom: 16px;
-  }
-  .el-form-item {
-    margin-bottom: 2px;
-    .el-input {
-      width: 240px;
-      height: 32px;
-    }
+  .el-input {
+    width: 240px;
+    height: 32px;
   }
   .selectTop {
     width: 240px;
@@ -702,10 +514,5 @@ export default {
   float: right;
   margin-right: 25px;
   padding-top: 20px;
-}
-
-.delect-footer {
-  float: left;
-  margin-left: 10px;
 }
 </style>

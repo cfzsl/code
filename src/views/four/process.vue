@@ -5,11 +5,11 @@
     <div class="search">
       <div class="searchbox">
         <span>姓名</span>
-        <el-input v-model="search.user" placeholder="请输入姓名" style="width: 130px"></el-input>
+        <el-input v-model="search.charge" placeholder="请输入姓名" style="width: 130px"></el-input>
       </div>
       <div class="searchbox">
         <span>归属单位</span>
-        <el-select v-model="search.type">
+        <el-select v-model="search.area">
           <el-option label="全部" value></el-option>
           <el-option label="环卫一部" value="环卫一部"></el-option>
           <el-option label="环卫二部" value="环卫二部"></el-option>
@@ -17,7 +17,7 @@
       </div>
       <div class="searchbox">
         <span>处理结果</span>
-        <el-select v-model="search.work">
+        <el-select v-model="search.result">
           <el-option label="全部" value></el-option>
           <el-option label="已处理" value="已处理"></el-option>
           <el-option label="未处理" value="未处理"></el-option>
@@ -26,15 +26,16 @@
       <div class="searchbox">
         日期
         <el-date-picker
-          v-model="value1"
+          v-model="search.date"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
         ></el-date-picker>
       </div>
 
-      <el-button type="primary" class="btn">查询</el-button>
+      <el-button type="primary" class="btn" @click="searchbtn">查询</el-button>
     </div>
 
     <!-- 按钮 -->
@@ -53,19 +54,22 @@
         :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
         border
       >
-        <el-table-column align="center" prop="sid" label="日期"></el-table-column>
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="phone" label="归属单位"></el-table-column>
-        <el-table-column align="center" prop="company" label="岗位"></el-table-column>
-        <el-table-column align="center" prop="area" label="问题详情"></el-table-column>
-        <el-table-column align="center" prop="job" label="发生地点"></el-table-column>
-        <el-table-column align="center" prop="education" label="现场照片"></el-table-column>
-        <el-table-column align="center" prop="entryTime" label="反馈人"></el-table-column>
-        <el-table-column align="center" prop="age" label="处理结果"></el-table-column>
+        <el-table-column align="center" prop="time" label="日期"></el-table-column>
+        <el-table-column align="center" prop="charge" label="姓名"></el-table-column>
+        <el-table-column align="center" prop="area" label="归属单位"></el-table-column>
+        <el-table-column align="center" prop="job" label="岗位"></el-table-column>
+        <el-table-column align="center" prop="problemdesc" label="问题详情"></el-table-column>
+        <el-table-column align="center" prop="address" label="发生地点"></el-table-column>
+        <el-table-column align="center" prop="feedbackpeople" label="反馈人"></el-table-column>
+        <el-table-column align="center" prop="result" label="处理结果"></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" @click="showdetail(scope.row)">详情</el-button>
-            <el-button type="primary" @click="showprocess(scope.row)">处理</el-button>
+            <el-button
+              v-if="scope.row.result === '未处理'"
+              type="primary"
+              @click="showprocess(scope.row)"
+            >处理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,12 +96,17 @@
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
               <el-form-item label="反馈日期">
-                <el-date-picker v-model="feedback.date" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker
+                  value-format="yyyy-MM-dd"
+                  v-model="addfeedback.time"
+                  type="date"
+                  placeholder="选择日期"
+                ></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="姓名">
-                <el-input v-model="feedback.name" placeholder="请输入姓名"></el-input>
+                <el-input style="width:220px" v-model="addfeedback.charge" placeholder="请输入姓名"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -106,7 +115,7 @@
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
               <el-form-item label="所属单位">
-                <el-select v-model="search.department">
+                <el-select style="width:220px" v-model="addfeedback.area">
                   <el-option label="全部" value></el-option>
                   <el-option label="环卫一部" value="环卫一部"></el-option>
                   <el-option label="环卫二部" value="环卫二部"></el-option>
@@ -117,7 +126,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位">
-                <el-select v-model="search.job">
+                <el-select style="width:220px" v-model="addfeedback.job">
                   <el-option label="全部岗位" value></el-option>
                   <el-option label="环卫工人" value="环卫工人"></el-option>
                   <el-option label="洒水车司机" value="洒水车司机"></el-option>
@@ -138,21 +147,22 @@
               style="width: 500px;vertical-align:text-top;"
               :rows="2"
               placeholder="请输入问题详情"
-              v-model="feedback.content"
+              v-model="addfeedback.problemdesc"
             ></el-input>
           </el-form-item>
         </div>
         <div class="feedbackbox">
           <el-form-item label="发生地点">
-            <el-input style="width: 500px" v-model="feedback.didian" placeholder="请输入发生地点"></el-input>
+            <el-input style="width: 500px" v-model="addfeedback.address" placeholder="请输入发生地点"></el-input>
           </el-form-item>
         </div>
         <div class="feedbackbox">
           <el-form-item label="上传图片">
             <el-upload
               ref="upload"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="http://192.168.8.126:8080/safeQuality/uploadImage"
               :auto-upload="false"
+              :data="addfeedback"
               style="float: left"
             >
               <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -161,24 +171,29 @@
         </div>
         <el-form-item style="float:right">
           <el-button type="primary" @click="feedback = false">取消</el-button>
-          <el-button type="primary" @click="feedback = false">提交</el-button>
+          <el-button type="primary" @click="newfeedback">提交</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
 
     <!-- 反馈详情 -->
-    <el-dialog title="反馈详情" width="650px" :visible.sync="feedbackdetails" @close="msg = {}">
-      <el-form :inline="true" style="overflow: hidden;">
+    <el-dialog
+      title="反馈详情"
+      width="650px"
+      :visible.sync="feedbackdetails"
+      @close="feedbackdetail = {}"
+    >
+      <el-form :inline="true" style="overflow: hidden;" label-width="68px">
         <div class="feedbackbox">
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
               <el-form-item label="反馈日期">
-                <el-date-picker v-model="feedback.date" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker readonly v-model="feedbackdetail.time" type="date"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="姓名">
-                <el-input v-model="feedback.name" placeholder="请输入姓名"></el-input>
+                <el-input readonly style="width:215px" v-model="feedbackdetail.charge"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -187,7 +202,7 @@
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
               <el-form-item label="所属单位">
-                <el-select v-model="search.department">
+                <el-select disabled style="width:220px" v-model="feedbackdetail.area">
                   <el-option label="全部" value></el-option>
                   <el-option label="环卫一部" value="环卫一部"></el-option>
                   <el-option label="环卫二部" value="环卫二部"></el-option>
@@ -198,7 +213,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位">
-                <el-select v-model="search.job">
+                <el-select disabled v-model="feedbackdetail.job">
                   <el-option label="全部岗位" value></el-option>
                   <el-option label="环卫工人" value="环卫工人"></el-option>
                   <el-option label="洒水车司机" value="洒水车司机"></el-option>
@@ -212,32 +227,15 @@
           </el-row>
         </div>
         <div class="feedbackbox">
-          <el-form-item label="问题详情">
-            <el-input
-              type="textarea"
-              resize="none"
-              style="width: 500px;vertical-align:text-top;"
-              :rows="2"
-              placeholder="请输入问题详情"
-              v-model="feedback.content"
-            ></el-input>
-          </el-form-item>
-        </div>
-        <div class="feedbackbox">
-          <el-form-item label="发生地点">
-            <el-input style="width: 500px" v-model="feedback.didian" placeholder="请输入发生地点"></el-input>
-          </el-form-item>
-        </div>
-        <div class="feedbackbox">
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
               <el-form-item label="反馈人">
-                <el-date-picker v-model="feedback.date" type="date" placeholder="选择日期"></el-date-picker>
+                <el-input readonly style="width: 220px" v-model="feedbackdetail.feedbackpeople"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="处理结果">
-                <el-select v-model="search.department">
+                <el-select disabled v-model="feedbackdetail.result">
                   <el-option label="已处理" value="已处理"></el-option>
                   <el-option label="未处理" value="未处理"></el-option>
                 </el-select>
@@ -246,17 +244,50 @@
           </el-row>
         </div>
         <div class="feedbackbox">
-          <el-form-item label="详情描述（处理）">
-            <el-input style="width: 100%" v-model="feedback.didian" placeholder="请输入发生地点"></el-input>
+          <el-form-item label="问题详情">
+            <el-input
+              readonly
+              type="textarea"
+              resize="none"
+              style="width: 520px;vertical-align:text-top;"
+              :rows="2"
+              v-model="feedbackdetail.problemdesc"
+            ></el-input>
+          </el-form-item>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="发生地点">
+            <el-input readonly style="width: 520px" v-model="feedbackdetail.address"></el-input>
+          </el-form-item>
+        </div>
+        <div class="feedbackbox">
+          <el-form-item label="详情描述">
+            <el-input readonly style="width: 520px" v-model="feedbackdetail.param1"></el-input>
           </el-form-item>
         </div>
         <div class="feedbackbox">
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
-              <el-form-item label="问题照片"></el-form-item>
+              <el-form-item label="问题照片">
+                <el-image
+                  style="width: 220px; height: 200px"
+                  :src="feedbackdetail.picture1"
+                  fit="fit"
+                >
+                  <div slot="error" class="el-image__error">暂无图片</div>
+                </el-image>
+              </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="处理后照片"></el-form-item>
+              <el-form-item label="处理照片">
+                <el-image
+                  style="width: 220px; height: 200px"
+                  :src="feedbackdetail.picture2"
+                  fit="fit"
+                >
+                  <div slot="error" class="el-image__error">暂无图片</div>
+                </el-image>
+              </el-form-item>
             </el-col>
           </el-row>
         </div>
@@ -267,17 +298,13 @@
     <el-dialog title="问题处理" width="650px" :visible.sync="process" @close="msg = {}">
       <el-form ref="form" label-width="80px" style="overflow: hidden;">
         <el-form-item label="处理状态">
-          <el-radio-group v-model="processmsg.status">
-            <el-radio label="已处理">已处理</el-radio>
+          <el-radio-group v-model="processmsg.result">
             <el-radio label="未处理">未处理</el-radio>
+            <el-radio label="已处理">已处理</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="详情内容">
-          <el-input type="textarea" resize="none" v-model="processmsg.content"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary">立即创建</el-button>
-          <el-button>取消</el-button>
+          <el-input type="textarea" resize="none" v-model="processmsg.param1"></el-input>
         </el-form-item>
         <el-form-item label="上传图片">
           <el-upload
@@ -291,7 +318,7 @@
         </el-form-item>
         <el-form-item style="float:right">
           <el-button type="primary" @click="feedback = false">取消</el-button>
-          <el-button type="primary" @click="feedback = false">提交</el-button>
+          <el-button type="primary" @click="problemHandling">提交</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -308,62 +335,32 @@ export default {
       data: {
         pagesize: 14,
         currpage: 1,
-        list: [
-          {
-            sid: 1,
-            name: "李诞",
-            phone: "15375669845",
-            company: "环卫一部",
-            area: "东营区",
-            job: "环卫工",
-            education: "初中",
-            entryTime: "2019-10-20",
-            age: "36"
-          },
-          {
-            sid: 2,
-            name: "张圆圆",
-            phone: "15386966974",
-            company: "环卫二部",
-            area: "东营区",
-            job: "扫水车司机",
-            education: "大专",
-            entryTime: "2019-09-15",
-            age: "36"
-          },
-          {
-            sid: 3,
-            name: "刘波",
-            phone: "15304937816",
-            company: "环卫三部",
-            area: "滨州区",
-            job: "垃圾运输车司机",
-            education: "高中",
-            entryTime: "2019-08-02",
-            age: "36"
-          }
-        ]
+        list: []
       },
       search: {
-        type: "",
-        work: "",
-        road: "",
-        company: ""
+        charge: "",
+        area: "",
+        result: "",
+        date: [],
+        startTime: "",
+        endTime: ""
       },
-      // 新建查询
+      // 新建反馈
       addfeedback: {
-        date: "",
-        name: "",
+        time: "",
+        charge: "",
         area: "",
         job: "",
-        content: "",
-        didian: "",
+        problemdesc: "",
+        address: "",
         imglist: []
       },
+      // 反馈详情
+      feedbackdetail: {},
       // 处理信息
       processmsg: {
-        status: "",
-        content: "",
+        result: "未处理",
+        param1: "",
         imglist: []
       },
       feedback: false,
@@ -392,20 +389,75 @@ export default {
     };
   },
   methods: {
-    onSubmit() {},
+    // 获取列表
+    getList() {
+      this.$http
+        .post(
+          "safeQuality/safeQualityCriteriaQuery",
+          this.$qs.stringify(this.search)
+        )
+        .then(res => {
+          this.data.list = res.data;
+        });
+    },
+    // 下一页
     nextpage(value) {
       this.data.currpage = value;
     },
     // 显示详情
     showdetail(row) {
+      console.log(row);
       this.feedbackdetails = !this.feedbackdetails;
+      this.feedbackdetail = row;
     },
-    // 显示处理
+    // 查询按钮
+    searchbtn() {
+      console.log(this.search);
+      if (this.search.date != null) {
+        this.search.startTime = this.search.date[0];
+        this.search.endTime = this.search.date[1];
+      } else if (this.search.date == null) {
+        this.search.startTime = "";
+        this.search.endTime = "";
+      }
+      this.getList();
+    },
+    // 新建反馈
+    newfeedback() {
+      this.$http
+        .post(
+          "safeQuality/addSafeQualityDetail",
+          this.$qs.stringify(this.addfeedback)
+        )
+        .then(res => {
+          this.$refs.upload.submit();
+          this.feedback = !this.feedback;
+          this.getList();
+        });
+    },
+    // 显示问题处理
     showprocess(row) {
       this.process = !this.process;
+      this.processmsg["sid"] = row.sid;
+      console.log(this.processmsg);
+    },
+    // 问题处理
+    problemHandling(id) {
+      this.$http
+        .post(
+          "safeQuality/addProblemProcess",
+          this.$qs.stringify(this.processmsg)
+        )
+        .then(res => {
+          console.log(res);
+          this.process = !this.process;
+          this.getList();
+        });
     }
   },
-  created() {}
+  created() {
+    this.getList();
+  }
 };
 </script>
 
