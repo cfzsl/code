@@ -17,25 +17,7 @@ export default new Router({
         {
           path: "/homeview",
           name: "homeview",
-          component: () => import("./views/homeview/homeview.vue"),
-          redirect: "/Map",
-          children: [
-            {
-              path: "/Map",
-              name: "Map",
-              component: () => import("./views/homeview/Map.vue")
-            },
-            {
-              path: "/warning",
-              name: "warning",
-              component: () => import("./views/homeview/warning.vue")
-            },
-            {
-              path: "/player",
-              name: "player",
-              component: () => import("./views/homeview/player.vue")
-            },
-          ]
+          component: () => import("./views/homeview/homeview.vue")
         },
         {
           path: "/onece/base",
@@ -133,10 +115,15 @@ export default new Router({
           component: () => import("./views/five/details.vue")
         },
         {
+          path: "/matters/Adance",
+          name: "details",
+          component: () => import("./views/five/Adance.vue")
+        },
+        {
           path: "/logList",
           name: "logList",
           component: () => import("./views/five/logList.vue")
-        },
+        }
       ]
     },
     {

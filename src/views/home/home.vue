@@ -64,8 +64,7 @@ export default {
 .el-divider--horizontal {
   margin: 0;
 }
-
-// .el-button-group {
-//   display: none;
-// }
+.el-dialog__body {
+    padding: 0 20px 30px 20px !important;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <!-- LED电子屏幕管理 -->
-  <div id="LED">
+  <!-- 操作日志 -->
+  <div id="loglist">
     <!-- 搜索 -->
     <div class="search">
       <div class="searchTop">
@@ -18,30 +18,23 @@
           <el-form-item label="姓名" class="msgWc">
             <el-input v-model="search.name"></el-input>
           </el-form-item>
-          <el-form-item label="管养单位">
-            <el-select v-model="search.depart">
-              <el-option label="全部" value></el-option>
-              <el-option
-                v-for="(item, i) in options"
-                :key="i"
-                :label="item.label"
-                :value="item.label"
-              ></el-option>
-            </el-select>
+          <el-form-item label="内容">
+            <el-input v-model="search.content"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onDeil">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
       <!-- 导出日志 -->
       <div class="searchBot">
-        <el-button class="buttonBot" type="primary" @click="dialogVisible = true">导出日志</el-button>
+        <el-button class="buttonBot" type="primary" @click="exportLog">导出日志</el-button>
       </div>
     </div>
     <!-- 表格 -->
     <el-table
-      :data="wcList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+      :data="logList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       border
       style="width: 100%"
     >
@@ -60,7 +53,7 @@
       background
       :page-sizes="[10,20,30,40]"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="wcList.length"
+      :total="logList.length"
     ></el-pagination>
   </div>
 </template>
@@ -73,10 +66,8 @@ export default {
       search: {
         date: "",
         name: "",
-        depart: ""
+        content: ""
       },
-      // 设置屏幕弹窗
-      textarea: "",
       // 分页
       data: {
         pagesize: 10,
@@ -84,56 +75,25 @@ export default {
       },
 
       formInline: {},
-      dialogVisible: false,
-      options: [
-        {
-          label: "东营丛林绿化工程有限责任公司"
-        },
-        {
-          label: "东营卓越环境工程有限责任公司"
-        }
-      ],
-      wcList: [
-        {
-          number: 1,
-          wcid: "火车站公厕",
-          date: "东营丛林绿化工程有限责任公司",
-          name: "毛文平",
-          state: "开放使用",
-          phone: "13361503999",
-          cnumber: "裕华街与淄博路路口北80米路西",
-          snumber: "生活垃圾收集点，残疾人，第三卫生间",
-          text: "美丽东营从我做起"
-        },
-        {
-          number: 2,
-          wcid: "体育公园公厕",
-          date: "东营丛林绿化工程有限责任公司",
-          name: "毛文平",
-          state: "开放使用",
-          phone: "13361503999",
-          cnumber: "裕华街与淄博路路口北80米路西",
-          snumber: "生活垃圾收集点，残疾人，第三卫生间50",
-          text: ".热烈庆祝中华人民共和国成立70周年"
-        },
-        {
-          number: 3,
-          wcid: "北二路中石化公厕",
-          date: "东营丛林绿化工程有限责任公司",
-          name: "毛文平",
-          state: "开放使用",
-          phone: "13361503999",
-          cnumber: "裕华街与淄博路路口北80米路西",
-          snumber: "生活垃圾收集点，残疾人，第三卫生间",
-          text: "创建文明城市，人人受益，人人有责"
-        }
-      ]
+      logList: [],
     };
   },
-  created() {},
   methods: {
+    // 查询
     onSubmit() {
       console.log("查啥?");
+    },
+    // 清除
+    onDeil() {
+      this.search = {
+        date: "",
+        name: "",
+        content: ""
+      };
+    },
+    // 导出日志
+    exportLog() {
+      console.log("导出日志");
     }
   }
 };

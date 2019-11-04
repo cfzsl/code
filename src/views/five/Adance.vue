@@ -278,7 +278,7 @@ export default {
     };
   },
   created() {
-    this.getSalaryList();
+    // this.getSalaryList();
   },
   methods: {
     miStatusColor(item) {
