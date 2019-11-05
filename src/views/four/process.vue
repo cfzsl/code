@@ -390,6 +390,7 @@ export default {
   },
   methods: {
     // 获取列表
+    // 上传
     getList() {
       this.$http
         .post(
