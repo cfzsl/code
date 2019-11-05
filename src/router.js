@@ -123,6 +123,11 @@ export default new Router({
           path: "/logList",
           name: "logList",
           component: () => import("./views/five/logList.vue")
+        },
+        {
+          path: "/materiel",
+          name: "materiel",
+          component: () => import("./views/materiel/materiel.vue")
         }
       ]
     },

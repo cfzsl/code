@@ -23,7 +23,7 @@
       <span class="iconfont icon-cheliangxinxiguanli2"></span>道路信息管理
     </el-menu-item>
     <a href="http://47.110.160.217:5080/">
-      <el-menu-item index="">
+      <el-menu-item index>
         <span class="iconfont icon-shouye"></span>
         公厕管理
       </el-menu-item>
@@ -123,6 +123,9 @@
     </el-submenu>-->
     <el-menu-item index="/town/worker">
       <span class="iconfont icon-renyuanxinxiguanli"></span>系统通知
+    </el-menu-item>
+    <el-menu-item index="/materiel">
+      <span class="iconfont icon-zhaopinguanli"></span>物料采购管理
     </el-menu-item>
   </el-menu>
 </template>
