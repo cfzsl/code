@@ -114,9 +114,12 @@
         border
         style="width: 100%"
       >
+        <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="busnumber" label="车牌号"></el-table-column>
+        <el-table-column align="center" prop="cartype" label="车辆类型"></el-table-column>
         <el-table-column align="center" prop="shoppingtime" label="购车时间"></el-table-column>
         <el-table-column align="center" prop="member" label="资产编号"></el-table-column>
+        <el-table-column align="center" prop="area" label="作业区域"></el-table-column>
         <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
         <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
         <el-table-column align="center" prop="param3" label="联系方式"></el-table-column>
@@ -135,13 +138,8 @@
             <el-button type="primary" size="mini" @click.stop="showWarning(scope.row)">查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" fixed="right" width="280px" label="操作">
+        <el-table-column align="center" fixed="right" width="160" label="操作">
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              class="btn"
-              @click.stop="handleDetail(scope.$index, scope.row)"
-            >详情</el-button>
             <el-button
               type="success"
               class="btn"
@@ -681,6 +679,8 @@ export default {
     // 获取列表
     getCarList() {
       this.$http.get("MotorDetail/getAllMotorInformation").then(res => {
+        console.log(res.data);
+        
         this.data.list = res.data;
       });
     },
