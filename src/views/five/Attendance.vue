@@ -232,7 +232,7 @@
                   <div class="grid-content">道路保养部：2人</div>
                 </el-col>
               </el-row>-->
-              <img src="./leave.png" alt />
+              <!-- <img src="./leave.png" alt /> -->
             </div>
             <div class="item">
               <!-- <div class="title">迟到早退</div>
@@ -248,7 +248,7 @@
                   <div class="grid-content">后勤部：2人</div>
                 </el-col>
               </el-row>-->
-              <img src="./late.png" alt />
+              <!-- <img src="./late.png" alt /> -->
             </div>
             <div class="item">
               <!-- <div class="title">公务外出</div>
@@ -264,7 +264,7 @@
                   <div class="grid-content">采购部：2人</div>
                 </el-col>
               </el-row>-->
-              <img src="./goout.png" alt />
+              <!-- <img src="./goout.png" alt /> -->
             </div>
           </div>
         </div>

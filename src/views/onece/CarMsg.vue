@@ -261,8 +261,8 @@
         <el-form-item label="指定司机" prop="user">
           <el-input v-model="msg.user" placeholder="请输入司机"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式" prop="tel">
-          <el-input v-model="msg.tel" placeholder="请输入联系方式"></el-input>
+        <el-form-item label="联系方式" prop="param3">
+          <el-input v-model="msg.param3" placeholder="请输入联系方式"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -498,7 +498,7 @@ export default {
         user: "",
         area: "",
         repairdetail: "",
-        tel: ""
+        param3: ""
       },
       // 分页效果
       data: {
@@ -573,7 +573,7 @@ export default {
           { required: true, message: "请输入归属单位", trigger: "blur" }
         ],
         user: [{ required: true, message: "请输入指定司机", trigger: "blur" }],
-        tel: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
+        param3: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
         area: [{ required: true, message: "请选择使用区域", trigger: "blur" }]
       },
       // 图片上传列表

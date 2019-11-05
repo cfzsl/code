@@ -45,7 +45,7 @@
       <el-table-column align="center" prop="parm2" label="资产编号"></el-table-column>
       <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
       <el-table-column align="center" prop="user" label="使用人"></el-table-column>
-      <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+      <el-table-column align="center" prop="param3" label="联系方式"></el-table-column>
       <el-table-column align="center" label="交接记录">
         <template slot-scope="scope">
           <el-button
@@ -183,7 +183,7 @@
           <el-input v-model="ruleForm.user"></el-input>
         </el-form-item>
         <el-form-item label="联系方式" prop="user">
-          <el-input v-model="ruleForm.tel"></el-input>
+          <el-input v-model="ruleForm.param3"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -221,7 +221,7 @@
           <el-input v-model="details.user"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input v-model="details.tel"></el-input>
+          <el-input v-model="details.param3"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -430,7 +430,7 @@ export default {
         department: [
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
-        tel: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
+        param3: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
       },
       formInline: {
         cartype: "",

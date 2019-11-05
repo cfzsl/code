@@ -1,218 +1,175 @@
 <template>
   <!-- 人事管理 -->
-  <div id="HRManagement">
-    <!-- 搜索 -->
-    <div class="search">
-      <div class="searchTop">
-        <el-form :inline="true" :model="formSearch">
-          <el-form-item label="姓名" class="msgWc">
-            <el-input v-model="formSearch.name"></el-input>
-          </el-form-item>
-          <el-form-item label="区域">
-            <el-select v-model="formSearch.area">
-              <el-option label="全部" value></el-option>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.area"
-                :value="item.area"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="岗位">
-            <el-select v-model="formSearch.job">
-              <el-option label="全部" value></el-option>
-              <el-option
-                v-for="item in postList"
-                :key="item.lu"
-                :label="item.job"
-                :value="item.job"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="formSearch.isretired">
-              <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
-                :label="item.label"
-                :value="item.state"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-            <el-button type="primary" @click="onEmpty">清空</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-      <!-- 按钮 -->
-      <div class="searchBot">
-        <el-button class="buttonBot" @click="dialogVisible = true">添加人事信息档案</el-button>
-        <el-button class="buttonBot">导入模板下载</el-button>
-        <el-button class="buttonBot">人员信息导入</el-button>
-        <el-button class="buttonBotLast">人事信息导出</el-button>
-      </div>
-    </div>
-    <!-- 弹窗 -->
-    <el-dialog title="添加人事档案" :visible.sync="dialogVisible" width="426px" class="dialogText">
-      <el-form
-        :inline="true"
-        :model="formAdd"
-        ref="formAdd"
-        :rules="rulesAdd"
-        class="demo-form-inline"
-      >
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="formAdd.name"></el-input>
-        </el-form-item>
-        <el-form-item label="年龄" prop="age">
-          <el-input v-model="formAdd.age"></el-input>
-        </el-form-item>
-        <el-form-item label="电话" prop="tel">
-          <el-input v-model="formAdd.tel" prop="name"></el-input>
-        </el-form-item>
-        <el-form-item label="单位" prop="param2">
-          <el-select v-model="formAdd.param2" class="selectTop">
-            <el-option
-              v-for="item in optionsWeb"
-              :key="item.web"
-              :label="item.param2"
-              :value="item.param2"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="区域" prop="area">
-          <el-select v-model="formAdd.area" class="selectTop">
-            <el-option
-              v-for="item in optionslu"
-              :key="item.lu"
-              :label="item.area"
-              :value="item.area"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="岗位" prop="job">
-          <el-select v-model="formAdd.job" class="selectTop">
-            <el-option v-for="item in postList" :key="item.lu" :label="item.job" :value="item.job"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="学历" prop="study">
-          <el-input v-model="formAdd.study"></el-input>
-        </el-form-item>
-        <el-form-item label="状态" prop="isretired">
-          <el-select v-model="formAdd.isretired" class="selectTop">
-            <el-option
-              v-for="item in optionsStated"
-              :key="item.state"
-              :label="item.label"
-              :value="item.state"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="基本工资" prop="basecash">
-          <el-input v-model="formAdd.basecash"></el-input>
-        </el-form-item>
-        <el-form-item label="其他补助" prop="helpcash">
-          <el-input v-model="formAdd.helpcash"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="delect-footer">
-        <el-button type="primary" @click="resetForm('formAdd')" class="formButon">重置</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addCar('formAdd')" class="formButon">保存</el-button>
-      </span>
-    </el-dialog>
-    <!-- 表格 -->
-    <el-table
-      :data="wcList.slice((currpage - 1) * pagesize, currpage * pagesize)"
-      border
-      style="width: 100%"
-    >
-      <el-table-column align="center" prop="num" label="序号" width="80px"></el-table-column>
-      <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
-      <el-table-column align="center" prop="tel" label="电话" width></el-table-column>
-      <el-table-column align="center" prop="param2" label="单位" width></el-table-column>
-      <el-table-column align="center" prop="area" label="区域" width></el-table-column>
-      <el-table-column align="center" prop="job" label="岗位" width="121px"></el-table-column>
-      <el-table-column align="center" prop="study" label="学历" width></el-table-column>
-      <el-table-column align="center" prop="isretired" label="状态" width>
-        <template slot-scope="scope">
-          <span>{{ scope.row.isretired=="1"? "在职":"离职" }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="basecash" label="基本工资(元)" width></el-table-column>
-      <el-table-column align="center" prop="helpcash" label="其他补助(元)" width></el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width="280px">
-        <template slot-scope="scope">
-          <el-button
-            class="tableButton1"
-            type="button"
-            size="small"
-            @click="showdetail(scope.row, scope.$index)"
-          >详情</el-button>
-          <el-button
-            class="tableButton2"
-            type="button"
-            size="small"
-            @click="pagination(scope.row, scope.$index)"
-            v-if="scope.row.isretired"
-          >设为离职</el-button>
-          <el-button
-            class="tableButton3"
-            type="button"
-            @click="deletList(scope.row, scope.$index)"
-            size="small"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <el-pagination
-      class="paginationList"
-      background
-      @prev-click="nextpage"
-      @next-click="nextpage"
-      @current-change="nextpage"
-      :page-sizes="[5,10]"
-      :page-size="pagesize"
-      :current-page="currpage"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="wcList.length"
-    ></el-pagination>
-    <!--设为离职弹框 -->
-    <el-dialog :title="text" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-form :inline="true" :model="formQuit" class="demo-form-inline quit">
-        <el-form-item label="离职日期">
-          <el-date-picker v-model="formQuit.date" type="date" placeholder="选择日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="离职原因">
-          <el-input v-model="formInline.leaving"></el-input>
-        </el-form-item>
-        <el-form-item label="上传照片">
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="3"
-            :on-exceed="handleExceed"
-            :file-list="fileList"
+  <div id="HRManagement" style="height: 100%;">
+    <el-row style="height: 100%;">
+      <el-col :span="3" style="height: 100%;">
+        <div class="leftbox">
+          <div class="title">组织结构</div>公司机关
+          <el-tree
+            class="tree"
+            :data="treecompany"
+            :props="defaultProps"
+            @node-click="handleNodeClick"
+          ></el-tree>项目部
+          <el-tree
+            class="tree"
+            :data="treeproject"
+            :props="defaultProps"
+            @node-click="handleNodeClick"
+          ></el-tree>
+        </div>
+      </el-col>
+      <el-col :span="21">
+        <!-- 搜索 -->
+        <div class="search">
+          <div class="searchTop">
+            <el-form :inline="true" :model="formSearch">
+              <el-form-item label="姓名" class="msgWc">
+                <el-input v-model="formSearch.name"></el-input>
+              </el-form-item>
+              <el-form-item label="归属单位">
+                <el-select v-model="formSearch.area">
+                  <el-option label="全部" value></el-option>
+                  <el-option label="环卫一部" value="环卫一部"></el-option>
+                  <el-option label="环卫二部" value="环卫二部"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="岗位">
+                <el-select v-model="formSearch.job">
+                  <el-option label="全部" value></el-option>
+                  <el-option label="环卫工人" value="环卫工人"></el-option>
+                  <el-option label="司机" value="司机"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="联系方式">
+                <el-input v-model="formSearch.tel"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button type="primary" @click="onEmpty">清空</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+          <!-- 按钮 -->
+          <div class="searchBot">
+            <el-button class="buttonBot" @click="dialogVisible = true">添加人事信息档案</el-button>
+            <el-button class="buttonBot">导入模板下载</el-button>
+            <el-button class="buttonBot">人员信息导入</el-button>
+            <el-button class="buttonBotLast">人事信息导出</el-button>
+          </div>
+        </div>
+
+        <!-- 弹窗 -->
+        <el-dialog title="添加人事档案" :visible.sync="dialogVisible" width="426px" class="dialogText">
+          <el-form
+            :inline="true"
+            :model="formAdd"
+            ref="formAdd"
+            :rules="rulesAdd"
+            class="demo-form-inline"
           >
-            <el-input v-model="formInline.textname" class="input-with-select">
-              <el-button slot="append" type="primary" class="inputImg">上传图片</el-button>
-            </el-input>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="备注信息">
-          <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="formInline.textarea" class="textarea"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" @click="adddate" class="formButon">保存</el-button>
-    </el-dialog>
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="formAdd.name"></el-input>
+            </el-form-item>
+            <el-form-item label="年龄" prop="age">
+              <el-input v-model="formAdd.age"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" prop="tel">
+              <el-input v-model="formAdd.tel" prop="name"></el-input>
+            </el-form-item>
+            <el-form-item label="单位" prop="param2">
+              <el-select v-model="formAdd.param2" class="selectTop">
+                <el-select v-model="formSearch.area">
+                  <el-option label="全部" value></el-option>
+                  <el-option label="环卫一部" value="环卫一部"></el-option>
+                  <el-option label="环卫二部" value="环卫二部"></el-option>
+                </el-select>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="岗位">
+              <el-select v-model="formSearch.job">
+                <el-option label="全部" value></el-option>
+                <el-option label="环卫工人" value="环卫工人"></el-option>
+                <el-option label="司机" value="司机"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="学历" prop="study">
+              <el-input v-model="formAdd.study"></el-input>
+            </el-form-item>
+            <el-form-item label="岗位">
+              <el-select v-model="formSearch.job">
+                <el-option label="全部" value></el-option>
+                <el-option label="环卫工人" value="环卫工人"></el-option>
+                <el-option label="司机" value="司机"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="基本工资" prop="basecash">
+              <el-input v-model="formAdd.basecash"></el-input>
+            </el-form-item>
+            <el-form-item label="其他补助" prop="helpcash">
+              <el-input v-model="formAdd.helpcash"></el-input>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="delect-footer">
+            <el-button type="primary" @click="resetForm('formAdd')" class="formButon">重置</el-button>
+          </span>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="addCar('formAdd')" class="formButon">保存</el-button>
+          </span>
+        </el-dialog>
+
+        <!-- 表格 -->
+        <el-table
+          :data="wcList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+          border
+          style="width: 100%"
+        >
+          <el-table-column type="selection" width="40"></el-table-column>
+          <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+          <el-table-column align="center" prop="tel" label="性别"></el-table-column>
+          <el-table-column align="center" prop="param2" label="出生日期"></el-table-column>
+          <el-table-column align="center" prop="area" label="家庭住址"></el-table-column>
+          <el-table-column align="center" prop="job" label="毕业院校"></el-table-column>
+          <el-table-column align="center" prop="study" label="所学专业"></el-table-column>
+          <el-table-column align="center" prop="isretired" label="归属区域"></el-table-column>
+          <el-table-column align="center" prop="isretired" label="岗位"></el-table-column>
+          <el-table-column align="center" prop="basecash" label="联系方式"></el-table-column>
+          <el-table-column align="center" prop="helpcash" label="在职状态"></el-table-column>
+          <el-table-column align="center" prop="helpcash" label="入职时间"></el-table-column>
+          <el-table-column align="center" prop="helpcash" label="离职时间"></el-table-column>
+          <el-table-column align="center" fixed="right" label="操作" width="160">
+            <template slot-scope="scope">
+              <el-button
+                class="tableButton1"
+                type="button"
+                size="small"
+                @click="showdetail(scope.row, scope.$index)"
+              >详情</el-button>
+              <el-button
+                class="tableButton3"
+                type="button"
+                @click="deletList(scope.row, scope.$index)"
+                size="small"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <!-- 分页 -->
+        <el-pagination
+          class="paginationList"
+          background
+          @prev-click="nextpage"
+          @next-click="nextpage"
+          @current-change="nextpage"
+          :page-sizes="[5,10]"
+          :page-size="pagesize"
+          :current-page="currpage"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="wcList.length"
+        ></el-pagination>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -221,36 +178,86 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      // 上传图片列表
-      fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
-
       formSearch: {
         name: "",
         area: "",
         job: "",
         isretired: ""
       },
-      text: "人事管理详情",
       pagesize: 10,
       currpage: 1,
-      tableData: [],
-      formQuit: {
-        date: "",
-        leaving: "",
-        textname:'',
-        textarea: ""
-      },
       dialogVisible: false,
       dialogFormVisible: false,
-      les: 0,
-      progressDate: [
-        { les: 0, progress: "未处理" },
-        { les: 1, progress: "处理中" },
-        { les: 2, progress: "完成" }
+      wcList: [],
+      // 公司机关
+      treecompany: [
+        {
+          label: "总经理",
+          children: [
+            {
+              label: "副经理",
+              children: [
+                {
+                  label: "行政人事部"
+                }
+              ]
+            },
+            {
+              label: "副经理",
+              children: [
+                {
+                  label: "生产运行部"
+                }
+              ]
+            },
+            {
+              label: "副经理",
+              children: [
+                {
+                  label: "安全质量监督部"
+                }
+              ]
+            }
+          ]
+        }
       ],
+      // 项目部
+      treeproject: [
+        {
+          label: "项目经理",
+          children: [
+            {
+              label: "助理"
+            },
+            {
+              label: "中队长",
+              children: [
+                {
+                  label: "班组长",
+                  children: [
+                    {
+                      label: "环卫工"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              label: "司机"
+            },
+            {
+              label: "班车人员"
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
       formAdd: {
         name: "",
-        age:'',
+        age: "",
         tel: "",
         area: "",
         job: "",
@@ -279,227 +286,7 @@ export default {
         isretired: [
           { required: true, message: "请选择工作状态", trigger: "blur" }
         ]
-      },
-      i: "0",
-      optionsCar: [
-        {
-          i: "0",
-          label: "全部"
-        },
-        {
-          i: "1",
-          label: "垃圾清运车"
-        },
-        {
-          i: "2",
-          label: "清扫车"
-        },
-        {
-          i: "3",
-          label: "洒水车"
-        }
-      ],
-      lu: "0",
-      postList: [
-        {
-          lu: "1",
-          job: "环卫工"
-        },
-        {
-          lu: "2",
-          job: "洒水车司机"
-        },
-        {
-          lu: "3",
-          job: "垃圾运输车司机"
-        },
-        {
-          lu: "4",
-          job: "中队长"
-        },
-        {
-          lu: "5",
-          job: "队长"
-        },
-        {
-          lu: "6",
-          job: "大队长"
-        },
-        {
-          lu: "7",
-          job: "主管"
-        }
-      ],
-      value: "0",
-      options: [
-        {
-          value: "1",
-          area: "东营区新区"
-        },
-        {
-          value: "2",
-          area: "文汇街道办事处"
-        },
-        {
-          value: "3",
-          area: "辛店街道办事处"
-        },
-        {
-          value: "4",
-          area: "黄河街道办事处"
-        },
-        {
-          value: "5",
-          area: "圣园街道办事处"
-        },
-        {
-          value: "6",
-          area: "六户镇"
-        },
-        {
-          value: "7",
-          area: "牛庄镇"
-        },
-        {
-          value: "8",
-          area: "史口镇"
-        },
-        {
-          value: "9",
-          area: "龙居镇"
-        }
-      ],
-      web: "0",
-      optionsWeb: [
-        {
-          web: "0",
-          param2: "全部"
-        },
-        {
-          web: "1",
-          param2: "环卫一部"
-        },
-        {
-          web: "2",
-          param2: "环卫二部"
-        },
-        {
-          web: "3",
-          param2: "环卫三部"
-        },
-        {
-          web: "4",
-          param2: "环卫四部"
-        }
-      ],
-      lu: "0",
-      optionslu: [
-        {
-          lu: "0",
-          area: "全部"
-        },
-        {
-          lu: "1",
-          area: "东营区新区"
-        },
-        {
-          lu: "2",
-          area: "文汇街道办事处"
-        },
-        {
-          lu: "3",
-          area: "辛店街道办事处"
-        },
-        {
-          lu: "4",
-          area: "黄河街道办事处"
-        },
-        {
-          lu: "5",
-          area: "圣园街道办事处"
-        },
-        {
-          lu: "6",
-          area: "六户镇"
-        },
-        {
-          lu: "7",
-          area: "牛庄镇"
-        },
-        {
-          lu: "8",
-          area: "史口镇"
-        },
-        {
-          lu: "9",
-          area: "龙居镇"
-        }
-      ],
-      id: "0",
-      optionsList: [
-        {
-          id: "0",
-          label: "全部"
-        },
-        {
-          id: "1",
-          label: "环卫一部"
-        },
-        {
-          id: "2",
-          label: "环卫二部"
-        },
-        {
-          id: "3",
-          label: "环卫三部"
-        },
-        {
-          id: "4",
-          label: "环卫四部"
-        }
-      ],
-      type: "0",
-      optionsType: [
-        {
-          type: "0",
-          label: "A1"
-        },
-        {
-          type: "1",
-          label: "A2"
-        },
-        {
-          type: "2",
-          label: "B1"
-        },
-        {
-          type: "3",
-          label: "B2"
-        },
-        {
-          type: "4",
-          label: "C1"
-        },
-        {
-          type: "5",
-          label: "C2"
-        }
-      ],
-      state: "0",
-      optionsStated: [
-        {
-          state: "1",
-          label: "在职"
-        },
-        {
-          state: "0",
-          label: "离职"
-        }
-      ],
-      buttonIf: true,
-      formInline: {},
-      dialogFormVisible: false,
-      wcList: []
+      }
     };
   },
   created() {
@@ -537,7 +324,6 @@ export default {
     },
     getwcList() {
       this.$http.post("hr/hrinfo/search").then(res => {
-        console.log(res.data);
         this.wcList = res.data;
       });
     },
@@ -550,9 +336,7 @@ export default {
           this.$http
             .post("hr/hrinfo/add", this.$qs.stringify(this.formAdd))
             .then(res => {
-              console.log(res.data);
               this.$http.post("hr/hrinfo/search").then(res => {
-                console.log(res.data);
                 this.wcList = res.data;
               });
             });
@@ -568,18 +352,14 @@ export default {
     },
     addDo() {
       console.log("关闭");
-      this.buttonIf = false;
     },
     adddate() {
       this.dialogFormVisible = false;
-      this.buttonIf = true;
     },
     showdetail(row, _index) {
       // console.log(row);
       //记录索引
       this.listIndex = _index;
-      //记录数据
-      this.formInline = row;
       //显示弹窗
       const id = row.sid;
       this.$router.push({ path: "/matters/details", query: { id } });
@@ -614,14 +394,23 @@ export default {
         });
     },
     //清空
-    onEmpty(){
-      this.formSearch={
+    onEmpty() {
+      (this.formSearch = {
         name: "",
         area: "",
         job: "",
         isretired: ""
-      },
-    this.getwcList();
+      }),
+        this.getwcList();
+    },
+    // 点击树形控件
+    handleNodeClick(obj, node, self) {
+      console.log(obj.label);
+      console.log("----");
+      console.log(node);
+      console.log("----");
+      console.log(self);
+      console.log("----");
     }
   },
   components: {
@@ -631,6 +420,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
+#HRManagement {
+  height: 100%;
+}
 .search {
   position: relative;
   width: 100%;
@@ -730,7 +522,21 @@ export default {
 }
 .textarea {
   width: 386px;
-  resize:none;
-  border:none;
+  resize: none;
+  border: none;
+}
+
+.leftbox {
+  height: 98%;
+  margin-right: 40px;
+  border-right: 1px solid #d2d2d2;
+  .title {
+    margin: 20px;
+    margin-left: 0;
+    font-size: 20px;
+  }
+  .tree {
+    padding-left: 15px;
+  }
 }
 </style>
