@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     endlist() {
-      this.open = false;
+      this.open=false;
       this.showdown = !this.showdown;
       this.$emit("asideEnd", this.open);
     },

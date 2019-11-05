@@ -699,9 +699,10 @@
     <div id="player" v-if="!playerSelect">
       <div class="playerTop">
         <div class="warningDate">2019-11-02</div>
+        <!-- 滚动播放 -->
+        <div class="rollPlay">
+        </div>
       </div>
-      <!-- 滚动播放 -->
-      <div class="rollPlay"></div>
     </div>
   </div>
 </template>
@@ -709,6 +710,7 @@
 export default {
   data() {
     return {
+      // 视频区域
       // 监控
       videoOption: {
         live: false,

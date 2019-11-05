@@ -2,15 +2,17 @@
   <div id="home">
     <el-container>
       <el-header height="86px">
-        <Top></Top>
+        <Top @asideEnd="asideEnd" @asideOpen="asideOpen"></Top>
       </el-header>
       <el-container class="se-container">
-        <el-aside>
-          <Aside @asideEnd="getAsideEnd" @asideOpen="getAsideOpen"></Aside>
-        </el-aside>
-        <el-main>
-          <router-view></router-view>
-        </el-main>
+        <transition name="fade">
+          <el-aside v-show="drawer">
+            <Aside></Aside>
+          </el-aside>
+        </transition>
+          <el-main>
+            <router-view></router-view>
+          </el-main>
       </el-container>
     </el-container>
   </div>
@@ -27,12 +29,12 @@ export default {
     };
   },
   methods: {
-    getAsideEnd(date) {
-      this.drawer = date;
+    asideEnd(open) {
+      this.drawer = open;
       console.log(this.drawer);
     },
-    getAsideOpen(date) {
-      this.drawer = date;
+    asideOpen(open) {
+      this.drawer = open;
       console.log(this.drawer);
     }
   },
@@ -51,7 +53,7 @@ export default {
 .se-container {
   height: calc(100vh - 86px);
   .el-aside {
-    width: 282px;
+    // width: 282px;
     height: 100%;
     background-color: #3f4d5c;
   }
@@ -65,6 +67,32 @@ export default {
   margin: 0;
 }
 .el-dialog__body {
-    padding: 0 20px 30px 20px !important;
+  padding: 0 20px 30px 20px !important;
+}
+.fade-enter-active {
+  animation: bounce-in 1s linear;
+}
+.fade-leave-active {
+  animation: bounce-leave 1s;
+}
+@keyframes bounce-in {
+  0% {
+    width: 0px;
+  }
+  100% {
+    width: 282px;
+  }
+}
+@keyframes bounce-leave {
+  0% {
+    width: 282px;
+  }
+  100% {
+    width: 0px;
+  }
+}
+
+.el-textarea .el-textarea__inner{
+  resize: none;
 }
 </style>
