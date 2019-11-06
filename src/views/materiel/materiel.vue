@@ -54,17 +54,19 @@
         >
           <el-divider></el-divider>
           <el-form-item label="申请人:" prop="name">
-            <el-input v-model="formAdd.name"></el-input>
+            <el-input v-model="formAdd.name" style="width:200px"></el-input>
           </el-form-item>
-          <el-form-item label="岗位:" style="margin-left:105px" prop="job">
+          <el-form-item label="申请单位:" style="margin-left:75px" prop="job">
             <el-input v-model="formAdd.job"></el-input>
           </el-form-item>
-          <el-form-item label="需采购材料:" prop="science">
-            <el-input v-model="formAdd.science"></el-input>
+          <el-form-item label="物料名称:" prop="specifications">
+            <el-input v-model="formAdd.specifications" style="width:558px"></el-input>
           </el-form-item>
-          <el-form-item label="数量:" style="margin-left:105px" prop="number">
-            <el-input v-model="formAdd.number" style="width:100px"></el-input>
-            <el-select v-model="formAdd.pany" placeholder="请选择" style="width:100px">
+          <el-form-item label="规格及型号:" prop="purpose">
+            <el-input v-model="formAdd.purpose" style="width:558px"></el-input>
+          </el-form-item>
+          <el-form-item label="单位:" prop="science">
+            <el-select v-model="formAdd.pany" placeholder="请选择" style="width:200px">
               <el-option label="个" value></el-option>
               <el-option
                 v-for="item in company"
@@ -74,28 +76,29 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="规格:" prop="specifications">
-            <el-input v-model="formAdd.specifications" style="width:558px"></el-input>
+          <el-form-item label="单价:" style="margin-left:105px" prop="number">
+            <el-input v-model="formAdd.price "></el-input>
           </el-form-item>
-          <el-form-item label="用途:" prop="purpose">
+          <el-form-item label="数量:" prop="science">
+            <el-input style="width:200px" v-model="formAdd.number"></el-input>
+          </el-form-item>
+          <el-form-item label="金额:" style="margin-left:105px" prop="number">
+            <el-input v-model="formAdd.number"></el-input>
+          </el-form-item>
+          <el-form-item label="费用项目:" prop="purpose">
             <el-input v-model="formAdd.purpose" style="width:558px"></el-input>
           </el-form-item>
           <el-form-item label="备注:" prop="remarks">
             <el-input v-model="formAdd.remarks" style="width:558px" type="textarea" row="2"></el-input>
           </el-form-item>
-          <el-form-item label="采购负责人:" prop="purchase">
-            <el-input v-model="formAdd.purchase"></el-input>
-          </el-form-item>
-          <el-form-item label="分配负责人:" prop="distribution" style="margin-left:60px">
-            <el-input v-model="formAdd.distribution"></el-input>
-          </el-form-item>
-          <el-divider></el-divider>
         </el-form>
-        <div class="examine">审核流程</div>
+        <el-divider></el-divider>
+        <div class="examine">物料采购流程</div>
         <el-steps :active="formAdd.active" :space="200" align-center>
-          <el-step title="申请人" icon="el-icon-user"></el-step>
-          <el-step title="主任" icon="el-icon-user"></el-step>
-          <el-step title="经理" icon="el-icon-user"></el-step>
+          <el-step title="项目经理/助理" icon="el-icon-user" description="提交申请"></el-step>
+          <el-step title="鲁彧" icon="el-icon-user" description="一级审批"></el-step>
+          <el-step title="曲韦名" icon="el-icon-user" description="二级审批人"></el-step>
+          <el-step title="王卫叶" icon="el-icon-user" description="采购发放人"></el-step>
         </el-steps>
         <div class="buttonOff">
           <span slot="footer">
@@ -194,9 +197,10 @@
         <el-divider></el-divider>
         <div class="examine">审核流程</div>
         <el-steps :active="active" :space="200" align-center>
-          <el-step title="申请人" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
-          <el-step title="主任" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
-          <el-step title="经理" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+          <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
+          <el-step title="鲁彧" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+          <el-step title="曲韦名" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+          <el-step title="王卫叶" icon="el-icon-user" description="2019-11-05 18：00已采购发放"></el-step>
         </el-steps>
         <el-divider></el-divider>
         <div class="examine">采购详情</div>
@@ -275,11 +279,12 @@
         </div>
       </el-form>
       <el-divider></el-divider>
-      <div class="examine">审核流程</div>
+      <div class="examine">审批流程</div>
       <el-steps :active="active" :space="200" align-center>
-        <el-step title="申请人" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
-        <el-step title="您" icon="el-icon-user" description="待申批"></el-step>
-        <el-step title="经理" icon="el-icon-user" description="待申批"></el-step>
+        <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
+        <el-step title="鲁彧" icon="el-icon-user" description="待申批"></el-step>
+        <el-step title="曲韦名" icon="el-icon-user" description="待申批"></el-step>
+        <el-step title="王卫叶" icon="el-icon-user" description="采购发放人"></el-step>
       </el-steps>
       <div class="buttonOff">
         <span slot="footer">
@@ -342,9 +347,10 @@
       <el-divider></el-divider>
       <div class="examine">审核流程</div>
       <el-steps :active="active" :space="200" align-center>
-        <el-step title="申请人" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
-        <el-step title="您" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
-        <el-step title="经理" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+        <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
+        <el-step title="鲁彧" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+        <el-step title="曲韦名" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+        <el-step title="王卫叶" icon="el-icon-user" description="2019-11-05 18：00已采购发放"></el-step>
       </el-steps>
       <div class="buttonOff">
         <span slot="footer">
@@ -540,7 +546,7 @@ export default {
     // 详情
     showdetail(row, _index) {
       // console.log(row);
-      this.active = 3;
+      this.active = 4;
       this.loginList = row;
       //记录索引
       this.listIndex = _index;
@@ -647,7 +653,8 @@ export default {
   .examine {
     font-size: 14px;
     font-weight: 700;
-    margin-left: 20px;
+    margin-left: 10px;
+    margin-bottom: 10px;
     text-align: left;
   }
   .buttonOff {

@@ -7,9 +7,10 @@
         <el-form :inline="true" :model="search">
           <el-form-item label="记录时段" class="msgWc">
             <el-date-picker
-              v-model="search.date"
-              type="daterange"
-              value-format="yyyy-MM-dd"
+              v-model="search.searchtime"
+              type="datetimerange"
+              format="yyyy-MM-dd hh:mm:ss"
+              value-format="yyyy-MM-dd hh:mm:ss"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -19,7 +20,7 @@
             <el-input v-model="search.name"></el-input>
           </el-form-item>
           <el-form-item label="内容">
-            <el-input v-model="search.content"></el-input>
+            <el-input v-model="search.operatedetail"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -38,12 +39,12 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="wcid" label="时间" width></el-table-column>
-      <el-table-column align="center" prop="date" label="姓名" width="282"></el-table-column>
-      <el-table-column align="center" prop="state" label="归属单位" width></el-table-column>
-      <el-table-column align="center" prop="name" label="岗位" width></el-table-column>
-      <el-table-column align="center" prop="phone" label="操作模块" width></el-table-column>
-      <el-table-column align="center" prop="text" label="操作内容" width="282"></el-table-column>
+      <el-table-column align="center" prop="operatetime" label="时间" width></el-table-column>
+      <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
+      <el-table-column align="center" prop="organ" label="组织架构" width></el-table-column>
+      <el-table-column align="center" prop="job" label="岗位" width></el-table-column>
+      <el-table-column align="center" prop="hwmod" label="操作模块" width></el-table-column>
+      <el-table-column align="center" prop="operatedetail" label="操作内容" width="282"></el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
@@ -64,10 +65,37 @@ export default {
     return {
       // 搜索
       search: {
-        date: "",
+        searchtime: "",
         name: "",
-        content: ""
+        operatedetail: ""
       },
+       pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
       // 分页
       data: {
         pagesize: 10,
@@ -75,25 +103,39 @@ export default {
       },
 
       formInline: {},
-      logList: [],
+      logList: []
     };
+  },
+  created(){
+    this.getLogList();
   },
   methods: {
     // 查询
     onSubmit() {
-      console.log("查啥?");
+      console.log(this.search)
+      this.getLogList();
     },
     // 清除
     onDeil() {
       this.search = {
-        date: "",
+        searchtime: "",
         name: "",
-        content: ""
+        operatedetail: ""
       };
+      this.getLogList();
     },
     // 导出日志
     exportLog() {
-      console.log("导出日志");
+      location.href='http://192.168.124.6:8888/hr/operate/exportExcel'
+    },
+    getLogList(){
+      console.log(this.search)
+      this.$http.post('hr/operate/search',this.$qs.stringify(this.search)).then(res=>{
+        console.log(res.data)
+        this.logList=res.data;
+      }).catch(err=>{
+        console.log('请求失败')
+      })
     }
   }
 };

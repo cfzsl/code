@@ -87,6 +87,9 @@
       <el-menu-item index="/matters/HRManagement">
         <span class="iconfont icon-renyuanxinxiguanli"></span>组织结构
       </el-menu-item>
+      <el-menu-item index="/AddressBook">
+        <span class="iconfont icon-tongxunlu"></span>通讯录
+      </el-menu-item>
       <el-menu-item index="/matters/Adance">
         <span class="iconfont icon-chuqintongji"></span>人员考勤
       </el-menu-item>
@@ -101,9 +104,6 @@
       </el-menu-item>
       <el-menu-item index="/Recruitment">
         <span class="iconfont icon-zhaopinguanli"></span>招聘管理
-      </el-menu-item>
-      <el-menu-item index="/AddressBook">
-        <span class="iconfont icon-tongxunlu"></span>通讯录
       </el-menu-item>-->
     </el-submenu>
     <el-menu-item index="/business/process">

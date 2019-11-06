@@ -129,7 +129,7 @@
       <div class="warningPlate">
         <div class="plate" style="width: 190px">
           <div class="plateLeft">
-            <img src />
+            <img src='../../assets/img/jiLu.png' />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">50</span>
@@ -138,7 +138,7 @@
         </div>
         <div class="plate" style="width: 190px">
           <div class="plateLeft">
-            <img src />
+            <img src='../../assets/img/jiLu.png' />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">41</span>
@@ -147,7 +147,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src />
+            <img src='../../assets/img/jiLu.png' />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">3</span>
@@ -156,7 +156,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src />
+            <img src='../../assets/img/jiLu.png' />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">50</span>
@@ -165,7 +165,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src />
+            <img src='../../assets/img/jiLu.png' />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">1</span>
@@ -174,7 +174,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src />
+            <img src='../../assets/img/jiLu.png' />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">1</span>
@@ -183,7 +183,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src />
+            <img src='../../assets/img/jiLu.png' />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">4</span>
@@ -699,18 +699,78 @@
     <div id="player" v-if="!playerSelect">
       <div class="playerTop">
         <div class="warningDate">2019-11-02</div>
-        <!-- 滚动播放 -->
-        <div class="rollPlay">
-        </div>
+      </div>
+      <!-- 滚动播放 -->
+      <div class="userVideo">
+        <vueSeamless :data="userVideo" :class-option="optionCustomer">
+          <div class="userImageAllWrapper">
+            <div class="videoList" v-for="item in userVideo" :key="item.index">
+              <img :src="item.src" width="219px" height="126px" />
+              <p>{{item.title}}</p>
+            </div>
+          </div>
+        </vueSeamless>
       </div>
     </div>
   </div>
 </template>
 <script>
+import vueSeamless from "vue-seamless-scroll";
 export default {
   data() {
     return {
       // 视频区域
+      userVideo: [
+        {
+          src: require("../../assets/jpg/19221704b83490a1c346ff85b817cd35.jpg"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'0'
+        },
+        {
+          src: require("../../assets/jpg/24d82b0b0a02f2e99b85e5057f3b16a6.png"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'1'
+        },
+        {
+          src: require("../../assets/jpg/60a9a66c87768e70b18afc1948be640b.jpg"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'2',
+        },
+        {
+          src: require("../../assets/jpg/650050e6c72d34d7532f9d5f269016fb.png"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'3'
+        },
+        {
+          src: require("../../assets/jpg/7da0ac65e5e8c539c6170d66c1e076f8.gif"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'4'
+        },
+        {
+          src: require("../../assets/jpg/cf1d975c37d829b6606da8a3a1729b66.jpg"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'5'
+        },
+        {
+          src: require("../../assets/jpg/d1993ce8700a37dfa6fead279f3da630.jpg"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'6'
+        },
+        {
+          src: require("../../assets/jpg/ed9f08936febf7d5305545dd3a792b84.jpeg"),
+          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
+          index:'7'
+        },
+      ],
+      optionCustomer: {
+        step: 1, //滚动速度
+        hoverStop: false, //鼠标经是否停止
+        limitMoveNum: 8, //开始无缝滚动的数据量
+        openTouch: false, //开启数据实时监控刷新dom
+        waitTime: 1, //单步运动停滞时间
+        direction: 2, //0 向下 1 向上 2 向左 3向右
+        singleWidth: 30 //单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
+      },
       // 监控
       videoOption: {
         live: false,
@@ -817,6 +877,9 @@ export default {
         warningtime: ""
       }
     };
+  },
+  components: {
+    vueSeamless
   },
   watch: {
     // 提示
@@ -1415,8 +1478,8 @@ export default {
   margin-left: 20px;
   display: flex;
   img {
-    width: 45px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     margin-top: 32px;
     margin-left: 10px;
   }
@@ -1431,20 +1494,11 @@ export default {
     }
   }
 }
-.video {
-  display: flex;
-  flex-wrap: wrap;
-  .videoPlayer {
-    width: 300px;
-    height: 225px;
-    margin: 10px 10px;
-  }
-  p {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
+p {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 .playerTop {
   float: right;
@@ -1452,5 +1506,16 @@ export default {
   font-weight: 700;
   margin-top: 10px;
   padding-right: 20px;
+}
+
+.userVideo {
+  width: 100%;
+  height: 500px;
+  margin-top: 50px;
+  overflow: hidden;
+  .userImageAllWrapper {
+    display: flex;
+    
+  }
 }
 </style>

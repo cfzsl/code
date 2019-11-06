@@ -8,7 +8,7 @@
           <el-form-item label="姓名" class="msgWc">
             <el-input v-model="searchList.name"></el-input>
           </el-form-item>
-          <el-form-item label="区域">
+          <el-form-item label="组织架构">
             <el-select v-model="searchList.area">
               <el-option label="全部" value></el-option>
               <el-option
@@ -62,9 +62,74 @@
         </div>
       </div>
       <div class="searchBot">
+        <el-button type="primary" class="buttonBotLast" @click="scheduling = true">排班</el-button>
         <el-button type="primary" class="buttonBotLast">导出数据</el-button>
       </div>
     </div>
+    <!-- 排班弹框 -->
+    <el-dialog title="排班" :visible.sync="scheduling" width="1379px">
+      <div class="buildButton">
+        <el-button type="primary" class="buttonBotLast" @click="schedulingBuild = true">新建班次</el-button>
+        <el-button type="primary" class="buttonBotLast" @click="scheduling = false">返回上一级</el-button>
+      </div>
+      <el-table
+        :data="schedulingList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+        border
+        style="width: 100%"
+      >
+        <el-table-column align="center" prop="warningDate" label="序号" width="80px"></el-table-column>
+        <el-table-column align="center" prop="name" label="班次名称" width></el-table-column>
+        <el-table-column align="center" prop="shopTime" label="上下班时间" width></el-table-column>
+        <el-table-column align="center" prop="homeTime" label="休息时间" width></el-table-column>
+        <el-table-column align="center" prop="job" label="适用岗位" width></el-table-column>
+        <el-table-column align="center" prop="warningTime" label="考勤方式" width></el-table-column>
+        <el-table-column align="center" fixed="right" label="操作" width>
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="small"
+              @click="schedulingEdit(scope.row, scope.$index)"
+            >编辑</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="schedulingdelete(scope.row, scope.$index)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 新建班次弹窗 -->
+      <el-dialog width="50%" title="新建班次" :visible.sync="schedulingBuild" append-to-body>
+        <el-divider></el-divider>
+        <el-form :inline="true" :model="shifts">
+          <el-form-item label="班次名称">
+            <el-input></el-input>
+          </el-form-item>
+          <div>
+            <el-form-item label="上班时间">
+              <el-input v-model="time" style="width:80px"></el-input>
+            </el-form-item>
+            <el-form-item label="下班时间">
+              <el-input v-model="time" style="width:80px"></el-input>
+            </el-form-item>
+          </div>
+        </el-form>
+      </el-dialog>
+      <!-- 分页 -->
+      <el-pagination
+        class="paginationList"
+        background
+        @prev-click="nextpage"
+        @next-click="nextpage"
+        @current-change="nextpage"
+        :page-sizes="[5,10]"
+        :page-size="pagesize"
+        :current-page="currpage"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="salaryList.length"
+      ></el-pagination>
+    </el-dialog>
     <!-- 表格 -->
     <el-table
       :data="salaryList.slice((currpage - 1) * pagesize, currpage * pagesize)"
@@ -126,7 +191,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
-          <div>处理后,系统将按正常上下班记录并统计</div>
+        <div>处理后,系统将按正常上下班记录并统计</div>
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="adddate" class="formButon">确认</el-button>
@@ -146,10 +211,12 @@ export default {
         name: "",
         area: "",
         state: "",
-        sendtime: [new Date(), new Date()]
+        sendtime: ""
       },
       time: "",
       date: "",
+      schedulingBuild: false,
+      scheduling: false,
       dialogFormVisible: false,
       value: "0",
       options: [
@@ -274,21 +341,18 @@ export default {
       formInline: {
         radio: "正常"
       },
-      salaryList: []
+      salaryList: [],
+      schedulingList: []
     };
   },
   created() {
     // this.getSalaryList();
   },
   methods: {
-    miStatusColor(item) {
-      if (item == 0) {
-        return "danger";
-      } else if (item == 1) {
-        return "primary";
-      }
-      return "success";
-    },
+    // 编辑
+    schedulingEdit(row, _index) {},
+    //删除
+    schedulingdelete(row, _index) {},
     //查询
     onSubmit() {
       console.log(this.searchList);
@@ -352,7 +416,7 @@ export default {
 .search {
   position: relative;
   width: 100%;
-  height: 100px;
+  height: 120px;
   margin-top: 16px;
   .searchTop {
     float: left;
@@ -379,7 +443,7 @@ export default {
       height: 25px;
       font-size: 12px;
       padding: 0;
-      margin: 0;
+      margin: 0 0 0 10px;
     }
   }
 }
@@ -408,5 +472,8 @@ export default {
   text-align: center;
   margin-top: 32px;
   padding: 0;
+}
+.buildButton {
+  text-align: right;
 }
 </style>
