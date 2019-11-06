@@ -118,7 +118,11 @@
     >
       <el-table-column align="center" prop="name" label="申请人"></el-table-column>
       <el-table-column align="center" prop="tel" label="物料名称"></el-table-column>
+      <el-table-column align="center" prop="tel" label="规格及型号"></el-table-column>
+      <el-table-column align="center" prop="number" label="单位"></el-table-column>
+      <el-table-column align="center" prop="number" label="单价"></el-table-column>
       <el-table-column align="center" prop="number" label="数量"></el-table-column>
+      <el-table-column align="center" prop="number" label="金额"></el-table-column>
       <el-table-column align="center" prop="date" label="申请日期"></el-table-column>
       <el-table-column align="center" prop="job" label="审批状态"></el-table-column>
       <el-table-column align="center" prop="state" label="采购状态"></el-table-column>
@@ -242,26 +246,39 @@
           <el-form-item label="申请人:">
             <div>{{loginList.name}}</div>
           </el-form-item>
-          <el-form-item label="岗位:" style="margin-left:345px">
+          <el-form-item label="申请部门:" style="margin-left:300px">
             <div>{{loginList.job}}</div>
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="需采购材料:">
-            <div>{{loginList.tel}}</div>
-          </el-form-item>
-          <el-form-item label="数量:" style="margin-left:275px">
-            <div>{{loginList.number}}</div>
-          </el-form-item>
-        </div>
-        <div class="formNumber">
-          <el-form-item label="规格:">
+          <el-form-item label="物料名称:">
             <div style="width:558px">{{loginList.specifications}}</div>
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="用途:">
+          <el-form-item label="规格及型号:">
             <div style="width:558px">{{loginList.purpose}}</div>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="单位:">
+            <div>{{loginList.tel}}</div>
+          </el-form-item>
+          <el-form-item label="单价:" style="margin-left:275px">
+            <div>{{loginList.number}}</div>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="数量:">
+            <div>{{loginList.tel}}</div>
+          </el-form-item>
+          <el-form-item label="金额:" style="margin-left:275px">
+            <div>{{loginList.number}}</div>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="费用项目:">
+            <div style="width:558px">{{loginList.remarks}}</div>
           </el-form-item>
         </div>
         <div class="formNumber">
@@ -269,17 +286,9 @@
             <div style="width:558px">{{loginList.remarks}}</div>
           </el-form-item>
         </div>
-        <div class="formNumber">
-          <el-form-item label="采购负责人:">
-            <div>{{loginList.name}}</div>
-          </el-form-item>
-          <el-form-item label="分配负责人:" style="margin-left:345px">
-            <div>{{loginList.job}}</div>
-          </el-form-item>
-        </div>
       </el-form>
       <el-divider></el-divider>
-      <div class="examine">审批流程</div>
+      <div class="examine">物料采购审批流程：</div>
       <el-steps :active="active" :space="200" align-center>
         <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
         <el-step title="鲁彧" icon="el-icon-user" description="待申批"></el-step>
@@ -300,34 +309,44 @@
     <el-dialog title="物料采购" :visible.sync="PurchaseForm" width="717px" class="dialogText">
       <el-form :inline="true" :model="loginList" class="demo-form-inline">
         <el-divider></el-divider>
-        <div class="progress">
-          采购完成
-          <br />已分配
-        </div>
+        <div class="progress">审批完成<br>待发放</div>
         <div class="formNumber">
           <el-form-item label="申请人:">
             <div>{{loginList.name}}</div>
           </el-form-item>
-          <el-form-item label="岗位:" style="margin-left:345px">
+          <el-form-item label="申请部门:" style="margin-left:300px">
             <div>{{loginList.job}}</div>
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="需采购材料:">
-            <div>{{loginList.tel}}</div>
-          </el-form-item>
-          <el-form-item label="数量:" style="margin-left:275px">
-            <div>{{loginList.number}}</div>
-          </el-form-item>
-        </div>
-        <div class="formNumber">
-          <el-form-item label="规格:">
+          <el-form-item label="物料名称:">
             <div style="width:558px">{{loginList.specifications}}</div>
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="用途:">
+          <el-form-item label="规格及型号:">
             <div style="width:558px">{{loginList.purpose}}</div>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="单位:">
+            <div>{{loginList.tel}}</div>
+          </el-form-item>
+          <el-form-item label="单价:" style="margin-left:275px">
+            <div>{{loginList.number}}</div>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="数量:">
+            <div>{{loginList.tel}}</div>
+          </el-form-item>
+          <el-form-item label="金额:" style="margin-left:275px">
+            <div>{{loginList.number}}</div>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="费用项目:">
+            <div style="width:558px">{{loginList.remarks}}</div>
           </el-form-item>
         </div>
         <div class="formNumber">
@@ -335,16 +354,18 @@
             <div style="width:558px">{{loginList.remarks}}</div>
           </el-form-item>
         </div>
-        <div class="formNumber">
-          <el-form-item label="采购负责人:">
-            <div>{{loginList.name}}</div>
-          </el-form-item>
-          <el-form-item label="分配负责人:" style="margin-left:345px">
-            <div>{{loginList.job}}</div>
-          </el-form-item>
-        </div>
+        <el-divider></el-divider>
+        <div class="examine">采购详情</div>
+        <el-form-item label="选择供应商:" prop="remarks">
+          <el-select v-model="formAdd.pany" placeholder="请选择" style="width:558px">
+            <el-option label="全部" value></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注:">
+          <el-input v-model="formAdd.remarks" style="width:558px"></el-input>
+        </el-form-item>
+        <el-divider></el-divider>
       </el-form>
-      <el-divider></el-divider>
       <div class="examine">审核流程</div>
       <el-steps :active="active" :space="200" align-center>
         <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>

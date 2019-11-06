@@ -9,7 +9,7 @@
             <el-input v-model="searchList.name"></el-input>
           </el-form-item>
           <el-form-item label="组织架构">
-            <el-select v-model="searchList.area">
+            <el-select v-model="searchList.organ">
               <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in options"
@@ -20,25 +20,26 @@
             </el-select>
           </el-form-item>
           <el-form-item label="状态">
-            <el-select v-model="searchList.state" class="selectTop">
+            <el-select v-model="searchList.status" class="selectTop">
               <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in optionsStated"
                 :key="item.state"
-                :label="item.label"
-                :value="item.state"
+                :label="item.status"
+                :value="item.status"
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="时间" class="msgDate">
-            <el-time-picker
-              is-range
-              v-model="searchList.sendtime"
+          <el-form-item label="日期" class="searchtime">
+            <el-date-picker
+              v-model="searchList.searchtime"
+              type="daterange"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               range-separator="至"
-              start-placeholder="开始时间"
-              end-placeholder="结束时间"
-              placeholder="选择时间范围"
-            ></el-time-picker>
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            ></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -63,7 +64,7 @@
       </div>
       <div class="searchBot">
         <el-button type="primary" class="buttonBotLast" @click="scheduling = true">排班</el-button>
-        <el-button type="primary" class="buttonBotLast">导出数据</el-button>
+        <el-button type="primary" class="buttonBotLast" @click="kaoqinList">导出数据</el-button>
       </div>
     </div>
     <!-- 排班弹框 -->
@@ -136,14 +137,20 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="logdaytime" label="考勤日期" width="80px"></el-table-column>
+      <el-table-column align="center" prop="logdaytime" label="考勤日期"></el-table-column>
       <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
-      <el-table-column align="center" prop="region" label="归属区域" width></el-table-column>
+      <el-table-column align="center" prop="organ" label="组织架构" width></el-table-column>
       <el-table-column align="center" prop="job" label="岗位" width></el-table-column>
-      <el-table-column align="center" prop="tell" label="联系方式" width></el-table-column>
-      <el-table-column align="center" prop="warningTime" label="考勤记录" width></el-table-column>
-      <el-table-column align="center" prop="img" label="现场照片" width></el-table-column>
-      <el-table-column align="center" prop="data" label="状态" width></el-table-column>
+      <el-table-column align="center" prop="tel" label="联系方式" width></el-table-column>
+      <el-table-column align="center" prop="kqways" label="考勤方式" width></el-table-column>
+      <el-table-column align="center" prop="kqlogtime" label="考勤记录" width></el-table-column>
+      <el-table-column align="center" prop="picpath" label="现场照片" width>
+        <template slot-scope="scope">
+          <span v-if="scope.row.picpath" style="color:blue">查看照片</span>
+          <span v-else-if="!scope.row.picpath" style="color:blue">未上传</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="status" label="状态" width></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width>
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="showdetail(scope.row, scope.$index)">异常处理</el-button>
@@ -209,10 +216,11 @@ export default {
       currpage: 1,
       searchList: {
         name: "",
-        area: "",
-        state: "",
-        sendtime: ""
+        organ: "",
+        status: "",
+        searchtime: ""
       },
+      shifts:{},
       time: "",
       date: "",
       schedulingBuild: false,
@@ -311,31 +319,31 @@ export default {
       optionsStated: [
         {
           state: "1",
-          label: "正常"
+          status: "正常"
         },
         {
           state: "2",
-          label: "迟到"
+          status: "迟到"
         },
         {
           state: "3",
-          label: "早退"
+          status: "早退"
         },
         {
           state: "4",
-          label: "加班"
+          status: "加班"
         },
         {
           state: "5",
-          label: "请假"
+          status: "请假"
         },
         {
           state: "6",
-          label: "旷工"
+          status: "旷工"
         },
         {
           state: "7",
-          label: "缺卡"
+          status: "缺卡"
         }
       ],
       formInline: {
@@ -357,7 +365,7 @@ export default {
     onSubmit() {
       console.log(this.searchList);
       this.$http
-        .post("hr/bonus/search", this.$qs.stringify(this.searchList))
+        .post("/hr/kaoqin/search", this.$qs.stringify(this.searchList))
         .then(res => {
           console.log(res.data);
           this.salaryList = res.data;
@@ -370,9 +378,9 @@ export default {
     onEmpty() {
       this.searchList = {
         name: "",
-        area: "",
-        state: "",
-        sendtime: ""
+        organ: "",
+        status: "",
+        searchtime: ""
       };
       this.getSalaryList();
     },
@@ -387,6 +395,10 @@ export default {
         .catch(err => {
           console.log("请求失败");
         });
+    },
+    // 导出列表
+    kaoqinList(){
+      location.href='http://192.168.124.6:8888/hr/kaoqin/exportExcel'
     },
     //分页
     nextpage(value) {
