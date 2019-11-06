@@ -1,5 +1,6 @@
 <template>
   <!-- 招聘信息管理 -->
+  <!-- test -->
   <div>
     <!-- 搜索 -->
     <div class="search">
@@ -40,8 +41,7 @@
 
     <!-- 按钮 -->
     <div class="menu">
-      <div class="filter">共反馈5个问题，已解决4个，未解决1个</div>
-
+      
       <div class="btn">
         <el-button icon="el-icon-plus" @click="feedback = true">新建反馈</el-button>
         <el-button icon="el-icon-plus" @click="excellist">导出数据</el-button>
