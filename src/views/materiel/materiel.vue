@@ -6,26 +6,26 @@
       <div class="searchTop">
         <el-form :inline="true" :model="search">
           <el-form-item label="物料名称">
-            <el-input v-model="search.content"></el-input>
+            <el-input v-model="search.materielname"></el-input>
           </el-form-item>
           <el-form-item label="审批状态">
-            <el-select v-model="search.app" placeholder="请选择">
-              <el-option v-for="item in approval" :key="item.e" :label="item.app" :value="item.app"></el-option>
+            <el-select v-model="search.applicantstatus" placeholder="请选择">
+              <el-option v-for="item in approval" :key="item.e" :label="item.applicantstatus" :value="item.applicantstatus"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="采购状态">
-            <el-select v-model="search.purch" placeholder="请选择">
+            <el-select v-model="search.buystatus" placeholder="请选择">
               <el-option
                 v-for="item in purchase"
                 :key="item.i"
-                :label="item.purch"
-                :value="item.purch"
+                :label="item.buystatus"
+                :value="item.buystatus"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="申请日期" class="msgWc">
             <el-date-picker
-              v-model="search.date"
+              v-model="search.searchtime"
               type="daterange"
               value-format="yyyy-MM-dd"
               range-separator="至"
@@ -392,10 +392,10 @@ export default {
       pagesize: 10,
       currpage: 1,
       search: {
-        content: "",
-        app: "",
-        purch: "",
-        date: ""
+        materielname: "",
+        applicantstatus: "",
+        buystatus: "",
+        searchtime: ""
       },
       PurchaseForm: false,
       ApprovalForm: false,
@@ -436,46 +436,46 @@ export default {
       approval: [
         {
           e: "0",
-          app: "全部"
+          applicantstatus: "全部"
         },
         {
           e: "1",
-          app: "待审批"
+          applicantstatus: "待审批"
         },
         {
           e: "2",
-          app: "已审批"
+          apapplicantstatusp: "已审批"
         },
         {
           e: "3",
-          app: "被驳回"
+          applicantstatus: "被驳回"
         }
       ],
       i: "0",
       purchase: [
         {
           i: "0",
-          purch: "全部"
+          buystatus: "全部"
         },
         {
           i: "1",
-          purch: "—— ——"
+          buystatus: "—— ——"
         },
         {
           i: "2",
-          purch: "等待采购"
+          buystatus: "等待采购"
         },
         {
           i: "3",
-          purch: "采购中"
+          buystatus: "采购中"
         },
         {
           i: "4",
-          purch: "采购完成，未分配"
+          buystatus: "采购完成，未分配"
         },
         {
           i: "5",
-          purch: "采购完成，已分配"
+          buystatus: "采购完成，已分配"
         }
       ],
       c: "0",
@@ -516,30 +516,23 @@ export default {
         distribution: ""
       },
       rulesAdd: {},
-      wcList: [
-        {
-          name: "赵日天",
-          tel: "办公室打印纸",
-          number: "80份",
-          date: "2019-11-05",
-          job: "未审批",
-          state: "—— ——"
-        },
-        {
-          name: "李二狗",
-          tel: "车载定位设备",
-          number: "80份",
-          date: "2019-11-05",
-          job: "已审批",
-          state: "未采购"
-        }
-      ],
+      wcList: [],
       active: 0,
       listIndex: "",
       loginList: {}
     };
   },
+  created(){
+    this.getWcList();
+  },
   methods: {
+    // 获取列表
+    getWcList(){
+      this.$http.post('materiel/search',this.$qs.stringify(this.search)).then(res=>{
+        console.log(res.data)
+        this.wcList=res.data;
+      })
+    },
     //   驳回
     Reject() {
       this.active = 0;
@@ -579,14 +572,16 @@ export default {
       this.currpage = value;
     },
     // 查询
-    onSubmit() {},
+    onSubmit() {
+      console.log(this.search)
+    },
     // 清空
     onEmpty() {
       this.search = {
-        content: "",
-        app: "",
-        purch: "",
-        date: ""
+        materielname: "",
+        applicantstatus: "",
+        buystatus: "",
+        searchtime: ""
       };
     },
     //重置
