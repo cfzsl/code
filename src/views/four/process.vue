@@ -41,7 +41,6 @@
 
     <!-- 按钮 -->
     <div class="menu">
-      
       <div class="btn">
         <el-button icon="el-icon-plus" @click="feedback = true">新建反馈</el-button>
         <el-button icon="el-icon-plus" @click="excellist">导出数据</el-button>
@@ -390,7 +389,8 @@ export default {
         ],
         address: [
           { required: true, message: "请输入发生地点", trigger: "blur" }
-        ]
+        ],
+        img: [{ required: true, message: "请选择上传图片" }]
       },
       // 修改非空验证
       processrules: {

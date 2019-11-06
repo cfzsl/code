@@ -148,7 +148,7 @@
               placeholder="请输入关键字搜索"
               :fetch-suggestions="querySearch"
             ></el-autocomplete>
-            <div>多人通知请用 / 符号分割</div>
+            <div style="color: red"> * 多人通知请用 / 符号分割</div>
           </el-form-item>
         </div>
       </el-form>
