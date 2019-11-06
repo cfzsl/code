@@ -136,7 +136,7 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="warningDate" label="考勤日期" width="80px"></el-table-column>
+      <el-table-column align="center" prop="logdaytime" label="考勤日期" width="80px"></el-table-column>
       <el-table-column align="center" prop="name" label="姓名" width></el-table-column>
       <el-table-column align="center" prop="region" label="归属区域" width></el-table-column>
       <el-table-column align="center" prop="job" label="岗位" width></el-table-column>
@@ -346,7 +346,7 @@ export default {
     };
   },
   created() {
-    // this.getSalaryList();
+    this.getSalaryList();
   },
   methods: {
     // 编辑
@@ -379,7 +379,7 @@ export default {
     // 获取列表
     getSalaryList() {
       this.$http
-        .post("hr/bonus/search")
+        .post("/hr/kaoqin/search")
         .then(res => {
           console.log(res.data);
           this.salaryList = res.data;
