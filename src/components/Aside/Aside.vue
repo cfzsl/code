@@ -86,6 +86,9 @@
       </template>
       <el-menu-item index="/matters/HRManagement">
         <span class="iconfont icon-renyuanxinxiguanli"></span>组织结构
+        <el-menu-item index="/matters/HRManagement">
+          <span class="iconfont icon-renyuanxinxiguanli"></span>组织结构
+        </el-menu-item>
       </el-menu-item>
       <el-menu-item index="/matters/Adance">
         <span class="iconfont icon-chuqintongji"></span>人员考勤

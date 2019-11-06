@@ -134,7 +134,7 @@
         <div>全部信息模版</div>
         <el-upload
           class="upload-demo"
-          action="http://118.31.245.183:10500/MotorDetail/importExcel"
+          :action="$http.defaults.baseURL + '/MotorDetail/importExcel'"
           :show-file-list="false"
           :limit="1"
           style="float: right;"
@@ -362,6 +362,7 @@
 export default {
   data() {
     return {
+      formLabelAlign: "",
       // 首屏搜索
       search: {
         busnumber: "",
@@ -580,7 +581,7 @@ export default {
     // 查询
     onSubmit() {
       this.$http
-        .post("sanitation/car/formSearch", this.$qs.stringify())
+        .post("sanitation/car/formSearch", this.$qs.stringify(this.search))
         .then(res => {
           console.log(res.data);
           this.data.list = res.data;
