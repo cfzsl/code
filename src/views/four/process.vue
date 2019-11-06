@@ -44,7 +44,7 @@
 
       <div class="btn">
         <el-button icon="el-icon-plus" @click="feedback = true">新建反馈</el-button>
-        <el-button icon="el-icon-plus">导出数据</el-button>
+        <el-button icon="el-icon-plus" @click="excellist">导出数据</el-button>
       </div>
     </div>
 
@@ -90,13 +90,20 @@
     </div>
 
     <!-- 新建反馈 -->
-    <el-dialog title="新建反馈" width="650px" :visible.sync="feedback" @close="msg = {}">
-      <el-form :inline="true" style="overflow: hidden;">
+    <el-dialog title="新建反馈" width="650px" :visible.sync="feedback" @close="closeprocessmsg">
+      <el-form
+        ref="ruleForm"
+        :rules="rules"
+        :model="addfeedback"
+        :inline="true"
+        style="overflow: hidden;"
+      >
         <div class="feedbackbox">
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
-              <el-form-item label="反馈日期">
+              <el-form-item label="反馈日期" prop="time">
                 <el-date-picker
+                  style="width:215px"
                   value-format="yyyy-MM-dd"
                   v-model="addfeedback.time"
                   type="date"
@@ -105,7 +112,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="姓名">
+              <el-form-item label="姓名" prop="charge">
                 <el-input style="width:220px" v-model="addfeedback.charge" placeholder="请输入姓名"></el-input>
               </el-form-item>
             </el-col>
@@ -114,9 +121,8 @@
         <div class="feedbackbox">
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="12">
-              <el-form-item label="所属单位">
-                <el-select style="width:220px" v-model="addfeedback.area">
-                  <el-option label="全部" value></el-option>
+              <el-form-item label="所属单位" prop="area">
+                <el-select style="width:215px" v-model="addfeedback.area">
                   <el-option label="环卫一部" value="环卫一部"></el-option>
                   <el-option label="环卫二部" value="环卫二部"></el-option>
                   <el-option label="环卫三部" value="环卫三部"></el-option>
@@ -125,9 +131,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="岗位">
+              <el-form-item label="岗位" prop="job">
                 <el-select style="width:220px" v-model="addfeedback.job">
-                  <el-option label="全部岗位" value></el-option>
                   <el-option label="环卫工人" value="环卫工人"></el-option>
                   <el-option label="洒水车司机" value="洒水车司机"></el-option>
                   <el-option label="清运车司机" value="清运车司机"></el-option>
@@ -140,7 +145,7 @@
           </el-row>
         </div>
         <div class="feedbackbox">
-          <el-form-item label="问题详情">
+          <el-form-item label="问题详情" prop="problemdesc">
             <el-input
               type="textarea"
               resize="none"
@@ -152,16 +157,19 @@
           </el-form-item>
         </div>
         <div class="feedbackbox">
-          <el-form-item label="发生地点">
+          <el-form-item label="发生地点" prop="address">
             <el-input style="width: 500px" v-model="addfeedback.address" placeholder="请输入发生地点"></el-input>
           </el-form-item>
         </div>
         <div class="feedbackbox">
-          <el-form-item label="上传图片">
+          <el-form-item label="上传图片" prop="img" ref="upload">
             <el-upload
-              ref="upload"
-              action="http://192.168.8.126:8080/safeQuality/uploadImage"
+              ref="uploadimg"
+              :file-list="addfeedback.imglist"
+              :action="$http.defaults.baseURL + 'safeQuality/uploadImage'"
               :auto-upload="false"
+              :on-change="onChange"
+              :on-remove="onRemove"
               :data="addfeedback"
               style="float: left"
             >
@@ -295,29 +303,40 @@
     </el-dialog>
 
     <!-- 处理 -->
-    <el-dialog title="问题处理" width="650px" :visible.sync="process" @close="msg = {}">
-      <el-form ref="form" label-width="80px" style="overflow: hidden;">
-        <el-form-item label="处理状态">
-          <el-radio-group v-model="processmsg.result">
-            <el-radio label="未处理">未处理</el-radio>
-            <el-radio label="已处理">已处理</el-radio>
-          </el-radio-group>
+    <el-dialog title="问题处理" width="650px" :visible.sync="process" @close="closeprocessmsg">
+      <el-form
+        ref="ruleForm"
+        :rules="processrules"
+        :model="processmsg"
+        label-width="80px"
+        style="overflow: hidden;"
+      >
+        <el-form-item label="详情内容" prop="param1">
+          <el-input
+            type="textarea"
+            resize="none"
+            :autosize="{ minRows: 4, maxRows: 4}"
+            maxlength="100"
+            show-word-limit
+            v-model="processmsg.param1"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="详情内容">
-          <el-input type="textarea" resize="none" v-model="processmsg.param1"></el-input>
-        </el-form-item>
-        <el-form-item label="上传图片">
+        <el-form-item label="上传图片" prop="img" ref="upload">
           <el-upload
-            ref="upload"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            ref="uploadimg"
+            :action="$http.defaults.baseURL + 'safeQuality/uploadImage1'"
             :auto-upload="false"
+            :on-change="onChange"
+            :on-remove="onRemove"
+            :file-list="imglist"
+            :data="processmsg"
             style="float: left"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
           </el-upload>
         </el-form-item>
         <el-form-item style="float:right">
-          <el-button type="primary" @click="feedback = false">取消</el-button>
+          <el-button type="primary" @click="process = false">取消</el-button>
           <el-button type="primary" @click="problemHandling">提交</el-button>
         </el-form-item>
       </el-form>
@@ -352,45 +371,51 @@ export default {
         area: "",
         job: "",
         problemdesc: "",
-        address: "",
-        imglist: []
+        address: ""
       },
       // 反馈详情
       feedbackdetail: {},
       // 处理信息
       processmsg: {
-        result: "未处理",
-        param1: "",
-        imglist: []
+        param1: ""
       },
+      // 新增非空验证
+      rules: {
+        time: [{ required: true, message: "请选择反馈日期", trigger: "blur" }],
+        charge: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        area: [{ required: true, message: "请选择所属单位", trigger: "blur" }],
+        job: [{ required: true, message: "请选择岗位", trigger: "blur" }],
+        problemdesc: [
+          { required: true, message: "请输入问题详情", trigger: "blur" }
+        ],
+        address: [
+          { required: true, message: "请输入发生地点", trigger: "blur" }
+        ]
+      },
+      // 修改非空验证
+      processrules: {
+        param1: [
+          { required: true, message: "请输入详情内容", trigger: "blur" }
+        ],
+        img: [{ required: true, message: "请选择上传图片" }]
+      },
+      // 图片上传列表
+      imglist: [],
       feedback: false,
       feedbackdetails: false,
       process: false,
-      insuranceList: [
-        {
-          carbrand: "鲁E-562E4",
-          company: "太平洋保险",
-          effectivedate: "2019-02-30",
-          warningdate: "2020-10-15"
-        },
-        {
-          carbrand: "鲁E-359Y5",
-          company: "太平洋保险",
-          effectivedate: "2018-05-10",
-          warningdate: "2019-09-19"
-        }
-      ],
-      value1: "",
-      value2: "",
       msg: {
         number: ""
       },
-      th: "0"
+      imgupload: false,
+      status: ""
     };
   },
   methods: {
+    uploadImage1() {
+      return;
+    },
     // 获取列表
-    // 上传
     getList() {
       this.$http
         .post(
@@ -425,16 +450,24 @@ export default {
     },
     // 新建反馈
     newfeedback() {
-      this.$http
-        .post(
-          "safeQuality/addSafeQualityDetail",
-          this.$qs.stringify(this.addfeedback)
-        )
-        .then(res => {
-          this.$refs.upload.submit();
-          this.feedback = !this.feedback;
-          this.getList();
+      const _this = this;
+      if (this.imgupload) {
+        this.rules.img = [];
+        this.$refs["ruleForm"].validate(valid => {
+          if (valid) {
+            this.$refs.uploadimg.submit();
+            this.rules.img = [{ required: true, message: "请选择上传图片" }];
+            this.feedback = !this.feedback;
+            setTimeout(() => {
+              _this.getList();
+            }, 1000);
+          } else {
+            return false;
+          }
         });
+      } else {
+        this.$refs["ruleForm"].validate();
+      }
     },
     // 显示问题处理
     showprocess(row) {
@@ -444,19 +477,48 @@ export default {
     },
     // 问题处理
     problemHandling(id) {
-      this.$http
-        .post(
-          "safeQuality/addProblemProcess",
-          this.$qs.stringify(this.processmsg)
-        )
-        .then(res => {
-          console.log(res);
-          this.process = !this.process;
-          this.getList();
-        });
+      const _this = this;
+      if (this.imgupload) {
+        this.rules.img = [];
+        this.$refs.uploadimg.submit();
+        this.process = !this.process;
+        setTimeout(() => {
+          _this.getList();
+        }, 1000);
+      } else {
+        this.$refs["ruleForm"].validate();
+      }
+    },
+    // 导出数据
+    excellist() {
+      location.href = this.$http.defaults.baseURL + "safeQuality/exportExcel";
+    },
+    // 图片添加非空验证
+    onChange(file, filelist) {
+      if (filelist.length != 0) {
+        this.$refs["ruleForm"].clearValidate("img");
+        this.imgupload = true;
+      }
+    },
+    // 图片删除非空验证
+    onRemove(file, filelist) {
+      if (filelist.length == 0) {
+        this.rules.img = [{ required: true, message: "请选择上传图片" }];
+        this.$refs["ruleForm"].validateField("img");
+        this.imgupload = false;
+      }
+    },
+    // 关闭处理弹窗
+    closeprocessmsg() {
+      this.processmsg = {};
+      this.addfeedback = {};
+      this.$refs.uploadimg.clearFiles();
+      this.$refs.ruleForm.resetFields();
     }
   },
   created() {
+    console.log();
+
     this.getList();
   }
 };

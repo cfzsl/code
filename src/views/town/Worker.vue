@@ -9,6 +9,7 @@
             <el-date-picker
               v-model="search.date"
               type="daterange"
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -18,7 +19,7 @@
             <el-input class="searchInput" v-model="search.title" placeholder="请输入标题"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="getAddBook">查询</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -27,7 +28,7 @@
     <!-- 按钮 -->
     <div class="searchBot" style="float: right;margin-bottom: 10px;">
       <el-button class="buttonBot" icon="el-icon-plus" @click="dialogVisible = true">新建通知</el-button>
-      <el-button icon="el-icon-download" class="buttonBotLast">导出数据</el-button>
+      <el-button icon="el-icon-download" class="buttonBotLast" @click="excellist">导出数据</el-button>
     </div>
 
     <!-- 列表 -->
@@ -37,11 +38,11 @@
         border
         style="width: 100%"
       >
-        <el-table-column align="center" prop="sid" label="通知时间"></el-table-column>
-        <el-table-column align="center" prop="name" label="通知标题"></el-table-column>
-        <el-table-column align="center" prop="area" label="通知类型"></el-table-column>
-        <el-table-column align="center" prop="param2" label="通知用户"></el-table-column>
-        <el-table-column align="center" prop="depart" label="状态"></el-table-column>
+        <el-table-column align="center" prop="time" label="通知时间"></el-table-column>
+        <el-table-column align="center" prop="title" label="通知标题"></el-table-column>
+        <el-table-column align="center" prop="type" label="通知类型"></el-table-column>
+        <el-table-column align="center" prop="users" label="通知用户"></el-table-column>
+        <el-table-column align="center" prop="status" label="状态"></el-table-column>
         <el-table-column align="center" fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button
@@ -54,7 +55,7 @@
               class="tableButton2"
               type="button"
               size="small"
-              @click="pagination(scope.row, scope.$index)"
+              @click="showrelease(scope.row, scope.$index)"
             >发布</el-button>
           </template>
         </el-table-column>
@@ -77,14 +78,25 @@
 
     <!-- 新建通知 -->
     <el-dialog title="新建通知" :visible.sync="dialogVisible" width="705px" class="dialogText">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form
+        ref="ruleForm"
+        :inline="true"
+        :rules="newrules"
+        :model="newformInline"
+        class="demo-form-inline"
+      >
         <div class="newbox">
-          <el-form-item label="通知标题">
-            <el-input style="width:548px" maxlength="20" show-word-limit v-model="formInline.title"></el-input>
+          <el-form-item label="通知标题" prop="title">
+            <el-input
+              style="width:548px"
+              maxlength="20"
+              show-word-limit
+              v-model="newformInline.title"
+            ></el-input>
           </el-form-item>
         </div>
         <div class="newbox">
-          <el-form-item label="通知内容">
+          <el-form-item label="通知内容" prop="message">
             <el-input
               type="textarea"
               :autosize="{ minRows: 7, maxRows: 7}"
@@ -92,13 +104,13 @@
               resize="none"
               maxlength="200"
               show-word-limit
-              v-model="formInline.detail"
+              v-model="newformInline.message"
             ></el-input>
           </el-form-item>
         </div>
         <div class="newbox">
-          <el-form-item label="通知类型">
-            <el-select v-model="formInline.type" class="selectTop" @change="clearchange">
+          <el-form-item label="通知类型" prop="type">
+            <el-select v-model="newformInline.type" class="selectTop" @change="clearchange">
               <el-option label="部门通知" value="部门通知"></el-option>
               <el-option label="区域通知" value="区域通知"></el-option>
               <el-option label="岗位通知" value="岗位通知"></el-option>
@@ -107,35 +119,36 @@
           </el-form-item>
         </div>
         <div class="newbox">
-          <el-form-item v-if="formInline.type === '部门通知'" label="部门通知">
-            <el-select v-model="formInline.content" class="selectTop">
+          <el-form-item v-if="newformInline.type === '部门通知'" label="部门通知" prop="depart">
+            <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有部门" value></el-option>
               <el-option label="环卫一部" value="环卫一部"></el-option>
               <el-option label="环卫二部" value="环卫二部"></el-option>
               <el-option label="环卫三部" value="环卫三部"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
-            <el-select v-model="formInline.content" class="selectTop">
+          <el-form-item v-else-if="newformInline.type === '区域通知'" label="区域通知" prop="area">
+            <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有区域" value></el-option>
               <el-option label="东营区新区" value="东营区新区"></el-option>
               <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
               <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="formInline.type === '岗位通知'" label="岗位通知">
-            <el-select v-model="formInline.content" class="selectTop">
+          <el-form-item v-else-if="newformInline.type === '岗位通知'" label="岗位通知" prop="job">
+            <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有岗位" value></el-option>
               <el-option label="环卫工" value="环卫工"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="formInline.type === '个人通知'" label="个人通知">
+          <el-form-item v-else-if="newformInline.type === '个人通知'" label="个人通知" prop="users">
             <el-autocomplete
               style="width: 240px"
-              v-model="formInline.content"
+              v-model="newformInline.users"
               placeholder="请输入关键字搜索"
               :fetch-suggestions="querySearch"
             ></el-autocomplete>
+            <div>多人通知请用 / 符号分割</div>
           </el-form-item>
         </div>
       </el-form>
@@ -152,7 +165,7 @@
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <div class="newbox">
           <el-form-item label="通知日期">
-            <el-date-picker readonly v-model="formInline.date" type="date" placeholder="选择日期"></el-date-picker>
+            <el-date-picker readonly v-model="formInline.time" type="date" placeholder="选择日期"></el-date-picker>
           </el-form-item>
           <el-form-item label="通知状态">
             <el-select style="width: 240px" v-model="formInline.status" disabled placeholder="请选择">
@@ -182,13 +195,13 @@
               resize="none"
               maxlength="200"
               show-word-limit
-              v-model="formInline.detail"
+              v-model="formInline.message"
             ></el-input>
           </el-form-item>
         </div>
         <div class="newbox">
           <el-form-item label="通知类型">
-            <el-select v-model="formInline.type" disabled class="selectTop" @change="clearchange">
+            <el-select v-model="formInline.type" disabled class="selectTop">
               <el-option label="部门通知" value="部门通知"></el-option>
               <el-option label="区域通知" value="区域通知"></el-option>
               <el-option label="岗位通知" value="岗位通知"></el-option>
@@ -198,7 +211,7 @@
         </div>
         <div class="newbox">
           <el-form-item v-if="formInline.type === '部门通知'" label="部门通知">
-            <el-select v-model="formInline.content" disabled class="selectTop">
+            <el-select v-model="formInline.users" disabled class="selectTop">
               <el-option label="所有部门" value></el-option>
               <el-option label="环卫一部" value="环卫一部"></el-option>
               <el-option label="环卫二部" value="环卫二部"></el-option>
@@ -206,7 +219,7 @@
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
-            <el-select v-model="formInline.content" disabled class="selectTop">
+            <el-select v-model="formInline.users" disabled class="selectTop">
               <el-option label="所有区域" value></el-option>
               <el-option label="东营区新区" value="东营区新区"></el-option>
               <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
@@ -214,7 +227,7 @@
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="formInline.type === '岗位通知'" label="岗位通知">
-            <el-select v-model="formInline.content" disabled class="selectTop">
+            <el-select v-model="formInline.users" disabled class="selectTop">
               <el-option label="所有岗位" value></el-option>
               <el-option label="环卫工" value="环卫工"></el-option>
             </el-select>
@@ -223,7 +236,7 @@
             <el-autocomplete
               disabled
               style="width: 240px"
-              v-model="formInline.content"
+              v-model="formInline.users"
               placeholder="请输入关键字搜索"
               :fetch-suggestions="querySearch"
             ></el-autocomplete>
@@ -251,21 +264,43 @@ export default {
   data() {
     return {
       // 新建通知
-      formInline: {
+      newformInline: {
         title: "",
-        detail: "",
-        type: "部门通知",
-        content: "",
-        status: "已发布",
-        date: "2019-11-04"
+        type: "",
+        users: "",
+        message: ""
+      },
+      // 新建通知非空验证
+      newrules: {
+        title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
+
+        message: [
+          { required: true, message: "请输入通知内容", trigger: "blur" }
+        ],
+        type: [{ required: true, message: "请选择通知类型", trigger: "blur" }],
+        users: [{ required: true, message: "请输入通知人员", trigger: "blur" }]
+      },
+      // 通知详情
+      formInline: {
+        time: "",
+        title: "",
+        type: "",
+        users: "",
+        status: "",
+        message: ""
       },
       detail: false,
       dialogVisible: false,
       dialogFormVisible: false,
+      // 搜索
       search: {
         title: "",
-        date: ""
+        time: "",
+        date: "",
+        startTime: "",
+        endTime: ""
       },
+      // 列表数据
       data: {
         pagesize: 13,
         currpage: 1,
@@ -327,68 +362,49 @@ export default {
     };
   },
   methods: {
-    // 弹窗传值
-    pagination(row, _index) {
+    // 显示发布
+    showrelease(row, _index) {
       console.log(row);
-      //记录索引
-      this.listIndex = _index;
       //记录数据
       this.formInline = row;
       //显示弹窗
       this.dialogFormVisible = true;
-      this.buttonIf = true;
-      console.log(this.dialogFormVisible);
     },
+    // 显示详情
     showdetail(row, _index) {
-      //记录索引
-      this.listIndex = _index;
       //记录数据
-      // this.formInline = row;
+      this.formInline = row;
       //显示弹窗
       this.detail = !this.detail;
     },
-    addDo() {
-      // let _index = this.listIndex;
-      //根据索引，赋值到list制定的数
-      // this.list[_index] = this.formInline;
-      //关闭弹窗
-      console.log("关闭");
-      this.buttonIf = false;
-    },
+    // 发布确认
     adddate() {
       this.dialogFormVisible = false;
     },
-    deletList() {
-      console.log("删除指定项");
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
+    // 获取列表/搜索
     getAddBook() {
-      this.$http
-        .get("userInformation/userInformationCriteriaQuery")
-        .then(res => {
-          this.data.list = res.data;
-        });
-    },
-    onSubmit() {
       this.data.currpage = 1;
+      if (this.search.date != null) {
+        this.search.startTime = this.search.date[0];
+        this.search.endTime = this.search.date[1];
+      } else {
+        this.search.startTime = "";
+        this.search.endTime = "";
+      }
       this.$http
         .post(
-          "userInformation/userInformationCriteriaQuery",
+          "systemAdvice/systemAdviceCriteriaQuery",
           this.$qs.stringify(this.search)
         )
         .then(res => {
           this.data.list = res.data;
         });
     },
+    // 翻页
     nextpage(value) {
       this.data.currpage = value;
     },
-    // test
+    // 模糊搜索名字
     querySearch(queryString, cb) {
       var restaurants = this.restaurants;
       var results = queryString
@@ -407,11 +423,30 @@ export default {
     },
     // 清空下拉框所选值
     clearchange() {
-      this.formInline.content = "";
+      this.newformInline.users = "";
     },
     // 新建提交
     onSubimt() {
-      console.log(this.formInline);
+      this.$refs["ruleForm"].validate(valid => {
+        if (valid) {
+          this.$http
+            .post(
+              "systemAdvice/addSystemAdvice",
+              this.$qs.stringify(this.newformInline)
+            )
+            .then(res => {
+              this.dialogVisible = !this.dialogVisible;
+              console.log(res);
+              this.getAddBook();
+            });
+        } else {
+          return false;
+        }
+      });
+    },
+    // 导出
+    excellist() {
+      location.href = this.$http.defaults.baseURL + "systemAdvice/exportExcel";
     }
   },
   created() {
