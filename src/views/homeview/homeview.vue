@@ -2,28 +2,159 @@
   <div id="homeview">
     <div class="homeviewButton">
       <el-button type="primary" @click="addMap" v-if="mapSelect">地图</el-button>
-      <el-button type="primary" @click="addWarning" v-if="warningSelect">预警信息</el-button>
-      <el-button type="primary" @click="addPlayer" v-if="playerSelect">视屏播放</el-button>
+      <el-button type="primary" @click="addWarning" v-if="warningSelect">数据中控台</el-button>
+      <el-button type="primary" @click="addPlayer" v-if="playerSelect">巡检平台</el-button>
     </div>
     <!-- 地图 -->
     <baidu-map
       class="map"
-      center="中国石油大学胜利学院"
+      center="东营区"
       dragging
       :zoom="12"
       scroll-wheel-zoom
       v-if="!mapSelect"
     >
-      <!-- GPS测试点 -->
-      <bm-marker :position="{lng: 114.41166666666666, lat: 30.482222222222223}" :dragging="true"></bm-marker>
+      <!-- 武汉市GPS测试点 -->
+      <!-- <bm-marker :position="{lng: 114.41166666666666, lat: 30.482222222222223}"></bm-marker>
+      <bm-marker
+        :rotation="marker.direction"
+        :position="{lng: marker.x, lat: marker.y}"
+        :icon="{url: 'http://118.31.245.183:10500/images000/对讲机.png', size: {width: 18, height: 24}}"
+        @click="infoWindowOpen"
+      > -->
+        <!-- <bm-info-window
+          class="infoWindow"
+          :show="markers.show"
+          :position="{lng: marker.x, lat: marker.y}"
+          title="对讲机"
+          @close="infoWindowClose"
+          @open="infoWindowOpen"
+        >
+          <div>
+            ID:
+            <span>156541484681</span>
+          </div>
+          <div>
+            状态:
+            <span>静止</span>
+          </div>
+          <div>
+            ACE状态:
+            <span>开</span>电量:
+            <span>60%</span>信号:
+            <span>强</span>
+          </div>
+          <div>
+            速度:
+            <span>{{marker.speed}}</span>油耗:
+            <span>{{marker.oilUsed}}</span>行驶里程:
+            <span>{{marker.km}}</span>
+          </div>
+          <div>
+            定位时间:
+            <span>2019-10-31 10:30</span>
+          </div>
+          <div>
+            停留时间:
+            <span>2小时43分12秒</span>
+          </div>
+          <div>
+            定位方式:
+            <span>GPS</span>
+          </div>
+          <div>
+            <a>实时跟踪</a>
+            <a>历史轨迹</a>
+            <a>电子栅栏</a>
+            <a>设备信息</a>
+          </div>
+          <div>
+            <a>查询指令记录</a>
+            <a>下载轨迹</a>
+          </div>
+        </bm-info-window> -->
+      <!-- </bm-marker> -->
       <!-- 控件 -->
       <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-navigation>
-      <!-- 覆盖范围高亮 -->
-      <bm-boundary name="东营区" :strokeWeight="2" strokeColor="#BDC5F3" fillColor="#BDC5F3"></bm-boundary>
+      <!-- 划区 -->
+      <!-- 黄河路二部 -->
+      <bm-polygon
+        :path="polygonPath1"
+        stroke-color="yellow"
+        fillColor="yellow"
+        :stroke-opacity="0.8"
+        :stroke-weight="1"
+      />
+      <!-- 黄河路一部 -->
+      <bm-polygon
+        :path="polygonPath8"
+        stroke-color="#FFBB55"
+        fillColor="#FFBB55"
+        :stroke-opacity="0.8"
+        :stroke-weight="1"
+      />
+      <!-- 辛店项目一部 -->
+      <bm-polygon
+        :path="polygonPath2"
+        stroke-color="#5555FF"
+        fillColor="#5555FF"
+        :stroke-opacity="0.8"
+        :stroke-weight="1"
+      />
+      <!-- 辛店项目二部 -->
+      <bm-polygon
+        :path="polygonPath3"
+        stroke-color="#FF22FF"
+        fillColor="#FF22FF"
+        :stroke-opacity="0.8"
+        :stroke-weight="1"
+      />
+      <!-- 文汇二部 -->
+      <bm-polygon
+        :path="polygonPath4"
+        stroke-color="#FFBBD6"
+        fillColor="#FFBBD6"
+        :stroke-opacity="0.8"
+        :stroke-weight="1"
+      />
+      <!-- 文汇一部 -->
+      <bm-polygon
+        :path="polygonPath5"
+        stroke-color="#55FF55"
+        fillColor="#55FF55"
+        :stroke-opacity="0.8"
+        :stroke-weight="1"
+      />
+      <!-- 胜园项目部 -->
+      <bm-polygon
+        :path="polygonPath6"
+        stroke-color="#55FFFF"
+        fillColor="#55FFFF"
+        :stroke-opacity="0.8"
+        :stroke-weight="1"
+      />
       <!-- mark点 -->
+       <bm-marker
+        :position="{lng: 118.36, lat: 37.42}"
+        :icon="{url: 'http://118.31.245.183:10500/images000/对讲机.png', size: {width: 24, height: 18}}"
+      >
+      </bm-marker>
       <bm-marker
-        :position="{lng: markers.lng, lat: markers.lat}"
-        :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车.png', size: {width: 24, height: 18}}"
+        :position="{ lng: 118.520048, lat: 37.399597 }"
+        :icon="{url: 'http://118.31.245.183:10500/images000/清扫车.png', size: {width: 24, height: 18}}"
+      ></bm-marker>
+      <bm-marker
+        :position="{ lng: 118.394716, lat: 37.404183 }"
+        :icon="{url: 'http://118.31.245.183:10500/images000/洒水车.png', size: {width: 24, height: 18}}"
+      ></bm-marker>
+      <bm-marker
+        :position="{ lng: 118.693672, lat: 37.408082 }"
+        :icon="{url: 'http://118.31.245.183:10500/images000/三轮车.png', size: {width: 24, height: 18}}"
+      ></bm-marker>
+      <bm-marker
+        :zIndex='index'
+        :position="{ lng: 118.598237, lat: 37.463098 }"
+        :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车.png', size: {width: 24, height: 24}}"
         @click="infoWindowOpen(markers)"
       >
         <bm-info-window
@@ -72,28 +203,6 @@
           </div>
         </bm-info-window>
       </bm-marker>
-      <bm-marker
-        :position="{ lng: 118.520048, lat: 37.399597 }"
-        :icon="{url: 'http://118.31.245.183:10500/images000/清扫车.png', size: {width: 24, height: 18}}"
-      ></bm-marker>
-      <bm-marker
-        :position="{ lng: 118.394716, lat: 37.404183 }"
-        :icon="{url: 'http://118.31.245.183:10500/images000/洒水车.png', size: {width: 24, height: 18}}"
-      ></bm-marker>
-      <bm-marker
-        :position="{ lng: 118.693672, lat: 37.408082 }"
-        :icon="{url: 'http://118.31.245.183:10500/images000/三轮车.png', size: {width: 24, height: 18}}"
-      ></bm-marker>
-      <bm-marker
-        :position="{ lng: 118.598237, lat: 37.463098 }"
-        :icon="{url: 'http://118.31.245.183:10500/images000/对讲机.png', size: {width: 18, height: 24}}"
-      ></bm-marker>
-      <bm-marker
-        v-for="item in position2"
-        :key="item.code"
-        :position="{ lng: item.lng, lat: item.lat }"
-        :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车.png', size: {width: 38, height: 30}}"
-      ></bm-marker>
       <div class="mapList">
         <div class="list">
           <img src="../../assets/img/洒水车.png" width="18px" height="24px" alt />
@@ -129,7 +238,7 @@
       <div class="warningPlate">
         <div class="plate" style="width: 190px">
           <div class="plateLeft">
-            <img src='../../assets/img/jiLu.png' />
+            <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">50</span>
@@ -138,7 +247,7 @@
         </div>
         <div class="plate" style="width: 190px">
           <div class="plateLeft">
-            <img src='../../assets/img/jiLu.png' />
+            <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">41</span>
@@ -147,7 +256,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src='../../assets/img/jiLu.png' />
+            <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">3</span>
@@ -156,7 +265,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src='../../assets/img/jiLu.png' />
+            <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">50</span>
@@ -165,7 +274,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src='../../assets/img/jiLu.png' />
+            <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">1</span>
@@ -174,7 +283,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src='../../assets/img/jiLu.png' />
+            <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">1</span>
@@ -183,7 +292,7 @@
         </div>
         <div class="plate" style="width: 110px">
           <div class="plateLeft">
-            <img src='../../assets/img/jiLu.png' />
+            <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
             <span class="plateRightNumber">4</span>
@@ -698,9 +807,11 @@
     <!-- 播放视频 -->
     <div id="player" v-if="!playerSelect">
       <div class="playerTop">
+        <el-button type></el-button>
         <div class="warningDate">2019-11-02</div>
       </div>
-      <!-- 滚动播放 -->
+      <div class="playerVideo"></div>
+      <!-- 图片滚动播放 -->
       <div class="userVideo">
         <vueSeamless :data="userVideo" :class-option="optionCustomer">
           <div class="userImageAllWrapper">
@@ -719,48 +830,103 @@ import vueSeamless from "vue-seamless-scroll";
 export default {
   data() {
     return {
+      index:8888,
       // 视频区域
       userVideo: [
         {
           src: require("../../assets/jpg/19221704b83490a1c346ff85b817cd35.jpg"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'0'
+          index: "0"
         },
         {
           src: require("../../assets/jpg/24d82b0b0a02f2e99b85e5057f3b16a6.png"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'1'
+          index: "1"
         },
         {
           src: require("../../assets/jpg/60a9a66c87768e70b18afc1948be640b.jpg"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'2',
+          index: "2"
         },
         {
           src: require("../../assets/jpg/650050e6c72d34d7532f9d5f269016fb.png"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'3'
+          index: "3"
         },
         {
           src: require("../../assets/jpg/7da0ac65e5e8c539c6170d66c1e076f8.gif"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'4'
+          index: "4"
         },
         {
           src: require("../../assets/jpg/cf1d975c37d829b6606da8a3a1729b66.jpg"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'5'
+          index: "5"
         },
         {
           src: require("../../assets/jpg/d1993ce8700a37dfa6fead279f3da630.jpg"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'6'
+          index: "6"
         },
         {
           src: require("../../assets/jpg/ed9f08936febf7d5305545dd3a792b84.jpeg"),
           title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index:'7'
-        },
+          index: "7"
+        }
+      ],
+      // 测试
+      marker:{},
+      // 区域划分
+      polygonPath1: [
+        { lng: 118.498003, lat: 37.462778 },
+        { lng: 118.525941, lat: 37.463812 },
+        { lng: 118.524683, lat: 37.411427 },
+        { lng: 118.489254, lat: 37.411563 },
+        { lng: 118.489838, lat: 37.431277 },
+        { lng: 118.497904, lat: 37.462871 }
+      ],
+      polygonPath8: [
+        { lng: 118.525941, lat: 37.463812 },
+        { lng: 118.558356, lat: 37.464415 },
+        { lng: 118.605225, lat: 37.464039 },
+        { lng: 118.602099, lat: 37.353996 },
+        { lng: 118.555602, lat: 37.361397 },
+        { lng: 118.524683, lat: 37.411427 }
+      ],
+      polygonPath2: [
+        { lng: 118.489838, lat: 37.431277 },
+        { lng: 118.4979, lat: 37.46287 },
+        { lng: 118.501866, lat: 37.478343 },
+        { lng: 118.401938, lat: 37.484535 },
+        { lng: 118.389124, lat: 37.433032 }
+      ],
+      polygonPath3: [
+        { lng: 118.501839, lat: 37.47834 },
+        { lng: 118.503016, lat: 37.504512 },
+        { lng: 118.519311, lat: 37.519568 },
+        { lng: 118.425982, lat: 37.552083 },
+        { lng: 118.402123, lat: 37.484878 }
+      ],
+      polygonPath4: [
+        { lng: 118.497918, lat: 37.462869 },
+        { lng: 118.501839, lat: 37.47834 },
+        { lng: 118.503016, lat: 37.504512 },
+        { lng: 118.519311, lat: 37.519568 },
+        { lng: 118.5585, lat: 37.520406 },
+        { lng: 118.558356, lat: 37.464415 }
+      ],
+      polygonPath5: [
+        { lng: 118.5585, lat: 37.520406 },
+        { lng: 118.558356, lat: 37.464415 },
+        { lng: 118.605302, lat: 37.464029 },
+        { lng: 118.604493, lat: 37.476516 },
+        { lng: 118.597882, lat: 37.520091 }
+      ],
+      polygonPath6: [
+        { lng: 118.489838, lat: 37.431277 },
+        { lng: 118.444339, lat: 37.432946 },
+        { lng: 118.443764, lat: 37.390646 },
+        { lng: 118.488226, lat: 37.389854 }
       ],
       optionCustomer: {
         step: 1, //滚动速度
@@ -801,9 +967,9 @@ export default {
       warningSelect: true,
       playerSelect: true,
       markers: {
-        lng: 118.651704,
-        lat: 37.3801,
-        show: false
+        show: false,
+        lng: 118.598237,
+        lat: 37.463098
       },
       msg: "",
       th: "",
@@ -817,7 +983,6 @@ export default {
       msgeslint7: false,
       input3: "",
       url: "http://47.110.160.217:9071/images000/1.png",
-      position2: [],
       pagesize: 10,
       currpage: 1,
       th: "0",
@@ -907,6 +1072,7 @@ export default {
     }
   },
   created() {
+    this.getMapMark();
     this.getabnormal();
     this.getOli();
     this.getMaintainList();
@@ -933,10 +1099,10 @@ export default {
     },
     // 信息窗体
     infoWindowClose(markers) {
-      markers.show = false;
+      this.markers.show = false;
     },
     infoWindowOpen(markers) {
-      markers.show = true;
+      this.markers.show = true;
     },
     //车况异常
     getabnormal() {
@@ -1088,17 +1254,12 @@ export default {
       console.log("测试");
     },
     searchMap() {},
+    // 测试
     getMapMark() {
-      setTimeout(() => {
-        this.$http.get("/xy/get3wheelCarXY").then(res => {
-          this.position2 = res.data;
-        });
-      }, 1000);
-      setInterval(() => {
-        this.$http.get("/xy/get3wheelCarXY").then(res => {
-          this.position2 = res.data;
-        });
-      }, 1000);
+      this.$http.post('xy/gpsSensor').then(res=>{
+        console.log(res.data)
+        this.marker=res.data
+      })
     }
   }
 };
@@ -1303,7 +1464,7 @@ export default {
 .warningTop {
   width: 100%;
   height: 50px;
-  padding-top: 50px;
+  padding-top: 80px;
   .warningText1 {
     float: left;
     font-size: 16px;
@@ -1515,7 +1676,6 @@ p {
   overflow: hidden;
   .userImageAllWrapper {
     display: flex;
-    
   }
 }
 </style>

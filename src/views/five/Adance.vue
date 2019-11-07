@@ -11,23 +11,13 @@
           <el-form-item label="组织架构">
             <el-select v-model="searchList.organ">
               <el-option label="全部" value></el-option>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.area"
-                :value="item.area"
-              ></el-option>
+              <el-option v-for="item in optionslu" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="状态">
             <el-select v-model="searchList.status" class="selectTop">
               <el-option label="全部" value></el-option>
-              <el-option
-                v-for="item in optionsStated"
-                :key="item.state"
-                :label="item.status"
-                :value="item.status"
-              ></el-option>
+              <el-option v-for="item in optionsStated" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="日期" class="searchtime">
@@ -51,15 +41,15 @@
       <div class="searchBotLeft">
         <div>
           日期：
-          <span class="spanDate">2019-11-04</span> 应到
-          <span>50</span>人、实到
-          <span>45</span>人、正常考勤
-          <span>41</span>人、迟到
-          <span>1</span>人、缺卡
-          <span>1</span>人、旷工
-          <span>1</span>人、早退
-          <span>1</span>人、请假
-          <span>1</span>人
+          <span class="spanDate">{{shuldData.logtime}}</span> 应到
+          <span>{{shuldData.shouldArrive}}</span>人、实到
+          <span>{{shuldData.actuallyArrive}}</span>人、正常考勤
+          <span>{{shuldData.NormalKaoQin}}</span>人、迟到
+          <span>{{shuldData.late}}</span>人、缺卡
+          <span>{{shuldData.lackCard}}</span>人、旷工
+          <span>{{shuldData.lackWork}}</span>人、早退
+          <span>{{shuldData.leaveEarly}}</span>人、请假
+          <span>{{shuldData.holiday}}</span>人
         </div>
       </div>
       <div class="searchBot">
@@ -101,20 +91,74 @@
       </el-table>
 
       <!-- 新建班次弹窗 -->
-      <el-dialog width="50%" title="新建班次" :visible.sync="schedulingBuild" append-to-body>
+      <el-dialog width="30%" title="新建班次" :visible.sync="schedulingBuild" append-to-body>
         <el-divider></el-divider>
         <el-form :inline="true" :model="shifts">
           <el-form-item label="班次名称">
-            <el-input></el-input>
+            <el-input v-model="shifts.value"></el-input>
           </el-form-item>
           <div>
             <el-form-item label="上班时间">
-              <el-input v-model="time" style="width:80px"></el-input>
+              <el-time-select
+                v-model="shifts.shoptime"
+                style="width:100px"
+                :picker-options="{
+                   start: '08:30',
+                   step: '00:15',
+                   end: '18:30'
+                 }"
+                placeholder="选择时间"
+              ></el-time-select>
             </el-form-item>
             <el-form-item label="下班时间">
-              <el-input v-model="time" style="width:80px"></el-input>
+              <el-time-select
+                v-model="shifts.updatetime"
+                style="width:100px"
+                :picker-options="{
+                   start: '08:30',
+                   step: '00:15',
+                   end: '18:30'
+                 }"
+                placeholder="选择时间"
+              ></el-time-select>
             </el-form-item>
           </div>
+          <div id="dateItem">
+            <el-form-item label="上班时间">
+              <el-time-select
+                v-model="shifts.date1"
+                style="width:100px"
+                :picker-options="{
+                   start: '08:30',
+                   step: '00:15',
+                   end: '18:30'
+                 }"
+                placeholder="选择时间"
+              ></el-time-select>-
+              <el-time-select
+                v-model="shifts.date12"
+                style="width:100px"
+                :picker-options="{
+                   start: '08:30',
+                   step: '00:15',
+                   end: '18:30'
+                 }"
+                placeholder="选择时间"
+              ></el-time-select>
+            </el-form-item>
+            <el-button type="primary">+增加休息时间</el-button>
+          </div>
+          <el-form-item label="适用日期">
+            <el-date-picker
+              v-model="shifts.date3"
+              type="daterange"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            ></el-date-picker>
+          </el-form-item>
         </el-form>
       </el-dialog>
       <!-- 分页 -->
@@ -175,7 +219,7 @@
       <el-divider></el-divider>
       <el-form :inline="true" :model="formInline">
         <el-form-item label="处理为">
-          <el-radio-group v-model="formInline.radio">
+          <el-radio-group v-model="formInline.status">
             <el-radio label="正常">正常</el-radio>
             <el-radio label="请假">请假</el-radio>
             <el-radio label="迟到">迟到</el-radio>
@@ -220,7 +264,14 @@ export default {
         status: "",
         searchtime: ""
       },
-      shifts:{},
+      shifts: {
+        value: "",
+        shoptime: "",
+        updatetime: "",
+        date1: "",
+        date2: "",
+        date3: ""
+      },
       time: "",
       date: "",
       schedulingBuild: false,
@@ -272,89 +323,19 @@ export default {
           label: "天"
         }
       ],
-      lu: "0",
-      optionslu: [
-        {
-          lu: "0",
-          label: "全部"
-        },
-        {
-          lu: "1",
-          label: "东营区新区"
-        },
-        {
-          lu: "2",
-          label: "文汇街道办事处"
-        },
-        {
-          lu: "3",
-          label: "辛店街道办事处"
-        },
-        {
-          lu: "4",
-          label: "黄河街道办事处"
-        },
-        {
-          lu: "5",
-          label: "圣园街道办事处"
-        },
-        {
-          lu: "6",
-          label: "六户镇"
-        },
-        {
-          lu: "7",
-          label: "牛庄镇"
-        },
-        {
-          lu: "8",
-          label: "史口镇"
-        },
-        {
-          lu: "9",
-          label: "龙居镇"
-        }
-      ],
-      state: "0",
-      optionsStated: [
-        {
-          state: "1",
-          status: "正常"
-        },
-        {
-          state: "2",
-          status: "迟到"
-        },
-        {
-          state: "3",
-          status: "早退"
-        },
-        {
-          state: "4",
-          status: "加班"
-        },
-        {
-          state: "5",
-          status: "请假"
-        },
-        {
-          state: "6",
-          status: "旷工"
-        },
-        {
-          state: "7",
-          status: "缺卡"
-        }
-      ],
-      formInline: {
-        radio: "正常"
-      },
+      optionslu: [],
+      optionsStated: [],
+      formInline: {},
       salaryList: [],
-      schedulingList: []
+      schedulingList: [],
+      shuldData: {}
     };
   },
   created() {
     this.getSalaryList();
+    this.getData();
+    this.getOptionsLu();
+    this.getOptionsStated();
   },
   methods: {
     // 编辑
@@ -367,7 +348,7 @@ export default {
       this.$http
         .post("/hr/kaoqin/search", this.$qs.stringify(this.searchList))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.salaryList = res.data;
         })
         .catch(err => {
@@ -389,7 +370,7 @@ export default {
       this.$http
         .post("/hr/kaoqin/search")
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.salaryList = res.data;
         })
         .catch(err => {
@@ -397,16 +378,47 @@ export default {
         });
     },
     // 导出列表
-    kaoqinList(){
-      location.href='http://192.168.124.6:8888/hr/kaoqin/exportExcel'
+    kaoqinList() {
+      location.href = "http://192.168.124.6:8888/hr/kaoqin/exportExcel";
     },
     //分页
     nextpage(value) {
       this.currpage = value;
     },
+    // 数据统计
+    getData() {
+      this.$http.post("hr/kaoqin/navbar").then(res => {
+        // console.log(res.data);
+        this.shuldData = res.data;
+      });
+    },
+    //获取组织架构
+    getOptionsLu() {
+      this.$http.post("/hr/kaoqin/dropBoxOrgan").then(res => {
+        // console.log(res.data)
+        this.optionslu = res.data;
+      });
+    },
+    //获取状态
+    getOptionsStated() {
+      this.$http.post("/hr/kaoqin/dropBoxStatus").then(res => {
+        // console.log(res.data)
+        this.optionsStated = res.data;
+      });
+    },
+    // 异常处理
     adddate() {
       console.log(this.formInline);
-      this.dialogFormVisible = false;
+      let _date = {
+        sid: this.formInline.sid,
+        status: this.formInline.status
+      };
+      this.$http
+        .post("/hr/kaoqin/handleError", this.$qs.stringify(_date))
+        .then(res => {
+          this.dialogFormVisible = false;
+          console.log('操作成功')
+        });
     },
     showdetail(row, _index) {
       console.log(row);

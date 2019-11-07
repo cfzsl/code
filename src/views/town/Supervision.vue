@@ -317,7 +317,6 @@
           :averageCenter="true"
           :opt_anchor="{lng: 118.592815,lat: 37.457724}"
           :styles="cssMap"
-          @draw="draw"
         >
           <bm-marker
             v-for="(value,index) in positions"

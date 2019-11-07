@@ -116,27 +116,28 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" prop="name" label="申请人"></el-table-column>
-      <el-table-column align="center" prop="tel" label="物料名称"></el-table-column>
-      <el-table-column align="center" prop="tel" label="规格及型号"></el-table-column>
-      <el-table-column align="center" prop="number" label="单位"></el-table-column>
-      <el-table-column align="center" prop="number" label="单价"></el-table-column>
-      <el-table-column align="center" prop="number" label="数量"></el-table-column>
-      <el-table-column align="center" prop="number" label="金额"></el-table-column>
-      <el-table-column align="center" prop="date" label="申请日期"></el-table-column>
-      <el-table-column align="center" prop="job" label="审批状态"></el-table-column>
-      <el-table-column align="center" prop="state" label="采购状态"></el-table-column>
+      <el-table-column align="center" prop="applicantperson" label="申请人"></el-table-column>
+      <el-table-column align="center" prop="applicantdepart" label="申请单位"></el-table-column>
+      <el-table-column align="center" prop="materielname" label="物料名称"></el-table-column>
+      <el-table-column align="center" prop="materieltype" label="规格及型号"></el-table-column>
+      <el-table-column align="center" prop="materielattr" label="单位"></el-table-column>
+      <el-table-column align="center" prop="materielonecost" label="单价"></el-table-column>
+      <el-table-column align="center" prop="materielcount" label="数量"></el-table-column>
+      <el-table-column align="center" prop="materielmoney" label="金额"></el-table-column>
+      <el-table-column align="center" prop="applicantdate" label="申请日期"></el-table-column>
+      <el-table-column align="center" prop="applicantstatus" label="审批状态"></el-table-column>
+      <el-table-column align="center" prop="buystatus" label="采购状态"></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="160">
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="showdetail(scope.row, scope.$index)">详情</el-button>
           <el-button
-            v-show="scope.row.job==='未审批'"
+            v-show="scope.row.applicantstatus==='待审批'"
             type="primary"
             @click="Approval(scope.row, scope.$index)"
             size="small"
           >审批</el-button>
           <el-button
-            v-show="scope.row.state==='未采购'"
+            v-show="scope.row.buystatus==='待发放'"
             type="primary"
             @click="Purchase(scope.row, scope.$index)"
             size="small"
@@ -169,33 +170,33 @@
         </div>
         <div class="formNumber">
           <el-form-item label="申请人:">
-            <div>{{loginList.name}}</div>
+            <span>{{loginList.applicantperson}}</span>
           </el-form-item>
-          <el-form-item label="岗位:" style="margin-left:345px">
-            <div>{{loginList.job}}</div>
+          <el-form-item label="申请单位:" style="margin-left:280px">
+            <span>{{loginList.applicantdepart}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="需采购材料:">
-            <div>{{loginList.tel}}</div>
+          <el-form-item label="材料名称:">
+            <span>{{loginList.materielname}}</span>
           </el-form-item>
           <el-form-item label="数量:" style="margin-left:275px">
-            <div>{{loginList.number}}</div>
+            <span>{{loginList.materielcount}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="规格:">
-            <div style="width:558px">{{loginList.specifications}}</div>
+            <span style="width:558px">{{loginList.materieltype}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="用途:">
-            <div style="width:558px">{{loginList.purpose}}</div>
+            <span style="width:558px">{{loginList.purpose}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="备注:">
-            <div style="width:558px">{{loginList.remarks}}</div>
+            <span style="width:558px">{{loginList.buydesc}}</span>
           </el-form-item>
         </div>
         <el-divider></el-divider>
@@ -210,28 +211,28 @@
         <div class="examine">采购详情</div>
         <div class="formNumber">
           <el-form-item label="采购负责人:">
-            <div>{{loginList.purchase}}</div>
+            <span>{{loginList.purchase}}</span>
           </el-form-item>
           <el-form-item style="margin-left:345px" label="采购时间:">
-            <div>{{loginList.distribution}}</div>
+            <span>{{loginList.distribution}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="采购数量:">
-            <div>{{loginList.purchase}}</div>
+            <span>{{loginList.purchase}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="采购规格:">
-            <div>{{loginList.purchase}}</div>
+            <span>{{loginList.purchase}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="分配负责人:">
-            <div>{{loginList.distribution}}</div>
+            <span>{{loginList.distribution}}</span>
           </el-form-item>
           <el-form-item style="margin-left:345px" label="分配时间:">
-            <div>{{loginList.distribution}}</div>
+            <span>{{loginList.distribution}}</span>
           </el-form-item>
         </div>
       </el-form>
@@ -244,46 +245,46 @@
         <div class="progress">待审批</div>
         <div class="formNumber">
           <el-form-item label="申请人:">
-            <div>{{loginList.name}}</div>
+            <span>{{loginList.applicantperson}}</span>
           </el-form-item>
           <el-form-item label="申请部门:" style="margin-left:300px">
-            <div>{{loginList.job}}</div>
+            <span>{{loginList.applicantdepart}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="物料名称:">
-            <div style="width:558px">{{loginList.specifications}}</div>
+            <span style="width:558px">{{loginList.materielname}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="规格及型号:">
-            <div style="width:558px">{{loginList.purpose}}</div>
+            <span style="width:558px">{{loginList.materieltype}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="单位:">
-            <div>{{loginList.tel}}</div>
+            <span>{{loginList.materielattr}}</span>
           </el-form-item>
-          <el-form-item label="单价:" style="margin-left:275px">
-            <div>{{loginList.number}}</div>
+          <el-form-item label="单价:" style="margin-left:380px">
+            <span>{{loginList.materielonecost}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="数量:">
-            <div>{{loginList.tel}}</div>
+            <span>{{loginList.materielcount}}</span>
           </el-form-item>
-          <el-form-item label="金额:" style="margin-left:275px">
-            <div>{{loginList.number}}</div>
+          <el-form-item label="金额:" style="margin-left:370px">
+            <span>{{loginList.materielmoney}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="费用项目:">
-            <div style="width:558px">{{loginList.remarks}}</div>
+            <span style="width:558px">{{loginList.item}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="备注:">
-            <div style="width:558px">{{loginList.remarks}}</div>
+            <span style="width:558px">{{loginList.buydesc}}</span>
           </el-form-item>
         </div>
       </el-form>
@@ -312,57 +313,57 @@
         <div class="progress">审批完成<br>待发放</div>
         <div class="formNumber">
           <el-form-item label="申请人:">
-            <div>{{loginList.name}}</div>
+            <span>{{loginList.applicantperson}}</span>
           </el-form-item>
           <el-form-item label="申请部门:" style="margin-left:300px">
-            <div>{{loginList.job}}</div>
+            <span>{{loginList.applicantdepart}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="物料名称:">
-            <div style="width:558px">{{loginList.specifications}}</div>
+            <span style="width:558px">{{loginList.materielname}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="规格及型号:">
-            <div style="width:558px">{{loginList.purpose}}</div>
+            <span style="width:558px">{{loginList.materieltype}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="单位:">
-            <div>{{loginList.tel}}</div>
+            <span>{{loginList.materielattr}}</span>
           </el-form-item>
-          <el-form-item label="单价:" style="margin-left:275px">
-            <div>{{loginList.number}}</div>
+          <el-form-item label="单价:" style="margin-left:380px">
+            <span>{{loginList.materielonecost}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="数量:">
-            <div>{{loginList.tel}}</div>
+            <span>{{loginList.materielcount}}</span>
           </el-form-item>
-          <el-form-item label="金额:" style="margin-left:275px">
-            <div>{{loginList.number}}</div>
+          <el-form-item label="金额:" style="margin-left:370px">
+            <span>{{loginList.materielmoney}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="费用项目:">
-            <div style="width:558px">{{loginList.remarks}}</div>
+            <span style="width:558px">{{loginList.item}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
           <el-form-item label="备注:">
-            <div style="width:558px">{{loginList.remarks}}</div>
+            <span style="width:558px">{{loginList.buydesc}}</span>
           </el-form-item>
         </div>
         <el-divider></el-divider>
         <div class="examine">采购详情</div>
         <el-form-item label="选择供应商:" prop="remarks">
-          <el-select v-model="formAdd.pany" placeholder="请选择" style="width:558px">
+          <el-select v-model="formAdd.shop" placeholder="请选择" style="width:558px">
             <el-option label="全部" value></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="备注:">
-          <el-input v-model="formAdd.remarks" style="width:558px"></el-input>
+          <el-input v-model="formAdd.shopdesc" style="width:558px"></el-input>
         </el-form-item>
         <el-divider></el-divider>
       </el-form>
