@@ -5,7 +5,12 @@
     <div class="search">
       <div class="searchbox">
         <span>车牌号鲁E-</span>
-        <el-input v-model="search.busnumber" placeholder="请输入车牌号" style="width: 130px"></el-input>
+        <el-input
+          v-model="search.busnumber"
+          placeholder="请输入车牌号"
+          style="width: 130px"
+          maxlength="5"
+        ></el-input>
       </div>
       <div class="searchbox">
         <span>车辆类型</span>
@@ -160,11 +165,13 @@
       <el-pagination
         :current-page="data.currpage"
         :page-size="data.pagesize"
-        layout="total, prev, pager, next"
+        :page-sizes="[15, 20, 25]"
+        layout="total, sizes, prev, pager, next"
         :total="data.list.length"
         @prev-click="nextpage"
         @next-click="nextpage"
         @current-change="nextpage"
+        @size-change="sizeChange"
       ></el-pagination>
     </div>
 
@@ -501,7 +508,7 @@ export default {
       },
       // 分页效果
       data: {
-        pagesize: 14,
+        pagesize: 15,
         currpage: 1,
         list: []
       },
@@ -634,6 +641,11 @@ export default {
     // 下一页
     nextpage(value) {
       this.data.currpage = value;
+    },
+    // 显示条数切换
+    sizeChange(total) {
+      console.log(total);
+      this.data.pagesize = total;
     },
     // 显示详情
     handleDetail(index, row) {
@@ -790,6 +802,11 @@ export default {
     // 图片上传成功回调
     uploadimg(response, file, fileList) {
       maintenanceList.addmsg.fileList = [];
+    }
+  },
+  watch: {
+    search() {
+      this.search.busnumber = this.search.busnumber.replace(/[\W]/g, "");
     }
   },
   created() {

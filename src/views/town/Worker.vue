@@ -63,16 +63,18 @@
     </div>
 
     <!-- 分页 -->
+    <!-- 分页 -->
     <div class="pagination">
       <el-pagination
         :current-page="data.currpage"
         :page-size="data.pagesize"
-        :pager-count="21"
-        layout="total, prev, pager, next"
+        :page-sizes="[15, 20, 25]"
+        layout="total, sizes, prev, pager, next"
         :total="data.list.length"
         @prev-click="nextpage"
         @next-click="nextpage"
         @current-change="nextpage"
+        @size-change="sizeChange"
       ></el-pagination>
     </div>
 
@@ -148,7 +150,7 @@
               placeholder="请输入关键字搜索"
               :fetch-suggestions="querySearch"
             ></el-autocomplete>
-            <div style="color: red"> * 多人通知请用 / 符号分割</div>
+            <div style="color: red">* 多人通知请用 / 符号分割</div>
           </el-form-item>
         </div>
       </el-form>
@@ -302,7 +304,7 @@ export default {
       },
       // 列表数据
       data: {
-        pagesize: 13,
+        pagesize: 15,
         currpage: 1,
         list: []
       },
@@ -403,6 +405,11 @@ export default {
     // 翻页
     nextpage(value) {
       this.data.currpage = value;
+    },
+    // 显示条数切换
+    sizeChange(total) {
+      console.log(total);
+      this.data.pagesize = total;
     },
     // 模糊搜索名字
     querySearch(queryString, cb) {

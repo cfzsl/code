@@ -36,7 +36,7 @@
 
     <!-- 表格 -->
     <el-table
-      :data="data.list.slice((currpage - 1) * pagesize, currpage * pagesize)"
+      :data="data.list.slice((currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       border
       style="width: 100%"
     >
@@ -103,8 +103,9 @@
       @prev-click="nextpage"
       @next-click="nextpage"
       @current-change="nextpage"
-      :page-sizes="[10,20,30,40]"
-      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="sizeChange"
+      :page-sizes="[15, 20, 25]"
+      layout="total, sizes, prev, pager, next"
       :total="data.list.length"
     ></el-pagination>
 
@@ -371,7 +372,7 @@ export default {
       },
       // 列表数据
       data: {
-        pagesize: 10,
+        pagesize: 15,
         currpage: 1,
         list: []
       },
@@ -406,8 +407,6 @@ export default {
       dialogVisible: false,
       msgexport: false,
       msgimport: false,
-      pagesize: 10,
-      currpage: 1,
       ruleForm: {
         cartype: "",
         mumber: "",
@@ -496,6 +495,10 @@ export default {
     // 切换页面
     nextpage(value) {
       this.currpage = value;
+    },
+    // 显示条数切换
+    sizeChange(pagesize) {
+      this.data.pagesize = pagesize;
     },
     addCar(formName) {
       console.log(this.ruleForm);
@@ -639,9 +642,9 @@ export default {
 }
 
 .paginationList {
-  text-align: center;
-  margin-top: 32px;
-  padding: 0;
+  float: right;
+  margin-right: 25px;
+  padding-top: 20px;
 }
 .table {
   width: 1128px;

@@ -79,12 +79,13 @@
       <el-pagination
         :current-page="data.currpage"
         :page-size="data.pagesize"
-        :pager-count="21"
-        layout="total, prev, pager, next"
+        :page-sizes="[15, 20, 25]"
+        layout="total, sizes, prev, pager, next"
         :total="data.list.length"
         @prev-click="nextpage"
         @next-click="nextpage"
         @current-change="nextpage"
+        @size-change="sizeChange"
       ></el-pagination>
     </div>
 
@@ -351,7 +352,7 @@ export default {
       input: null,
       radio: "0",
       data: {
-        pagesize: 14,
+        pagesize: 15,
         currpage: 1,
         list: []
       },
@@ -429,6 +430,11 @@ export default {
     // 下一页
     nextpage(value) {
       this.data.currpage = value;
+    },
+    // 显示条数切换
+    sizeChange(total) {
+      console.log(total);
+      this.data.pagesize = total;
     },
     // 显示详情
     showdetail(row) {
