@@ -126,7 +126,7 @@ export default {
     },
     // 导出日志
     exportLog() {
-      location.href='http://192.168.124.6:8888/hr/operate/exportExcel'
+      location.href='http://118.31.245.183:10500/hr/operate/exportExcel'
     },
     getLogList(){
       console.log(this.search)

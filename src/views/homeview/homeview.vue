@@ -230,10 +230,10 @@
       </el-input>
     </baidu-map>
     <div class="warning" v-if="!warningSelect">
-      <!-- 人员考勤 -->
+      <!-- 数据中控平台 -->
       <div class="warningTop">
         <div class="warningText1">工作预警</div>
-        <div class="warningDate">2019-11-02</div>
+        <div class="warningDate">{{shuldData.logtime}}</div>
       </div>
       <div class="warningPlate">
         <div class="plate" style="width: 190px">
@@ -241,7 +241,7 @@
             <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
-            <span class="plateRightNumber">50</span>
+            <span class="plateRightNumber">{{shuldData.shouldArrive}}</span>
             <span>当日应出勤</span>
           </div>
         </div>
@@ -250,7 +250,7 @@
             <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
-            <span class="plateRightNumber">41</span>
+            <span class="plateRightNumber">{{shuldData.actuallyArrive}}</span>
             <span>当日实际出勤</span>
           </div>
         </div>
@@ -259,7 +259,7 @@
             <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
-            <span class="plateRightNumber">3</span>
+            <span class="plateRightNumber">{{shuldData.late}}</span>
             <span>迟到</span>
           </div>
         </div>
@@ -268,7 +268,7 @@
             <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
-            <span class="plateRightNumber">50</span>
+            <span class="plateRightNumber">{{shuldData.leaveEarly}}</span>
             <span>早退</span>
           </div>
         </div>
@@ -277,7 +277,7 @@
             <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
-            <span class="plateRightNumber">1</span>
+            <span class="plateRightNumber">{{shuldData.lackCard}}</span>
             <span>缺卡</span>
           </div>
         </div>
@@ -286,7 +286,7 @@
             <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
-            <span class="plateRightNumber">1</span>
+            <span class="plateRightNumber">{{shuldData.lackWork}}</span>
             <span>旷工</span>
           </div>
         </div>
@@ -295,7 +295,7 @@
             <img src="../../assets/img/jiLu.png" />
           </div>
           <div class="plateRight">
-            <span class="plateRightNumber">4</span>
+            <span class="plateRightNumber">{{shuldData.holiday}}</span>
             <span>请假</span>
           </div>
         </div>
@@ -808,7 +808,7 @@
     <div id="player" v-if="!playerSelect">
       <div class="playerTop">
         <el-button type></el-button>
-        <div class="warningDate">2019-11-02</div>
+        <div class="warningDate">{{shuldData.logtime}}</div>
       </div>
       <div class="playerVideo"></div>
       <!-- 图片滚动播放 -->
@@ -1040,7 +1040,9 @@ export default {
       stagnation: {
         number: "",
         warningtime: ""
-      }
+      },
+      // 展示数据
+      shuldData:{}
     };
   },
   components: {
@@ -1072,6 +1074,7 @@ export default {
     }
   },
   created() {
+    this.getData();
     this.getMapMark();
     this.getabnormal();
     this.getOli();
@@ -1254,6 +1257,13 @@ export default {
       console.log("测试");
     },
     searchMap() {},
+    // 数据统计
+    getData() {
+      this.$http.post("hr/kaoqin/navbar").then(res => {
+        // console.log(res.data);
+        this.shuldData = res.data;
+      });
+    },
     // 测试
     getMapMark() {
       this.$http.post('xy/gpsSensor').then(res=>{
