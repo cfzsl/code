@@ -5,7 +5,7 @@
     <div class="search">
       <div class="searchbox">
         <span>车牌号鲁E-</span>
-        <el-input v-model="search.busnumber" placeholder="请输入车牌号" style="width: 130px"></el-input>
+        <el-input v-model="search.member" placeholder="请输入车牌号" maxlength="5" style="width: 130px"></el-input>
       </div>
       <div class="searchbox">
         <span>使用人</span>
@@ -21,7 +21,7 @@
           <el-option label="环卫四部" value="环卫四部"></el-option>
         </el-select>
       </div>
-      <el-button type="primary" class="btn" @click="onSubmit">查询</el-button>
+      <el-button type="primary" class="btn" @click="getlist">查询</el-button>
       <el-button type="primary" @click="onEmpty">清空</el-button>
     </div>
 
@@ -36,16 +36,16 @@
 
     <!-- 表格 -->
     <el-table
-      :data="data.list.slice((currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+      :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       border
       style="width: 100%"
     >
       <el-table-column align="center" prop="member" label="车牌号"></el-table-column>
       <el-table-column align="center" prop="shoppingtime" label="购车时间"></el-table-column>
-      <el-table-column align="center" prop="parm2" label="资产编号"></el-table-column>
+      <el-table-column align="center" prop="parm3" label="资产编号"></el-table-column>
       <el-table-column align="center" prop="department" label="归属单位"></el-table-column>
       <el-table-column align="center" prop="user" label="使用人"></el-table-column>
-      <el-table-column align="center" prop="param3" label="联系方式"></el-table-column>
+      <el-table-column align="center" prop="information" label="联系方式"></el-table-column>
       <el-table-column align="center" label="交接记录">
         <template slot-scope="scope">
           <el-button
@@ -241,73 +241,103 @@
 
     <!-- 交接记录 -->
     <el-dialog title="交接记录" :visible.sync="handover.show">
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <div class="grid-content bg-purple">
-            <el-form label-position="right" label-width="100px" :model="handover.addmsg">
-              <el-form-item label="日期">
+      <el-form
+        ref="handoverForm"
+        label-position="right"
+        label-width="100px"
+        :rules="handoverRules"
+        :model="handover.addmsg"
+      >
+        <el-row type="flex" class="row-bg" justify="space-between">
+          <el-col :span="6">
+            <div class="grid-content bg-purple">
+              <el-form-item label="日期" prop="connecttime">
                 <el-date-picker
                   style="width:150px"
-                  v-model="handover.addmsg.date"
+                  v-model="handover.addmsg.connecttime"
                   type="date"
                   placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="上一使用人">
-                <el-input v-model="handover.addmsg.name" style="width:150px"></el-input>
+              <el-form-item label="上一使用人" prop="user1">
+                <el-input v-model="handover.addmsg.user1" style="width:150px"></el-input>
               </el-form-item>
-              <el-form-item label="下一使用人">
-                <el-input v-model="handover.addmsg.name" style="width:150px"></el-input>
+              <el-form-item label="下一使用人" prop="user2">
+                <el-input v-model="handover.addmsg.user2" style="width:150px"></el-input>
               </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="13">
-          <div class="grid-content">
-            <el-form label-position="right" label-width="80px" :model="handover.addmsg">
-              <el-form-item label="备注">
+            </div>
+          </el-col>
+          <el-col :span="13">
+            <div class="grid-content">
+              <el-form-item label="备注" prop="param1">
                 <el-input
                   type="textarea"
                   resize="none"
-                  v-model="handover.addmsg.content"
+                  v-model="handover.addmsg.param1"
                   :autosize="{ minRows: 7, maxRows: 4}"
                 ></el-input>
               </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="5" :offset="1">
-          <div class="grid-content bg-purple">
-            <el-button type="primary" style="width: 90%">添加</el-button>
-          </div>
-        </el-col>
-      </el-row>
+            </div>
+          </el-col>
+          <el-col :span="5" :offset="1">
+            <div class="grid-content bg-purple">
+              <el-button type="primary" style="width: 90%" @click="addhandover">添加</el-button>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
 
       <el-table
         :data="handover.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
-        <el-table-column align="center" prop="maintaintime" label="维修/保养时间"></el-table-column>
-        <el-table-column align="center" prop="param1" label="类型"></el-table-column>
-        <el-table-column align="center" prop="maintaindiscript" label="保养详情"></el-table-column>
+        <el-table-column align="center" prop="connecttime" label="日期"></el-table-column>
+        <el-table-column align="center" prop="user1" label="上一使用人"></el-table-column>
+        <el-table-column align="center" prop="user2" label="下一使用人"></el-table-column>
+        <el-table-column align="center" prop="param1" label="备注"></el-table-column>
       </el-table>
     </el-dialog>
 
     <!-- 更换记录 -->
     <el-dialog title="电池更换记录" :visible.sync="battery.show">
       <div class="title">
-        <el-form :model="formLabelAlign">
-          <el-form-item label="日期">
-            <el-date-picker v-model="battery.addmsg.date" type="date" placeholder="选择日期"></el-date-picker>
+        <el-form
+          ref="batteryForm"
+          label-position="right"
+          label-width="100px"
+          :rules="batteryRules"
+          :model="battery.addmsg"
+        >
+          <el-form-item label="日期" prop="repairbattrytime">
+            <el-date-picker
+              style="width: 200px"
+              v-model="battery.addmsg.repairbattrytime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期"
+            ></el-date-picker>
           </el-form-item>
-          <el-form-item label="更换原因">
-            <el-input style="width: 200px" v-model="battery.addmsg.type" placeholder="请输入更换原因"></el-input>
+          <el-form-item label="更换原因" prop="repairbattryreason">
+            <el-input
+              style="width: 200px"
+              v-model="battery.addmsg.repairbattryreason"
+              placeholder="请输入更换原因"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="更换详情">
-            <el-input style="width: 200px" v-model="battery.addmsg.content" placeholder="请输入更换详情"></el-input>
+          <el-form-item label="更换详情" prop="repairbattrydetail">
+            <el-input
+              style="width: 200px"
+              v-model="battery.addmsg.repairbattrydetail"
+              placeholder="请输入更换详情"
+            ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button style="float:right; margin-right:20px" type="primary">添加</el-button>
+            <el-button
+              style="float:right; margin-right:20px"
+              type="primary"
+              @click="batterySubmit"
+            >添加</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -316,9 +346,9 @@
         :data="battery.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
-        <el-table-column align="center" prop="maintaintime" label="日期"></el-table-column>
-        <el-table-column align="center" prop="param1" label="更换详情"></el-table-column>
-        <el-table-column align="center" prop="maintaindiscript" label="更换原因"></el-table-column>
+        <el-table-column align="center" prop="repairbattrytime" label="日期"></el-table-column>
+        <el-table-column align="center" prop="repairbattrydetail" label="更换详情"></el-table-column>
+        <el-table-column align="center" prop="repairbattryreason" label="更换原因"></el-table-column>
       </el-table>
     </el-dialog>
 
@@ -366,7 +396,7 @@ export default {
       formLabelAlign: "",
       // 首屏搜索
       search: {
-        busnumber: "",
+        member: "",
         user: "",
         department: ""
       },
@@ -379,11 +409,12 @@ export default {
       // 交接记录
       handover: {
         show: false,
+        busnumber: "",
         addmsg: {
-          Predecessor: "",
-          Next: "",
-          date: "",
-          content: ""
+          connecttime: "",
+          user1: "",
+          user2: "",
+          param1: ""
         },
         list: []
       },
@@ -391,9 +422,9 @@ export default {
       battery: {
         show: false,
         addmsg: {
-          date: "",
-          type: "",
-          content: ""
+          repairbattrytime: "",
+          repairbattryreason: "",
+          repairbattrydetail: ""
         },
         list: []
       },
@@ -431,6 +462,31 @@ export default {
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
         param3: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
+      },
+      // 交接记录非空验证
+      handoverRules: {
+        user1: [
+          { required: true, message: "请输入上一使用人", trigger: "blur" }
+        ],
+        user2: [
+          { required: true, message: "请输入下一使用人", trigger: "blur" }
+        ],
+        connecttime: [
+          { required: true, message: "请选择交接时间", trigger: "blur" }
+        ],
+        param1: [{ required: true, message: "请输入交接备注", trigger: "blur" }]
+      },
+      // 电池更换记录非空验证
+      batteryRules: {
+        repairbattrytime: [
+          { required: true, message: "请选择更换时间", trigger: "blur" }
+        ],
+        repairbattryreason: [
+          { required: true, message: "请输入更换原因", trigger: "blur" }
+        ],
+        repairbattrydetail: [
+          { required: true, message: "请输入更换详情", trigger: "blur" }
+        ]
       },
       formInline: {
         cartype: "",
@@ -494,7 +550,7 @@ export default {
   methods: {
     // 切换页面
     nextpage(value) {
-      this.currpage = value;
+      this.data.currpage = value;
     },
     // 显示条数切换
     sizeChange(pagesize) {
@@ -556,7 +612,7 @@ export default {
       //记录索引
       this.listIndex = _index;
       //记录数据
-      this.details = row;
+      this.details = JSON.parse(JSON.stringify(row));
       //显示弹窗
       this.buttonIf = true;
     },
@@ -574,36 +630,108 @@ export default {
         });
       // this.getlist();
     },
-    // 获取列表数据
+    // 获取/查询列表数据
     getlist() {
-      this.$http.post("sanitation/car/formSearch").then(res => {
-        console.log(res.data);
-        this.data.list = res.data;
-      });
-    },
-    // 查询
-    onSubmit() {
       this.$http
-        .post("sanitation/car/formSearch", this.$qs.stringify(this.search))
+        .post(
+          "sanitation/car/pedicabCriteriaQuery",
+          this.$qs.stringify(this.search)
+        )
         .then(res => {
-          console.log(res.data);
           this.data.list = res.data;
-        })
-        .catch(err => {
-          console.log("请求失败");
         });
     },
     // 清空
     onEmpty() {
+      this.search = {
+        member: "",
+        user: "",
+        department: ""
+      };
       this.getlist();
     },
     // 显示交接记录
-    showhandover() {
+    showhandover(row) {
+      this.handover.busnumber = row.member;
       this.handover.show = !this.handover.show;
+      this.getHandoverList();
+    },
+    // 交接记录列表
+    getHandoverList() {
+      this.$http
+        .post(
+          "sanitation/car/getConnectRecord",
+          this.$qs.stringify({ busnumber: this.handover.busnumber })
+        )
+        .then(res => {
+          this.handover.list = res.data;
+        });
+    },
+    // 新增交接记录
+    addhandover() {
+      this.handover.addmsg.busnumber = this.handover.busnumber;
+      this.$refs["handoverForm"].validate(valid => {
+        if (valid) {
+          this.$http
+            .post(
+              "sanitation/car/addConnectRecord",
+              this.$qs.stringify(this.handover.addmsg)
+            )
+            .then(res => {
+              this.handover.addmsg = {
+                connecttime: "",
+                user1: "",
+                user2: "",
+                param1: ""
+              };
+              this.getHandoverList();
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     // 显示电池更换记录
-    showBattery() {
+    showBattery(row) {
+      this.battery.busnumber = row.member;
       this.battery.show = !this.battery.show;
+      this.getBatteryList();
+    },
+    // 电池更换记录列表
+    getBatteryList() {
+      this.$http
+        .post(
+          "sanitation/car/getBatteryRepairRecord",
+          this.$qs.stringify({ busnumber: this.battery.busnumber })
+        )
+        .then(res => {
+          this.battery.list = res.data;
+        });
+    },
+    // 电池更换新增
+    batterySubmit() {
+      this.battery.addmsg.busnumber = this.battery.busnumber;
+      this.$refs["batteryForm"].validate(valid => {
+        if (valid) {
+          this.$http
+            .post(
+              "sanitation/car/addBatteryRepairRecord",
+              this.$qs.stringify(this.battery.addmsg)
+            )
+            .then(res => {
+              this.battery.addmsg = {
+                repairbattrytime: "",
+                repairbattryreason: "",
+                repairbattrydetail: ""
+              };
+              this.getBatteryList();
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     // 显示维修记录
     showservice() {

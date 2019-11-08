@@ -37,6 +37,7 @@
       </div>
 
       <el-button type="primary" class="btn" @click="searchbtn">查询</el-button>
+      <el-button type="primary" @click="empty">清空</el-button>
     </div>
 
     <!-- 按钮 -->
@@ -162,7 +163,7 @@
           </el-form-item>
         </div>
         <div class="feedbackbox">
-          <el-form-item label="上传图片" prop="img" ref="upload">
+          <el-form-item label="上传图片" prop="img">
             <el-upload
               ref="uploadimg"
               :file-list="addfeedback.imglist"
@@ -453,6 +454,18 @@ export default {
         this.search.endTime = "";
       }
       this.getList();
+    },
+    // 清空查询
+    empty() {
+      this.search = {
+        charge: "",
+        area: "",
+        result: "",
+        date: [],
+        startTime: "",
+        endTime: ""
+      };
+      this.searchbtn();
     },
     // 新建反馈
     newfeedback() {

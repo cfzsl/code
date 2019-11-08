@@ -10,9 +10,9 @@
             <Aside></Aside>
           </el-aside>
         </transition>
-          <el-main>
-            <router-view></router-view>
-          </el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -68,6 +68,7 @@ export default {
 }
 .el-dialog__body {
   padding: 0 20px 30px 20px !important;
+  overflow: hidden;
 }
 .fade-enter-active {
   animation: bounce-in 1s linear;
@@ -92,7 +93,7 @@ export default {
   }
 }
 
-.el-textarea .el-textarea__inner{
+.el-textarea .el-textarea__inner {
   resize: none;
 }
 </style>

@@ -20,6 +20,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="getAddBook">查询</el-button>
+            <el-button type="primary" @click="empty">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -401,6 +402,17 @@ export default {
         .then(res => {
           this.data.list = res.data;
         });
+    },
+    // 清空查询
+    empty() {
+      this.search = {
+        title: "",
+        time: "",
+        date: "",
+        startTime: "",
+        endTime: ""
+      };
+      this.getAddBook();
     },
     // 翻页
     nextpage(value) {

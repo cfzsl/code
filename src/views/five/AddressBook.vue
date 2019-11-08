@@ -8,7 +8,7 @@
         <el-input v-model="search.name" placeholder="请输入姓名" style="width: 215px"></el-input>
       </div>
       <div class="searchbox">
-        <span>作业区域</span>
+        <span>组织架构</span>
         <el-select v-model="search.area">
           <el-option label="全部区域" value></el-option>
           <el-option label="东营区新区" value="东营区新区"></el-option>
@@ -35,13 +35,8 @@
         </el-select>
       </div>
       <div class="searchbox">
-        <span>部门</span>
-        <el-select v-model="search.depart">
-          <el-option label="全部部门" value></el-option>
-          <el-option label="环卫一部" value="环卫一部"></el-option>
-          <el-option label="环卫二部" value="环卫二部"></el-option>
-          <el-option label="环卫三部" value="环卫三部"></el-option>
-        </el-select>
+        <span>联系方式</span>
+        <el-input v-model="search.tel" placeholder="请输入联系方式" style="width: 215px"></el-input>
       </div>
 
       <el-button type="primary" class="btn" @click="serachAddBook">查询</el-button>
@@ -65,11 +60,17 @@
       >
         <el-table-column align="center" prop="sid" label="序号"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="tel" label="电话"></el-table-column>
-        <el-table-column align="center" prop="road" label="道路"></el-table-column>
-        <el-table-column align="center" prop="area" label="区域"></el-table-column>
-        <el-table-column align="center" prop="job" label="岗位"></el-table-column>
-        <el-table-column align="center" prop="depart" label="部门"></el-table-column>
+        <el-table-column align="center" prop="tel" label="性别"></el-table-column>
+        <el-table-column align="center" prop="road" label="出生日期"></el-table-column>
+        <el-table-column align="center" prop="area" label="家庭住址"></el-table-column>
+        <el-table-column align="center" prop="job" label="毕业院校"></el-table-column>
+        <el-table-column align="center" prop="depart" label="所学专业"></el-table-column>
+        <el-table-column align="center" prop="depart" label="组织架构"></el-table-column>
+        <el-table-column align="center" prop="depart" label="岗位"></el-table-column>
+        <el-table-column align="center" prop="depart" label="联系方式"></el-table-column>
+        <el-table-column align="center" prop="depart" label="在职状态"></el-table-column>
+        <el-table-column align="center" prop="depart" label="入职时间"></el-table-column>
+        <el-table-column align="center" prop="depart" label="操作"></el-table-column>
       </el-table>
     </div>
 

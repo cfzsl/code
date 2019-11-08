@@ -114,7 +114,7 @@
     <!-- 列表 -->
     <div class="list">
       <el-table
-        :data="data.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        :data="data.list.slice((data.currpage-1) * data.pagesize, data.currpage * data.pagesize)"
         stripe
         border
         style="width: 100%"
@@ -130,7 +130,7 @@
         <el-table-column align="center" prop="param3" label="联系方式"></el-table-column>
         <el-table-column align="center" label="维修保养">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click.stop="showmaintenance(scope.row)">详情</el-button>
+            <el-button type="primary" size="mini" @click.stop="showmain(scope.row);">详情</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="保险缴纳">
@@ -322,33 +322,43 @@
     </el-dialog>
 
     <!-- 维修保养 -->
-    <el-dialog title="维修保养" :visible.sync="maintenance">
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <div class="grid-content bg-purple">
-            <el-form label-position="right" label-width="80px" :model="maintenanceList.addmsg">
-              <el-form-item label="日期">
+    <el-dialog title="维修保养" :visible.sync="maintenance" style="overflow: hidden;">
+      <el-form
+        ref="maintenanceForm"
+        :rules="maintenanceRules"
+        label-position="right"
+        label-width="80px"
+        :model="maintenanceList.addmsg"
+      >
+        <el-row type="flex" class="row-bg" justify="space-between">
+          <el-col :span="6">
+            <div class="grid-content bg-purple">
+              <el-form-item label="日期" prop="maintaintime">
                 <el-date-picker
                   style="width:150px"
-                  v-model="maintenanceList.addmsg.date"
+                  value-format="yyyy-MM-dd"
+                  v-model="maintenanceList.addmsg.maintaintime"
                   type="date"
                   placeholder="选择日期"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="类型">
-                <el-select v-model="maintenanceList.addmsg.type" placeholder="请选择">
+              <el-form-item label="类型" prop="param1">
+                <el-select v-model="maintenanceList.addmsg.param1" placeholder="请选择">
                   <el-option label="全部" value></el-option>
                   <el-option label="维修" value="维修"></el-option>
                   <el-option label="保养" value="保养"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="上传图片">
+              <el-form-item label="上传图片" prop="img">
                 <el-upload
                   ref="uploadimg"
                   class="upload-demo"
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :action="$http.defaults.baseURL + 'MotorDetail/addBaoYangInformation'"
                   :file-list="maintenanceList.addmsg.fileList"
-                  :on-success="uploadimg"
+                  :on-change="onChange"
+                  :on-remove="onRemove"
+                  :on-success="uploadimgSuccess"
+                  :data="maintenanceList.addmsg"
                   multiple
                   :auto-upload="false"
                   :limit="3"
@@ -356,34 +366,32 @@
                   <el-button size="medium" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="13">
-          <div class="grid-content">
-            <el-form label-position="right" label-width="80px" :model="maintenanceList.addmsg">
-              <el-form-item label="保养内容">
+            </div>
+          </el-col>
+          <el-col :span="12" :offset="1">
+            <div class="grid-content">
+              <el-form-item label="保养内容" prop="maintaindiscript">
                 <el-input
                   type="textarea"
                   resize="none"
-                  v-model="maintenanceList.addmsg.content"
+                  v-model="maintenanceList.addmsg.maintaindiscript"
                   :autosize="{ minRows: 7, maxRows: 4}"
                 ></el-input>
               </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="5" :offset="1">
-          <div class="grid-content bg-purple">
-            <el-button type="primary" style="width: 90%" @click="uploadmaintenanceMsg">添加</el-button>
-          </div>
-        </el-col>
-      </el-row>
+            </div>
+          </el-col>
+          <el-col :span="5" :offset="1">
+            <div class="grid-content bg-purple">
+              <el-button type="primary" style="width: 80%" @click="maintenanceSubmit">添加</el-button>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
 
       <div class="abnormalsearch" style="margin: 10px 0">
         <span style="margin-right: 10px">
           类型
-          <el-select v-model="maintenanceList.search.type" placeholder="请选择">
+          <el-select v-model="maintenanceList.search.param1" placeholder="请选择">
             <el-option label="全部" value></el-option>
             <el-option label="维修" value="维修"></el-option>
             <el-option label="保养" value="保养"></el-option>
@@ -397,16 +405,17 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
           ></el-date-picker>
           <div class="btn">
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" @click="showmaintenance">搜索</el-button>
             <el-button type="primary">清空</el-button>
           </div>
         </span>
       </div>
 
       <el-table
-        :data="maintenanceList.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        :data="maintenanceList.list.slice((maintenanceList.currpage - 1) * maintenanceList.pagesize, maintenanceList.currpage * maintenanceList.pagesize)"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="maintaintime" label="维修/保养时间"></el-table-column>
@@ -426,10 +435,24 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <div class="pagination">
+        <el-pagination
+          :current-page="maintenanceList.currpage"
+          :page-size="maintenanceList.pagesize"
+          layout="total, prev, pager, next"
+          :total="maintenanceList.list.length"
+          @prev-click="maintenancenextpage"
+          @next-click="maintenancenextpage"
+          @current-change="maintenancenextpage"
+          @size-change="maintenancesizeChange"
+        ></el-pagination>
+      </div>
     </el-dialog>
 
     <!-- 保养记录图片 -->
-    <el-dialog title="保养图片" width="550px" :visible.sync="showimg">
+    <el-dialog title="保养图片" width="550px" :visible.sync="showimg" :lock-scroll="false">
       <el-image style="width: 100%;" :src="url" fit="contain"></el-image>
       <el-row class="imgcontent">
         <el-col :span="20">
@@ -443,29 +466,44 @@
 
     <!-- 保险 -->
     <el-dialog title="保险缴纳" :visible.sync="showinsurancea">
-      <div class="abnormalsearch">
-        保险公司：
-        <el-input
-          style="width:190px;margin-right: 10px;"
-          v-model="insurance.search.company"
-          placeholder="请输入内容"
-        ></el-input>缴纳日期：
-        <el-date-picker
-          style="width:190px;margin-right: 10px;"
-          v-model="insurance.search.datejn"
-          type="date"
-          placeholder="选择日期"
-        ></el-date-picker>到期日期：
-        <el-date-picker
-          style="width:190px;"
-          v-model="insurance.search.datedq"
-          type="date"
-          placeholder="选择日期"
-        ></el-date-picker>
-        <div class="btn">
-          <el-button type="primary">添加</el-button>
+      <el-form
+        ref="insuranceaFrom"
+        :inline="true"
+        :rules="insurancearules"
+        :model="insurance.addmsg"
+        class="demo-form-inline"
+      >
+        <div class="abnormalsearch">
+          <el-form-item label="保险公司：" prop="bxcompany">
+            <el-input
+              style="width:150px;margin-right: 10px;"
+              v-model="insurance.addmsg.bxcompany"
+              placeholder="请输入内容"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="缴纳日期：" prop="bxtime">
+            <el-date-picker
+              style="width:150px;margin-right: 10px;"
+              v-model="insurance.addmsg.bxtime"
+              type="date"
+              placeholder="选择日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="到期日期：" prop="param1">
+            <el-date-picker
+              style="width:150px;"
+              v-model="insurance.addmsg.param1"
+              type="date"
+              placeholder="选择日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-button class="btn" type="primary" @click="abnormaladd">添加</el-button>
+          </el-form-item>
         </div>
-      </div>
+      </el-form>
       <div class="sytime">系统时间：2019-10-22</div>
       <el-table
         :data="insurance.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
@@ -473,10 +511,10 @@
         style="width: 100%"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
-        <el-table-column align="center" prop="bxtime" label="记录时间"></el-table-column>
+        <el-table-column align="center" prop="param2" label="记录时间"></el-table-column>
         <el-table-column align="center" prop="bxcompany" label="保险公司"></el-table-column>
         <el-table-column align="center" prop="bxtime" label="生效时间"></el-table-column>
-        <el-table-column align="center" prop="bxtimewarng" label="到期时间"></el-table-column>
+        <el-table-column align="center" prop="param1" label="到期时间"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -536,27 +574,54 @@ export default {
       // 保养记录
       maintenanceList: {
         addmsg: {
-          date: "",
-          type: "",
-          content: "",
+          busnumber: "",
+          maintaintime: "",
+          param1: "",
+          maintaindiscript: "",
           fileList: []
         },
         search: {
-          type: "",
-          date: ""
+          param1: "",
+          date: "",
+          busnumber: ""
         },
+        pagesize: 5,
+        currpage: 1,
         list: []
+      },
+      // 保养记录非空验证
+      maintenanceRules: {
+        maintaintime: [
+          { required: true, message: "请选择日期", trigger: "blur" }
+        ],
+        param1: [{ required: true, message: "请选择类型", trigger: "blur" }],
+        maintaindiscript: [
+          { required: true, message: "请输入内容", trigger: "blur" }
+        ],
+        img: [{ required: true, message: "请选择上传图片" }]
       },
       // 保养记录 点击后大图片
       url: "",
       // 保险
       insurance: {
-        search: {
-          company: "",
-          datejn: "",
-          datedq: ""
+        busnumber: "",
+        addmsg: {
+          busnumber: "",
+          bxcompany: "",
+          bxtime: "",
+          param1: ""
         },
         list: []
+      },
+      // 保险非空验证
+      insurancearules: {
+        bxcompany: [
+          { required: true, message: "请输入保险公司", trigger: "blur" }
+        ],
+        bxtime: [
+          { required: true, message: "请选择缴纳日期", trigger: "blur" }
+        ],
+        param1: [{ required: true, message: "请选择到期日期", trigger: "blur" }]
       },
       // 编辑和新增修改切换及标题
       type: "add",
@@ -586,6 +651,8 @@ export default {
       },
       // 图片上传列表
       fileList: [],
+      // 图片上传判断
+      imgupload: false,
       // 弹出层切换
       msgimport: false,
       msgexport: false,
@@ -603,32 +670,138 @@ export default {
       this.url = v;
       this.showimg = !this.showimg;
     },
-    // 保险缴纳
-    showinsurance(row) {
-      this.showinsurancea = !this.showinsurancea;
-      this.$http
-        .post(
-          "MotorDetail/getBXByBusNumber",
-          this.$qs.stringify({ busNumber: row.busnumber })
-        )
-        .then(res => {
-          this.insurance.list = res.data;
-        });
-    },
-    // 保养记录
-    showmaintenance(row) {
+    // 显示保养记录
+    showmain(row) {
       this.maintenance = !this.maintenance;
+      this.maintenanceList.search.busnumber = row.busnumber;
+      this.maintenanceList.addmsg.busnumber = row.busnumber;
+      this.showmaintenance();
+    },
+    // 保养列表获取
+    showmaintenance() {
+      if (this.maintenanceList.search.date != null) {
+        this.maintenanceList.search.startTime = this.maintenanceList.search.date[0];
+        this.maintenanceList.search.endTime = this.maintenanceList.search.date[1];
+      } else if (this.maintenanceList.search.date == null) {
+        this.maintenanceList.search.startTime = "";
+        this.maintenanceList.search.endTime = "";
+      }
       this.$http
         .post(
-          "MotorDetail/getBYByBusNumber",
-          this.$qs.stringify({ busNumber: row.busnumber })
+          "manage/baoYangCriteriaQuery",
+          this.$qs.stringify(this.maintenanceList.search)
         )
         .then(res => {
           for (const key in res.data) {
             res.data[key].maintainfile = res.data[key].maintainfile.split(";");
           }
           this.maintenanceList.list = res.data;
+          this.imgupload = false;
+          this.maintenanceRules.img = [
+            { required: true, message: "请选择上传图片" }
+          ];
         });
+    },
+    // 保养记录上传
+    maintenanceSubmit() {
+      if (this.imgupload) {
+        this.maintenanceRules.img = [];
+        this.$refs["maintenanceForm"].validate(valid => {
+          if (valid) {
+            this.$refs.uploadimg.submit();
+          } else {
+            console.log("error submit!!");
+            return false;
+          }
+        });
+      } else {
+        this.$refs["maintenanceForm"].validate();
+      }
+      console.log(this.imgupload);
+    },
+    // 保养记录上传成功回调
+    uploadimgSuccess(response, file, fileList) {
+      this.$message({
+        message: "添加记录成功",
+        type: "success",
+        offset: 165
+      });
+      this.maintenanceList.addmsg = {
+        busnumber: "",
+        maintaintime: "",
+        param1: "",
+        maintaindiscript: "",
+        fileList: []
+      };
+      this.showmaintenance();
+    },
+    // 保养记录图片添加非空验证
+    onChange(file, filelist) {
+      if (filelist.length != 0) {
+        this.$refs["maintenanceForm"].clearValidate("img");
+        this.imgupload = true;
+      }
+    },
+    // 保养记录图片删除非空验证
+    onRemove(file, filelist) {
+      if (filelist.length == 0) {
+        this.maintenanceRules.img = [
+          { required: true, message: "请选择上传图片" }
+        ];
+        this.$refs["maintenanceForm"].validateField("img");
+        this.imgupload = false;
+      }
+    },
+    // 保养记录下一页
+    maintenancenextpage(value) {
+      this.maintenanceList.currpage = value;
+    },
+    // 保养记录显示条数切换
+    maintenancesizeChange(total) {
+      console.log(total);
+      this.maintenanceList.pagesize = total;
+    },
+    // 显示保险列表
+    showinsurance(row) {
+      this.showinsurancea = !this.showinsurancea;
+      this.insurance.busnumber = row.busnumber;
+      this.insurance.addmsg.busnumber = row.busnumber;
+      this.getInsurance();
+    },
+    // 获取保险列表
+    getInsurance() {
+      this.$http
+        .post(
+          "MotorDetail/getBXByBusNumber",
+          this.$qs.stringify(this.insurance.addmsg)
+        )
+        .then(res => {
+          this.insurance.list = res.data;
+        });
+    },
+    // 保险添加
+    abnormaladd() {
+      this.$refs["insuranceaFrom"].validate(valid => {
+        if (valid) {
+          this.$http
+            .post(
+              "MotorDetail/addBaoXianInformation",
+              this.$qs.stringify(this.insurance.addmsg)
+            )
+            .then(res => {
+              this.getInsurance();
+              this.insurance.addmsg = {
+                busnumber: this.insurance.busnumber,
+                bxcompany: "",
+                bxtime: "",
+                param1: ""
+              };
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     // 历史行车轨迹
     showWarning(row) {
@@ -656,7 +829,7 @@ export default {
     handleEdit(index, row) {
       this.type = "edit";
       this.addedittitle = "车辆信息编辑";
-      this.msg = row;
+      this.msg = JSON.parse(JSON.stringify(row));
       this.showedit = !this.showedit;
     },
     // 删除
@@ -694,8 +867,6 @@ export default {
     // 获取列表
     getCarList() {
       this.$http.get("MotorDetail/getAllMotorInformation").then(res => {
-        console.log(res.data);
-
         this.data.list = res.data;
       });
     },
@@ -726,6 +897,10 @@ export default {
     onsubmit() {
       this.showedit = false;
       if (this.type == "edit") {
+        console.log();
+        if (this.msg.busnumber.indexOf(`鲁E-`) == -1) {
+          this.msg.busnumber = "鲁E-" + this.msg.busnumber;
+        }
         this.$http
           .post(
             "MotorDetail/updateMotorInformation",
@@ -742,6 +917,9 @@ export default {
             });
           });
       } else if (this.type == "add") {
+        if (this.msg.busnumber.indexOf(`鲁E-`) == -1) {
+          this.msg.busnumber = "鲁E-" + this.msg.busnumber;
+        }
         this.$http
           .post("MotorDetail/addMotorInformation", this.$qs.stringify(this.msg))
           .then(res => {
@@ -789,19 +967,6 @@ export default {
       }
       this.getCarList();
       this.msgimport = !this.msgimport;
-    },
-    // 保养记录上传
-    uploadmaintenanceMsg() {
-      this.$refs.uploadimg.submit();
-      this.$message({
-        message: "添加记录成功",
-        type: "success",
-        offset: 165
-      });
-    },
-    // 图片上传成功回调
-    uploadimg(response, file, fileList) {
-      maintenanceList.addmsg.fileList = [];
     }
   },
   watch: {
@@ -818,6 +983,7 @@ export default {
 <style lang="scss" scoped>
 .search {
   padding: 20px 0;
+
   .searchbox {
     float: left;
     padding-left: 10px;
@@ -890,6 +1056,7 @@ export default {
   .btn {
     float: right;
     border-radius: 5px;
+    margin-left: 15px;
   }
 }
 
