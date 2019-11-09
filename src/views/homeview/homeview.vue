@@ -6,14 +6,7 @@
       <el-button type="primary" @click="addPlayer" v-if="playerSelect">巡检平台</el-button>
     </div>
     <!-- 地图 -->
-    <baidu-map
-      class="map"
-      center="东营区"
-      dragging
-      :zoom="12"
-      scroll-wheel-zoom
-      v-if="!mapSelect"
-    >
+    <baidu-map class="map" center="东营区" dragging :zoom="12" scroll-wheel-zoom v-show="!mapSelect">
       <!-- 武汉市GPS测试点 -->
       <!-- <bm-marker :position="{lng: 114.41166666666666, lat: 30.482222222222223}"></bm-marker>
       <bm-marker
@@ -21,8 +14,8 @@
         :position="{lng: marker.x, lat: marker.y}"
         :icon="{url: 'http://118.31.245.183:10500/images000/对讲机.png', size: {width: 18, height: 24}}"
         @click="infoWindowOpen"
-      > -->
-        <!-- <bm-info-window
+      >-->
+      <!-- <bm-info-window
           class="infoWindow"
           :show="markers.show"
           :position="{lng: marker.x, lat: marker.y}"
@@ -72,7 +65,7 @@
             <a>查询指令记录</a>
             <a>下载轨迹</a>
           </div>
-        </bm-info-window> -->
+      </bm-info-window>-->
       <!-- </bm-marker> -->
       <!-- 控件 -->
       <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-navigation>
@@ -85,6 +78,7 @@
         :stroke-opacity="0.8"
         :stroke-weight="1"
       />
+      <bm-label content="黄河路二部" :position="{ lng: 118.498772, lat: 37.444201 }" :labelStyle="labelStyle"/>
       <!-- 黄河路一部 -->
       <bm-polygon
         :path="polygonPath8"
@@ -93,6 +87,7 @@
         :stroke-opacity="0.8"
         :stroke-weight="1"
       />
+      <bm-label content="黄河路一部" :position="{ lng: 118.558065, lat: 37.429498 }" :labelStyle="labelStyle"/>
       <!-- 辛店项目一部 -->
       <bm-polygon
         :path="polygonPath2"
@@ -101,6 +96,7 @@
         :stroke-opacity="0.8"
         :stroke-weight="1"
       />
+      <bm-label content="辛店一部" :position="{ lng: 118.414978, lat: 37.458754 }" :labelStyle="labelStyle"/>
       <!-- 辛店项目二部 -->
       <bm-polygon
         :path="polygonPath3"
@@ -109,6 +105,7 @@
         :stroke-opacity="0.8"
         :stroke-weight="1"
       />
+      <bm-label content="辛店二部" :position="{ lng: 118.424109, lat: 37.507002 }" :labelStyle="labelStyle"/>
       <!-- 文汇二部 -->
       <bm-polygon
         :path="polygonPath4"
@@ -117,6 +114,7 @@
         :stroke-opacity="0.8"
         :stroke-weight="1"
       />
+      <bm-label content="文汇二部" :position="{ lng: 118.507328, lat: 37.499559 }" :labelStyle="labelStyle"/>
       <!-- 文汇一部 -->
       <bm-polygon
         :path="polygonPath5"
@@ -125,6 +123,7 @@
         :stroke-opacity="0.8"
         :stroke-weight="1"
       />
+      <bm-label content="文汇一部" :position="{ lng: 118.567551, lat: 37.489252 }" :labelStyle="labelStyle"/>
       <!-- 胜园项目部 -->
       <bm-polygon
         :path="polygonPath6"
@@ -133,12 +132,12 @@
         :stroke-opacity="0.8"
         :stroke-weight="1"
       />
+       <bm-label content="文汇一部" :position="{ lng: 118.444519, lat: 37.422162 }" :labelStyle="labelStyle"/>
       <!-- mark点 -->
-       <bm-marker
+      <bm-marker
         :position="{lng: 118.36, lat: 37.42}"
         :icon="{url: 'http://118.31.245.183:10500/images000/对讲机.png', size: {width: 24, height: 18}}"
-      >
-      </bm-marker>
+      ></bm-marker>
       <bm-marker
         :position="{ lng: 118.520048, lat: 37.399597 }"
         :icon="{url: 'http://118.31.245.183:10500/images000/清扫车.png', size: {width: 24, height: 18}}"
@@ -152,7 +151,7 @@
         :icon="{url: 'http://118.31.245.183:10500/images000/三轮车.png', size: {width: 24, height: 18}}"
       ></bm-marker>
       <bm-marker
-        :zIndex='index'
+        :zIndex="index"
         :position="{ lng: 118.598237, lat: 37.463098 }"
         :icon="{url: 'http://118.31.245.183:10500/images000/垃圾运输车.png', size: {width: 24, height: 24}}"
         @click="infoWindowOpen(markers)"
@@ -229,7 +228,7 @@
         <el-button slot="append" @click="searchMap">搜索</el-button>
       </el-input>
     </baidu-map>
-    <div class="warning" v-if="!warningSelect">
+    <div class="warning" v-show="!warningSelect">
       <!-- 数据中控平台 -->
       <div class="warningTop">
         <div class="warningText1">工作预警</div>
@@ -301,7 +300,9 @@
         </div>
       </div>
       <!-- 报警信息 -->
-      <div class="warningText">工作预警</div>
+      <div class="warningText">预警信息</div>
+      <!-- bing -->
+      <div id="xxxd" style="width: 450px;height:200px;"></div>
       <div class="button">
         <div @click="msgeslint = true" class="buttonrow">
           <div class="buttonrowL oneself">
@@ -805,21 +806,35 @@
       </el-dialog>
     </div>
     <!-- 播放视频 -->
-    <div id="player" v-if="!playerSelect">
+    <div id="player" v-show="!playerSelect">
       <div class="playerTop">
-        <el-button type></el-button>
         <div class="warningDate">{{shuldData.logtime}}</div>
+        <el-button type="primary" @click="stringVideo">道路视频详情</el-button>
       </div>
-      <div class="playerVideo"></div>
+      <div class="playerVideo">
+        <div v-for="item in videoList" :key="item.sid" class="videoDiv" @click="videoPlayer(item)">
+          <el-image :src="item.videoimgurl"></el-image>
+          <p>{{item.logtime}}{{item.addr}}</p>
+        </div>
+      </div>
+      <!-- 视频弹框 -->
+      <el-dialog :title="videoObj.addr" :visible.sync="videos" width="70%">
+        <video-player
+          class="video-player vjs-custom-skin"
+          :playsinline="true"
+          :options="videoOption"
+        ></video-player>
+      </el-dialog>
       <!-- 图片滚动播放 -->
-      <div class="userVideo">
-        <vueSeamless :data="userVideo" :class-option="optionCustomer">
-          <div class="userImageAllWrapper">
-            <div class="videoList" v-for="item in userVideo" :key="item.index">
-              <img :src="item.src" width="219px" height="126px" />
-              <p>{{item.title}}</p>
-            </div>
-          </div>
+      <div class="userImage">
+        <div>巡查拍照</div>
+        <vueSeamless :data="videoList" :class-option="optionCustomer">
+          <ul class="userImageAllWrapper">
+            <li v-for="item in videoList" :key="item.index">
+              <img :src="item.videoimgurl" width="240px" />
+              <p>{{item.logtime}}{{item.addr}}</p>
+            </li>
+          </ul>
         </vueSeamless>
       </div>
     </div>
@@ -827,55 +842,21 @@
 </template>
 <script>
 import vueSeamless from "vue-seamless-scroll";
+import "videojs-contrib-hls";
+var echarts = require("echarts");
 export default {
   data() {
     return {
-      index:8888,
+      labelStyle:{
+         color: 'red',
+         fontSize : '14px',
+         border: '0px',
+         backgroundColor: 'rgba(0,0,0,0)',
+         },
+      index: 8888,
       // 视频区域
-      userVideo: [
-        {
-          src: require("../../assets/jpg/19221704b83490a1c346ff85b817cd35.jpg"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "0"
-        },
-        {
-          src: require("../../assets/jpg/24d82b0b0a02f2e99b85e5057f3b16a6.png"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "1"
-        },
-        {
-          src: require("../../assets/jpg/60a9a66c87768e70b18afc1948be640b.jpg"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "2"
-        },
-        {
-          src: require("../../assets/jpg/650050e6c72d34d7532f9d5f269016fb.png"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "3"
-        },
-        {
-          src: require("../../assets/jpg/7da0ac65e5e8c539c6170d66c1e076f8.gif"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "4"
-        },
-        {
-          src: require("../../assets/jpg/cf1d975c37d829b6606da8a3a1729b66.jpg"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "5"
-        },
-        {
-          src: require("../../assets/jpg/d1993ce8700a37dfa6fead279f3da630.jpg"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "6"
-        },
-        {
-          src: require("../../assets/jpg/ed9f08936febf7d5305545dd3a792b84.jpeg"),
-          title: "我有好多话要说，别不好意思啊，超出一万字的省略号",
-          index: "7"
-        }
-      ],
       // 测试
-      marker:{},
+      marker: {},
       // 区域划分
       polygonPath1: [
         { lng: 118.498003, lat: 37.462778 },
@@ -928,41 +909,9 @@ export default {
         { lng: 118.443764, lat: 37.390646 },
         { lng: 118.488226, lat: 37.389854 }
       ],
-      optionCustomer: {
-        step: 1, //滚动速度
-        hoverStop: false, //鼠标经是否停止
-        limitMoveNum: 8, //开始无缝滚动的数据量
-        openTouch: false, //开启数据实时监控刷新dom
-        waitTime: 1, //单步运动停滞时间
-        direction: 2, //0 向下 1 向上 2 向左 3向右
-        singleWidth: 30 //单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
-      },
-      // 监控
-      videoOption: {
-        live: false,
-        autoplay: false,
-        language: "zh-CN",
-        aspectRatio: "16:8",
-        fluid: true,
-        sources: [
-          {
-            src:
-              "http://hls01open.ys7.com/openlive/f515aa55a63f429d8169f069a9ac9986.m3u8" //url地址
-          }
-        ],
-        notSupportedMessage: "此视频暂无法播放，请稍后再试", //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-        controlBar: {
-          timeDivider: false,
-          durationDisplay: false,
-          remainingTimeDisplay: false,
-          fullscreenToggle: true //全屏按钮
-        },
-        flash: {
-          hls: {
-            withCredentials: false
-          }
-        }
-      },
+      videoObj:{},
+      videos: false,
+      videoList: [],
       mapSelect: false,
       warningSelect: true,
       playerSelect: true,
@@ -1042,11 +991,54 @@ export default {
         warningtime: ""
       },
       // 展示数据
-      shuldData:{}
+      shuldData: {}
     };
   },
   components: {
     vueSeamless
+  },
+  computed: {
+    // 无缝滚动
+    optionCustomer() {
+      return {
+        step: 0.8, // 数值越大速度滚动越快
+        limitMoveNum: this.videoList.length, // 开始无缝滚动的数据量 this.dataList.length
+        hoverStop: true, // 是否开启鼠标悬停stop
+        direction: 2, // 0向下 1向上 2向左 3向右
+        openWatch: true, // 开启数据实时监控刷新dom
+        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
+        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
+        waitTime: 1000 // 单步运动停止的时间(默认值1000ms)
+      };
+    },
+    // 监控
+    videoOption(){
+      return {
+        live: false,
+        autoplay: false,
+        language: "zh-CN",
+        aspectRatio: "16:8",
+        fluid: true,
+        sources: [
+          {
+            // src: this.videoObj.videourl //url地址
+            src:'http://hls01open.ys7.com/openlive/e2fb2c1f49e949cfac59ba80baee7a12.hd.m3u8'
+          }
+        ],
+        notSupportedMessage: "此视频暂无法播放，请稍后再试", //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        controlBar: {
+          timeDivider: false,
+          durationDisplay: false,
+          remainingTimeDisplay: false,
+          fullscreenToggle: true //全屏按钮
+        },
+        flash: {
+          hls: {
+            withCredentials: false
+          }
+        }
+      }
+    }
   },
   watch: {
     // 提示
@@ -1083,8 +1075,74 @@ export default {
     this.getOverageList();
     this.getTransboundaryList();
     this.getStagnationList();
+    this.$nextTick(() => {
+      this.getVideoList();
+      this.total();
+    });
+  },
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.getVideoList();
+      }, 500);
+    });
   },
   methods: {
+     // 考勤工作量切换
+    total() {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$Echarts.init(document.getElementById("xxxd"));
+      // 绘制图表
+      myChart.setOption({
+        title: {},
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+          data: ["10~20车", "20~30车", "30~40车"]
+        },
+        series: [
+          {
+            name: "转运辆数/天",
+            type: "pie",
+            radius: ["55%", "70%"],
+            center: ["50%", "60%"],
+            data: [
+              { value: 18, name: "10~20车" },
+              { value: 59, name: "20~30车" },
+              { value: 13, name: "30~40车" }
+            ],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              }
+            }
+          }
+        ]
+      });
+    },
+    stringVideo(){
+      this.$router.push('/town/supervision')
+    },
+    // 视频播放
+    videoPlayer(item) {
+      this.videos = true;
+      this.videoObj=item;
+      console.log(this.videoObj)
+    },
+    //视频接口
+    getVideoList() {
+      this.$http.post("/hw/main/video/list").then(res => {
+        console.log(res.data);
+        this.videoList = res.data;
+      });
+    },
+    //页面控制
     addMap() {
       this.mapSelect = false;
       this.warningSelect = true;
@@ -1112,7 +1170,7 @@ export default {
       this.$http
         .post("hw/main/listCarError", this.$qs.stringify(this.abnormal))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.abnormalList = res.data;
         });
     },
@@ -1133,7 +1191,7 @@ export default {
       this.$http
         .post("hw/main/listOilOut", this.$qs.stringify(this.consumption))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.oli = res.data;
         });
     },
@@ -1153,7 +1211,7 @@ export default {
       this.$http
         .post("hw/main/listMaintain", this.$qs.stringify(this.maintain))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.maintainList = res.data;
         });
     },
@@ -1174,7 +1232,7 @@ export default {
       this.$http
         .post("hw/main/listMainSafe", this.$qs.stringify(this.insurance))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.insuranceList = res.data;
         });
     },
@@ -1194,7 +1252,7 @@ export default {
       this.$http
         .post("hw/main/listMainOutage", this.$qs.stringify(this.overage))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.overageList = res.data;
         });
     },
@@ -1214,7 +1272,7 @@ export default {
       this.$http
         .post("hw/main/listMainOutArea", this.$qs.stringify(this.transboundary))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.transboundaryList = res.data;
         });
     },
@@ -1234,7 +1292,7 @@ export default {
       this.$http
         .post("hw/main/listMainFreeze", this.$qs.stringify(this.stagnation))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.stagnationList = res.data;
         });
     },
@@ -1266,10 +1324,10 @@ export default {
     },
     // 测试
     getMapMark() {
-      this.$http.post('xy/gpsSensor').then(res=>{
-        console.log(res.data)
-        this.marker=res.data
-      })
+      this.$http.post("xy/gpsSensor").then(res => {
+        // console.log(res.data)
+        this.marker = res.data;
+      });
     }
   }
 };
@@ -1482,13 +1540,13 @@ export default {
     margin-top: 10px;
     padding-left: 20px;
   }
-  .warningDate {
-    float: right;
-    font-size: 16px;
-    font-weight: 700;
-    margin-top: 10px;
-    padding-right: 20px;
-  }
+}
+.warningDate {
+  float: right;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
+  padding-right: 20px;
 }
 .warningText {
   font-size: 16px;
@@ -1678,14 +1736,44 @@ p {
   margin-top: 10px;
   padding-right: 20px;
 }
-
-.userVideo {
+.playerVideo {
+  display: flex;
   width: 100%;
-  height: 500px;
-  margin-top: 50px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  position: absolute;
+  top: 50px;
+  .videoDiv {
+    width: 240px;
+    height: 200px;
+    margin-left: 10px;
+    margin-right: 12px;
+  }
+}
+
+.userImage {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
   overflow: hidden;
   .userImageAllWrapper {
+    width: 100%;
+    list-style: none;
     display: flex;
+    li {
+      width: 240px;
+      margin-left: 10px;
+      border: 1px solid #ececec;
+      p {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      img {
+        display: flex;
+      }
+    }
   }
 }
 </style>
