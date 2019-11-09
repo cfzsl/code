@@ -205,7 +205,7 @@ export default {
       this.data.currpage = value;
     },
     showadd(row) {
-      console.log(row);
+      // console.log(row);
     }
   },
   created() {}
