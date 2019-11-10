@@ -96,9 +96,6 @@
       <el-menu-item index="/matters/Adance">
         <span class="iconfont icon-chuqintongji"></span>人员考勤
       </el-menu-item>
-      <el-menu-item index="/logList">
-        <span class="iconfont icon-tongxunlu"></span>操作日志
-      </el-menu-item>
       <!--<el-menu-item index="/matters/bonus">
         <span class="iconfont icon-xinchouguanli"></span>奖金管理
       </el-menu-item>
@@ -129,6 +126,9 @@
     </el-menu-item>
     <el-menu-item index="/materiel">
       <span class="iconfont icon-zhaopinguanli"></span>物料采购管理
+    </el-menu-item>
+    <el-menu-item index="/logList">
+      <span class="iconfont icon-tongxunlu"></span>操作日志
     </el-menu-item>
   </el-menu>
 </template>
