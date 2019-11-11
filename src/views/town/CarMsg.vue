@@ -72,7 +72,7 @@
             class="tableButton1"
             type="primary"
             size="small"
-            @click="showservice(scope.row, scope.$index)"
+            @click="showService(scope.row, scope.$index)"
           >详情</el-button>
         </template>
       </el-table-column>
@@ -184,7 +184,7 @@
           <el-input v-model="ruleForm.user"></el-input>
         </el-form-item>
         <el-form-item label="联系方式" prop="user">
-          <el-input v-model="ruleForm.param3"></el-input>
+          <el-input v-model="ruleForm.information"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -222,7 +222,7 @@
           <el-input v-model="details.user"></el-input>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input v-model="details.param3"></el-input>
+          <el-input v-model="details.information"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -355,35 +355,44 @@
     <!-- 维修记录 -->
     <el-dialog title="维修记录" :visible.sync="service.show">
       <div class="title">
-        <div class="titlebox">
-          日期
-          <el-date-picker v-model="service.addmsg.date" type="date" placeholder="选择日期"></el-date-picker>
-        </div>
-        <div class="titlebox">
-          维修人
-          <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修人"></el-input>
-        </div>
-        <div class="titlebox">
-          维修原因
-          <el-input style="width: 200px" v-model="service.addmsg.type" placeholder="请输入维修原因"></el-input>
-        </div>
-        <div class="titlebox">
-          维修结果
-          <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修结果"></el-input>
-        </div>
-        <div>
-          <el-button style="float:right; margin-right:20px" type="primary">添加</el-button>
-        </div>
+        <el-form
+          ref="batteryForm"
+          label-position="right"
+          label-width="100px"
+          :rules="serviceRules"
+          :model="service.addmsg"
+        >
+          <el-form-item label=" 日期" prop="repairbattrytime">
+            <el-date-picker
+              v-model="service.addmsg.date"
+              type="date"
+              style="width: 200px"
+              placeholder="选择日期"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="维修人" prop="repairbattryreason">
+            <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修人"></el-input>
+          </el-form-item>
+          <el-form-item label="维修原因" prop="repairbattrydetail">
+            <el-input style="width: 200px" v-model="service.addmsg.type" placeholder="请输入维修原因"></el-input>
+          </el-form-item>
+          <el-form-item label="维修结果" prop="repairbattrydetail">
+            <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修结果"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button style="float:right; margin-right:20px" type="primary">添加</el-button>
+          </el-form-item>
+        </el-form>
       </div>
 
       <el-table
         :data="service.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
-        <el-table-column align="center" prop="maintaintime" label="日期"></el-table-column>
-        <el-table-column align="center" prop="maintaintime" label="维修人"></el-table-column>
-        <el-table-column align="center" prop="param1" label="维修原因"></el-table-column>
-        <el-table-column align="center" prop="maintaindiscript" label="维修结果"></el-table-column>
+        <el-table-column align="center" prop="repairbattrytime" label="日期"></el-table-column>
+        <el-table-column align="center" prop="repairperson" label="维修人"></el-table-column>
+        <el-table-column align="center" prop="repairbattryreason" label="维修原因"></el-table-column>
+        <el-table-column align="center" prop="result" label="维修结果"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -430,6 +439,7 @@ export default {
       },
       // 维修
       service: {
+        busnumber: "",
         show: false,
         addmsg: {},
         list: []
@@ -445,7 +455,8 @@ export default {
         user: "",
         department: "",
         parm2: "",
-        area: ""
+        area: "",
+        information: ""
       },
       rules: {
         mumber: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
@@ -487,6 +498,19 @@ export default {
         repairbattrydetail: [
           { required: true, message: "请输入更换详情", trigger: "blur" }
         ]
+      },
+      // 维修记录非空验证
+      serviceRules: {
+        user1: [
+          { required: true, message: "请输入上一使用人", trigger: "blur" }
+        ],
+        user2: [
+          { required: true, message: "请输入下一使用人", trigger: "blur" }
+        ],
+        connecttime: [
+          { required: true, message: "请选择交接时间", trigger: "blur" }
+        ],
+        param1: [{ required: true, message: "请输入交接备注", trigger: "blur" }]
       },
       formInline: {
         cartype: "",
@@ -734,8 +758,23 @@ export default {
       });
     },
     // 显示维修记录
-    showservice() {
+    showService(row) {
+      this.service.busnumber = row.member;
       this.service.show = !this.service.show;
+      this.getServiceList();
+    },
+    // 维修记录列表
+    getServiceList() {
+      this.$http
+        .post(
+          "sanitation/car/getAllRepairRecord",
+          this.$qs.stringify(this.service)
+        )
+        .then(res => {
+          console.log(res.data);
+          
+          this.service.list = res.data
+        });
     }
   },
   created() {
