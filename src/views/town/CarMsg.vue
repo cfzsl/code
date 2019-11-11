@@ -166,24 +166,31 @@
         :rules="rules"
         class="demo-form-inline"
       >
-        <el-form-item label="车牌号" prop="mumber">
-          <el-input v-model="ruleForm.mumber"></el-input>
+        <el-form-item label="车牌号" prop="member">
+          <el-input v-model="ruleForm.member"></el-input>
         </el-form-item>
         <el-form-item label="购车时间" prop="shoppingtime">
-          <el-date-picker v-model="ruleForm.shoppingtime" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker
+            v-model="ruleForm.shoppingtime"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="资产编号" prop="parm2">
           <el-input v-model="ruleForm.parm2"></el-input>
         </el-form-item>
         <el-form-item label="归属单位" prop="department">
           <el-select v-model="ruleForm.department" class="selectTop">
-            <el-option label="item.label" value="item.label"></el-option>
+            <el-option label="环卫一部" value="环卫一部"></el-option>
+            <el-option label="环卫二部" value="环卫二部"></el-option>
+            <el-option label="环卫三部" value="环卫三部"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="指定司机" prop="user">
           <el-input v-model="ruleForm.user"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式" prop="user">
+        <el-form-item label="联系方式" prop="information">
           <el-input v-model="ruleForm.information"></el-input>
         </el-form-item>
       </el-form>
@@ -191,7 +198,7 @@
         <el-button type="primary" @click="resetForm('ruleForm')" class="formButon">重置</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addCar('ruleForm')" class="formButon">保存</el-button>
+        <el-button type="primary" @click="addCar('ruleForm')" class="formButon">添加</el-button>
       </span>
     </el-dialog>
 
@@ -204,24 +211,26 @@
         :rules="detail"
         class="demo-form-inline"
       >
-        <el-form-item label="车牌号">
+        <el-form-item label="车牌号" prop="member">
           <el-input v-model="details.member"></el-input>
         </el-form-item>
-        <el-form-item label="购车时间">
+        <el-form-item label="购车时间" prop="shoppingtime">
           <el-input v-model="details.shoppingtime"></el-input>
         </el-form-item>
-        <el-form-item label="资产编号">
+        <el-form-item label="资产编号" prop="parm2">
           <el-input v-model="details.parm2"></el-input>
         </el-form-item>
-        <el-form-item label="归属单位">
+        <el-form-item label="归属单位" prop="department">
           <el-select v-model="details.department" class="selectTop">
-            <el-option label="item.label" value="item.label"></el-option>
+            <el-option label="环卫一部" value="环卫一部"></el-option>
+            <el-option label="环卫二部" value="环卫二部"></el-option>
+            <el-option label="环卫三部" value="环卫三部"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="使用人">
+        <el-form-item label="使用人" prop="user">
           <el-input v-model="details.user"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式">
+        <el-form-item label="联系方式" prop="information">
           <el-input v-model="details.information"></el-input>
         </el-form-item>
       </el-form>
@@ -229,13 +238,7 @@
         <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="buttonIf" @click="addDo" class="formButon">编辑</el-button>
-        <el-button
-          type="primary"
-          v-else-if="!buttonIf"
-          @click="adddate('ruleDetails')"
-          class="formButon"
-        >保存</el-button>
+        <el-button type="primary" @click="adddate('ruleDetails')" class="formButon">保存</el-button>
       </span>
     </el-dialog>
 
@@ -289,7 +292,7 @@
       </el-form>
 
       <el-table
-        :data="handover.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        :data="handover.list.slice((handover.currpage - 1) * handover.pagesize, handover.currpage * handover.pagesize)"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="connecttime" label="日期"></el-table-column>
@@ -297,6 +300,19 @@
         <el-table-column align="center" prop="user2" label="下一使用人"></el-table-column>
         <el-table-column align="center" prop="param1" label="备注"></el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <el-pagination
+        class="paginationList"
+        background
+        :current-page="handover.currpage"
+        :page-size="handover.pagesize"
+        @prev-click="handovernextpage"
+        @next-click="handovernextpage"
+        @current-change="handovernextpage"
+        layout="total, prev, pager, next"
+        :total="handover.list.length"
+      ></el-pagination>
     </el-dialog>
 
     <!-- 更换记录 -->
@@ -343,20 +359,33 @@
       </div>
 
       <el-table
-        :data="battery.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        :data="battery.list.slice((battery.currpage - 1) * battery.pagesize, battery.currpage * battery.pagesize)"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="repairbattrytime" label="日期"></el-table-column>
         <el-table-column align="center" prop="repairbattrydetail" label="更换详情"></el-table-column>
         <el-table-column align="center" prop="repairbattryreason" label="更换原因"></el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <el-pagination
+        class="paginationList"
+        background
+        :current-page="battery.currpage"
+        :page-size="battery.pagesize"
+        @prev-click="batterynextpage"
+        @next-click="batterynextpage"
+        @current-change="batterynextpage"
+        layout="total, prev, pager, next"
+        :total="battery.list.length"
+      ></el-pagination>
     </el-dialog>
 
     <!-- 维修记录 -->
     <el-dialog title="维修记录" :visible.sync="service.show">
       <div class="title">
         <el-form
-          ref="batteryForm"
+          ref="serviceForm"
           label-position="right"
           label-width="100px"
           :rules="serviceRules"
@@ -364,29 +393,38 @@
         >
           <el-form-item label=" 日期" prop="repairbattrytime">
             <el-date-picker
-              v-model="service.addmsg.date"
+              v-model="service.addmsg.repairbattrytime"
               type="date"
+              value-format="yyyy-MM-dd"
               style="width: 200px"
               placeholder="选择日期"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="维修人" prop="repairbattryreason">
-            <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修人"></el-input>
+          <el-form-item label="维修人" prop="repairperson">
+            <el-input
+              style="width: 200px"
+              v-model="service.addmsg.repairperson"
+              placeholder="请输入维修人"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="维修原因" prop="repairbattrydetail">
-            <el-input style="width: 200px" v-model="service.addmsg.type" placeholder="请输入维修原因"></el-input>
+          <el-form-item label="维修原因" prop="repairbattryreason">
+            <el-input
+              style="width: 200px"
+              v-model="service.addmsg.repairbattryreason"
+              placeholder="请输入维修原因"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="维修结果" prop="repairbattrydetail">
-            <el-input style="width: 200px" v-model="service.addmsg.content" placeholder="请输入维修结果"></el-input>
+          <el-form-item label="维修结果" prop="result">
+            <el-input style="width: 200px" v-model="service.addmsg.result" placeholder="请输入维修结果"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button style="float:right; margin-right:20px" type="primary">添加</el-button>
+            <el-button style="float:right; margin-right:20px" type="primary" @click="serviceadd">添加</el-button>
           </el-form-item>
         </el-form>
       </div>
 
       <el-table
-        :data="service.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        :data="service.list.slice((service.currpage - 1) * service.pagesize, service.currpage * service.pagesize)"
       >
         <el-table-column align="center" prop="num" label="序号"></el-table-column>
         <el-table-column align="center" prop="repairbattrytime" label="日期"></el-table-column>
@@ -394,6 +432,19 @@
         <el-table-column align="center" prop="repairbattryreason" label="维修原因"></el-table-column>
         <el-table-column align="center" prop="result" label="维修结果"></el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <el-pagination
+        class="paginationList"
+        background
+        :current-page="service.currpage"
+        :page-size="service.pagesize"
+        @prev-click="servicenextpage"
+        @next-click="servicenextpage"
+        @current-change="servicenextpage"
+        layout="total, prev, pager, next"
+        :total="service.list.length"
+      ></el-pagination>
     </el-dialog>
   </div>
 </template>
@@ -425,7 +476,9 @@ export default {
           user2: "",
           param1: ""
         },
-        list: []
+        list: [],
+        pagesize: 10,
+        currpage: 1
       },
       // 电池更换
       battery: {
@@ -435,14 +488,18 @@ export default {
           repairbattryreason: "",
           repairbattrydetail: ""
         },
-        list: []
+        list: [],
+        pagesize: 10,
+        currpage: 1
       },
       // 维修
       service: {
         busnumber: "",
         show: false,
         addmsg: {},
-        list: []
+        list: [],
+        pagesize: 10,
+        currpage: 1
       },
       dialogFormVisible: false,
       dialogVisible: false,
@@ -450,7 +507,7 @@ export default {
       msgimport: false,
       ruleForm: {
         cartype: "",
-        mumber: "",
+        member: "",
         shoppingtime: "",
         user: "",
         department: "",
@@ -459,20 +516,23 @@ export default {
         information: ""
       },
       rules: {
-        mumber: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
+        member: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
         shoppingtime: [
           {
-            type: "date",
+            type: "string",
             required: true,
             message: "请选择日期",
             trigger: "blur"
           }
         ],
-        user: [{ required: true, message: "请输入人名", trigger: "blur" }],
+        parm2: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
         department: [
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
-        param3: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
+        user: [{ required: true, message: "请输入指定司机", trigger: "blur" }],
+        information: [
+          { required: true, message: "请输入联系方式", trigger: "blur" }
+        ]
       },
       // 交接记录非空验证
       handoverRules: {
@@ -501,16 +561,16 @@ export default {
       },
       // 维修记录非空验证
       serviceRules: {
-        user1: [
-          { required: true, message: "请输入上一使用人", trigger: "blur" }
+        repairbattrytime: [
+          { required: true, message: "请选择维修日期", trigger: "blur" }
         ],
-        user2: [
-          { required: true, message: "请输入下一使用人", trigger: "blur" }
+        repairperson: [
+          { required: true, message: "请输入维修人", trigger: "blur" }
         ],
-        connecttime: [
-          { required: true, message: "请选择交接时间", trigger: "blur" }
+        repairbattryreason: [
+          { required: true, message: "请输入维修原因", trigger: "blur" }
         ],
-        param1: [{ required: true, message: "请输入交接备注", trigger: "blur" }]
+        result: [{ required: true, message: "请输入维修结果", trigger: "blur" }]
       },
       formInline: {
         cartype: "",
@@ -523,53 +583,22 @@ export default {
       },
       details: {},
       detail: {
-        cartype: [
-          { required: true, message: "请选择车辆类型", trigger: "blur" }
-        ],
-        mumber: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
+        member: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
         shoppingtime: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "blur"
-          }
+          { required: true, message: "请选择购车时间", trigger: "blur" }
         ],
-        user: [{ required: true, message: "请输入人名", trigger: "blur" }],
+        user: [{ required: true, message: "请输入使用人", trigger: "blur" }],
         department: [
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
         parm2: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
-        area: [{ required: true, message: "请选择作业区域", trigger: "blur" }]
+        information: [
+          { required: true, message: "请输入联系方式", trigger: "blur" }
+        ]
       },
       buttonIf: false,
       formInline: {}
     };
-  },
-  // 监听
-  watch: {
-    // number: function(val) {
-    //   this.usearch.number = val;
-    //   let reg = /^[0-9a-zA-Z]+$/;
-    //   if (!reg.test(val)) {
-    //     this.$message({
-    //       showClose: true,
-    //       message: "请输入字母或数子",
-    //       type: "error",
-    //       offset: 152
-    //     });
-    //     // alert('请输入字母或数子')
-    //   } else if (val.length > 10) {
-    //     this.$message({
-    //       showClose: true,
-    //       message: "请输入不超过10位的数子字母",
-    //       type: "error",
-    //       offset: 152
-    //     });
-    //     // alert("请输入不超过10位的数子字母")
-    //     this.usearch.msgear = this.usearch.msgear.substr(0, 10);
-    //   }
-    // }
   },
   methods: {
     // 切换页面
@@ -607,28 +636,23 @@ export default {
     },
     //修改详情
     adddate(formName) {
-      console.log(this.details);
-      this.$refs[formName].validate(valid => {
+      this.$refs["ruleDetails"].validate(valid => {
         if (valid) {
-          // alert("submit!");
           this.$http
             .post("sanitation/car/update", this.$qs.stringify(this.details))
             .then(res => {
-              console.log(res.data);
-              // this.getlist();
-              this.dialogFormVisible = false;
-            })
-            .catch(err => {
-              console.log("请求失败");
+              this.dialogFormVisible = !this.dialogFormVisible;
+              this.$message({
+                type: "success",
+                message: "修改成功！",
+                offset: 155
+              });
+              this.getlist();
             });
         } else {
-          // console.log("error submit!!");
           return false;
         }
       });
-    },
-    addDo() {
-      this.buttonIf = false;
     },
     pagination(row, _index) {
       this.dialogFormVisible = true;
@@ -642,26 +666,37 @@ export default {
     },
     // 删除
     deletList(row, _index) {
-      let date = {
-        sid: row.sid
-      };
-      // console.log(date)
-      this.$http
-        .post("sanitation/car/deleteBySid", this.$qs.stringify(date))
-        .then(res => {
-          console.log(res.data);
-          this.getlist();
-        });
-      // this.getlist();
+      this.$confirm("此操作将删除此数据, 是否继续？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        let date = {
+          sid: row.sid
+        };
+        this.$http
+          .post("sanitation/car/deleteBySid", this.$qs.stringify(date))
+          .then(res => {
+            this.getlist();
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+              offset: 155
+            });
+          });
+      });
     },
     // 获取/查询列表数据
     getlist() {
+      this.data.currpage = 1;
       this.$http
         .post(
           "sanitation/car/pedicabCriteriaQuery",
           this.$qs.stringify(this.search)
         )
         .then(res => {
+          console.log(res);
+
           this.data.list = res.data;
         });
     },
@@ -708,6 +743,11 @@ export default {
                 user2: "",
                 param1: ""
               };
+              this.$message({
+                type: "success",
+                message: "新增成功！",
+                offset: 150
+              });
               this.getHandoverList();
             });
         } else {
@@ -715,6 +755,10 @@ export default {
           return false;
         }
       });
+    },
+    // 交接记录下一页
+    handovernextpage(value) {
+      this.handover.currpage = value;
     },
     // 显示电池更换记录
     showBattery(row) {
@@ -749,6 +793,11 @@ export default {
                 repairbattryreason: "",
                 repairbattrydetail: ""
               };
+              this.$message({
+                type: "success",
+                message: "新增成功！",
+                offset: 150
+              });
               this.getBatteryList();
             });
         } else {
@@ -756,6 +805,10 @@ export default {
           return false;
         }
       });
+    },
+    // 电池更换记录翻页
+    batterynextpage(value) {
+      this.battery.currpage = value;
     },
     // 显示维修记录
     showService(row) {
@@ -771,10 +824,37 @@ export default {
           this.$qs.stringify(this.service)
         )
         .then(res => {
-          console.log(res.data);
-          
-          this.service.list = res.data
+          this.service.list = res.data;
         });
+    },
+    // 维修记录新增
+    serviceadd() {
+      this.$refs["serviceForm"].validate(valid => {
+        if (valid) {
+          this.service.addmsg.busnumber = this.service.busnumber;
+          this.$http
+            .post(
+              "sanitation/car/addRepairDetail",
+              this.$qs.stringify(this.service.addmsg)
+            )
+            .then(res => {
+              this.service.addmsg = {};
+              this.$message({
+                type: "success",
+                message: "新增成功！",
+                offset: 150
+              });
+              this.getServiceList();
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    // 维修记录翻页
+    servicenextpage(value) {
+      this.service.currpage = value;
     }
   },
   created() {

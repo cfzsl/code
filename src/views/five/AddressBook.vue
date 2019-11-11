@@ -9,22 +9,16 @@
       </div>
       <div class="searchbox">
         <span>组织架构</span>
-        <el-select v-model="search.area">
+        <el-select v-model="search.depart">
           <el-option label="全部区域" value></el-option>
-          <el-option label="东营区新区" value="东营区新区"></el-option>
-          <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-          <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
-          <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
-          <el-option label="圣园街道办事处" value="圣园街道办事处"></el-option>
-          <el-option label="六户镇" value="六户镇"></el-option>
-          <el-option label="史口镇" value="史口镇"></el-option>
-          <el-option label="牛庄镇" value="牛庄镇"></el-option>
-          <el-option label="龙居镇" value="龙居镇"></el-option>
+          <el-option label="环卫一部" value="环卫一部"></el-option>
+          <el-option label="环卫二部" value="环卫二部"></el-option>
+          <el-option label="环卫三部" value="环卫三部"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
         <span>岗位</span>
-        <el-select v-model="search.job">
+        <el-select v-model="search.param3">
           <el-option label="全部岗位" value></el-option>
           <el-option label="环卫工人" value="环卫工人"></el-option>
           <el-option label="洒水车司机" value="洒水车司机"></el-option>
@@ -60,17 +54,32 @@
       >
         <el-table-column align="center" prop="sid" label="序号"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="tel" label="性别"></el-table-column>
-        <el-table-column align="center" prop="road" label="出生日期"></el-table-column>
-        <el-table-column align="center" prop="area" label="家庭住址"></el-table-column>
-        <el-table-column align="center" prop="job" label="毕业院校"></el-table-column>
-        <el-table-column align="center" prop="depart" label="所学专业"></el-table-column>
+        <el-table-column align="center" prop="sex" label="性别"></el-table-column>
+        <el-table-column align="center" prop="hiretime" label="出生日期"></el-table-column>
+        <el-table-column align="center" prop="address" label="家庭住址" width="150px"></el-table-column>
+        <el-table-column align="center" prop="collage" label="毕业院校"></el-table-column>
+        <el-table-column align="center" prop="professional" label="所学专业"></el-table-column>
         <el-table-column align="center" prop="depart" label="组织架构"></el-table-column>
-        <el-table-column align="center" prop="depart" label="岗位"></el-table-column>
-        <el-table-column align="center" prop="depart" label="联系方式"></el-table-column>
-        <el-table-column align="center" prop="depart" label="在职状态"></el-table-column>
-        <el-table-column align="center" prop="depart" label="入职时间"></el-table-column>
-        <el-table-column align="center" prop="depart" label="操作"></el-table-column>
+        <el-table-column align="center" prop="param3" label="岗位"></el-table-column>
+        <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+        <el-table-column align="center" prop="workstatus" label="在职状态"></el-table-column>
+        <el-table-column align="center" prop="hiretime" label="入职时间"></el-table-column>
+        <el-table-column align="center" fixed="right" label="操作" width="160px">
+          <template slot-scope="scope">
+            <el-button
+              class="tableButton1"
+              type="primary"
+              size="small"
+              @click="showdetail(scope.row, scope.$index)"
+            >详情</el-button>
+            <el-button
+              class="tableButton2"
+              type="primary"
+              size="small"
+              @click="showrelease(scope.row, scope.$index)"
+            >离职</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -105,9 +114,9 @@ export default {
       },
       search: {
         name: "",
-        area: "",
-        job: "",
-        depart: ""
+        depart: "",
+        param3: "",
+        tel: ""
       },
       showedit: false,
       value1: "",
@@ -130,9 +139,7 @@ export default {
     },
     // 获取列表数据
     getAddBook() {
-      this.$http.get("hr/addresslist/search").then(res => {
-        console.log(res);
-
+      this.$http.get("userInformation/getPhoneNumber").then(res => {
         this.data.list = res.data;
       });
     },
@@ -140,7 +147,7 @@ export default {
     serachAddBook() {
       this.data.currpage = 1;
       this.$http
-        .post("hr/addresslist/search", this.$qs.stringify(this.search))
+        .post("userInformation/getPhoneNumber", this.$qs.stringify(this.search))
         .then(res => {
           this.data.list = res.data;
         });
@@ -189,9 +196,6 @@ export default {
 }
 
 .list {
-  button {
-    margin-left: 15px;
-  }
   .btn {
     width: 50px;
     margin-left: 0;

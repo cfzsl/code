@@ -445,7 +445,7 @@ export default {
     },
     // 查询按钮
     searchbtn() {
-      console.log(this.search);
+      this.data.currpage = 1;
       if (this.search.date != null) {
         this.search.startTime = this.search.date[0];
         this.search.endTime = this.search.date[1];
@@ -477,6 +477,11 @@ export default {
             this.$refs.uploadimg.submit();
             this.rules.img = [{ required: true, message: "请选择上传图片" }];
             this.feedback = !this.feedback;
+            this.$message({
+              type: "success",
+              message: "新增成功！",
+              offset: 155
+            });
             setTimeout(() => {
               _this.getList();
             }, 1000);
@@ -500,6 +505,11 @@ export default {
       if (this.imgupload) {
         this.rules.img = [];
         this.$refs.uploadimg.submit();
+        this.$message({
+          type: "success",
+          message: "处理完成！",
+          offset: 155
+        });
         this.process = !this.process;
         setTimeout(() => {
           _this.getList();

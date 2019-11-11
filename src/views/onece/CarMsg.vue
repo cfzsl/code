@@ -305,7 +305,7 @@
       </div>
       <div class="list">
         <el-table
-          :data="history.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+          :data="history.list.slice((history.currpage - 1) * history.pagesize, history.currpage * history.pagesize)"
           border
           style="width: 100%"
         >
@@ -318,6 +318,18 @@
             </template>
           </el-table-column>
         </el-table>
+        <!-- 分页 -->
+        <div class="pagination">
+          <el-pagination
+            :current-page="history.currpage"
+            :page-size="history.pagesize"
+            layout="total, prev, pager, next"
+            :total="history.list.length"
+            @prev-click="historynextpage"
+            @next-click="historynextpage"
+            @current-change="historynextpage"
+          ></el-pagination>
+        </div>
       </div>
     </el-dialog>
 
@@ -446,7 +458,6 @@
           @prev-click="maintenancenextpage"
           @next-click="maintenancenextpage"
           @current-change="maintenancenextpage"
-          @size-change="maintenancesizeChange"
         ></el-pagination>
       </div>
     </el-dialog>
@@ -470,21 +481,21 @@
         ref="insuranceaFrom"
         :inline="true"
         :rules="insurancearules"
-        :model="insurance.addmsg"
+        :model="insuranceList.addmsg"
         class="demo-form-inline"
       >
         <div class="abnormalsearch">
           <el-form-item label="保险公司：" prop="bxcompany">
             <el-input
               style="width:150px;margin-right: 10px;"
-              v-model="insurance.addmsg.bxcompany"
+              v-model="insuranceList.addmsg.bxcompany"
               placeholder="请输入内容"
             ></el-input>
           </el-form-item>
           <el-form-item label="缴纳日期：" prop="bxtime">
             <el-date-picker
               style="width:150px;margin-right: 10px;"
-              v-model="insurance.addmsg.bxtime"
+              v-model="insuranceList.addmsg.bxtime"
               type="date"
               placeholder="选择日期"
               value-format="yyyy-MM-dd"
@@ -493,7 +504,7 @@
           <el-form-item label="到期日期：" prop="param1">
             <el-date-picker
               style="width:150px;"
-              v-model="insurance.addmsg.param1"
+              v-model="insuranceList.addmsg.param1"
               type="date"
               placeholder="选择日期"
               value-format="yyyy-MM-dd"
@@ -506,7 +517,7 @@
       </el-form>
       <div class="sytime">系统时间：2019-10-22</div>
       <el-table
-        :data="insurance.list.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+        :data="insuranceList.list.slice((insuranceList.currpage - 1) * insuranceList.pagesize, insuranceList.currpage * insuranceList.pagesize)"
         border
         style="width: 100%"
       >
@@ -516,6 +527,19 @@
         <el-table-column align="center" prop="bxtime" label="生效时间"></el-table-column>
         <el-table-column align="center" prop="param1" label="到期时间"></el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <div class="pagination">
+        <el-pagination
+          :current-page="insuranceList.currpage"
+          :page-size="insuranceList.pagesize"
+          layout="total, prev, pager, next"
+          :total="insuranceList.list.length"
+          @prev-click="insuranceListnextpage"
+          @next-click="insuranceListnextpage"
+          @current-change="insuranceListnextpage"
+        ></el-pagination>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -569,7 +593,9 @@ export default {
             checkgastime: "2019-11-02",
             param1: "正常行驶"
           }
-        ]
+        ],
+        pagesize: 10,
+        currpage: 1
       },
       // 保养记录
       maintenanceList: {
@@ -603,7 +629,7 @@ export default {
       // 保养记录 点击后大图片
       url: "",
       // 保险
-      insurance: {
+      insuranceList: {
         busnumber: "",
         addmsg: {
           busnumber: "",
@@ -611,7 +637,9 @@ export default {
           bxtime: "",
           param1: ""
         },
-        list: []
+        list: [],
+        pagesize: 10,
+        currpage: 1
       },
       // 保险非空验证
       insurancearules: {
@@ -654,10 +682,11 @@ export default {
       // 图片上传判断
       imgupload: false,
       // 弹出层切换
+      maintenance: false,
       msgimport: false,
       msgexport: false,
       showwarning: false,
-      maintenance: false,
+      insurance: false,
       showimg: false,
       showinsurancea: false,
       showdetail: false,
@@ -686,6 +715,7 @@ export default {
         this.maintenanceList.search.startTime = "";
         this.maintenanceList.search.endTime = "";
       }
+      this.data.currpage = 1;
       this.$http
         .post(
           "manage/baoYangCriteriaQuery",
@@ -756,16 +786,11 @@ export default {
     maintenancenextpage(value) {
       this.maintenanceList.currpage = value;
     },
-    // 保养记录显示条数切换
-    maintenancesizeChange(total) {
-      console.log(total);
-      this.maintenanceList.pagesize = total;
-    },
     // 显示保险列表
     showinsurance(row) {
       this.showinsurancea = !this.showinsurancea;
-      this.insurance.busnumber = row.busnumber;
-      this.insurance.addmsg.busnumber = row.busnumber;
+      this.insuranceList.busnumber = row.busnumber;
+      this.insuranceList.addmsg.busnumber = row.busnumber;
       this.getInsurance();
     },
     // 获取保险列表
@@ -773,10 +798,10 @@ export default {
       this.$http
         .post(
           "MotorDetail/getBXByBusNumber",
-          this.$qs.stringify(this.insurance.addmsg)
+          this.$qs.stringify(this.insuranceList.addmsg)
         )
         .then(res => {
-          this.insurance.list = res.data;
+          this.insuranceList.list = res.data;
         });
     },
     // 保险添加
@@ -786,12 +811,17 @@ export default {
           this.$http
             .post(
               "MotorDetail/addBaoXianInformation",
-              this.$qs.stringify(this.insurance.addmsg)
+              this.$qs.stringify(this.insuranceList.addmsg)
             )
             .then(res => {
+              this.$message({
+                type: "success",
+                message: "新增成功！",
+                offset: 150
+              });
               this.getInsurance();
-              this.insurance.addmsg = {
-                busnumber: this.insurance.busnumber,
+              this.insuranceList.addmsg = {
+                busnumber: this.insuranceList.busnumber,
                 bxcompany: "",
                 bxtime: "",
                 param1: ""
@@ -803,9 +833,17 @@ export default {
         }
       });
     },
+    // 保险下翻页
+    insuranceListnextpage(value) {
+      this.insuranceList.currpage = value;
+    },
     // 历史行车轨迹
     showWarning(row) {
       this.showwarning = !this.showwarning;
+    },
+    // 历史轨迹翻页
+    historynextpage(value) {
+      this.history.currpage = value;
     },
     // 播放行车轨迹
     showhistory(row) {
@@ -872,6 +910,7 @@ export default {
     },
     // 搜索按钮
     searchBtn() {
+      this.data.currpage = 1;
       this.$http
         .post(
           "MotorDetail/motorInformationCriteriaQuery",
@@ -908,7 +947,6 @@ export default {
           )
           .then(res => {
             this.$options.methods.getCarList.call(this);
-
             this.$message({
               type: "success",
               showClose: true,
