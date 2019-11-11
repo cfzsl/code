@@ -10,11 +10,13 @@
           </el-form-item>
           <el-form-item label="审批状态">
             <el-select v-model="search.applicantstatus" placeholder="请选择">
+              <el-option label="全部" value></el-option>
               <el-option v-for="item in approval" :key="item.e" :label="item.applicantstatus" :value="item.applicantstatus"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="采购状态">
             <el-select v-model="search.buystatus" placeholder="请选择">
+              <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in purchase"
                 :key="item.i"
@@ -436,16 +438,12 @@ export default {
       e: "0",
       approval: [
         {
-          e: "0",
-          applicantstatus: "全部"
-        },
-        {
           e: "1",
           applicantstatus: "待审批"
         },
         {
           e: "2",
-          apapplicantstatusp: "已审批"
+          applicantstatus: "已审批"
         },
         {
           e: "3",
@@ -454,10 +452,6 @@ export default {
       ],
       i: "0",
       purchase: [
-        {
-          i: "0",
-          buystatus: "全部"
-        },
         {
           i: "1",
           buystatus: "—— ——"
@@ -575,6 +569,7 @@ export default {
     // 查询
     onSubmit() {
       console.log(this.search)
+      this.getWcList();
     },
     // 清空
     onEmpty() {
@@ -584,6 +579,7 @@ export default {
         buystatus: "",
         searchtime: ""
       };
+      this.getWcList();
     },
     //重置
     resetForm(formName) {

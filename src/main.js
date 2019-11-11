@@ -17,6 +17,8 @@ import VideoPlayer from 'vue-video-player';
 require('video.js/dist/video-js.css');
 require('vue-video-player/src/custom-theme.css');
 import hls from 'videojs-contrib-hls';
+import scroll from 'vue-seamless-scroll'
+
 
 Vue.prototype.$Echarts = Echarts;
 
@@ -33,6 +35,8 @@ Axios.interceptors.response.use(function (res) {
   return res.data
 });
 
+Vue.use(scroll)
+Vue.use(scroll,{componentName: 'scroll-seamless'})
 Vue.use(hls);
 Vue.use(VideoPlayer);
 Vue.use(ElementUI, { size: "small", zIndex: 3000 });
