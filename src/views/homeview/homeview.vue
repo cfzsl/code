@@ -17,7 +17,7 @@
     <div v-if="!playerSelect">
       <playerselect class="playerselect"></playerselect>
     </div>
-  </div>
+  </div>  
 </template>
 <script>
 import playerselect from "./playerselect";
