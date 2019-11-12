@@ -36,7 +36,7 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content">
-              <img src="../../assets/img/登录图片.png" alt />
+              <img src="" alt />
             </div>
           </el-col>
         </el-row>
@@ -86,7 +86,7 @@ export default {
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-image: url("../../assets/img/背景.jpg");
+  background-image: url("");
 }
 
 .login {

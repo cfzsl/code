@@ -3,7 +3,6 @@
   <div id="vehicle">
     <div class="menu">
       <div class="btn">
-        <el-button @click="showClc">环卫三轮车</el-button>
         <el-button @click="showMap">道路监控</el-button>
         <el-button @click="serachend">历史轨迹追溯</el-button>
         <el-button @click="msgerr = true">越界报警</el-button>
@@ -280,27 +279,6 @@
       <!-- 百度地图搜索 -->
     </div>
     <div class="bdMap">
-      <!-- 三轮车 -->
-      <baidu-map
-        class="map"
-        :center="{lng: 118.542132,lat: 37.453942}"
-        :dragging="true"
-        :zoom="14"
-        scroll-wheel-zoom
-        v-if="showmap"
-      >
-        <!-- 控件 -->
-        <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-navigation>
-        <el-input placeholder="请输入车牌号" v-model="input1" class="input-with-select">
-          <el-button slot="append" @click="searchMap">搜索</el-button>
-        </el-input>
-        <bm-marker
-          v-for="(item,index) in positionsCls"
-          :key="index"
-          :position="item"
-          :icon="{url: 'http://118.31.245.183:10500/images000/三轮车.png', size: {width: 24, height: 24}}"
-        ></bm-marker>
-      </baidu-map>
       <!-- 点聚合 -->
       <baidu-map
         class="map"
@@ -310,6 +288,8 @@
         scroll-wheel-zoom
         v-if="showmark"
       >
+      <!-- 控件 -->
+        <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-navigation>
         <el-input placeholder="请输道路名称" v-model="input2" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
         </el-input>
@@ -440,9 +420,8 @@ export default {
         speed: 2000,
         marker: true
       },
-      showmark: false,
+      showmark: true,
       showline: false,
-      showmap: true,
       monitoring: false,
       flow: true,
       mapview: true,
@@ -680,7 +659,6 @@ export default {
       //停滞列表
       stagnationList: [],
       positions: [],
-      positionsCls: [],
       disabledDate(time) {
         return time.getTime() > Date.now();
       },
@@ -766,12 +744,6 @@ export default {
     BmlLushu
   },
   methods: {
-    showClc() {
-      this.showmap = true;
-      this.showmark = false;
-      this.showline = false;
-      location.reload();
-    },
     showMap() {
       this.showmap = false;
       this.showmark = true;
@@ -804,15 +776,6 @@ export default {
         // console.log(res.data);
         this.positions = res.data;
       });
-    },
-    // 获取三轮车的位置
-    getTricycle() {
-      setInterval(() => {
-        this.$http.post("xy/get3wheelCarXY").then(res => {
-          console.log(res.data);
-          this.positionsCls = res.data;
-        });
-      }, 5000);
     },
     work() {
       this.flow = true;

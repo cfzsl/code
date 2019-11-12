@@ -35,7 +35,7 @@
     </div>
     <!-- 表格 -->
     <el-table
-      :data="logList.slice((data.currpage - 1) * data.pagesize, data.currpage * data.pagesize)"
+      :data="logList.slice((currpage - 1) * pagesize, currpage * pagesize)"
       border
       style="width: 100%"
     >
@@ -48,8 +48,9 @@
     </el-table>
     <!-- 分页 -->
     <el-pagination
-      :current-page="data.currpage"
-      :page-size="data.pagesize"
+      @prev-click="nextpage"
+      @next-click="nextpage"
+      @current-change="nextpage"
       class="paginationList"
       background
       :page-sizes="[10,20,30,40]"
@@ -69,50 +70,55 @@ export default {
         name: "",
         operatedetail: ""
       },
-       pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
             onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
+              picker.$emit("pick", [start, end]);
             }
-          }, {
-            text: '最近一个月',
+          },
+          {
+            text: "最近一个月",
             onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
+              picker.$emit("pick", [start, end]);
             }
-          }, {
-            text: '最近三个月',
+          },
+          {
+            text: "最近三个月",
             onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
+              picker.$emit("pick", [start, end]);
             }
-          }]
-        },
-      // 分页
-      data: {
-        pagesize: 10,
-        currpage: 1
+          }
+        ]
       },
-
+      // 分页
+      pagesize: 10,
+      currpage: 1,
       formInline: {},
       logList: []
     };
   },
-  created(){
+  created() {
     this.getLogList();
   },
   methods: {
+    // 切换页面
+    nextpage(value) {
+      this.currpage = value;
+    },
     // 查询
     onSubmit() {
-      console.log(this.search)
+      console.log(this.search);
       this.getLogList();
     },
     // 清除
@@ -126,16 +132,19 @@ export default {
     },
     // 导出日志
     exportLog() {
-      location.href='http://118.31.245.183:10500/hr/operate/exportExcel'
+      location.href = "http://118.31.245.183:10500/hr/operate/exportExcel";
     },
-    getLogList(){
-      console.log(this.search)
-      this.$http.post('hr/operate/search',this.$qs.stringify(this.search)).then(res=>{
-        console.log(res.data)
-        this.logList=res.data;
-      }).catch(err=>{
-        console.log('请求失败')
-      })
+    getLogList() {
+      console.log(this.search);
+      this.$http
+        .post("hr/operate/search", this.$qs.stringify(this.search))
+        .then(res => {
+          console.log(res.data);
+          this.logList = res.data;
+        })
+        .catch(err => {
+          console.log("请求失败");
+        });
     }
   }
 };
