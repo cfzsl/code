@@ -92,7 +92,15 @@ export default {
     width: 0px;
   }
 }
-
+.el-tabs__item{
+  color:#fff ;
+}
+.el-tabs__item.is-active{
+  color:#fff ;
+}
+.el-tabs__active-bar{
+  background-color: #fff;
+}
 .el-textarea .el-textarea__inner {
   resize: none;
 }
