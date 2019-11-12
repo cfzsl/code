@@ -40,7 +40,9 @@
     <!-- 导出 -->
     <div class="menu">
       <div class="btn">
-        <el-button icon="el-icon-plus">导出通讯录</el-button>
+        <el-button icon="el-icon-download" @click="exportmsg">导出通讯录</el-button>
+        <el-button icon="el-icon-download">导入通讯录模板</el-button>
+        <el-button icon="el-icon-upload2">导入通讯录</el-button>
       </div>
     </div>
 
@@ -128,6 +130,11 @@ export default {
     };
   },
   methods: {
+    // 导出通讯录
+    exportmsg() {
+      location.href =
+        this.$http.defaults.baseURL + "userInformation/exportTelExcel";
+    },
     // 翻页
     nextpage(value) {
       this.data.currpage = value;

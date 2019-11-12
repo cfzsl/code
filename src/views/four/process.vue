@@ -44,7 +44,7 @@
     <div class="menu">
       <div class="btn">
         <el-button icon="el-icon-plus" @click="feedback = true">新建反馈</el-button>
-        <el-button icon="el-icon-plus" @click="excellist">导出数据</el-button>
+        <el-button icon="el-icon-download" @click="excellist">导出数据</el-button>
       </div>
     </div>
 
@@ -171,6 +171,8 @@
               :auto-upload="false"
               :on-change="onChange"
               :on-remove="onRemove"
+              :on-success="uploadimgSuccess"
+              :before-upload="beforeAvatarUpload"
               :data="addfeedback"
               style="float: left"
             >
@@ -329,6 +331,8 @@
             :auto-upload="false"
             :on-change="onChange"
             :on-remove="onRemove"
+            :on-success="processsuccess"
+            :before-upload="beforeProcessUpload"
             :file-list="imglist"
             :data="processmsg"
             style="float: left"
@@ -467,6 +471,31 @@ export default {
       };
       this.searchbtn();
     },
+    // 保养记录图片判断
+    beforeAvatarUpload(file) {
+      let isImg = false;
+      const msg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      if (msg === "jpg" || msg === "png") {
+        isImg = true;
+      }
+      const isLt2M = file.size / 1024 / 1024 < 10;
+
+      if (!isImg) {
+        this.$message({
+          message: "上传图片只能是 JPG/PNG 格式!",
+          type: "error",
+          offset: 150
+        });
+      }
+      if (!isLt2M) {
+        this.$message({
+          message: "上传图片大小不能超过 10MB!",
+          type: "error",
+          offset: 165
+        });
+      }
+      return isImg && isLt2M;
+    },
     // 新建反馈
     newfeedback() {
       const _this = this;
@@ -475,16 +504,6 @@ export default {
         this.$refs["ruleForm"].validate(valid => {
           if (valid) {
             this.$refs.uploadimg.submit();
-            this.rules.img = [{ required: true, message: "请选择上传图片" }];
-            this.feedback = !this.feedback;
-            this.$message({
-              type: "success",
-              message: "新增成功！",
-              offset: 155
-            });
-            setTimeout(() => {
-              _this.getList();
-            }, 1000);
           } else {
             return false;
           }
@@ -493,11 +512,47 @@ export default {
         this.$refs["ruleForm"].validate();
       }
     },
+    // 新建反馈成功回调
+    uploadimgSuccess(response, file, fileList) {
+      this.rules.img = [{ required: true, message: "请选择上传图片" }];
+      this.feedback = !this.feedback;
+      this.$message({
+        type: "success",
+        message: "新增成功！",
+        offset: 155
+      });
+      this.getList();
+    },
     // 显示问题处理
     showprocess(row) {
       this.process = !this.process;
       this.processmsg["sid"] = row.sid;
       console.log(this.processmsg);
+    },
+    // 问题处理图片判断
+    beforeProcessUpload(file) {
+      let isImg = false;
+      const msg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      if (msg === "jpg" || msg === "png") {
+        isImg = true;
+      }
+      const isLt2M = file.size / 1024 / 1024 < 10;
+
+      if (!isImg) {
+        this.$message({
+          message: "上传图片只能是 JPG/PNG 格式!",
+          type: "error",
+          offset: 150
+        });
+      }
+      if (!isLt2M) {
+        this.$message({
+          message: "上传图片大小不能超过 10MB!",
+          type: "error",
+          offset: 165
+        });
+      }
+      return isImg && isLt2M;
     },
     // 问题处理
     problemHandling(id) {
@@ -505,18 +560,21 @@ export default {
       if (this.imgupload) {
         this.rules.img = [];
         this.$refs.uploadimg.submit();
-        this.$message({
-          type: "success",
-          message: "处理完成！",
-          offset: 155
-        });
-        this.process = !this.process;
-        setTimeout(() => {
-          _this.getList();
-        }, 1000);
       } else {
         this.$refs["ruleForm"].validate();
       }
+    },
+    // 问题处理成功回调
+    processsuccess() {
+      this.$message({
+        type: "success",
+        message: "处理完成！",
+        offset: 155
+      });
+      this.process = !this.process;
+      setTimeout(() => {
+        _this.getList();
+      }, 1000);
     },
     // 导出数据
     excellist() {

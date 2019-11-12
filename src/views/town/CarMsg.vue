@@ -29,8 +29,18 @@
     <div class="menu">
       <div class="btn">
         <el-button icon="el-icon-plus" @click="dialogVisible = true">添加车辆信息</el-button>
-        <el-button icon="el-icon-download" @click="msgexport = true">车辆信息导出</el-button>
-        <el-button icon="el-icon-upload2" @click="msgimport = true">车辆信息导入</el-button>
+        <el-button icon="el-icon-download" @click="exportmsg">车辆信息导出</el-button>
+        <el-button icon="el-icon-download">导入模板下载</el-button>
+        <el-upload
+          class="upload-demo"
+          :action="$http.defaults.baseURL +  'sanitation/car/importExcel'"
+          :on-success="success"
+          :show-file-list="false"
+          :limit="1"
+          style="float: right;"
+        >
+          <el-button icon="el-icon-upload2">车辆信息导入</el-button>
+        </el-upload>
       </div>
     </div>
 
@@ -108,54 +118,6 @@
       layout="total, sizes, prev, pager, next"
       :total="data.list.length"
     ></el-pagination>
-
-    <!-- 信息导出 -->
-    <el-dialog title="信息导出" :visible.sync="msgexport" width="15%" center>
-      <div class="download">
-        <div>全部信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-      <div class="download">
-        <div>垃圾清运车信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-      <div class="download">
-        <div>清扫车信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-      <div class="download">
-        <div>洒水车信息模版</div>
-        <el-button type="primary" size="mini">导出</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 信息导入 -->
-    <el-dialog title="信息导入" :visible.sync="msgimport" width="30%" center>
-      <div class="download">
-        <div>全部信息模版</div>
-        <el-upload
-          class="upload-demo"
-          :action="$http.defaults.baseURL + '/MotorDetail/importExcel'"
-          :show-file-list="false"
-          :limit="1"
-          style="float: right;"
-        >
-          <el-button type="primary" size="mini">上传</el-button>
-        </el-upload>
-      </div>
-      <div class="download">
-        <div>垃圾清运车信息模版</div>
-        <el-button type="primary" size="mini">上传</el-button>
-      </div>
-      <div class="download">
-        <div>清扫车信息模版</div>
-        <el-button type="primary" size="mini">上传</el-button>
-      </div>
-      <div class="download">
-        <div>洒水车信息模版</div>
-        <el-button type="primary" size="mini">上传</el-button>
-      </div>
-    </el-dialog>
 
     <!-- 添加车辆信息 -->
     <el-dialog title="添加车辆信息" :visible.sync="dialogVisible" width="426px" class="dialogText">
@@ -601,6 +563,29 @@ export default {
     };
   },
   methods: {
+    // 列表导出
+    exportmsg() {
+      location.href =
+        this.$http.defaults.baseURL + "sanitation/car/exportExcel";
+    },
+    // 列表导入成功回调
+    success(response, file) {
+      console.log(response.status);
+      if (response.status == "1") {
+        this.$message({
+          message: "导入成功",
+          type: "success",
+          offset: 155
+        });
+      } else if (response.status == "0") {
+        this.$message({
+          message: "导入失败，请重试",
+          type: "error",
+          offset: 155
+        });
+      }
+      this.getlist();
+    },
     // 切换页面
     nextpage(value) {
       this.data.currpage = value;

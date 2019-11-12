@@ -57,58 +57,19 @@
           icon="el-icon-plus"
           @click="showedit = true;type = 'add';addedittitle = '车辆信息新增';"
         >添加车辆信息</el-button>
-        <el-button icon="el-icon-download" @click="msgexport = true">车辆信息导出</el-button>
-        <el-button icon="el-icon-upload2" @click="msgimport = true">车辆信息导入</el-button>
+        <el-button icon="el-icon-download" @click="exportmsg">车辆信息导出</el-button>
+        <el-button icon="el-icon-download">导入模板下载</el-button>
+        <el-upload
+          class="upload-demo"
+          :action="$http.defaults.baseURL +  'MotorDetail/importExcel'"
+          :on-success="success"
+          :show-file-list="false"
+          :limit="1"
+          style="float: right;"
+        >
+          <el-button icon="el-icon-upload2">车辆信息导入</el-button>
+        </el-upload>
       </div>
-
-      <!-- 信息导出 -->
-      <el-dialog title="信息导出" :visible.sync="msgexport" width="15%" center>
-        <div class="download">
-          <div>全部信息模版</div>
-          <el-button type="primary" size="mini" @click="exportmsg">导出</el-button>
-        </div>
-        <div class="download">
-          <div>垃圾清运车信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
-        </div>
-        <div class="download">
-          <div>清扫车信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
-        </div>
-        <div class="download">
-          <div>洒水车信息模版</div>
-          <el-button type="primary" size="mini">导出</el-button>
-        </div>
-      </el-dialog>
-
-      <!-- 信息导入 -->
-      <el-dialog title="信息导入" :visible.sync="msgimport" width="30%" center>
-        <div class="download">
-          <div>全部信息模版</div>
-          <el-upload
-            class="upload-demo"
-            :action="$http.defaults.baseURL +  'MotorDetail/importExcel'"
-            :on-success="success"
-            :show-file-list="false"
-            :limit="1"
-            style="float: right;"
-          >
-            <el-button type="primary" size="mini">上传</el-button>
-          </el-upload>
-        </div>
-        <div class="download">
-          <div>垃圾清运车信息模版</div>
-          <el-button type="primary" size="mini">上传</el-button>
-        </div>
-        <div class="download">
-          <div>清扫车信息模版</div>
-          <el-button type="primary" size="mini">上传</el-button>
-        </div>
-        <div class="download">
-          <div>洒水车信息模版</div>
-          <el-button type="primary" size="mini">上传</el-button>
-        </div>
-      </el-dialog>
     </div>
 
     <!-- 列表 -->
@@ -370,6 +331,7 @@
                   :on-change="onChange"
                   :on-remove="onRemove"
                   :on-success="uploadimgSuccess"
+                  :before-upload="beforeAvatarUpload"
                   :data="maintenanceList.addmsg"
                   multiple
                   :auto-upload="false"
@@ -732,6 +694,31 @@ export default {
           ];
         });
     },
+    // 保养记录图片判断
+    beforeAvatarUpload(file) {
+      let isImg = false;
+      const msg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      if (msg === "jpg" || msg === "png") {
+        isImg = true;
+      }
+      const isLt2M = file.size / 1024 / 1024 < 10;
+
+      if (!isImg) {
+        this.$message({
+          message: "上传图片只能是 JPG/PNG 格式!",
+          type: "error",
+          offset: 150
+        });
+      }
+      if (!isLt2M) {
+        this.$message({
+          message: "上传图片大小不能超过 10MB!",
+          type: "error",
+          offset: 165
+        });
+      }
+      return isImg && isLt2M;
+    },
     // 保养记录上传
     maintenanceSubmit() {
       if (this.imgupload) {
@@ -985,7 +972,7 @@ export default {
     // 信息导出
     exportmsg() {
       location.href =
-        this.$http.defaults.baseUR + "MotorDetail/exportMotorDetailExcel";
+        this.$http.defaults.baseURL + "MotorDetail/exportMotorDetailExcel";
     },
     // 信息导入
     success(response, file) {
