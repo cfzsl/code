@@ -30,7 +30,7 @@
       <div class="btn">
         <el-button icon="el-icon-plus" @click="dialogVisible = true">添加车辆信息</el-button>
         <el-button icon="el-icon-download" @click="exportmsg">车辆信息导出</el-button>
-        <el-button icon="el-icon-download">导入模板下载</el-button>
+        <el-button icon="el-icon-download" @click="exporttemplate">导入模板下载</el-button>
         <el-upload
           class="upload-demo"
           :action="$http.defaults.baseURL +  'sanitation/car/importExcel'"
@@ -567,6 +567,11 @@ export default {
     exportmsg() {
       location.href =
         this.$http.defaults.baseURL + "sanitation/car/exportExcel";
+    },
+    // 导出模板下载
+    exporttemplate() {
+      location.href =
+        this.$http.defaults.baseURL + "sanitation/car/exportPedicabEmplate";
     },
     // 列表导入成功回调
     success(response, file) {

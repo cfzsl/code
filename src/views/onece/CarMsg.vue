@@ -46,7 +46,7 @@
           <el-option label="环卫四部" value="环卫四部"></el-option>
         </el-select>
       </div>
-      <el-button type="primary" class="btn" @click="searchBtn">查询</el-button>
+      <el-button type="primary" class="btn" @click="getCarList">查询</el-button>
       <el-button type="primary" @click="empty">清空</el-button>
     </div>
 
@@ -58,7 +58,7 @@
           @click="showedit = true;type = 'add';addedittitle = '车辆信息新增';"
         >添加车辆信息</el-button>
         <el-button icon="el-icon-download" @click="exportmsg">车辆信息导出</el-button>
-        <el-button icon="el-icon-download">导入模板下载</el-button>
+        <el-button icon="el-icon-download" @click="exporttemplate">导入模板下载</el-button>
         <el-upload
           class="upload-demo"
           :action="$http.defaults.baseURL +  'MotorDetail/importExcel'"
@@ -104,8 +104,9 @@
             <el-button type="primary" size="mini" @click.stop="showWarning(scope.row)">查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" fixed="right" width="160" label="操作">
+        <el-table-column align="center" fixed="right" width="250" label="操作">
           <template slot-scope="scope">
+            <el-button type="primary" @click.stop="handleVideo(scope.row)">视频详情</el-button>
             <el-button
               type="success"
               class="btn"
@@ -135,6 +136,21 @@
         @size-change="sizeChange"
       ></el-pagination>
     </div>
+
+    <!-- 车辆视频 -->
+    <el-dialog title="车辆视频详情" :visible.sync="showvideo">
+      <el-carousel :autoplay="false" trigger="click" style="height: 510px;">
+        <el-carousel-item v-for="(item, i) in videoList" :key="i" style="height: 510px;">
+          <video-player
+            class="video-player"
+            ref="videoPlayer"
+            :playsinline="true"
+            :options="playerOptions(item.address)"
+          ></video-player>
+        </el-carousel-item>
+        <div class="warning" v-if="videoList.length === 0">此车辆暂无监控</div>
+      </el-carousel>
+    </el-dialog>
 
     <!-- 车辆信息 -->
     <el-dialog title="车辆信息" width="450px" :visible.sync="showdetail" @close="msg = {}">
@@ -511,14 +527,14 @@
 export default {
   data() {
     return {
-      // 首屏搜索
+      // 列表搜索
       search: {
         busnumber: "",
         area: "",
         department: "",
         cartype: ""
       },
-      // 首屏新增/详情/编辑
+      // 列表新增/详情/编辑
       msg: {
         cartype: "",
         busnumber: "",
@@ -530,6 +546,8 @@ export default {
         repairdetail: "",
         param3: ""
       },
+      // 列表视频
+      videoList: {},
       // 分页效果
       data: {
         pagesize: 15,
@@ -652,7 +670,8 @@ export default {
       showimg: false,
       showinsurancea: false,
       showdetail: false,
-      showedit: false
+      showedit: false,
+      showvideo: false
     };
   },
   methods: {
@@ -889,22 +908,49 @@ export default {
           });
         });
     },
+    // 显示车辆视频
+    handleVideo(row) {
+      this.showvideo = !this.showvideo;
+      this.$http
+        .post(
+          "MotorDetail/getVideoByBusNumber",
+          this.$qs.stringify({ busnumber: row.busnumber })
+        )
+        .then(res => {
+          this.videoList = res.data;
+        });
+    },
+    // 获取车辆视频
+    playerOptions(address) {
+      return {
+        autoplay: true, //如果true,浏览器准备好时开始回放。
+        muted: true, // 默认情况下将会消除任何音频。
+        loop: false, // 导致视频一结束就重新开始。
+        preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        language: "zh-CN",
+        aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources: [
+          {
+            type: "application/x-mpegURL",
+            src: address //你的m3u8地址（必填）
+          }
+        ],
+        poster: "../../../assets/img/logo.png", //你的封面地址
+        width: document.documentElement.clientWidth,
+        notSupportedMessage: "此视频暂无法播放，请稍后再试" //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+      };
+    },
     // 获取列表
     getCarList() {
-      this.$http.get("MotorDetail/getAllMotorInformation").then(res => {
-        this.data.list = res.data;
-      });
-    },
-    // 搜索按钮
-    searchBtn() {
       this.data.currpage = 1;
+
       this.$http
         .post(
           "MotorDetail/motorInformationCriteriaQuery",
           this.$qs.stringify(this.search)
         )
         .then(res => {
-          console.log(res);
           this.data.list = res.data;
         });
     },
@@ -917,7 +963,7 @@ export default {
         department: "",
         cartype: ""
       };
-      this.searchBtn();
+      this.getCarList();
     },
     // 编辑/新增提交
     onsubmit() {
@@ -992,6 +1038,11 @@ export default {
       }
       this.getCarList();
       this.msgimport = !this.msgimport;
+    },
+    // 导出模板下载
+    exporttemplate() {
+      location.href =
+        this.$http.defaults.baseURL + "MotorDetail/exporMotorDetailEmplate";
     }
   },
   watch: {
@@ -1032,13 +1083,9 @@ export default {
 }
 
 .list {
-  button {
-    margin-left: 15px;
-  }
   .btn {
     width: 50px;
     margin-left: 0;
-    text-align: center;
   }
 }
 
@@ -1087,5 +1134,14 @@ export default {
 
 .row-bg {
   border-bottom: 1px solid #d2d2d2;
+}
+
+.video-player {
+  height: 685px;
+}
+.warning {
+  text-align: center;
+  line-height: 510px;
+  font-size: 30px;
 }
 </style>
