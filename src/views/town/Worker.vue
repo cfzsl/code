@@ -53,6 +53,7 @@
               @click="showdetail(scope.row, scope.$index)"
             >详情</el-button>
             <el-button
+              v-if="scope.row.status === '未发布'"
               class="tableButton2"
               type="button"
               size="small"
@@ -250,7 +251,13 @@
 
     <!-- 通知发布 -->
     <el-dialog title="通知发布" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-date-picker style="width:390px" v-model="submitdate" type="datetime" placeholder="选择日期时间"></el-date-picker>
+      <el-date-picker
+        style="width:390px"
+        v-model="release.time"
+        value-format="yyyy-MM-dd"
+        type="date"
+        placeholder="选择发布日期"
+      ></el-date-picker>
       <span slot="footer">
         <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
       </span>
@@ -312,7 +319,10 @@ export default {
       // 新建通知名字模糊搜索
       restaurants: [],
       // 发布时间
-      submitdate: ""
+      release: {
+        time: "",
+        sid: ""
+      }
     };
   },
   methods: {
@@ -322,14 +332,12 @@ export default {
         for (const key in res.data) {
           this.restaurants.push({ value: res.data[key].name });
         }
-        console.log(this.restaurants);
       });
     },
     // 显示发布
     showrelease(row, _index) {
-      console.log(row);
       //记录数据
-      this.formInline = row;
+      this.release.sid = row.sid;
       //显示弹窗
       this.dialogFormVisible = true;
     },
@@ -342,7 +350,13 @@ export default {
     },
     // 发布确认
     adddate() {
-      this.dialogFormVisible = false;
+      this.$http
+        .post("systemAdvice/updateAdviceTime", this.$qs.stringify(this.release))
+        .then(res => {
+          console.log(res);
+          this.getAddBook();
+          this.dialogFormVisible = false;
+        });
     },
     // 获取列表/搜索
     getAddBook() {
@@ -380,7 +394,6 @@ export default {
     },
     // 显示条数切换
     sizeChange(total) {
-      console.log(total);
       this.data.pagesize = total;
     },
     // 模糊搜索名字
@@ -415,7 +428,6 @@ export default {
             )
             .then(res => {
               this.dialogVisible = !this.dialogVisible;
-              console.log(res);
               this.getAddBook();
             });
         } else {
