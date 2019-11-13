@@ -11,7 +11,12 @@
           <el-form-item label="审批状态">
             <el-select v-model="search.applicantstatus" placeholder="请选择">
               <el-option label="全部" value></el-option>
-              <el-option v-for="item in approval" :key="item.e" :label="item.applicantstatus" :value="item.applicantstatus"></el-option>
+              <el-option
+                v-for="item in approval"
+                :key="item.e"
+                :label="item.applicantstatus"
+                :value="item.applicantstatus"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="采购状态">
@@ -50,48 +55,57 @@
         <el-form
           :inline="true"
           :model="formAdd"
-          ref="formAdd"
+          ref="ruleForm"
           :rules="rulesAdd"
           class="demo-form-inline"
         >
           <el-divider></el-divider>
-          <el-form-item label="申请人:" prop="name">
-            <el-input v-model="formAdd.name" style="width:200px"></el-input>
+          <el-form-item label="申请人:" prop="applicantperson">
+            <el-input v-model="formAdd.applicantperson" style="width:200px"></el-input>
           </el-form-item>
-          <el-form-item label="申请单位:" style="margin-left:75px" prop="job">
-            <el-input v-model="formAdd.job"></el-input>
+          <el-form-item label="申请单位:" style="margin-left:65px" prop="applicantdepart">
+            <el-select v-model="formAdd.applicantdepart" style="width:200px">
+              <el-option label="全部" value></el-option>
+              <el-option v-for="(item,index) in DropBox" :key="index" :label="item" :value="item"></el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="物料名称:" prop="specifications">
-            <el-input v-model="formAdd.specifications" style="width:558px"></el-input>
+          <el-form-item label="审批负责人:" prop="param2">
+            <el-input v-model="formAdd.param2" style="width:200px"></el-input>
           </el-form-item>
-          <el-form-item label="规格及型号:" prop="purpose">
-            <el-input v-model="formAdd.purpose" style="width:558px"></el-input>
+          <el-form-item label="采购负责人:" style="margin-left:50px" prop="param3">
+            <el-input v-model="formAdd.param3"></el-input>
           </el-form-item>
-          <el-form-item label="单位:" prop="science">
-            <el-select v-model="formAdd.pany" placeholder="请选择" style="width:200px">
+          <el-form-item label="物料名称:" prop="materielname">
+            <el-input v-model="formAdd.materielname" style="width:558px"></el-input>
+          </el-form-item>
+          <el-form-item label="规格及型号:" prop="materieltype">
+            <el-input v-model="formAdd.materieltype" style="width:558px"></el-input>
+          </el-form-item>
+          <el-form-item label="单位:" prop="materielattr">
+            <el-select v-model="formAdd.materielattr" placeholder="请选择" style="width:200px">
               <el-option label="个" value></el-option>
               <el-option
                 v-for="item in company"
                 :key="item.c"
-                :label="item.pany"
-                :value="item.pany"
+                :label="item.materielattr"
+                :value="item.materielattr"
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="单价:" style="margin-left:105px" prop="number">
-            <el-input v-model="formAdd.price "></el-input>
+          <el-form-item label="单价:" style="margin-left:95px" prop="materielonecost">
+            <el-input v-model="formAdd.materielonecost"></el-input>
           </el-form-item>
-          <el-form-item label="数量:" prop="science">
-            <el-input style="width:200px" v-model="formAdd.number"></el-input>
+          <el-form-item label="数量:" prop="materielcount">
+            <el-input style="width:200px" v-model="formAdd.materielcount"></el-input>
           </el-form-item>
-          <el-form-item label="金额:" style="margin-left:105px" prop="number">
-            <el-input v-model="formAdd.number"></el-input>
+          <el-form-item label="金额:" style="margin-left:95px" prop="materielmoney">
+            <el-input v-model="formAdd.materielmoney"></el-input>
           </el-form-item>
-          <el-form-item label="费用项目:" prop="purpose">
+          <el-form-item label="项目:" prop="purpose">
             <el-input v-model="formAdd.purpose" style="width:558px"></el-input>
           </el-form-item>
-          <el-form-item label="备注:" prop="remarks">
-            <el-input v-model="formAdd.remarks" style="width:558px" type="textarea" row="2"></el-input>
+          <el-form-item label="备注:" prop="buydesc">
+            <el-input v-model="formAdd.buydesc" style="width:558px" type="textarea" row="2"></el-input>
           </el-form-item>
         </el-form>
         <el-divider></el-divider>
@@ -104,10 +118,10 @@
         </el-steps>
         <div class="buttonOff">
           <span slot="footer">
-            <el-button type="primary" @click="resetForm('formAdd')">取消</el-button>
+            <el-button type="primary" @click="resetForm('ruleForm')">取消</el-button>
           </span>
           <span slot="footer">
-            <el-button type="primary" @click="addCar('formAdd')">提交</el-button>
+            <el-button type="primary" @click="addCar('ruleForm')">提交</el-button>
           </span>
         </div>
       </el-dialog>
@@ -179,20 +193,41 @@
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="材料名称:">
-            <span>{{loginList.materielname}}</span>
+          <el-form-item label="审批负责人:">
+            <span>{{loginList.param2}}</span>
           </el-form-item>
-          <el-form-item label="数量:" style="margin-left:275px">
-            <span>{{loginList.materielcount}}</span>
+          <el-form-item label="采购负责人:" style="margin-left:280px">
+            <span>{{loginList.param3}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="规格:">
+          <el-form-item label="材料名称:">
+            <span style="width:558px">{{loginList.materielname}}</span>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="规格及型号:">
             <span style="width:558px">{{loginList.materieltype}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="用途:">
+          <el-form-item label="单位:">
+            <span>{{loginList.materielattr}}</span>
+          </el-form-item>
+          <el-form-item label="单价:" style="margin-left:275px">
+            <span>{{loginList.materielonecost}}</span>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="数量:">
+            <span>{{loginList.materielcount}}</span>
+          </el-form-item>
+          <el-form-item label="金额:" style="margin-left:275px">
+            <span>{{loginList.materielmoney}}</span>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="项目:">
             <span style="width:558px">{{loginList.purpose}}</span>
           </el-form-item>
         </div>
@@ -203,14 +238,22 @@
         </div>
         <el-divider></el-divider>
         <div class="examine">审核流程</div>
-        <el-steps :active="active" :space="200" align-center>
-          <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
-          <el-step title="鲁彧" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
-          <el-step title="曲韦名" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
-          <el-step title="王卫叶" icon="el-icon-user" description="2019-11-05 18：00已采购发放"></el-step>
+        <el-steps :active="loginList.active" :space="200" align-center>
+          <el-step
+            :title="loginList.applicantperson"
+            icon="el-icon-user"
+            description="2019-11-05 18：00提交申请"
+          ></el-step>
+          <el-step :title="loginList.param2" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+          <el-step :title="loginList.param4" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+          <el-step
+            :title="loginList.param3"
+            icon="el-icon-user"
+            description="2019-11-05 18：00已采购发放"
+          ></el-step>
         </el-steps>
-        <el-divider></el-divider>
-        <div class="examine">采购详情</div>
+        <!-- <el-divider></el-divider> -->
+        <!-- <div class="examine">采购详情</div>
         <div class="formNumber">
           <el-form-item label="采购负责人:">
             <span>{{loginList.purchase}}</span>
@@ -236,7 +279,7 @@
           <el-form-item style="margin-left:345px" label="分配时间:">
             <span>{{loginList.distribution}}</span>
           </el-form-item>
-        </div>
+        </div>-->
       </el-form>
     </el-dialog>
 
@@ -251,6 +294,14 @@
           </el-form-item>
           <el-form-item label="申请部门:" style="margin-left:300px">
             <span>{{loginList.applicantdepart}}</span>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="审批负责人:">
+            <span>{{loginList.param2}}</span>
+          </el-form-item>
+          <el-form-item label="采购负责人:" style="margin-left:260px">
+            <span>{{loginList.param3}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
@@ -292,18 +343,22 @@
       </el-form>
       <el-divider></el-divider>
       <div class="examine">物料采购审批流程：</div>
-      <el-steps :active="active" :space="200" align-center>
-        <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
-        <el-step title="鲁彧" icon="el-icon-user" description="待申批"></el-step>
-        <el-step title="曲韦名" icon="el-icon-user" description="待申批"></el-step>
-        <el-step title="王卫叶" icon="el-icon-user" description="采购发放人"></el-step>
+      <el-steps :active="loginList.active" :space="200" align-center>
+        <el-step
+          :title="loginList.applicantperson"
+          icon="el-icon-user"
+          description="2019-11-05 18：00提交申请"
+        ></el-step>
+        <el-step :title="loginList.param2" icon="el-icon-user" description="待申批"></el-step>
+        <el-step :title="loginList.param4" icon="el-icon-user" description="待申批"></el-step>
+        <el-step :title="loginList.param3" icon="el-icon-user" description="采购发放人"></el-step>
       </el-steps>
       <div class="buttonOff">
         <span slot="footer">
-          <el-button type="info" @click="Reject">驳回</el-button>
+          <el-button type="info" @click="RejectOne(loginList)">驳回</el-button>
         </span>
         <span slot="footer">
-          <el-button type="primary" @click="Agree">同意</el-button>
+          <el-button type="primary" @click="AgreeOne(loginList)">同意</el-button>
         </span>
       </div>
     </el-dialog>
@@ -312,13 +367,24 @@
     <el-dialog title="物料采购" :visible.sync="PurchaseForm" width="717px" class="dialogText">
       <el-form :inline="true" :model="loginList" class="demo-form-inline">
         <el-divider></el-divider>
-        <div class="progress">审批完成<br>待发放</div>
+        <div class="progress">
+          审批完成
+          <br />待发放
+        </div>
         <div class="formNumber">
           <el-form-item label="申请人:">
             <span>{{loginList.applicantperson}}</span>
           </el-form-item>
           <el-form-item label="申请部门:" style="margin-left:300px">
             <span>{{loginList.applicantdepart}}</span>
+          </el-form-item>
+        </div>
+        <div class="formNumber">
+          <el-form-item label="审批负责人:">
+            <span>{{loginList.preshen}}</span>
+          </el-form-item>
+          <el-form-item label="采购负责人:" style="margin-left:280px">
+            <span>{{loginList.buyperson}}</span>
           </el-form-item>
         </div>
         <div class="formNumber">
@@ -348,7 +414,7 @@
           </el-form-item>
         </div>
         <div class="formNumber">
-          <el-form-item label="费用项目:">
+          <el-form-item label="项目:">
             <span style="width:558px">{{loginList.item}}</span>
           </el-form-item>
         </div>
@@ -370,18 +436,22 @@
         <el-divider></el-divider>
       </el-form>
       <div class="examine">审核流程</div>
-      <el-steps :active="active" :space="200" align-center>
-        <el-step title="项目经理/助理" icon="el-icon-user" description="2019-11-05 18：00提交申请"></el-step>
-        <el-step title="鲁彧" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
-        <el-step title="曲韦名" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
-        <el-step title="王卫叶" icon="el-icon-user" description="2019-11-05 18：00已采购发放"></el-step>
+      <el-steps :active="loginList.active" :space="200" align-center>
+        <el-step
+          :title="loginList.applicantperson"
+          icon="el-icon-user"
+          description="2019-11-05 18：00提交申请"
+        ></el-step>
+        <el-step :title="loginList.param2" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+        <el-step :title="loginList.param4" icon="el-icon-user" description="2019-11-05 18：00已申批"></el-step>
+        <el-step :title="loginList.param3" icon="el-icon-user" description="2019-11-05 18：00已采购发放"></el-step>
       </el-steps>
       <div class="buttonOff">
         <span slot="footer">
           <el-button type="info" @click="Reject">取消</el-button>
         </span>
         <span slot="footer">
-          <el-button type="primary" @click="Agree">提交</el-button>
+          <el-button type="primary" @click="Agree(loginList)">提交</el-button>
         </span>
       </div>
     </el-dialog>
@@ -477,77 +547,164 @@ export default {
       company: [
         {
           c: "1",
-          pany: "辆"
+          materielattr: "辆"
         },
         {
           c: "2",
-          pany: "只"
+          materielattr: "只"
         },
         {
           c: "3",
-          pany: "套"
+          materielattr: "套"
         },
         {
           c: "4",
-          pany: "件"
+          materielattr: "件"
         },
         {
           c: "5",
-          pany: "支"
+          materielattr: "支"
         },
         {
           c: "6",
-          pany: "其他"
+          materielattr: "其他"
         }
       ],
       formAdd: {
-        name: "",
-        job: "",
-        science: "",
-        number: "",
-        pany: "",
-        specifications: "",
+        applicantperson: "",
+        applicantdepart: "",
+        param2: "",
+        param3: "",
+        materieltype: "",
+        materielattr: "",
+        materielonecost: "",
+        materielcount: "",
+        materielmoney: "",
         purpose: "",
-        distribution: ""
+        buydesc: ""
       },
-      rulesAdd: {},
+      rulesAdd: {
+        applicantperson: [
+          { required: true, message: "请输入申请人", trigger: "blur" }
+        ],
+        applicantdepart: [
+          { required: true, message: "请选择申请单位", trigger: "change" }
+        ],
+        param2: [
+          { required: true, message: "请输入部门审批负责人", trigger: "change" }
+        ],
+        param3: [
+          { required: true, message: "请输入部门采购负责人", trigger: "change" }
+        ],
+        materielname: [
+          { required: true, message: "请输入材料名称", trigger: "blur" }
+        ],
+        materieltype: [
+          { required: true, message: "请输入规格及型号", trigger: "blur" }
+        ],
+        materielattr: [
+          { required: true, message: "请选择单位", trigger: "change" }
+        ],
+        materielonecost: [
+          { required: true, message: "请输入单价", trigger: "blur" }
+        ],
+        materielcount: [
+          { required: true, message: "请输入数量", trigger: "blur" }
+        ],
+        materielmoney: [
+          { required: true, message: "请输入金额", trigger: "blur" }
+        ],
+        purpose: [{ required: true, message: "请输入项目", trigger: "blur" }],
+        buydesc: [{ required: true, message: "请输入备注", trigger: "blur" }]
+      },
       wcList: [],
       active: 0,
       listIndex: "",
-      loginList: {}
+      loginList: {},
+      DropBox: []
     };
   },
-  created(){
+  created() {
     this.getWcList();
+    this.getChangeProgress();
   },
   methods: {
+    // 单位列表
+    getChangeProgress() {
+      this.$http.post("materiel/departDropBox").then(res => {
+        console.log(res.data);
+        this.DropBox = res.data;
+      });
+    },
     // 获取列表
-    getWcList(){
-      this.$http.post('materiel/search',this.$qs.stringify(this.search)).then(res=>{
-        console.log(res.data)
-        this.wcList=res.data;
-      })
+    getWcList() {
+      this.$http
+        .post("materiel/search", this.$qs.stringify(this.search))
+        .then(res => {
+          console.log(res.data);
+          this.wcList = res.data;
+        });
     },
-    //   驳回
-    Reject() {
-      this.active = 0;
-      this.loginList.app = "被驳回";
+    //审批
+    AgreeOne(rov) {
+      let _date = {
+        sid: rov.sid
+      };
+      console.log(_date);
+      this.$http
+        .post("materiel/changeProgress", this.$qs.stringify(_date))
+        .then(res => {
+          console.log("请求成功");
+          this.ApprovalForm = false;
+          rov.active = res.data.active;
+          this.getWcList();
+        })
+        .catch(err => {
+          console.log("请求失败");
+        });
     },
-    // 同意
-    Agree() {
-      this.active = 2;
-      this.loginList.job = "已审批";
-      this.loginList.state = "未采购";
-      this.ApprovalForm = false;
+    // 驳回
+    RejectOne(rov) {
+      let _date = {
+        sid: rov.sid,
+        active: 0
+      };
+      this.$http
+        .post("materiel/changeProgress", this.$qs.stringify(_date))
+        .then(res => {
+          console.log("请求成功");
+          this.ApprovalForm = false;
+        })
+        .catch(err => {
+          console.log("请求失败");
+        });
     },
     // 采购
     Purchase(row, _index) {
-      this.active = 3;
       this.PurchaseForm = true;
+      this.loginList = row;
+      this.listIndex = _index;
+    },
+    //取消
+    Reject() {},
+    //提交
+    Agree(rov) {
+      let _date = {
+        sid: rov.sid,
+      };
+      this.$http
+        .post("materiel/changeProgress", this.$qs.stringify(_date))
+        .then(res => {
+          console.log("请求成功");
+          this.getWcList();
+          this.PurchaseForm = false;
+        })
+        .catch(err => {
+          console.log("请求失败");
+        });
     },
     // 审批
     Approval(row, _index) {
-      this.active = 1;
       this.ApprovalForm = true;
       this.loginList = row;
       this.listIndex = _index;
@@ -555,7 +712,6 @@ export default {
     // 详情
     showdetail(row, _index) {
       // console.log(row);
-      this.active = 4;
       this.loginList = row;
       //记录索引
       this.listIndex = _index;
@@ -568,7 +724,7 @@ export default {
     },
     // 查询
     onSubmit() {
-      console.log(this.search)
+      console.log(this.search);
       this.getWcList();
     },
     // 清空
@@ -585,21 +741,19 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    // 添加人事信息
+    // 添加物料申请
     addCar(formName) {
+      // console.log(this.formAdd);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // alert("submit!");
           this.dialogVisible = false;
-          //   this.$http
-          //     .post("hr/hrinfo/add", this.$qs.stringify(this.formAdd))
-          //     .then(res => {
-          //       this.$http.post("hr/hrinfo/search").then(res => {
-          //         this.wcList = res.data;
-          //       });
-          //     });
+          this.$http
+            .post("materiel/add", this.$qs.stringify(this.formAdd))
+            .then(res => {
+              this.getWcList();
+            });
         } else {
-          // console.log("error submit!!");
+          console.log("添加失败");
           return false;
         }
       });

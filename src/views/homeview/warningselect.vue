@@ -158,7 +158,7 @@
                 <div class="warningText1">详&nbsp;&nbsp;&nbsp;情&nbsp;&nbsp;&nbsp;分&nbsp;&nbsp;&nbsp;布&nbsp;&nbsp;&nbsp;:</div>
                 <template>
                   <el-tabs v-model="activeName" style="margin-left: 3%;margin-right: 3%">
-                    <el-tab-pane label="人年年龄分布" name="first">
+                    <el-tab-pane label="人员年龄分布" name="first">
                       <div ref="zhexian" :style="{width: '800px', height: '200px',display:'flex',alignItems:'center'}"></div>
                     </el-tab-pane>
                     <el-tab-pane label="部门分布" name="second">

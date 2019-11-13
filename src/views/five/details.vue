@@ -1,4 +1,5 @@
 <template>
+<!-- 个人信息详情 -->
   <div id="details">
     <div class="detailsHead">
       <div>个人详情信息</div>
@@ -479,7 +480,7 @@ export default {
     },
     gozero() {
       this.$router.push({
-        path: "/matters/HRManagement"
+        path: "/AddressBook"
       });
     },
     //   route传值

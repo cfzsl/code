@@ -10,8 +10,8 @@
           </el-form-item>
           <el-form-item label="组织架构">
             <el-select v-model="searchList.organ">
-              <el-option label="全部" value></el-option>
-              <el-option v-for="item in optionslu" :key="item" :label="item" :value="item"></el-option>
+              <el-option label="全部区域" value></el-option>
+              <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="状态">
@@ -460,10 +460,7 @@ export default {
         location: ""
       },
       ruleShifts: {
-        name: [
-          { required: true, message: "请输入排班名称", trigger: "blur" },
-          { min: 2, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
-        ],
+        name: [{ required: true, message: "请输入排班名称", trigger: "blur" }],
         addtimeout: [
           { required: true, message: "请选择上班时间", trigger: "change" }
         ],
@@ -485,6 +482,7 @@ export default {
           { required: true, message: "请选择定位方式", trigger: "change" }
         ]
       },
+      departList: [],
       shoptime: "",
       updatetime: "",
       timelet: "",
@@ -557,6 +555,7 @@ export default {
     this.getData();
     this.getOptionsLu();
     this.getOptionsStated();
+    this.getDropDepart();
   },
   methods: {
     // 编辑
@@ -645,7 +644,7 @@ export default {
     // 取消排班
     deleteAdd(formName) {
       this.$refs[formName].resetFields();
-      // this.shifts = 
+      // this.shifts =
       // this.schedulingBuild = false;
     },
     //删除
@@ -656,6 +655,13 @@ export default {
           console.log("操作成功");
           this.getPaibanList();
         });
+    },
+    // 获取组织架构列表
+    getDropDepart() {
+      this.$http.post("userInformation/dropDepart").then(res => {
+        this.departList = res.data;
+        // console.log(res.data)
+      });
     },
     //查询
     onSubmit() {

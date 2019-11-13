@@ -13,7 +13,7 @@
         :stroke-weight="1"
       />
       <bm-label
-        content="黄河路二部"
+        content="黄河贰部"
         :position="{ lng: 118.498772, lat: 37.444201 }"
         :labelStyle="labelStyle"
       />
@@ -26,7 +26,7 @@
         :stroke-weight="1"
       />
       <bm-label
-        content="黄河路一部"
+        content="黄河路壹部"
         :position="{ lng: 118.558065, lat: 37.429498 }"
         :labelStyle="labelStyle"
       />
@@ -39,7 +39,7 @@
         :stroke-weight="1"
       />
       <bm-label
-        content="辛店一部"
+        content="辛店壹部"
         :position="{ lng: 118.414978, lat: 37.458754 }"
         :labelStyle="labelStyle"
       />
@@ -52,7 +52,7 @@
         :stroke-weight="1"
       />
       <bm-label
-        content="辛店二部"
+        content="辛店贰部"
         :position="{ lng: 118.424109, lat: 37.507002 }"
         :labelStyle="labelStyle"
       />
@@ -65,7 +65,7 @@
         :stroke-weight="1"
       />
       <bm-label
-        content="文汇二部"
+        content="文汇贰部"
         :position="{ lng: 118.507328, lat: 37.499559 }"
         :labelStyle="labelStyle"
       />
@@ -78,7 +78,7 @@
         :stroke-weight="1"
       />
       <bm-label
-        content="文汇一部"
+        content="文汇壹部"
         :position="{ lng: 118.567551, lat: 37.489252 }"
         :labelStyle="labelStyle"
       />
@@ -91,7 +91,7 @@
         :stroke-weight="1"
       />
       <bm-label
-        content="文汇一部"
+        content="胜园项目部"
         :position="{ lng: 118.444519, lat: 37.422162 }"
         :labelStyle="labelStyle"
       />

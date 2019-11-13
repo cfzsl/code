@@ -52,11 +52,17 @@ export default {
       showdown: true,
       open: false,
       animate: false,
-      msg: "公告：智慧环卫综合管理平台有新功能更新！",
+      msg: "",
       timer: null //在data上定义定时器timer，默认为null
     };
   },
   methods: {
+    // 滚动消息
+    getList(){
+      this.$http.post('hw/TopScrollNavbar/list').then(res=>{
+        this.msg=res.data.context;
+      })
+    },
     endlist() {
       this.open=false;
       this.showdown = !this.showdown;
@@ -114,6 +120,7 @@ export default {
   },
   created() {
     this.show();
+    this.getList();
   }
 };
 </script>
