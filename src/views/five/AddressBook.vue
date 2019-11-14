@@ -32,13 +32,14 @@
     <!-- 导出 -->
     <div class="menu">
       <div class="btn">
+        <el-button icon="el-icon-plus" @click="addPersonnel">添加人员</el-button>
         <el-button icon="el-icon-download" @click="exportTem">下载模板</el-button>
         <el-upload
           :show-file-list="false"
           :limit="1"
           :on-exceed="onexceed"
           :on-success="onsuccess"
-          action="http://192.168.124.6:8888/userInformation/importExcel"
+          :action="$http.defaults.baseURL+'userInformation/importExcel'"
         >
           <el-button icon="el-icon-download">导入通讯录</el-button>
         </el-upload>
@@ -92,6 +93,36 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 离职弹框 -->
+      <el-dialog title="离职" :visible.sync="showform" width="20%">
+        <el-form ref="form" :model="form">
+          <el-form-item label="请选择离职时间:">
+            <el-date-picker
+              v-model="form.departuretime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期"
+            ></el-date-picker>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancelForm">取 消</el-button>
+          <el-button type="primary" @click="determine">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 删除弹框  -->
+      <el-dialog title="删除" :visible.sync="delect" width="20%">
+        <span>您确认删除该人员信息吗？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="delect=false">取 消</el-button>
+          <el-button type="primary" @click="delectYes">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 添加人员弹框 -->
+      <el-dialog title="添加人员" :visible.sync="personnel" width="940px">
+        <el-divider></el-divider>
+        <addPeople></addPeople>
+      </el-dialog>
     </div>
 
     <!-- 分页 -->
@@ -114,11 +145,17 @@
 
 
 <script>
+import addPeople from '../addPersonnel/addPersonnel'
 export default {
   data() {
     return {
+      showform: false,
+      delect: false,
+      personnel: false,
       input: null,
       radio: "0",
+      form: {},
+      delectObject: {},
       data: {
         pagesize: 10,
         currpage: 1,
@@ -140,6 +177,9 @@ export default {
       departList: [],
       jobList: []
     };
+  },
+  components:{
+    addPeople,
   },
   methods: {
     // 详情
@@ -198,37 +238,56 @@ export default {
         // console.log(res.data)
       });
     },
-    // 设为离职
+    // 离职
     showrelease(row, _index) {
-      row.workstatus = "离职";
+      this.form = row;
+      this.showform = true;
+    },
+    // 取消
+    cancelForm() {
+      this.showform = false;
+      this.form = {};
+    },
+    // 确认离职
+    determine() {
       let _date = {
-        workstatus: row.workstatus,
-        sid: row.sid
+        workstatus: this.form.workstatus,
+        sid: this.form.sid
       };
       this.$http
         .post("userInformation/update", this.$qs.stringify(_date))
         .then(res => {
-          console.log("操作成功");
+          this.form.workstatus = "离职";
+          this.showform = false;
+          console.log("成功离职");
         });
     },
     // 删除
     showdelete(row, _index) {
+      this.delect = true;
+      this.delectObject = row;
+    },
+    // 确认删除
+    delectYes() {
       let _date = {
         param1: "0",
-        sid: row.sid
+        sid: this.delectObject.sid
       };
       this.$http
         .post("userInformation/update", this.$qs.stringify(_date))
         .then(res => {
           console.log("删除成功");
+          this.delect = false;
           this.getAddBook();
         });
     },
     exportTem() {
-      location.href = "http://192.168.124.6:8888/userInformation/downloadMood";
+      location.href =
+        this.$http.defaults.baseURL + "userInformation/downloadMood";
     },
     exportPhone() {
-      location.href = "http://192.168.124.6:8888/userInformation/exportExcel";
+      location.href =
+        this.$http.defaults.baseURL + "userInformation/exportExcel";
     },
     // 上传成功的接口
     onsuccess() {
@@ -236,6 +295,10 @@ export default {
     },
     onexceed() {
       this.$message.error("只能上传一个Excel文件");
+    },
+    // 添加人员
+    addPersonnel() {
+      this.personnel = true;
     }
   },
   created() {
@@ -286,5 +349,8 @@ export default {
 }
 .red {
   color: red;
+}
+.el-form-item {
+  margin-top: 20px !important;
 }
 </style>

@@ -9,7 +9,7 @@
     text-color="#fff"
     active-text-color="#3b99f1"
   >
-    <el-menu-item index="/homeview">
+    <!-- <el-menu-item index="/homeview">
       <span class="iconfont icon-shouye"></span>
       <span>首页</span>
     </el-menu-item>
@@ -18,7 +18,7 @@
     </el-menu-item>
     <el-menu-item index="/town/carmsg">
       <span class="iconfont icon-cheliangxinxiguanli2"></span>三轮车管理
-    </el-menu-item>
+    </el-menu-item> -->
     <el-menu-item index="/town/supervision">
       <span class="iconfont icon-cheliangxinxiguanli2"></span>道路信息管理
     </el-menu-item>

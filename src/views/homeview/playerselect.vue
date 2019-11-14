@@ -2,8 +2,8 @@
   <div id="playerselect">
     <div id="player">
       <div class="playerTop">
-        <div class="warningDate">{{shuldData.logtime}}</div>
         <el-button type="primary" @click="stringVideo">道路视频详情</el-button>
+        <div class="warningDate">{{shuldData.logtime}}</div>
       </div>
       <div class="playerVideo">
         <div v-for="item in videoList" :key="item.sid" class="videoDiv" @click="videoPlayer(item)">
@@ -49,7 +49,7 @@ export default {
       shuldData: {}
     };
   },
-  components:{
+  components: {
     vueSeamless
   },
   computed: {
@@ -149,15 +149,15 @@ export default {
       this.$http.post("/hw/main/video/list").then(res => {
         console.log(res.data);
         this.videoList = res.data;
-      })
+      });
     },
     // 数据统计
     getData() {
       this.$http.post("hr/kaoqin/navbar").then(res => {
-        // console.log(res.data);
+        console.log(res.data);
         this.shuldData = res.data;
       });
-    },
+    }
   }
 };
 </script>
@@ -183,6 +183,9 @@ export default {
   font-weight: 700;
   margin-top: 10px;
   padding-right: 20px;
+  .warningDate {
+    color: #000;
+  }
 }
 
 .playerVideo {
@@ -192,6 +195,12 @@ export default {
   align-items: stretch;
   position: absolute;
   top: 50px;
+  p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 
   .videoDiv {
     width: 240px;

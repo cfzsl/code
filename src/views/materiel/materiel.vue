@@ -111,10 +111,10 @@
         <el-divider></el-divider>
         <div class="examine">物料采购流程</div>
         <el-steps :active="formAdd.active" :space="200" align-center>
-          <el-step title="项目经理/助理" icon="el-icon-user" description="提交申请"></el-step>
-          <el-step title="鲁彧" icon="el-icon-user" description="一级审批"></el-step>
-          <el-step title="曲韦名" icon="el-icon-user" description="二级审批人"></el-step>
-          <el-step title="王卫叶" icon="el-icon-user" description="采购发放人"></el-step>
+          <el-step title="申请人" icon="el-icon-user" description="提交申请"></el-step>
+          <el-step title="一级审批" icon="el-icon-user" description="一级审批"></el-step>
+          <el-step title="二级审批人" icon="el-icon-user" description="二级审批人"></el-step>
+          <el-step title="采购发放人" icon="el-icon-user" description="采购发放人"></el-step>
         </el-steps>
         <div class="buttonOff">
           <span slot="footer">

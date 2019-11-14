@@ -66,7 +66,7 @@ export default {
   margin: 0;
 }
 .el-dialog__body {
-  padding: 0 20px 30px 20px !important;
+  padding: 0 20px 20px 20px;
   overflow: hidden;
 }
 .fade-enter-active {

@@ -10,289 +10,283 @@
           <el-button @click="msgeslint = true">停滞超限预警</el-button>
           <el-button @click="msgedate = true">日常考勤</el-button>
         </div>
-        <!-- 道路监控弹框 -->
-        <el-dialog title="道路监控" :visible.sync="monitoring" @close="msg = {}" width="70%">
-          <video-player
-            class="video-player vjs-custom-skin"
-            :playsinline="true"
-            :options="videoOption"
-          ></video-player>
-        </el-dialog>
-        <!-- 历史轨迹播放弹窗1 -->
-        <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msgser = {}" width="70%">
-          <el-divider class="divider"></el-divider>
-          <el-form ref="form" :model="msgser" label-width="auto" class="msg" v-if="mapview">
-            <div class="search">
-              <el-form-item label="车牌号鲁E-" class="searchInput">
-                <el-input v-model="msgser.number" class="searchInputNumber"></el-input>
-              </el-form-item>
-              <el-form-item label="车辆类型" class="searchType">
-                <el-select v-model="msgser.type" class="selectTop">
-                  <el-option label="全部" value></el-option>
-                  <el-option
-                    v-for="item in optionsCar"
-                    :key="item.i"
-                    :label="item.type"
-                    :value="item.type"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="作业区域" class="searchJob">
-                <el-select v-model="msgser.area" class="selectTop">
-                  <el-option label="全部" value></el-option>
-                  <el-option
-                    v-for="item in listSearch()"
-                    :key="item.job"
-                    :label="item.area"
-                    :value="item.area"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="归属单位" class="searchWeb">
-                <el-select v-model="msgser.depart" class="selectTop">
-                  <el-option label="全部" value></el-option>
-                  <el-option
-                    v-for="item in optionsWeb"
-                    :key="item.web"
-                    :label="item.depart"
-                    :value="item.depart"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item class="msgButton">
-                <el-button type="primary" @click="onHistorical" class="button">查询</el-button>
-                <el-button type="primary" @click="deilHistorical" class="button">清空</el-button>
-              </el-form-item>
-            </div>
-            <div class="list">
-              <el-table
-                :data="Historical.slice((currpage - 1) * pagesize, currpage * pagesize)"
-                border
-                style="width: 100%"
-                @row-click="showadd"
-              >
-                <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-                <el-table-column align="center" prop="depart" label="归属单位"></el-table-column>
-                <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
-                <el-table-column align="center" prop="tel" label="联系电话"></el-table-column>
-                <el-table-column align="center" prop="logtime" label="记录时间"></el-table-column>
-                <el-table-column align="center" label="操作">
-                  <template slot-scope="scope">
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      class="buttonSearch"
-                      @click.stop="huifang(scope)"
-                    >播放轨迹</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <!-- 分页 -->
-            <el-pagination
-              class="paginationList"
-              background
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-              :page-sizes="[10,20,30,40]"
-              :page-size="10"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="Historical.length"
-            ></el-pagination>
-          </el-form>
-        </el-dialog>
-        <!-- 弹窗2 -->
-        <el-dialog
-          title="越界报警"
-          :visible.sync="msgerr"
-          @close="searchTransboundary = {}"
-          width="70%"
-        >
-          <el-divider class="divider"></el-divider>
-          <el-form ref="form" :model="searchTransboundary" label-width="auto" class="msg">
-            <div class="search">
-              <el-form-item label="车牌号鲁E-" class="searchInput">
-                <el-input v-model="searchTransboundary.number" class="searchInputNumber"></el-input>
-              </el-form-item>
-              <el-form-item label="日期" class="msgDate">
-                <el-date-picker
-                  v-model="searchTransboundary.logtime"
-                  type="date"
-                  value-format="yyyy-MM-dd"
-                  placeholder="选择日期"
-                ></el-date-picker>
-              </el-form-item>
-              <el-form-item class="msgButton">
-                <el-button type="primary" @click="onTransboundary" class="button">查询</el-button>
-                <el-button type="primary" @click="deilTransboundary" class="button">清空</el-button>
-              </el-form-item>
-            </div>
-            <div class="list">
-              <el-table
-                :data="Transboundary.slice((currpage - 1) * pagesize, currpage * pagesize)"
-                border
-                style="width: 100%"
-                @row-click="showadd"
-              >
-                <el-table-column align="center" prop="sid" label="序号"></el-table-column>
-                <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-                <el-table-column align="center" prop="depart" label="归属单位"></el-table-column>
-                <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
-                <el-table-column align="center" prop="tel" label="联系电话"></el-table-column>
-                <el-table-column align="center" prop="logtime" label="报警时间"></el-table-column>
-                <el-table-column align="center" prop="warninginfo" label="线路异常情况" width="436px"></el-table-column>
-              </el-table>
-            </div>
-            <!-- 分页 -->
-            <el-pagination
-              class="paginationList"
-              background
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-              :page-sizes="[10,20,30,40]"
-              :page-size="10"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="Transboundary.length"
-            ></el-pagination>
-          </el-form>
-        </el-dialog>
-        <!-- 弹框3 -->
-        <el-dialog
-          title="停滞超限预警"
-          :visible.sync="msgeslint"
-          @close="stagnation = {}"
-          width="70%"
-          class="elDialog"
-        >
-          <el-divider class="divider"></el-divider>
-          <el-form ref="form" :model="stagnation" label-width="auto" class="msg">
-            <div class="search">
-              <el-form-item label="车牌号鲁E-" class="searchInput">
-                <el-input v-model="stagnation.number" class="searchInputNumber"></el-input>
-              </el-form-item>
-              <el-form-item label="报警日期" class="msgDate">
-                <el-date-picker
-                  v-model="stagnation.logtime"
-                  type="date"
-                  value-format="yyyy-MM-dd"
-                  placeholder
-                  class="msgDatePicker"
-                ></el-date-picker>
-              </el-form-item>
-              <el-form-item class="msgButton">
-                <el-button type="primary" @click="onStagnation" class="button">查询</el-button>
-                <el-button type="primary" @click="deilStagnation" class="button">清空</el-button>
-              </el-form-item>
-            </div>
-            <div class="list">
-              <el-table
-                :data="stagnationList.slice((currpage - 1) * pagesize, currpage * pagesize)"
-                border
-                style="width: 100%"
-                @row-click="showadd"
-              >
-                <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-                <el-table-column align="center" prop="user" label="车辆使用人"></el-table-column>
-                <el-table-column align="center" prop="depart" label="单位"></el-table-column>
-                <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
-                <el-table-column align="center" prop="staypos" label="停滞点" width="200x"></el-table-column>
-                <el-table-column align="center" prop="staytime" label="停滞时长" width="220px"></el-table-column>
-                <el-table-column align="center" prop="logtime" label="报警时间" width="200px"></el-table-column>
-              </el-table>
-            </div>
-            <!-- 分页 -->
-            <el-pagination
-              class="paginationList"
-              background
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-              :page-sizes="[10,20,30,40]"
-              :page-size="10"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="stagnationList.length"
-            ></el-pagination>
-          </el-form>
-        </el-dialog>
-        <!-- 弹窗4 -->
-        <el-dialog title="日常考勤" :visible.sync="msgedate" @close="daily = {}" width="70%">
-          <el-divider class="divider"></el-divider>
-          <el-form ref="form" :model="daily" label-width="auto" class="msg" v-if="flow">
-            <div class="search">
-              <el-form-item label="车牌号 鲁E- " class="searchInput">
-                <el-input v-model="daily.number" class="searchInputNumber"></el-input>
-              </el-form-item>
-              <el-form-item label="使用人" class="Troubleshooting msgnumber">
-                <el-input v-model="daily.user" class="TroubleshootingInput"></el-input>
-              </el-form-item>
-              <el-form-item label="日期" class="msgDate">
-                <el-date-picker
-                  v-model="daily.logtime"
-                  type="date"
-                  value-format="yyyy-MM-dd"
-                  placeholder
-                  class="msgDatePicker"
-                ></el-date-picker>
-              </el-form-item>
-              <el-form-item class="msgButton">
-                <el-button type="primary" @click="onDaily" class="button">查询</el-button>
-                <el-button type="primary" @click="deilDaily" class="button">清空</el-button>
-              </el-form-item>
-            </div>
-            <div class="list">
-              <el-table
-                :data="dailyList.slice((currpage - 1) * pagesize, currpage * pagesize)"
-                border
-                style="width: 100%"
-                @row-click="showadd"
-              >
-                <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-                <el-table-column align="center" prop="user" label="车辆使用人"></el-table-column>
-                <el-table-column align="center" prop="depart" label="单位"></el-table-column>
-                <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
-                <el-table-column align="center" prop="logtime" label="日期"></el-table-column>
-                <el-table-column align="center" prop="worktime1" label="上午打卡"></el-table-column>
-                <el-table-column align="center" prop="worktime2" label="下午打卡"></el-table-column>
-                <el-table-column align="center" prop="worktime3" label="晚上打卡"></el-table-column>
-              </el-table>
-            </div>
-            <!-- 分页 -->
-            <el-pagination
-              class="paginationList"
-              background
-              @prev-click="nextpage"
-              @next-click="nextpage"
-              @current-change="nextpage"
-              :page-sizes="[10,20,30,40]"
-              :page-size="10"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="dailyList.length"
-            ></el-pagination>
-          </el-form>
-          <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="!flow">
-            <div>
-              <div class="left">
-                <div class="leftboder">
-                  <div class="textone">总司机数（个）</div>
-                  <div class="texttown">62</div>
-                </div>
-                <div class="leftboder">
-                  <div class="textone">转运站数（个）</div>
-                  <div class="texttown">23</div>
-                </div>
-                <div class="leftboder">
-                  <div class="textone">总车辆（个）</div>
-                  <div class="texttown">62</div>
-                </div>
-                <div class="chart"></div>
-              </div>
-            </div>
-          </el-form>
-        </el-dialog>
-        <!-- 百度地图搜索 -->
       </div>
+      <!-- 道路监控弹框 -->
+      <el-dialog title="道路监控" :visible.sync="monitoring" @close="msg = {}" width="70%">
+        <video-player
+          class="video-player vjs-custom-skin"
+          :playsinline="true"
+          :options="videoOption"
+        ></video-player>
+      </el-dialog>
+      <!-- 历史轨迹播放弹窗1 -->
+      <el-dialog title="历史轨迹播放" :visible.sync="msgserach" @close="msgser = {}" width="70%">
+        <el-divider class="divider"></el-divider>
+        <el-form ref="form" :model="msgser" label-width="auto" class="msg" v-if="mapview">
+          <div class="search">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
+              <el-input v-model="msgser.number" class="searchInputNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="车辆类型" class="searchType">
+              <el-select v-model="msgser.type" class="selectTop">
+                <el-option label="全部" value></el-option>
+                <el-option
+                  v-for="item in optionsCar"
+                  :key="item.i"
+                  :label="item.type"
+                  :value="item.type"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="作业区域" class="searchJob">
+              <el-select v-model="msgser.area" class="selectTop">
+                <el-option label="全部" value></el-option>
+                <el-option
+                  v-for="item in listSearch()"
+                  :key="item.job"
+                  :label="item.area"
+                  :value="item.area"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属单位" class="searchWeb">
+              <el-select v-model="msgser.depart" class="selectTop">
+                <el-option label="全部" value></el-option>
+                <el-option
+                  v-for="item in optionsWeb"
+                  :key="item.web"
+                  :label="item.depart"
+                  :value="item.depart"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="msgButton">
+              <el-button type="primary" @click="onHistorical">查询</el-button>
+              <el-button type="primary" @click="deilHistorical">清空</el-button>
+            </el-form-item>
+          </div>
+          <div class="list">
+            <el-table
+              :data="Historical.slice((currpage - 1) * pagesize, currpage * pagesize)"
+              border
+              style="width: 100%"
+              @row-click="showadd"
+            >
+              <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="depart" label="归属单位"></el-table-column>
+              <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系电话"></el-table-column>
+              <el-table-column align="center" prop="logtime" label="记录时间"></el-table-column>
+              <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    class="buttonSearch"
+                    @click.stop="huifang(scope)"
+                  >播放轨迹</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <!-- 分页 -->
+          <el-pagination
+            class="paginationList"
+            background
+            @prev-click="nextpage"
+            @next-click="nextpage"
+            @current-change="nextpage"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="Historical.length"
+          ></el-pagination>
+        </el-form>
+      </el-dialog>
+      <!-- 弹窗2 -->
+      <el-dialog title="越界报警" :visible.sync="msgerr" @close="searchTransboundary = {}" width="70%">
+        <el-divider class="divider"></el-divider>
+        <el-form ref="form" :model="searchTransboundary" label-width="auto" class="msg">
+          <div class="search">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
+              <el-input v-model="searchTransboundary.number" class="searchInputNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="日期" class="msgDate">
+              <el-date-picker
+                v-model="searchTransboundary.logtime"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item class="msgButton">
+              <el-button type="primary" @click="onTransboundary">查询</el-button>
+              <el-button type="primary" @click="deilTransboundary">清空</el-button>
+            </el-form-item>
+          </div>
+          <div class="list">
+            <el-table
+              :data="Transboundary.slice((currpage - 1) * pagesize, currpage * pagesize)"
+              border
+              style="width: 100%"
+              @row-click="showadd"
+            >
+              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+              <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="depart" label="归属单位"></el-table-column>
+              <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系电话"></el-table-column>
+              <el-table-column align="center" prop="logtime" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="warninginfo" label="线路异常情况" width="436px"></el-table-column>
+            </el-table>
+          </div>
+          <!-- 分页 -->
+          <el-pagination
+            class="paginationList"
+            background
+            @prev-click="nextpage"
+            @next-click="nextpage"
+            @current-change="nextpage"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="Transboundary.length"
+          ></el-pagination>
+        </el-form>
+      </el-dialog>
+      <!-- 弹框3 -->
+      <el-dialog
+        title="停滞超限预警"
+        :visible.sync="msgeslint"
+        @close="stagnation = {}"
+        width="70%"
+        class="elDialog"
+      >
+        <el-divider class="divider"></el-divider>
+        <el-form ref="form" :model="stagnation" label-width="auto" class="msg">
+          <div class="search">
+            <el-form-item label="车牌号鲁E-" class="searchInput">
+              <el-input v-model="stagnation.number" class="searchInputNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="报警日期" class="msgDate">
+              <el-date-picker
+                v-model="stagnation.logtime"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item class="msgButton">
+              <el-button type="primary" @click="onStagnation">查询</el-button>
+              <el-button type="primary" @click="deilStagnation">清空</el-button>
+            </el-form-item>
+          </div>
+          <div class="list">
+            <el-table
+              :data="stagnationList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+              border
+              style="width: 100%"
+              @row-click="showadd"
+            >
+              <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="user" label="车辆使用人"></el-table-column>
+              <el-table-column align="center" prop="depart" label="单位"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+              <el-table-column align="center" prop="staypos" label="停滞点" width="200x"></el-table-column>
+              <el-table-column align="center" prop="staytime" label="停滞时长" width="220px"></el-table-column>
+              <el-table-column align="center" prop="logtime" label="报警时间" width="200px"></el-table-column>
+            </el-table>
+          </div>
+          <!-- 分页 -->
+          <el-pagination
+            class="paginationList"
+            background
+            @prev-click="nextpage"
+            @next-click="nextpage"
+            @current-change="nextpage"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="stagnationList.length"
+          ></el-pagination>
+        </el-form>
+      </el-dialog>
+      <!-- 弹窗4 -->
+      <el-dialog title="日常考勤" :visible.sync="msgedate" @close="daily = {}" width="70%">
+        <el-divider class="divider"></el-divider>
+        <el-form ref="form" :model="daily" label-width="auto" class="msg" v-if="flow">
+          <div class="search">
+            <el-form-item label="车牌号 鲁E- " class="searchInput">
+              <el-input v-model="daily.number" class="searchInputNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="使用人" class="Troubleshooting msgnumber">
+              <el-input v-model="daily.user" class="TroubleshootingInput"></el-input>
+            </el-form-item>
+            <el-form-item label="日期" class="msgDate">
+              <el-date-picker
+                v-model="daily.logtime"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder
+                class="msgDatePicker"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item class="msgButton">
+              <el-button type="primary" @click="onDaily">查询</el-button>
+              <el-button type="primary" @click="deilDaily">清空</el-button>
+            </el-form-item>
+          </div>
+          <div class="list">
+            <el-table
+              :data="dailyList.slice((currpage - 1) * pagesize, currpage * pagesize)"
+              border
+              style="width: 100%"
+              @row-click="showadd"
+            >
+              <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
+              <el-table-column align="center" prop="user" label="车辆使用人"></el-table-column>
+              <el-table-column align="center" prop="depart" label="单位"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+              <el-table-column align="center" prop="logtime" label="日期"></el-table-column>
+              <el-table-column align="center" prop="worktime1" label="上午打卡"></el-table-column>
+              <el-table-column align="center" prop="worktime2" label="下午打卡"></el-table-column>
+              <el-table-column align="center" prop="worktime3" label="晚上打卡"></el-table-column>
+            </el-table>
+          </div>
+          <!-- 分页 -->
+          <el-pagination
+            class="paginationList"
+            background
+            @prev-click="nextpage"
+            @next-click="nextpage"
+            @current-change="nextpage"
+            :page-sizes="[10,20,30,40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="dailyList.length"
+          ></el-pagination>
+        </el-form>
+        <el-form ref="form" :model="msg" label-width="auto" class="msg" v-else-if="!flow">
+          <div>
+            <div class="left">
+              <div class="leftboder">
+                <div class="textone">总司机数（个）</div>
+                <div class="texttown">62</div>
+              </div>
+              <div class="leftboder">
+                <div class="textone">转运站数（个）</div>
+                <div class="texttown">23</div>
+              </div>
+              <div class="leftboder">
+                <div class="textone">总车辆（个）</div>
+                <div class="texttown">62</div>
+              </div>
+              <div class="chart"></div>
+            </div>
+          </div>
+        </el-form>
+      </el-dialog>
       <!-- 点聚合 -->
       <baidu-map
         class="map"
@@ -986,12 +980,12 @@ export default {
     position: absolute;
     left: 10px;
     top: 10px;
-    z-index: 8888;
-  .btn {
-    float: left;
-    height: 25px;
+    z-index: 888;
+    .btn {
+      float: left;
+      height: 25px;
+    }
   }
-}
   .map {
     position: relative;
     width: 100%;
@@ -1006,6 +1000,7 @@ export default {
 }
 .search {
   width: 100%;
+  display: flex;
   .el-form-item {
     display: inline-block;
     .el-input {
@@ -1017,10 +1012,7 @@ export default {
       font-size: 13px;
     }
     .msgButton {
-      width: 80px;
-      .button {
-        width: 100px;
-      }
+      display: inline-block;
     }
   }
 }

@@ -155,32 +155,46 @@
                 </div>
               </div>
               <div style="margin-top: 60px">
-                <div class="warningText1">详&nbsp;&nbsp;&nbsp;情&nbsp;&nbsp;&nbsp;分&nbsp;&nbsp;&nbsp;布&nbsp;&nbsp;&nbsp;:</div>
+                <div
+                  class="warningText1"
+                >详&nbsp;&nbsp;&nbsp;情&nbsp;&nbsp;&nbsp;分&nbsp;&nbsp;&nbsp;布&nbsp;&nbsp;&nbsp;:</div>
                 <template>
                   <el-tabs v-model="activeName" style="margin-left: 3%;margin-right: 3%">
                     <el-tab-pane label="人员年龄分布" name="first">
-                      <div ref="zhexian" :style="{width: '800px', height: '200px',display:'flex',alignItems:'center'}"></div>
+                      <div
+                        ref="zhexian"
+                        :style="{width: '800px', height: '200px',display:'flex',alignItems:'center'}"
+                      ></div>
                     </el-tab-pane>
                     <el-tab-pane label="部门分布" name="second">
-                      <div ref="zhexian2" :style="{width: '800px', height: '200px',display:'flex',alignItems:'center'}"></div>
+                      <div
+                        ref="zhexian2"
+                        :style="{width: '800px', height: '200px',display:'flex',alignItems:'center'}"
+                      ></div>
                     </el-tab-pane>
                   </el-tabs>
                 </template>
               </div>
-
             </div>
           </div>
         </div>
         <!-- 饼图 -->
         <div class="lineBox3">
-          <div class="carmsg">
-            车&nbsp;&nbsp;&nbsp;辆&nbsp;&nbsp;&nbsp;考&nbsp;&nbsp;&nbsp;勤&nbsp;&nbsp;&nbsp;:
-          </div>
-          <div id="xxxd" style="width: 500px;height:260px;display:flex;align-items:center;margin-left:25%;"></div>
+          <div
+            class="carmsg"
+          >车&nbsp;&nbsp;&nbsp;辆&nbsp;&nbsp;&nbsp;考&nbsp;&nbsp;&nbsp;勤&nbsp;&nbsp;&nbsp;:</div>
+          <div
+            id="xxxd"
+            style="width: 500px;height:260px;display:flex;align-items:center;margin-left:25%;"
+          ></div>
           <div>
-            <div class="warningText2">报&nbsp;&nbsp;&nbsp;警&nbsp;&nbsp;&nbsp;次&nbsp;&nbsp;&nbsp;数&nbsp;&nbsp;&nbsp;:
-            </div>
-            <div ref="duibi" :style="{width: '700px', height: '200px',display:'flex',alignItems:'center'}"></div>
+            <div
+              class="warningText2"
+            >报&nbsp;&nbsp;&nbsp;警&nbsp;&nbsp;&nbsp;次&nbsp;&nbsp;&nbsp;数&nbsp;&nbsp;&nbsp;:</div>
+            <div
+              ref="duibi"
+              :style="{width: '700px', height: '200px',display:'flex',alignItems:'center'}"
+            ></div>
           </div>
         </div>
       </div>
@@ -197,7 +211,7 @@
             <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="abnormal.number" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="报警日期" class="msgDate">
+            <el-form-item label="报警时间" class="msgDate">
               <el-date-picker
                 v-model="abnormal.warningdate"
                 type="date"
@@ -229,14 +243,23 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+              <el-table-column align="center" prop="sid" label="序号" width="50px"></el-table-column>
               <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="errmsg" label="故障信息"></el-table-column>
-              <el-table-column align="center" prop="warningdate" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="fixperson" label="司机"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+              <!-- <el-table-column align="center" prop="warningdate" label="报警日期"></el-table-column> -->
               <el-table-column align="center" prop="warningtime" label="报警时间"></el-table-column>
-              <el-table-column align="center" prop="fixperson" label="维修人员"></el-table-column>
-              <el-table-column align="center" prop="fixtime" label="维修日期"></el-table-column>
-              <el-table-column align="center" prop="fixstatus" label="故障维修结果" width="239px"></el-table-column>
+              <el-table-column align="center" prop="errmsg" label="报警内容"></el-table-column>
+              <!-- <el-table-column align="center" prop="fixtime" label="维修日期"></el-table-column> -->
+              <!-- <el-table-column align="center" prop="fixstatus" label="故障维修结果" width="239px"></el-table-column> -->
+              <el-table-column align="center" label="操作" width="239px">
+                <template slot-scope="scope">
+                  <el-button
+                    size="small"
+                    type="warning"
+                  >已处理</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -268,7 +291,7 @@
             <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="consumption.number" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="报警日期" class="msgDate">
+            <el-form-item label="报警时间" class="msgDate">
               <el-date-picker
                 v-model="consumption.warningdate"
                 type="date"
@@ -289,11 +312,22 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+              <el-table-column align="center" prop="sid" label="序号" width="50px"></el-table-column>
               <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="oilused" label="车辆耗油量（L/100KM）"></el-table-column>
-              <el-table-column align="center" prop="warningdate" label="报警日期"></el-table-column>
-              <el-table-column align="center" prop="warningtime" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="name" label="司机"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+              <el-table-column align="center" prop="oilused" label="实际油耗（L/100KM）"></el-table-column>
+              <el-table-column align="center" prop="standardused" label="标准油耗（L/100KM）"></el-table-column>
+              <el-table-column align="center" prop="warningdate" label="报警时间"></el-table-column>
+              <!-- <el-table-column align="center" prop="warningtime" label="报警时间"></el-table-column> -->
+              <el-table-column align="center" label="操作" width="239px">
+                <template slot-scope="scope">
+                  <el-button
+                    size="small"
+                    type="warning"
+                  >已处理</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -325,7 +359,7 @@
             <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="maintain.number" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="报警日期" class="msgDate">
+            <el-form-item label="报警时间" class="msgDate">
               <el-date-picker
                 v-model="maintain.warningdate"
                 type="date"
@@ -334,13 +368,13 @@
                 class="msgDatePicker"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item label="保养完成情况" class="Troubleshooting">
+            <!-- <el-form-item label="保养完成情况" class="Troubleshooting">
               <el-select v-model="maintain.maintainstatus" class="selectTop">
                 <el-option label="全部" value></el-option>
                 <el-option label="未保养" value="未保养"></el-option>
                 <el-option label="已保养" value="已保养"></el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item class="msgButton">
               <el-button type="primary" @click="onMaintain">查询</el-button>
               <el-button type="primary" @click="deilMaintain">清空</el-button>
@@ -355,16 +389,18 @@
             >
               <el-table-column align="center" prop="sid" label="序号"></el-table-column>
               <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="lastmaintaindate" label="上次保养时间"></el-table-column>
-              <el-table-column align="center" prop="lastmaintainkm" label="上次保养公里数"></el-table-column>
-              <el-table-column align="center" prop="drivedkm" label="已行驶公里数"></el-table-column>
-              <el-table-column align="center" prop="outkm" label="超限公里数"></el-table-column>
-              <el-table-column align="center" prop="maintainperson" label="保养负责人"></el-table-column>
-              <el-table-column align="center" label="保养完成情况" width>
+              <el-table-column align="center" prop="maintainperson" label="司机"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+              <!-- <el-table-column align="center" prop="lastmaintaindate" label="上次保养时间"></el-table-column> -->
+              <el-table-column align="center" prop="lastmaintainkm" label="可行驶最大里程"></el-table-column>
+              <el-table-column align="center" prop="drivedkm" label="已行驶里程"></el-table-column>
+              <!-- <el-table-column align="center" prop="outkm" label="超限公里数"></el-table-column> -->
+              <el-table-column align="center" prop="warningtime" label="报警时间"></el-table-column>
+              <!-- <el-table-column align="center" label="保养完成情况" width>
                 <template slot-scope="scope">
                   <span>{{scope.row.maintainstatus}}</span>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
             </el-table>
           </div>
           <div class="pagination">
@@ -394,7 +430,7 @@
             <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="insurance.number" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="报警日期" class="msgDate">
+            <el-form-item label="报警时间" class="msgDate">
               <el-date-picker
                 v-model="insurance.warningtime"
                 type="date"
@@ -407,7 +443,7 @@
               <el-button type="primary" @click="onInsurance">查询</el-button>
               <el-button type="primary" @click="deilInsurance">清空</el-button>
             </el-form-item>
-            <div class="sytime">系统时间：2019-10-13</div>
+            <!-- <div class="sytime">系统时间：2019-10-13</div> -->
           </div>
           <div class="list">
             <el-table
@@ -416,20 +452,21 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+              <el-table-column align="center" prop="sid" label="序号" width="50px"></el-table-column>
               <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-              <el-table-column align="center" label="到期剩余天数" width>
+              <!-- <el-table-column align="center" label="到期剩余天数" width>
                 <template slot-scope="scope">
                   <span :class="scope.row.expireday<10?'red':'hed'">{{scope.row.expireday}}</span>
                 </template>
-              </el-table-column>
-              <el-table-column align="center" prop="starttime" label="生效时间"></el-table-column>
-              <el-table-column align="center" prop="endtime" label="到期时间"></el-table-column>
+              </el-table-column> -->
+              <el-table-column align="center" prop="insurance" label="保险公司"></el-table-column>
+              <!-- <el-table-column align="center" prop="starttime" label="生效时间"></el-table-column> -->
+              <el-table-column align="center" prop="endtime" label="保险到期时间"></el-table-column>
               <el-table-column align="center" prop="warningtime" label="报警时间"></el-table-column>
-              <el-table-column align="center" prop="safeperson" label="负责人"></el-table-column>
-              <el-table-column align="center" label="操作">
+              <!-- <el-table-column align="center" prop="safeperson" label="负责人"></el-table-column> -->
+              <!-- <el-table-column align="center" label="操作">
                 <el-button type="warning">报警处理</el-button>
-              </el-table-column>
+              </el-table-column> -->
             </el-table>
           </div>
           <!-- 分页 -->
@@ -457,10 +494,10 @@
       >
         <el-form ref="form" border :model="overage" label-width="auto" class="msg">
           <div class="search">
-            <el-form-item label="车牌号鲁E-" class="searchInput">
-              <el-input v-model="overage.number" class="searchInputNumber"></el-input>
+            <el-form-item label="姓名" class="searchInput">
+              <el-input v-model="overage.user" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="报警日期" class="msgDate">
+            <el-form-item label="报警时间" class="msgDate">
               <el-date-picker
                 v-model="overage.warningdate"
                 type="date"
@@ -481,11 +518,12 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
-              <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="user" label="姓名"></el-table-column>
-              <el-table-column align="center" prop="isoutage" label="是否超龄"></el-table-column>
-              <el-table-column align="center" prop="warningdate" label="报警日期"></el-table-column>
+              <el-table-column align="center" prop="sid" label="序号" width="50px"></el-table-column>
+              <el-table-column align="center" prop="user" label="环卫工姓名"></el-table-column>
+              <!-- <el-table-column align="center" prop="number" label="车牌号"></el-table-column> -->
+              <el-table-column align="center" prop="entrytime" label="入职时间"></el-table-column>              
+              <el-table-column align="center" prop="isoutage" label="目前年龄"></el-table-column>
+              <el-table-column align="center" prop="warningdate" label="报警时间"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -516,7 +554,7 @@
             <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="transboundary.number" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="报警日期" class="msgDate">
+            <el-form-item label="报警时间" class="msgDate">
               <el-date-picker
                 v-model="transboundary.warningdate"
                 type="date"
@@ -537,14 +575,14 @@
               style="width: 100%"
               @row-click="showadd"
             >
-              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
+              <el-table-column align="center" prop="sid" label="序号" width="50px"></el-table-column>
               <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="depart" label="归属单位"></el-table-column>
-              <el-table-column align="center" prop="user" label="指定司机"></el-table-column>
-              <el-table-column align="center" prop="tel" label="联系电话"></el-table-column>
-              <el-table-column align="center" prop="warningdate" label="报警日期"></el-table-column>
-              <el-table-column align="center" prop="warningtime" label="报警时间"></el-table-column>
+              <el-table-column align="center" prop="user" label="司机"></el-table-column>
+              <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+              <!-- <el-table-column align="center" prop="depart" label="归属单位"></el-table-column> -->
               <el-table-column align="center" prop="warningtext" label="线路异常情况" width="436px"></el-table-column>
+              <!-- <el-table-column align="center" prop="warningtime" label="报警时间"></el-table-column> -->
+              <el-table-column align="center" prop="warningdate" label="报警时间"></el-table-column>
             </el-table>
           </div>
           <!-- 分页 -->
@@ -575,7 +613,7 @@
             <el-form-item label="车牌号鲁E-" class="searchInput">
               <el-input v-model="stagnation.number" class="searchInputNumber"></el-input>
             </el-form-item>
-            <el-form-item label="报警日期" class="msgDate">
+            <el-form-item label="报警时间" class="msgDate">
               <el-date-picker
                 v-model="stagnation.warningtime"
                 type="date"
@@ -596,9 +634,10 @@
               style="width: 100%"
               @row-click="showadd"
             >
+              <el-table-column align="center" prop="sid" label="序号"></el-table-column>
               <el-table-column align="center" prop="number" label="车牌号"></el-table-column>
-              <el-table-column align="center" prop="user" label="车辆使用人"></el-table-column>
-              <el-table-column align="center" prop="depart" label="单位"></el-table-column>
+              <el-table-column align="center" prop="user" label="司机"></el-table-column>
+              <!-- <el-table-column align="center" prop="depart" label="单位"></el-table-column> -->
               <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
               <el-table-column align="center" prop="staypos" label="停滞点" width="200x"></el-table-column>
               <el-table-column align="center" prop="staytime" label="停滞时长" width="220px"></el-table-column>
@@ -629,7 +668,7 @@ var echarts = require("echarts");
 export default {
   data() {
     return {
-      activeName: 'first',
+      activeName: "first",
       zhexian: null,
       zhexian2: null,
       duibi: null,
@@ -722,24 +761,24 @@ export default {
   },
   methods: {
     //部门分布折线图
-    drawZxdpart(){
+    drawZxdpart() {
       this.zhexian2 = echarts.init(this.$refs.zhexian2, "");
       this.zhexian2.setOption({
         textStyle: {
           color: "#fff"
         },
-        tooltip : {},
+        tooltip: {},
         grid: {
-          left: '3%',
-          right: '10%',
-          bottom: '3%',
+          left: "3%",
+          right: "10%",
+          bottom: "3%",
           containLabel: true
         },
-        xAxis : [
+        xAxis: [
           {
-            type : 'category',
-            boundaryGap : false,
-            data : ['周一','周二','周三','周四','周五','周六','周日'],
+            type: "category",
+            boundaryGap: false,
+            data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
             axisLine: {
               lineStyle: {
                 color: "#fff"
@@ -747,9 +786,9 @@ export default {
             }
           }
         ],
-        yAxis : [
+        yAxis: [
           {
-            type : 'value',
+            type: "value",
             axisLine: {
               lineStyle: {
                 color: "#fff"
@@ -757,47 +796,47 @@ export default {
             }
           }
         ],
-        series : [
+        series: [
           {
-            name:'黄河一部',
-            type:'line',
-            stack: '总量',
+            name: "黄河一部",
+            type: "line",
+            stack: "总量",
             areaStyle: {},
-            data:[120, 132, 101, 134, 90, 230, 210]
+            data: [120, 132, 101, 134, 90, 230, 210]
           },
           {
-            name:'黄河二部',
-            type:'line',
-            stack: '总量',
+            name: "黄河二部",
+            type: "line",
+            stack: "总量",
             areaStyle: {},
-            data:[220, 182, 191, 234, 290, 330, 310]
+            data: [220, 182, 191, 234, 290, 330, 310]
           },
           {
-            name:'文汇一部',
-            type:'line',
-            stack: '总量',
+            name: "文汇一部",
+            type: "line",
+            stack: "总量",
             areaStyle: {},
-            data:[150, 232, 201, 154, 190, 330, 410]
+            data: [150, 232, 201, 154, 190, 330, 410]
           },
           {
-            name:'文汇二部',
-            type:'line',
-            stack: '总量',
-            areaStyle: {normal: {}},
-            data:[320, 332, 301, 334, 390, 330, 320]
+            name: "文汇二部",
+            type: "line",
+            stack: "总量",
+            areaStyle: { normal: {} },
+            data: [320, 332, 301, 334, 390, 330, 320]
           },
           {
-            name:'辛店一部',
-            type:'line',
-            stack: '总量',
+            name: "辛店一部",
+            type: "line",
+            stack: "总量",
             label: {
               normal: {
                 show: true,
-                position: 'top'
+                position: "top"
               }
             },
-            areaStyle: {normal: {}},
-            data:[820, 932, 901, 934, 1290, 1330, 1320]
+            areaStyle: { normal: {} },
+            data: [820, 932, 901, 934, 1290, 1330, 1320]
           }
         ]
       });
@@ -907,30 +946,37 @@ export default {
           trigger: "item",
           formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
-        color: ["#56cc56", "#fa6134", "#44cbf3","#f29118", "#31cab5","#fff"],
+        color: ["#56cc56", "#fa6134", "#44cbf3", "#f29118", "#31cab5", "#fff"],
         legend: {
           orient: "vertical",
-          right:"81%",
+          right: "81%",
           top: "20%",
           textStyle: {
             color: "#fff",
             fontSize: 14
           },
-          data: ["10~20车", "20~30车", "30~40车","40~50车","50~60车","60~70车"]
+          data: [
+            "10~20车",
+            "20~30车",
+            "30~40车",
+            "40~50车",
+            "50~60车",
+            "60~70车"
+          ]
         },
         series: [
           {
             name: "转运辆数/天",
             type: "pie",
-            radius:  "65%",
+            radius: "65%",
             // center: ["50%", "50%"],
             data: [
-              {value: 18, name: "10~20车"},
-              {value: 59, name: "20~30车"},
-              {value: 13, name: "30~40车"},
-              {value: 12, name: "40~50车"},
-              {value: 26, name: "50~60车"},
-              {value: 33, name: "60~70车"}
+              { value: 18, name: "10~20车" },
+              { value: 59, name: "20~30车" },
+              { value: 13, name: "30~40车" },
+              { value: 12, name: "40~50车" },
+              { value: 26, name: "50~60车" },
+              { value: 33, name: "60~70车" }
             ],
             label: {
               normal: {
@@ -1118,635 +1164,633 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .header {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    font-weight: bold;
-    /*padding: 0 20px;*/
-    background: url(../../assets/img/truegds.png) no-repeat;
+.header {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-weight: bold;
+  /*padding: 0 20px;*/
+  background: url(../../assets/img/truegds.png) no-repeat;
 
-    .bg-header {
+  .bg-header {
+    width: 100%;
+    height: 80px;
+    background: url(../../assets/img/titlegds.png) no-repeat;
+    background-size: 100% 100%;
+
+    .t-title {
       width: 100%;
-      height: 80px;
-      background: url(../../assets/img/titlegds.png) no-repeat;
-      background-size: 100% 100%;
-
-      .t-title {
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        font-size: 2em;
-        line-height: 80px;
-        color: #fff;
-      }
-    }
-  }
-
-  .blackgroundImgGds {
-    background: url(../../assets/img/truegds.png) no-repeat;
-  }
-
-  .lineBox {
-    border: 1px solid #2c58a6;
-    border-radius: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 20px;
-    width: 100%;
-    height: 150px;
-    display: flex;
-    box-shadow: 0 0 10px #2c58a6;
-  }
-
-  .lineBox2 {
-    border: 1px solid #2c58a6;
-    border-radius: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 100px;
-    width: 50%;
-    height: 500px;
-    display: inline-block;
-    float: left;
-    box-shadow: 0 0 10px #2c58a6;
-  }
-
-
-
-  .lineBox3 {
-    border: 1px solid #2c58a6;
-    border-radius: 5px;
-    margin-right: 10px;
-    margin-top: 100px;
-    width: 45%;
-    height: 500px;
-    display: inline-block;
-    float: right;
-    box-shadow: 0 0 10px #2c58a6;
-  }
-
-  .carmsg {
-    font-size: 16px;
-    font-weight: 700;
-    margin-left: 20px;
-    color: #fff;
-    margin-top: 20px;
-    background: url(../../assets/img/biaoti.png) no-repeat;
-  }
-
-  #homeview {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  .homeviewButton {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    z-index: 900;
-  }
-
-  .map {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    z-index: 800;
-
-    .input-with-select {
-      position: absolute;
-      right: 150px;
-      top: 10px;
-      width: 309px;
-    }
-  }
-
-  .warning {
-    width: 100%;
-    height: 100%;
-  }
-
-  #player {
-    width: 100%;
-    height: 100%;
-  }
-
-  .mapList {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-
-    .list {
-      // float: left;
-      display: flex;
-      width: 130px;
-      height: 40px;
-      line-height: 40px;
-      margin-bottom: 10px;
-      background-color: #ffffff;
-      border-radius: 4px;
-      align-items: center;
-      justify-content: left;
-
-      img {
-        margin-left: 10px;
-      }
-
-      .duli {
-        margin: 0 10px 0 14px;
-      }
-
-      span {
-        margin-left: 6px;
-      }
-    }
-  }
-
-  .buttonrow {
-    z-index: 800;
-    font-size: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: PingFangSC-Medium;
-    font-weight: 400;
-
-    .buttonrowL {
-      border-radius: 6px 0 0 6px;
-      height: 40px;
-      width: 25%;
-      line-height: 40px;
-      margin-left: 1%;
-
-      span {
-        display: inline-block;
-        // margin-left: 10px !important;
-        /*margin-right: 0 !important;*/
-        margin: 0 auto;
-      }
-    }
-
-    .oneself {
-      background-color: #3b99f1;
-    }
-
-    .townself {
-      background-color: #4eb14e;
-    }
-
-    .threeself {
-      background-color: #ffb533;
-    }
-
-    .fourself {
-      background-color: #f66134;
-    }
-
-    .fifself {
-      background-color: #439dc5;
-    }
-
-    .sixself {
-      background-color: #f29118;
-    }
-
-    .sevenself {
-      background-color: #31cab5;
-    }
-
-    .buttonrowR {
-      border-radius: 0 6px 6px 0;
-      height: 40px;
-      width: 40px;
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 40px;
-      background-color: #fff;
-
-      span {
-        margin-left: 8px;
-        margin-bottom: 18px;
-      }
-    }
-
-    .oneselfnew {
-      border: 2px solid #3b99f1;
-      color: #3b99f1;
-    }
-
-    .townselfnew {
-      border: 2px solid #4eb14e;
-      color: #4eb14e;
-    }
-
-    .threeselfnew {
-      border: 2px solid #ffb533;
-      color: #ffb533;
-    }
-
-    .fourselfnew {
-      border: 2px solid #f66134;
-      color: #f66134;
-    }
-
-    .fifselfnew {
-      border: 2px solid #439dc5;
-      color: #439dc5;
-    }
-
-    .sixselfnew {
-      border: 2px solid #f29118;
-      color: #f29118;
-    }
-
-    .sevenselfnew {
-      border: 2px solid #31cab5;
-      color: #31cab5;
-    }
-  }
-
-  .search {
-    width: 100%;
-
-    .el-form-item {
-      display: inline-block;
-
-      .el-input {
-        width: 180px;
-        font-size: 13px;
-      }
-
-      .selectTop {
-        width: 180px;
-        font-size: 13px;
-      }
-    }
-  }
-
-  .Troubleshooting {
-    margin-left: 20px;
-  }
-
-  .sytime {
-    float: right;
-    margin-right: 55px;
-    padding-bottom: 10px;
-    color: red;
-  }
-
-  .red {
-    color: red;
-  }
-
-  .hede {
-    color: #000;
-  }
-
-  .pagination {
-    text-align: center;
-  }
-
-  .infoWindow {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    color: #323232;
-    font-size: 14px;
-    font-weight: 700;
-    width: 316px;
-
-    div {
-      margin-top: 15px;
-
-      span {
-        font-weight: 400;
-        margin-right: 22px;
-      }
-
-      a {
-        font-weight: 400;
-        margin-right: 5px;
-        text-decoration: underline;
-        color: #3b99f1;
-      }
-    }
-  }
-
-  .warningTop {
-    /*width: 100%;*/
-    /*height: 50px;*/
-    /*padding-top: 80px;*/
-    .warningText1 {
-      float: left;
-      font-size: 16px;
-      font-weight: 700;
-      margin-top: 10px;
-      padding-left: 20px;
+      height: 100%;
+      text-align: center;
+      font-size: 2em;
+      line-height: 80px;
       color: #fff;
     }
   }
+}
 
-  .warningDate {
-    float: right;
-    font-size: 16px;
-    font-weight: 700;
-    margin-top: 10px;
-    padding-right: 20px;
-    color: #fff;
-  }
+.blackgroundImgGds {
+  background: url(../../assets/img/truegds.png) no-repeat;
+}
 
-  .warningText {
-    font-size: 16px;
-    font-weight: 700;
-    margin-left: 20px;
-    color: #fff;
-    margin-top: 20px;
-    background: url(../../assets/img/biaoti.png) no-repeat;
+.lineBox {
+  border: 1px solid #2c58a6;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  box-shadow: 0 0 10px #2c58a6;
+}
+
+.lineBox2 {
+  border: 1px solid #2c58a6;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 100px;
+  width: 50%;
+  height: 500px;
+  display: inline-block;
+  float: left;
+  box-shadow: 0 0 10px #2c58a6;
+}
+
+.lineBox3 {
+  border: 1px solid #2c58a6;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-top: 100px;
+  width: 45%;
+  height: 500px;
+  display: inline-block;
+  float: right;
+  box-shadow: 0 0 10px #2c58a6;
+}
+
+.carmsg {
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 20px;
+  color: #fff;
+  margin-top: 20px;
+  background: url(../../assets/img/biaoti.png) no-repeat;
+}
+
+#homeview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.homeviewButton {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 900;
+}
+
+.map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 800;
+
+  .input-with-select {
+    position: absolute;
+    right: 150px;
+    top: 10px;
+    width: 309px;
   }
-  .warningText1 {
-    font-size: 16px;
-    font-weight: 700;
-    margin-left: 20px;
-    margin-top: 60px;
-    color: #fff;
-    background: url(../../assets/img/biaoti.png) no-repeat;
-  }
-  .warningText2 {
-    font-size: 16px;
-    font-weight: 700;
-    margin-left: 20px;
-    /*margin-top: 10px;*/
-    color: #fff;
-    background: url(../../assets/img/biaoti.png) no-repeat;
-  }
-  .button {
+}
+
+.warning {
+  width: 100%;
+  height: 100%;
+}
+
+#player {
+  width: 100%;
+  height: 100%;
+}
+
+.mapList {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+
+  .list {
+    // float: left;
     display: flex;
-    font-size: 5px;
-    color: #fff;
-    margin-left: 1%;
-    margin-top: 50px;
-  }
-
-  .buttonrow {
-    z-index: 800;
-    font-size: 5px;
-    display: flex;
-    justify-content: center;
+    width: 130px;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    border-radius: 4px;
     align-items: center;
-    font-weight: 300;
-    margin-left: 10px;
-
-    .buttonrowL {
-      border-radius: 6px 0 0 6px;
-      height: 40px;
-      width: 70%;
-      line-height: 40px;
-      margin-left: 3%;
-
-      span {
-        display: inline-block;
-        // margin-left: 10px !important;
-        /*margin-right: 0 !important;*/
-        margin: 0 auto;
-      }
-    }
-
-    .oneself {
-      background-color: #3b99f1;
-    }
-
-    .townself {
-      background-color: #4eb14e;
-    }
-
-    .threeself {
-      background-color: #ffb533;
-    }
-
-    .fourself {
-      background-color: #f66134;
-    }
-
-    .fifself {
-      background-color: #439dc5;
-    }
-
-    .sixself {
-      background-color: #f29118;
-    }
-
-    .sevenself {
-      background-color: #31cab5;
-    }
-
-    .buttonrowR {
-      border-radius: 0 6px 6px 0;
-      height: 40px;
-      width: 40px;
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 40px;
-      background-color: #fff;
-
-      span {
-        margin-left: 8px;
-        margin-bottom: 18px;
-      }
-    }
-
-    .oneselfnew {
-      border: 2px solid #3b99f1;
-      color: #3b99f1;
-    }
-
-    .townselfnew {
-      border: 2px solid #4eb14e;
-      color: #4eb14e;
-    }
-
-    .threeselfnew {
-      border: 2px solid #ffb533;
-      color: #ffb533;
-    }
-
-    .fourselfnew {
-      border: 2px solid #f66134;
-      color: #f66134;
-    }
-
-    .fifselfnew {
-      border: 2px solid #439dc5;
-      color: #439dc5;
-    }
-
-    .sixselfnew {
-      border: 2px solid #f29118;
-      color: #f29118;
-    }
-
-    .sevenselfnew {
-      border: 2px solid #31cab5;
-      color: #31cab5;
-    }
-  }
-
-  .search {
-    width: 100%;
-
-    .el-form-item {
-      display: inline-block;
-
-      .el-input {
-        width: 180px;
-        font-size: 13px;
-      }
-
-      .selectTop {
-        width: 180px;
-        font-size: 13px;
-      }
-    }
-  }
-
-  .Troubleshooting {
-    margin-left: 20px;
-  }
-
-  .sytime {
-    float: right;
-    margin-right: 55px;
-    padding-bottom: 10px;
-    color: red;
-  }
-
-  .pagination {
-    text-align: center;
-  }
-
-  .infoWindow {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    color: #323232;
-    font-size: 14px;
-    font-weight: 700;
-    width: 316px;
-
-    div {
-      margin-top: 15px;
-
-      span {
-        font-weight: 400;
-        margin-right: 22px;
-      }
-
-      a {
-        font-weight: 400;
-        margin-right: 5px;
-        text-decoration: underline;
-        color: #3b99f1;
-      }
-    }
-  }
-
-  .warningPlate {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    height: 112px;
-    margin-top: 50px;
-    color: #fff;
-  }
-
-  .plate {
-    height: 112px;
-    width: 10%;
-    border: 1px solid #fff;
-    border-radius: 5px;
-    margin-left: 3.8%;
-    display: flex;
-    margin-top: 20px;
+    justify-content: left;
 
     img {
-      width: 40px;
-      height: 40px;
-      margin-top: 32px;
       margin-left: 10px;
     }
 
-    .plateRight {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: auto;
+    .duli {
+      margin: 0 10px 0 14px;
+    }
 
-      .plateRightNumber {
-        font-size: 36px !important;
-        font-weight: 700;
-        align-items: center;
-      }
+    span {
+      margin-left: 6px;
+    }
+  }
+}
+
+.buttonrow {
+  z-index: 800;
+  font-size: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: PingFangSC-Medium;
+  font-weight: 400;
+
+  .buttonrowL {
+    border-radius: 6px 0 0 6px;
+    height: 40px;
+    width: 25%;
+    line-height: 40px;
+    margin-left: 1%;
+
+    span {
+      display: inline-block;
+      // margin-left: 10px !important;
+      /*margin-right: 0 !important;*/
+      margin: 0 auto;
     }
   }
 
-  p {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+  .oneself {
+    background-color: #3b99f1;
   }
 
-  .playerTop {
-    float: right;
+  .townself {
+    background-color: #4eb14e;
+  }
+
+  .threeself {
+    background-color: #ffb533;
+  }
+
+  .fourself {
+    background-color: #f66134;
+  }
+
+  .fifself {
+    background-color: #439dc5;
+  }
+
+  .sixself {
+    background-color: #f29118;
+  }
+
+  .sevenself {
+    background-color: #31cab5;
+  }
+
+  .buttonrowR {
+    border-radius: 0 6px 6px 0;
+    height: 40px;
+    width: 40px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 40px;
+    background-color: #fff;
+
+    span {
+      margin-left: 8px;
+      margin-bottom: 18px;
+    }
+  }
+
+  .oneselfnew {
+    border: 2px solid #3b99f1;
+    color: #3b99f1;
+  }
+
+  .townselfnew {
+    border: 2px solid #4eb14e;
+    color: #4eb14e;
+  }
+
+  .threeselfnew {
+    border: 2px solid #ffb533;
+    color: #ffb533;
+  }
+
+  .fourselfnew {
+    border: 2px solid #f66134;
+    color: #f66134;
+  }
+
+  .fifselfnew {
+    border: 2px solid #439dc5;
+    color: #439dc5;
+  }
+
+  .sixselfnew {
+    border: 2px solid #f29118;
+    color: #f29118;
+  }
+
+  .sevenselfnew {
+    border: 2px solid #31cab5;
+    color: #31cab5;
+  }
+}
+
+.search {
+  width: 100%;
+
+  .el-form-item {
+    display: inline-block;
+
+    .el-input {
+      width: 180px;
+      font-size: 13px;
+    }
+
+    .selectTop {
+      width: 180px;
+      font-size: 13px;
+    }
+  }
+}
+
+.Troubleshooting {
+  margin-left: 20px;
+}
+
+.sytime {
+  float: right;
+  margin-right: 55px;
+  padding-bottom: 10px;
+  color: red;
+}
+
+.red {
+  color: red;
+}
+
+.hede {
+  color: #000;
+}
+
+.pagination {
+  text-align: center;
+}
+
+.infoWindow {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: #323232;
+  font-size: 14px;
+  font-weight: 700;
+  width: 316px;
+
+  div {
+    margin-top: 15px;
+
+    span {
+      font-weight: 400;
+      margin-right: 22px;
+    }
+
+    a {
+      font-weight: 400;
+      margin-right: 5px;
+      text-decoration: underline;
+      color: #3b99f1;
+    }
+  }
+}
+
+.warningTop {
+  /*width: 100%;*/
+  /*height: 50px;*/
+  /*padding-top: 80px;*/
+  .warningText1 {
+    float: left;
     font-size: 16px;
     font-weight: 700;
     margin-top: 10px;
-    padding-right: 20px;
+    padding-left: 20px;
+    color: #fff;
   }
+}
 
-  .playerVideo {
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-    align-items: stretch;
-    position: absolute;
-    top: 50px;
+.warningDate {
+  float: right;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
+  padding-right: 20px;
+  color: #fff;
+}
 
-    .videoDiv {
-      width: 240px;
-      height: 200px;
-      margin-left: 10px;
-      margin-right: 12px;
+.warningText {
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 20px;
+  color: #fff;
+  margin-top: 20px;
+  background: url(../../assets/img/biaoti.png) no-repeat;
+}
+.warningText1 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 20px;
+  margin-top: 60px;
+  color: #fff;
+  background: url(../../assets/img/biaoti.png) no-repeat;
+}
+.warningText2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 20px;
+  /*margin-top: 10px;*/
+  color: #fff;
+  background: url(../../assets/img/biaoti.png) no-repeat;
+}
+.button {
+  display: flex;
+  font-size: 5px;
+  color: #fff;
+  margin-left: 1%;
+  margin-top: 50px;
+}
+
+.buttonrow {
+  z-index: 800;
+  font-size: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 300;
+  margin-left: 10px;
+
+  .buttonrowL {
+    border-radius: 6px 0 0 6px;
+    height: 40px;
+    width: 70%;
+    line-height: 40px;
+    margin-left: 3%;
+
+    span {
+      display: inline-block;
+      // margin-left: 10px !important;
+      /*margin-right: 0 !important;*/
+      margin: 0 auto;
     }
   }
 
-  .userImage {
-    position: absolute;
-    bottom: 0px;
+  .oneself {
+    background-color: #3b99f1;
+  }
+
+  .townself {
+    background-color: #4eb14e;
+  }
+
+  .threeself {
+    background-color: #ffb533;
+  }
+
+  .fourself {
+    background-color: #f66134;
+  }
+
+  .fifself {
+    background-color: #439dc5;
+  }
+
+  .sixself {
+    background-color: #f29118;
+  }
+
+  .sevenself {
+    background-color: #31cab5;
+  }
+
+  .buttonrowR {
+    border-radius: 0 6px 6px 0;
+    height: 40px;
+    width: 40px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 40px;
+    background-color: #fff;
+
+    span {
+      margin-left: 8px;
+      margin-bottom: 18px;
+    }
+  }
+
+  .oneselfnew {
+    border: 2px solid #3b99f1;
+    color: #3b99f1;
+  }
+
+  .townselfnew {
+    border: 2px solid #4eb14e;
+    color: #4eb14e;
+  }
+
+  .threeselfnew {
+    border: 2px solid #ffb533;
+    color: #ffb533;
+  }
+
+  .fourselfnew {
+    border: 2px solid #f66134;
+    color: #f66134;
+  }
+
+  .fifselfnew {
+    border: 2px solid #439dc5;
+    color: #439dc5;
+  }
+
+  .sixselfnew {
+    border: 2px solid #f29118;
+    color: #f29118;
+  }
+
+  .sevenselfnew {
+    border: 2px solid #31cab5;
+    color: #31cab5;
+  }
+}
+
+.search {
+  width: 100%;
+
+  .el-form-item {
+    display: inline-block;
+
+    .el-input {
+      width: 180px;
+      font-size: 13px;
+    }
+
+    .selectTop {
+      width: 180px;
+      font-size: 13px;
+    }
+  }
+}
+
+.Troubleshooting {
+  margin-left: 20px;
+}
+
+.sytime {
+  float: right;
+  margin-right: 55px;
+  padding-bottom: 10px;
+  color: red;
+}
+
+.pagination {
+  text-align: center;
+}
+
+.infoWindow {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: #323232;
+  font-size: 14px;
+  font-weight: 700;
+  width: 316px;
+
+  div {
+    margin-top: 15px;
+
+    span {
+      font-weight: 400;
+      margin-right: 22px;
+    }
+
+    a {
+      font-weight: 400;
+      margin-right: 5px;
+      text-decoration: underline;
+      color: #3b99f1;
+    }
+  }
+}
+
+.warningPlate {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  height: 112px;
+  margin-top: 50px;
+  color: #fff;
+}
+
+.plate {
+  height: 112px;
+  width: 10%;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  margin-left: 3.8%;
+  display: flex;
+  margin-top: 20px;
+
+  img {
+    width: 40px;
+    height: 40px;
+    margin-top: 32px;
+    margin-left: 10px;
+  }
+
+  .plateRight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+
+    .plateRightNumber {
+      font-size: 36px !important;
+      font-weight: 700;
+      align-items: center;
+    }
+  }
+}
+
+p {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.playerTop {
+  float: right;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
+  padding-right: 20px;
+}
+
+.playerVideo {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: stretch;
+  position: absolute;
+  top: 50px;
+
+  .videoDiv {
+    width: 240px;
+    height: 200px;
+    margin-left: 10px;
+    margin-right: 12px;
+  }
+}
+
+.userImage {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  overflow: hidden;
+
+  .userImageAllWrapper {
     width: 100%;
-    overflow: hidden;
+    list-style: none;
+    display: flex;
 
-    .userImageAllWrapper {
-      width: 100%;
-      list-style: none;
-      display: flex;
+    li {
+      width: 240px;
+      margin-left: 10px;
+      border: 1px solid #ececec;
 
-      li {
-        width: 240px;
-        margin-left: 10px;
-        border: 1px solid #ececec;
+      p {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
 
-        p {
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-        }
-
-        img {
-          display: flex;
-        }
+      img {
+        display: flex;
       }
     }
   }
+}
 </style>
