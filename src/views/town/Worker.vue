@@ -126,23 +126,19 @@
           <el-form-item v-if="newformInline.type === '部门通知'" label="部门通知" prop="depart">
             <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有部门" value></el-option>
-              <el-option label="环卫一部" value="环卫一部"></el-option>
-              <el-option label="环卫二部" value="环卫二部"></el-option>
-              <el-option label="环卫三部" value="环卫三部"></el-option>
+              <el-option v-for="(item,i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="newformInline.type === '区域通知'" label="区域通知" prop="area">
             <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有区域" value></el-option>
-              <el-option label="东营区新区" value="东营区新区"></el-option>
-              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
+              <el-option v-for="(item,i) in dropmenu.area" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="newformInline.type === '岗位通知'" label="岗位通知" prop="job">
             <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有岗位" value></el-option>
-              <el-option label="环卫工" value="环卫工"></el-option>
+              <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="newformInline.type === '个人通知'" label="个人通知" prop="users">
@@ -216,24 +212,17 @@
         <div class="newbox">
           <el-form-item v-if="formInline.type === '部门通知'" label="部门通知">
             <el-select v-model="formInline.users" disabled class="selectTop">
-              <el-option label="所有部门" value></el-option>
-              <el-option label="环卫一部" value="环卫一部"></el-option>
-              <el-option label="环卫二部" value="环卫二部"></el-option>
-              <el-option label="环卫三部" value="环卫三部"></el-option>
+              <el-option v-for="(item,i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
             <el-select v-model="formInline.users" disabled class="selectTop">
-              <el-option label="所有区域" value></el-option>
-              <el-option label="东营区新区" value="东营区新区"></el-option>
-              <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-              <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
+              <el-option v-for="(item,i) in dropmenu.area" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="formInline.type === '岗位通知'" label="岗位通知">
             <el-select v-model="formInline.users" disabled class="selectTop">
-              <el-option label="所有岗位" value></el-option>
-              <el-option label="环卫工" value="环卫工"></el-option>
+              <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="formInline.type === '个人通知'" label="个人通知">
@@ -273,6 +262,12 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      // 下拉框
+      dropmenu: {
+        depart: [],
+        area: [],
+        job: []
+      },
       // 新建通知
       newformInline: {
         title: "",
@@ -326,6 +321,18 @@ export default {
     };
   },
   methods: {
+    // 下拉框
+    getDropMenu() {
+      this.$http.get("systemAdvice/getDepart").then(res => {
+        this.dropmenu.depart = res.data;
+      });
+      this.$http.get("systemAdvice/getArea").then(res => {
+        this.dropmenu.area = res.data;
+      });
+      this.$http.get("safeQuality/getJob").then(res => {
+        this.dropmenu.job = res.data;
+      });
+    },
     // 获取模糊搜索人名
     getRestaurants() {
       this.$http.get("systemAdvice/getSystemAdviceName").then(res => {
@@ -443,6 +450,7 @@ export default {
   created() {
     this.getAddBook();
     this.getRestaurants();
+    this.getDropMenu();
   }
 };
 </script>

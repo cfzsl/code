@@ -10,6 +10,7 @@
                 prefix-icon="el-icon-mobile-phone"
                 v-model="input"
                 placeholder="请输入手机号"
+                maxlength="11"
                 style="width: 321px"
               ></el-input>
               <div class="code">
@@ -17,6 +18,7 @@
                   prefix-icon="el-icon-chat-square"
                   v-model="input"
                   placeholder="请输入验证码"
+                  maxlength="6"
                   style="width: 217px; margin-top: 25px;"
                 ></el-input>
                 <el-button class="codebtn" @click="code" v-if="this.codebtn">{{ this.codemsg }}</el-button>
@@ -41,7 +43,6 @@
           </el-col>
         </el-row>
       </div>
-      <!-- <div class="footer">系统开发：东营区油城环卫有限公司&nbsp;&nbsp;&nbsp;&nbsp;技术支持：0546-7773897</div> -->
     </div>
   </div>
 </template>

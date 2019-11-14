@@ -124,22 +124,19 @@
             <el-col :span="12">
               <el-form-item label="所属单位" prop="area">
                 <el-select style="width:215px" v-model="addfeedback.area">
-                  <el-option label="环卫一部" value="环卫一部"></el-option>
-                  <el-option label="环卫二部" value="环卫二部"></el-option>
-                  <el-option label="环卫三部" value="环卫三部"></el-option>
-                  <el-option label="环卫四部" value="环卫四部"></el-option>
+                  <el-option
+                    v-for="(item,i) in dropmenu.depart"
+                    :key="i"
+                    :label="item"
+                    :value="item"
+                  ></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位" prop="job">
                 <el-select style="width:220px" v-model="addfeedback.job">
-                  <el-option label="环卫工人" value="环卫工人"></el-option>
-                  <el-option label="洒水车司机" value="洒水车司机"></el-option>
-                  <el-option label="清运车司机" value="清运车司机"></el-option>
-                  <el-option label="清扫车司机" value="清扫车司机"></el-option>
-                  <el-option label="中队长" value="中队长"></el-option>
-                  <el-option label="队员" value="队员"></el-option>
+                  <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -214,24 +211,19 @@
             <el-col :span="12">
               <el-form-item label="所属单位">
                 <el-select disabled style="width:220px" v-model="feedbackdetail.area">
-                  <el-option label="全部" value></el-option>
-                  <el-option label="环卫一部" value="环卫一部"></el-option>
-                  <el-option label="环卫二部" value="环卫二部"></el-option>
-                  <el-option label="环卫三部" value="环卫三部"></el-option>
-                  <el-option label="环卫四部" value="环卫四部"></el-option>
+                  <el-option
+                    v-for="(item,i) in dropmenu.depart"
+                    :key="i"
+                    :label="item"
+                    :value="item"
+                  ></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位">
                 <el-select disabled v-model="feedbackdetail.job">
-                  <el-option label="全部岗位" value></el-option>
-                  <el-option label="环卫工人" value="环卫工人"></el-option>
-                  <el-option label="洒水车司机" value="洒水车司机"></el-option>
-                  <el-option label="清运车司机" value="清运车司机"></el-option>
-                  <el-option label="清扫车司机" value="清扫车司机"></el-option>
-                  <el-option label="中队长" value="中队长"></el-option>
-                  <el-option label="队员" value="队员"></el-option>
+                  <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -354,6 +346,11 @@
 export default {
   data() {
     return {
+      // 下拉框
+      dropmenu: {
+        job: [],
+        depart: []
+      },
       input: null,
       radio: "0",
       data: {
@@ -418,6 +415,15 @@ export default {
     };
   },
   methods: {
+    // 下拉框
+    getDropMenu() {
+      this.$http.get("safeQuality/getJob").then(res => {
+        this.dropmenu.job = res.data;
+      });
+      this.$http.get("systemAdvice/getDepart").then(res => {
+        this.dropmenu.depart = res.data;
+      });
+    },
     uploadImage1() {
       return;
     },
@@ -556,7 +562,6 @@ export default {
     },
     // 问题处理
     problemHandling(id) {
-      const _this = this;
       if (this.imgupload) {
         this.rules.img = [];
         this.$refs.uploadimg.submit();
@@ -566,6 +571,7 @@ export default {
     },
     // 问题处理成功回调
     processsuccess() {
+      const _this = this;
       this.$message({
         type: "success",
         message: "处理完成！",
@@ -604,8 +610,7 @@ export default {
     }
   },
   created() {
-    console.log();
-
+    this.getDropMenu();
     this.getList();
   }
 };

@@ -15,10 +15,7 @@
         <span>所属单位</span>
         <el-select v-model="search.department">
           <el-option label="全部" value></el-option>
-          <el-option label="环卫一部" value="环卫一部"></el-option>
-          <el-option label="环卫二部" value="环卫二部"></el-option>
-          <el-option label="环卫三部" value="环卫三部"></el-option>
-          <el-option label="环卫四部" value="环卫四部"></el-option>
+          <el-option v-for="(item, i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
         </el-select>
       </div>
       <el-button type="primary" class="btn" @click="getlist">查询</el-button>
@@ -129,31 +126,29 @@
         class="demo-form-inline"
       >
         <el-form-item label="车牌号" prop="member">
-          <el-input v-model="ruleForm.member"></el-input>
+          <el-input v-model="ruleForm.member" placeholder="请输入车牌号"></el-input>
         </el-form-item>
         <el-form-item label="购车时间" prop="shoppingtime">
           <el-date-picker
             v-model="ruleForm.shoppingtime"
             value-format="yyyy-MM-dd"
             type="date"
-            placeholder="选择日期"
+            placeholder="选择购车时间"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="资产编号" prop="parm2">
-          <el-input v-model="ruleForm.parm2"></el-input>
+        <el-form-item label="资产编号" prop="parm3">
+          <el-input v-model="ruleForm.parm3" placeholder="请输入资产编号"></el-input>
         </el-form-item>
         <el-form-item label="归属单位" prop="department">
-          <el-select v-model="ruleForm.department" class="selectTop">
-            <el-option label="环卫一部" value="环卫一部"></el-option>
-            <el-option label="环卫二部" value="环卫二部"></el-option>
-            <el-option label="环卫三部" value="环卫三部"></el-option>
+          <el-select v-model="ruleForm.department" class="selectTop" placeholder="请选择归属单位">
+            <el-option v-for="(item, i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="指定司机" prop="user">
-          <el-input v-model="ruleForm.user"></el-input>
+          <el-input v-model="ruleForm.user" placeholder="请输入指定司机"></el-input>
         </el-form-item>
         <el-form-item label="联系方式" prop="information">
-          <el-input v-model="ruleForm.information"></el-input>
+          <el-input v-model="ruleForm.information" placeholder="请输入联系方式"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -174,26 +169,29 @@
         class="demo-form-inline"
       >
         <el-form-item label="车牌号" prop="member">
-          <el-input v-model="details.member"></el-input>
+          <el-input v-model="details.member" placeholder="请输入车牌号"></el-input>
         </el-form-item>
         <el-form-item label="购车时间" prop="shoppingtime">
-          <el-input v-model="details.shoppingtime"></el-input>
+          <el-date-picker
+            v-model="details.shoppingtime"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择购车时间"
+          ></el-date-picker>
         </el-form-item>
-        <el-form-item label="资产编号" prop="parm2">
-          <el-input v-model="details.parm2"></el-input>
+        <el-form-item label="资产编号" prop="parm3">
+          <el-input v-model="details.parm3" placeholder="请输入资产编号"></el-input>
         </el-form-item>
         <el-form-item label="归属单位" prop="department">
-          <el-select v-model="details.department" class="selectTop">
-            <el-option label="环卫一部" value="环卫一部"></el-option>
-            <el-option label="环卫二部" value="环卫二部"></el-option>
-            <el-option label="环卫三部" value="环卫三部"></el-option>
+          <el-select v-model="details.department" class="selectTop" placeholder="请选择归属单位">
+            <el-option v-for="(item, i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="使用人" prop="user">
-          <el-input v-model="details.user"></el-input>
+        <el-form-item label="指定司机" prop="user">
+          <el-input v-model="details.user" placeholder="请输入指定司机"></el-input>
         </el-form-item>
         <el-form-item label="联系方式" prop="information">
-          <el-input v-model="details.information"></el-input>
+          <el-input v-model="details.information" placeholder="请输入联系方式"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="delect-footer">
@@ -415,6 +413,10 @@
 export default {
   data() {
     return {
+      // 下拉框
+      dropmenu: {
+        depart: []
+      },
       formLabelAlign: "",
       // 首屏搜索
       search: {
@@ -473,7 +475,7 @@ export default {
         shoppingtime: "",
         user: "",
         department: "",
-        parm2: "",
+        parm3: "",
         area: "",
         information: ""
       },
@@ -487,7 +489,7 @@ export default {
             trigger: "blur"
           }
         ],
-        parm2: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
+        parm3: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
         department: [
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
@@ -553,7 +555,7 @@ export default {
         department: [
           { required: true, message: "请选择归属单位", trigger: "blur" }
         ],
-        parm2: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
+        parm3: [{ required: true, message: "请输入资产编号", trigger: "blur" }],
         information: [
           { required: true, message: "请输入联系方式", trigger: "blur" }
         ]
@@ -563,6 +565,12 @@ export default {
     };
   },
   methods: {
+    // 下拉框获取
+    getDropMenu() {
+      this.$http.get("sanitation/car/getDepart").then(res => {
+        this.dropmenu.depart = res.data;
+      });
+    },
     // 列表导出
     exportmsg() {
       location.href =
@@ -849,6 +857,7 @@ export default {
   },
   created() {
     this.getlist();
+    this.getDropMenu();
   }
 };
 </script>
