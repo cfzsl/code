@@ -16,34 +16,21 @@
         <span>车辆类型</span>
         <el-select v-model="search.cartype">
           <el-option label="全部" value></el-option>
-          <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
-          <el-option label="洒水车" value="洒水车"></el-option>
-          <el-option label="清扫车" value="清扫车"></el-option>
+          <el-option v-for="(item, i) in dropMenu.cartype" :key="i" :label="item" :value="item"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
         <span>作业区域</span>
         <el-select v-model="search.area">
           <el-option label="全部" value></el-option>
-          <el-option label="东营区新区" value="东营区新区"></el-option>
-          <el-option label="文汇街道办事处" value="文汇街道办事处"></el-option>
-          <el-option label="辛店街道办事处" value="辛店街道办事处"></el-option>
-          <el-option label="黄河街道办事处" value="黄河街道办事处"></el-option>
-          <el-option label="胜园街道办事处" value="胜园街道办事处"></el-option>
-          <el-option label="六户镇" value="六户镇"></el-option>
-          <el-option label="牛庄镇" value="牛庄镇"></el-option>
-          <el-option label="史口镇" value="史口镇"></el-option>
-          <el-option label="龙居镇" value="龙居镇"></el-option>
+          <el-option v-for="(item, i) in dropMenu.area" :key="i" :label="item" :value="item"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
         <span>所属单位</span>
         <el-select v-model="search.department">
           <el-option label="全部" value></el-option>
-          <el-option label="环卫一部" value="环卫一部"></el-option>
-          <el-option label="环卫二部" value="环卫二部"></el-option>
-          <el-option label="环卫三部" value="环卫三部"></el-option>
-          <el-option label="环卫四部" value="环卫四部"></el-option>
+          <el-option v-for="(item, i) in dropMenu.depart" :key="i" :label="item" :value="item"></el-option>
         </el-select>
       </div>
       <el-button type="primary" class="btn" @click="getCarList">查询</el-button>
@@ -157,9 +144,7 @@
       <el-form ref="form" :model="msg" label-width="auto" class="msg">
         <el-form-item label="车辆信息">
           <el-select disabled v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
-            <el-option label="垃圾运输车" value="垃圾运输车"></el-option>
-            <el-option label="洒水车" value="洒水车"></el-option>
-            <el-option label="清扫车" value="清扫车"></el-option>
+            <el-option v-for="(item, i) in dropMenu.cartype" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号">
@@ -173,8 +158,7 @@
         </el-form-item>
         <el-form-item label="归属单位">
           <el-select disabled v-model="msg.department" placeholder="请选择归属单位" style="width: 100%">
-            <el-option label="环卫一部" value="一部"></el-option>
-            <el-option label="环卫二部" value="二部"></el-option>
+            <el-option v-for="(item, i) in dropMenu.depart" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="指定司机">
@@ -183,11 +167,9 @@
         <el-form-item label="联系方式">
           <el-input readonly v-model="msg.param3" placeholder="请输入联系方式"></el-input>
         </el-form-item>
-        <el-form-item label="使用区域">
-          <el-select disabled v-model="msg.area" placeholder="请选择使用区域" style="width: 100%">
-            <el-option label="东营南站" value="东营南站"></el-option>
-            <el-option label="西湖公园" value="西湖公园"></el-option>
-            <el-option label="翠湖公园" value="翠湖公园"></el-option>
+        <el-form-item label="作业区域">
+          <el-select disabled v-model="msg.area" placeholder="请选择作业区域" style="width: 100%">
+            <el-option v-for="(item, i) in dropMenu.area" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车辆维修情况">
@@ -208,9 +190,7 @@
       <el-form ref="ruleForm" :model="msg" :rules="rules" label-width="auto" class="msg">
         <el-form-item label="车辆信息" prop="cartype">
           <el-select v-model="msg.cartype" placeholder="请选择车辆类型" style="width: 100%">
-            <el-option label="垃圾清运车" value="垃圾清运车"></el-option>
-            <el-option label="洒水车" value="洒水车"></el-option>
-            <el-option label="清扫车" value="清扫车"></el-option>
+            <el-option v-for="(item, i) in dropMenu.cartype" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="车牌号" prop="busnumber">
@@ -230,22 +210,19 @@
         </el-form-item>
         <el-form-item label="归属单位" prop="department">
           <el-select v-model="msg.department" placeholder="请选择归属单位" style="width: 100%">
-            <el-option label="环卫一部" value="环卫一部"></el-option>
-            <el-option label="环卫二部" value="环卫二部"></el-option>
+            <el-option v-for="(item, i) in dropMenu.depart" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="使用区域" prop="area">
-          <el-select v-model="msg.area" placeholder="请选择使用区域" style="width: 100%">
-            <el-option label="东营南站" value="东营南站"></el-option>
-            <el-option label="西湖公园" value="西湖公园"></el-option>
-            <el-option label="翠湖公园" value="翠湖公园"></el-option>
+        <el-form-item label="作业区域" prop="area">
+          <el-select v-model="msg.area" placeholder="请选择作业区域" style="width: 100%">
+            <el-option v-for="(item, i) in dropMenu.area" :key="i" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="指定司机" prop="user">
           <el-input v-model="msg.user" placeholder="请输入司机"></el-input>
         </el-form-item>
         <el-form-item label="联系方式" prop="param3">
-          <el-input v-model="msg.param3" placeholder="请输入联系方式"></el-input>
+          <el-input v-model="msg.param3" maxlength="11" placeholder="请输入联系方式"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -534,6 +511,12 @@ export default {
         department: "",
         cartype: ""
       },
+      // 下拉框
+      dropMenu: {
+        cartype: [],
+        area: [],
+        depart: []
+      },
       // 列表新增/详情/编辑
       msg: {
         cartype: "",
@@ -675,6 +658,18 @@ export default {
     };
   },
   methods: {
+    // 下拉框获取
+    getDropMenu() {
+      this.$http.get("MotorDetail/getArea").then(res => {
+        this.dropMenu.area = res.data;
+      });
+      this.$http.get("MotorDetail/getDepart").then(res => {
+        this.dropMenu.depart = res.data;
+      });
+      this.$http.get("MotorDetail/getCarType").then(res => {
+        this.dropMenu.cartype = res.data;
+      });
+    },
     // 保养记录显示具体图片
     showimgs(v) {
       this.url = v;
@@ -883,30 +878,22 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post(
-              "MotorDetail/deleteMotorInformationBySid",
-              this.$qs.stringify({ sid: row.sid })
-            )
-            .then(res => {
-              console.log(res);
-              this.getCarList();
-            });
-          this.$message({
-            type: "success",
-            message: "删除成功!",
-            offset: 155
+      }).then(() => {
+        this.$http
+          .post(
+            "MotorDetail/deleteMotorInformationBySid",
+            this.$qs.stringify({ sid: row.sid })
+          )
+          .then(res => {
+            console.log(res);
+            this.getCarList();
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-            offset: 155
-          });
+        this.$message({
+          type: "success",
+          message: "删除成功!",
+          offset: 155
         });
+      });
     },
     // 显示车辆视频
     handleVideo(row) {
@@ -918,7 +905,7 @@ export default {
         )
         .then(res => {
           console.log(res.data);
-          
+
           this.videoList = res.data;
         });
     },
@@ -936,7 +923,7 @@ export default {
             src: highaddress //你的m3u8地址（必填）
           }
         ],
-        notSupportedMessage: "此视频暂无法播放，请稍后再试", //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        notSupportedMessage: "此视频暂无法播放，请稍后再试" //允许覆盖Video.js无法播放媒体源时显示的默认信息。
       };
     },
     // 获取列表
@@ -992,12 +979,21 @@ export default {
           .post("MotorDetail/addMotorInformation", this.$qs.stringify(this.msg))
           .then(res => {
             this.$options.methods.getCarList.call(this);
-            this.$message({
-              type: "success",
-              showClose: true,
-              message: "新增成功",
-              offset: 155
-            });
+            if (res.status === "1") {
+              this.$message({
+                type: "success",
+                showClose: true,
+                message: "新增成功",
+                offset: 155
+              });
+            } else if (res.status === "2") {
+              this.$message({
+                type: "warning",
+                showClose: true,
+                message: "该信息已添加，不允许重复添加",
+                offset: 155
+              });
+            }
           });
       }
     },
@@ -1049,6 +1045,7 @@ export default {
   },
   created() {
     this.getCarList();
+    this.getDropMenu();
   }
 };
 </script>
