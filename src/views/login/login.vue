@@ -7,8 +7,9 @@
           <el-col :span="12" style="padding-top: 35px">
             <div class="grid-content" style="padding: 0 30px;">
               <el-input
+                type="tel"
                 prefix-icon="el-icon-mobile-phone"
-                v-model="input"
+                v-model="usermsg.username"
                 placeholder="请输入手机号"
                 maxlength="11"
                 style="width: 321px"
@@ -16,18 +17,15 @@
               <div class="code">
                 <el-input
                   prefix-icon="el-icon-chat-square"
-                  v-model="input"
+                  v-model="usermsg.code"
                   placeholder="请输入验证码"
                   maxlength="6"
                   style="width: 217px; margin-top: 25px;"
                 ></el-input>
-                <el-button class="codebtn" @click="code" v-if="this.codebtn">{{ this.codemsg }}</el-button>
+                <el-button class="codebtn" @click="getCode" v-if="this.codebtn">{{ this.codemsg }}</el-button>
                 <el-button class="codebtn" style="width: 100px" disabled v-else>{{ this.codeMit }}秒</el-button>
               </div>
-              <div style="margin-top: 20px">
-                <el-checkbox v-model="checked">记住登录</el-checkbox>
-              </div>
-              <el-button type="primary" style="width: 100%; margin-top: 25px" @click="go">登录</el-button>
+              <el-button type="primary" style="width: 321px; margin-top: 25px" @click="login">登录</el-button>
               <div class="footer">
                 <span
                   class="iconfont icon-shizhengdanwei"
@@ -38,7 +36,7 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content">
-              <img src="" alt />
+              <img src alt />
             </div>
           </el-col>
         </el-row>
@@ -51,32 +49,70 @@
 export default {
   data() {
     return {
-      input: "",
       value: false,
       codebtn: true,
-      checked: false,
       codemsg: "发送验证码",
-      codeMit: 60
+      codeMit: 60,
+      usermsg: {
+        username: "",
+        code: ""
+      }
     };
   },
   methods: {
-    go() {
-      this.$router.push({
-        name: "supervision"
-      });
+    getCode() {
+      if (this.usermsg.username != "" && this.usermsg.username.length === 11) {
+        this.$http
+          .post("login/getLogonCode", this.$qs.stringify(this.usermsg))
+          .then(res => {
+            if (res.status === "1") {
+              this.$message({
+                type: "success",
+                showClose: true,
+                message: "发送验证码成功"
+              });
+              this.codeMit = 60;
+              this.codebtn = !this.codebtn;
+              clearInterval(interval);
+              let interval = setInterval(() => {
+                if (this.codeMit <= 1) {
+                  this.codebtn = !this.codebtn;
+                  clearInterval(interval);
+                } else if (this.codeMit > 1) {
+                  this.codeMit--;
+                }
+              }, 1000);
+            } else if (res.status === "0") {
+              this.$message({
+                type: "error",
+                showClose: true,
+                message: "请核对手机号"
+              });
+            }
+          });
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "请输入正确手机号"
+        });
+      }
     },
-    code() {
-      this.codeMit = 60;
-      this.codebtn = !this.codebtn;
-      clearInterval(interval);
-      let interval = setInterval(() => {
-        if (this.codeMit <= 1) {
-          this.codebtn = !this.codebtn;
-          clearInterval(interval);
-        } else if (this.codeMit > 1) {
-          this.codeMit--;
-        }
-      }, 1000);
+    login() {
+      this.$http
+        .post("login/getLogonInformation", this.$qs.stringify(this.usermsg))
+        .then(res => {
+          if (res.status === 1) {
+            localStorage.setItem("usermsg", JSON.stringify(res.data));
+            this.$router.push({ name: "homeview" });
+          } else {
+            this.$message({
+              type: "error",
+              showClose: true,
+              message: "验证码错误"
+            });
+          }
+        });
     }
   }
 };

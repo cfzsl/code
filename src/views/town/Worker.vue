@@ -317,7 +317,8 @@ export default {
       release: {
         time: "",
         sid: ""
-      }
+      },
+      socket: ""
     };
   },
   methods: {
@@ -445,12 +446,55 @@ export default {
     // 导出
     excellist() {
       location.href = this.$http.defaults.baseURL + "systemAdvice/exportExcel";
+    },
+    test() {
+      // 实例化socket
+      this.socket = new WebSocket(
+        "ws://192.168.8.126:8080/websocket/server/张三"
+      );
+      // 监听socket连接
+      this.socket.onopen = this.open;
+      // 监听socket错误信息
+      this.socket.onerror = this.error;
+      // 监听socket消息
+      this.socket.onmessage = this.getMessage;
+      // 销毁socket连接
+      this.socket.onclose = this.close;
+    },
+    open: function() {
+      console.log("socket连接成功");
+    },
+    error: function() {
+      console.log("连接错误");
+    },
+    getMessage: function(msg) {
+      console.log("msg");
+      console.log(msg.data);
+      this.$message({
+        showClose: true,
+        message: msg.data,
+        offset: 150
+      });
+    },
+    send: function() {
+      console.log("send");
+      this.socket.send(params);
+    },
+    close: function() {
+      this.socket.close();
+      console.log("socket已经关闭");
     }
   },
   created() {
     this.getAddBook();
     this.getRestaurants();
     this.getDropMenu();
+    this.test();
+    console.log(this.socket);
+  },
+  beforeDestroy() {
+    // 销毁监听
+    this.socket.close();
   }
 };
 </script>
