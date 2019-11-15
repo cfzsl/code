@@ -106,4 +106,15 @@ export default {
 .el-carousel__container {
   height: 100% !important;
 }
+// .avatar-uploader .el-upload {
+//     border: 1px dashed #d9d9d9;
+//     border-radius: 6px;
+//     width: 100px ;
+//     height: 100px;
+//     cursor: pointer;
+//     position: absolute;
+//     top: 10px;
+//     right: 150px;
+//     overflow: hidden;
+//   }
 </style>

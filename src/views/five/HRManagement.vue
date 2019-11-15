@@ -1,5 +1,5 @@
 <template>
-  <!-- 人事管理 -->
+  <!-- 组织结构 -->
   <div id="HRManagement">
     组织结构图
   </div>

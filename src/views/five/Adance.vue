@@ -99,7 +99,13 @@
       <!-- 新建班次弹窗 -->
       <el-dialog width="50%" title="新建班次" :visible.sync="schedulingBuild" append-to-body>
         <el-divider></el-divider>
-        <el-form :inline="true" :model="shifts" :rules="ruleShifts" ref="refShifts">
+        <el-form
+          :inline="true"
+          :model="shifts"
+          :rules="ruleShifts"
+          hide-required-asterisk
+          ref="refShifts"
+        >
           <el-form-item label="班次名称:" prop="name">
             <el-input v-model="shifts.name"></el-input>
           </el-form-item>
@@ -130,31 +136,36 @@
             </el-form-item>
           </div>
           <div id="dateItem">
-            <el-form-item label="休息时间:" prop="dateone">
-              <el-time-select
-                v-model="shifts.dateone"
-                style="width:100px"
-                :picker-options="{
+            <span></span>
+            <el-form-item label="休息时间:">
+              <div v-for="(item,test) in dateItemList" :key="test" style="width:300px">
+                <el-form-item prop="dateone">
+                  <el-time-select
+                    v-model="shifts.dateone"
+                    style="width:100px"
+                    :picker-options="{
                    start: '08:30',
                    step: '00:15',
                    end: '18:30'
                  }"
-                placeholder="选择时间"
-              ></el-time-select>
-            </el-form-item>
-            <el-form-item label="-" prop="datetown">
-              <el-time-select
-                v-model="shifts.datetown"
-                style="width:100px"
-                :picker-options="{
+                    placeholder="选择时间"
+                  ></el-time-select>
+                </el-form-item>
+                <el-form-item label="-" prop="datetown">
+                  <el-time-select
+                    v-model="shifts.datetown"
+                    style="width:100px"
+                    :picker-options="{
                    start: '08:30',
                    step: '00:15',
                    end: '18:30'
                  }"
-                placeholder="选择时间"
-              ></el-time-select>
+                    placeholder="选择时间"
+                  ></el-time-select>
+                </el-form-item>
+              </div>
             </el-form-item>
-            <el-button type="primary">+增加休息时间</el-button>
+            <el-button type="primary" @click="addRestDate(test)">+增加休息时间</el-button>
           </div>
           <div>
             <span class="dateText">适用日期:</span>
@@ -412,7 +423,7 @@
             <el-radio label="加班">加班</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="请假">
+        <el-form-item :label="formInline.status" v-show="formInline.status==='正常'?false:true">
           <el-input v-model="time" style="width:80px"></el-input>
           <el-select v-model="date" style="width:80px" class="selectTop">
             <el-option label="小时" value></el-option>
@@ -440,6 +451,8 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
+      dateItemList: 1,
+      test: 0,
       pagesize: 10,
       currpage: 1,
       searchList: {
@@ -558,6 +571,10 @@ export default {
     this.getDropDepart();
   },
   methods: {
+    // 添加元素
+    addRestDate(test) {
+      this.dateItemList++;
+    },
     // 编辑
     schedulingEdit(row, _index) {
       this.editBox = true;
@@ -602,17 +619,21 @@ export default {
         console.log(res.data);
         this.paibanList = res.data;
         this.paibanList.forEach(item => {
-          if (item.relaxtime.indexOf(",") != -1) {
-            item.relaxtimeArr = item.relaxtime.split(",");
+          if (item.relaxtime) {
+            if (item.relaxtime.indexOf(",") != -1) {
+              item.relaxtimeArr = item.relaxtime.split(",");
+            }
+            item.relaxtimeArr = new Array(item.relaxtime);
           }
-          item.relaxtimeArr = new Array(item.relaxtime);
         });
         this.paibanList.forEach(item => {
-          if (item.weeklyworkday.indexOf(",") != -1) {
-            item.weeklyworkdayArr = item.weeklyworkday.split(",");
+          if (item.weeklyworkday) {
+            if (item.weeklyworkday.indexOf(",") != -1) {
+              item.weeklyworkdayArr = item.weeklyworkday.split(",");
+            }
           }
         });
-        console.log(this.paibanList);
+        // console.log(this.paibanList);
       });
     },
     // 添加排班

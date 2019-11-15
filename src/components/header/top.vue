@@ -2,7 +2,7 @@
   <!-- 头部 -->
   <div id="Top">
     <div class="TopL">
-      <span>智慧环卫综合管理平台</span>
+      <span style="cursor:pointer">智慧环卫综合管理平台</span>
       <i v-if="showdown" class="el-icon-s-fold" @click="endlist"></i>
       <i v-if="!showdown" class="el-icon-s-unfold" @click="openlist"></i>
     </div>
@@ -14,20 +14,20 @@
         <div class="po search" @click="screen">
           <div v-show="screenTop">
             <span class="iconfont icon-quanping icon"></span>
-            <span>全屏</span>
+            <span style="cursor:pointer">全屏</span>
           </div>
           <div v-show="!screenTop">
             <!-- <span class="iconfont icon-quanping icon"></span> -->
-            <span>退出全屏</span>
+            <span style="cursor:pointer">退出全屏</span>
           </div>
         </div>
         <div class="po" @click="refresh">
           <span class="iconfont icon-shuaxin icon"></span>
-          <span>刷新</span>
+          <span style="cursor:pointer">刷新</span>
         </div>
         <div class="po" @click="help = true">
           <span class="iconfont icon-bangzhu icon"></span>
-          <span>帮助</span>
+          <span style="cursor:pointer">帮助</span>
         </div>
 
         <!-- 弹框 -->
@@ -35,7 +35,7 @@
           <p>这是一段信息</p>
         </el-dialog>
         <div>
-          <span>当前登录：管理员</span>
+          <span style="cursor:pointer">当前登录：管理员</span>
         </div>
       </div>
     </div>

@@ -3,13 +3,13 @@
   <div id="vehicle">
     <div class="bdMap">
       <div class="menu">
-        <div class="btn">
+        <!-- <div class="btn">
           <el-button @click="showMap">道路监控</el-button>
           <el-button @click="serachend">历史轨迹追溯</el-button>
           <el-button @click="msgerr = true">越界报警</el-button>
           <el-button @click="msgeslint = true">停滞超限预警</el-button>
           <el-button @click="msgedate = true">日常考勤</el-button>
-        </div>
+        </div> -->
       </div>
       <!-- 道路监控弹框 -->
       <el-dialog title="道路监控" :visible.sync="monitoring" @close="msg = {}" width="70%">
@@ -298,9 +298,9 @@
       >
         <!-- 控件 -->
         <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-navigation>
-        <el-input placeholder="请输道路名称" v-model="input2" class="input-with-select">
+        <!-- <el-input placeholder="请输道路名称" v-model="input2" class="input-with-select">
           <el-button slot="append" @click="searchMap">搜索</el-button>
-        </el-input>
+        </el-input> -->
         <bml-marker-clusterer
           :averageCenter="true"
           :opt_anchor="{lng: 118.592815,lat: 37.457724}"
@@ -309,6 +309,7 @@
           <bm-marker
             v-for="(value,index) in positions"
             :key="index"
+            :zIndex='zIndex'
             :position="value"
             :icon="{url: 'http://118.31.245.183:10500/images000/监控.png', size: {width: 38, height: 30}}"
             clicking
@@ -359,6 +360,7 @@ import { BmlMarkerClusterer } from "vue-baidu-map";
 export default {
   data() {
     return {
+      zIndex:8888,
       //百度地图
       cssMap: [
         {

@@ -58,7 +58,10 @@
         <el-table-column align="center" prop="sid" label="序号" width="50px"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="sex" label="性别"></el-table-column>
-        <el-table-column align="center" prop="address" label="家庭住址" width="150px"></el-table-column>
+        <el-table-column align="center" prop="birthDay" label="出生日期"></el-table-column>
+        <el-table-column align="center" prop="address" label="家庭住处"></el-table-column>
+        <el-table-column align="center" prop="college" label="毕业院校"></el-table-column>
+        <el-table-column align="center" prop="major" label="所学专业"></el-table-column>
         <el-table-column align="center" prop="depart" label="组织架构"></el-table-column>
         <el-table-column align="center" prop="param3" label="岗位"></el-table-column>
         <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
@@ -98,7 +101,7 @@
         <el-form ref="form" :model="form">
           <el-form-item label="请选择离职时间:">
             <el-date-picker
-              v-model="form.departuretime"
+              v-model="form.leavetime"
               type="date"
               value-format="yyyy-MM-dd"
               placeholder="选择日期"
@@ -121,7 +124,7 @@
       <!-- 添加人员弹框 -->
       <el-dialog title="添加人员" :visible.sync="personnel" width="940px">
         <el-divider></el-divider>
-        <addPeople></addPeople>
+        <addPeople @transform="transform" @addformpersonnel="addformpersonnel"></addPeople>
       </el-dialog>
     </div>
 
@@ -145,7 +148,7 @@
 
 
 <script>
-import addPeople from '../addPersonnel/addPersonnel'
+import addPeople from "../addPersonnel/addPersonnel";
 export default {
   data() {
     return {
@@ -178,10 +181,20 @@ export default {
       jobList: []
     };
   },
-  components:{
-    addPeople,
+  components: {
+    addPeople
   },
   methods: {
+    //取消添加人事
+    transform(msg) {
+      this.personnel = msg;
+      // console.log(msg)
+    },
+    //添加人事
+    addformpersonnel(msg) {
+      this.personnel = msg;
+      this.getAddBook();
+    },
     // 详情
     showdetail(row, _index) {
       this.$router.push({
@@ -206,6 +219,7 @@ export default {
         .post("userInformation/listBySearch", this.$qs.stringify(this.search))
         .then(res => {
           this.data.list = res.data;
+          console.log(res.data);
           console.log("请求成功");
         });
     },
@@ -242,6 +256,7 @@ export default {
     showrelease(row, _index) {
       this.form = row;
       this.showform = true;
+      // console.log(row.leavetime)
     },
     // 取消
     cancelForm() {
@@ -251,15 +266,17 @@ export default {
     // 确认离职
     determine() {
       let _date = {
-        workstatus: this.form.workstatus,
+        leavetime: this.form.leavetime,
         sid: this.form.sid
       };
+      console.log( _date )
       this.$http
         .post("userInformation/update", this.$qs.stringify(_date))
         .then(res => {
           this.form.workstatus = "离职";
           this.showform = false;
-          console.log("成功离职");
+          // console.log("成功离职");
+          this.getAddBook();
         });
     },
     // 删除

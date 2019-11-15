@@ -2,13 +2,14 @@
   <div id="addPersonnel">
     <el-form
       :inline="true"
+      hide-required-asterisk
       :model="formAdd"
       ref="ruleForm"
       :rules="rulesAdd"
       class="demo-form-inline"
     >
-      <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/">
-        <img v-if="photourl" :src="photourl" class="avatar" />
+      <el-upload class="avatar-uploader" :limit='1' :action="$http.defaults.baseURL+'hr/memebers/uploadPhoto'" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :show-file-list="false">
+        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
         <i v-else class="el-icon-plus avatar-uploader-icon"><div>点击上传</div></i>
       </el-upload>
       <div style="font-size:16px;margin-left:14px; margin-bottom:14px">基本情况</div>
@@ -20,8 +21,8 @@
         </div>
         <div style="width:500px">
           <el-form-item label="性别:" prop="sex" style="margin-left:42px">
-            <el-select v-model="formAdd.applicantstatus" style="width:200px">
-              <el-option label="男" value="男"></el-option>
+            <el-select v-model="formAdd.sex" style="width:200px">
+              <el-option label value="男"></el-option>
               <el-option label="女" value="女"></el-option>
             </el-select>
           </el-form-item>
@@ -77,7 +78,8 @@
           </el-form-item>
           <el-form-item label="岗位:" prop="job" style="margin-left:236px">
             <el-select v-model="formAdd.job" style="width:200px">
-              <el-option label="局长" value="局长"></el-option>
+              <el-option label value="全部"></el-option>
+              <el-option v-for="item in dropJobList" :key='item' :label='item' :value='item'></el-option>
             </el-select>
           </el-form-item>
         </div>
@@ -87,6 +89,22 @@
           </el-form-item>
           <el-form-item label="联系电话:" prop="tel" style="margin-left:208px">
             <el-input v-model="formAdd.tel" style="width:200px"></el-input>
+          </el-form-item>
+        </div>
+        <div>
+          <el-form-item label="所在部门:" prop="department" style="margin-left:14px">
+            <el-select v-model="formAdd.department" style="width:200px">
+              <el-option label="全部" value></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="入职时间:" prop="entrytime" style="margin-left:208px">
+              <el-date-picker
+              v-model="formAdd.entrytime"
+              type="date"
+              placeholder="选择日期"
+              style="width:200px"
+              value-format="yyyy-MM-dd">
+              </el-date-picker>
           </el-form-item>
         </div>
         <div style="font-size:16px;margin-left:14px; margin-top:10px; margin-bottom:14px">家庭情况</div>
@@ -140,7 +158,9 @@
               type="daterange"
               value-format="yyyy-MM-dd"
               style="width:210px"
-            >
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="学校:" prop="studyschool1">
@@ -160,8 +180,11 @@
               type="daterange"
               value-format="yyyy-MM-dd"
               style="width:210px"
-            >
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
             </el-date-picker>
+          </el-form-item>
           </el-form-item>
           <el-form-item label="学校:" prop="studyschool2">
             <el-input v-model="formAdd.studyschool2" style="width:160px"></el-input>
@@ -182,8 +205,11 @@
               type="daterange"
               value-format="yyyy-MM-dd"
               style="width:210px"
-            >
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
             </el-date-picker>
+          </el-form-item>
             </el-form-item>
             <el-form-item label="工作单位:" prop="workplace1">
               <el-input v-model="formAdd.workplace1" style="width:80px"></el-input>
@@ -212,7 +238,9 @@
               type="daterange"
               value-format="yyyy-MM-dd"
               style="width:210px"
-            >
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
             </el-date-picker>
             </el-form-item>
             <el-form-item label="工作单位:" prop="workplace2">
@@ -251,114 +279,261 @@
 export default {
   data() {
     return {
-      photourl: "",
+      myHeaders: { 'Content-Type': 'multipart/form-data' },
+      flowForm:false,
+      imageUrl:'',
       formAdd: {
-        applicantperson: "",
-        applicantdepart: "",
-        param2: "",
-        param3: "",
-        materieltype: "",
-        materielattr: "",
-        materielonecost: "",
-        materielcount: "",
-        materielmoney: "",
-        purpose: "",
-        buydesc: ""
+        photourl: "",
+        name:'',
+        sex:'',
+        age:'',
+        cash:'',
+        nation:'',
+        birthplace:'',
+        ismarried:'',
+        height:'',
+        weight:'',
+        healthy:'',
+        liveaddress:'',
+        houseplace:'',
+        idcard:'',
+        job:'',
+        tel:'',
+        department:'',
+        entrytime:'',
+        familyname1:'',
+        familytie1:'',
+        familywork1:'',
+        familytel1:'',
+        familyname2:'',
+        familytie2:'',
+        familywork2:'',
+        familytel2:'',
+        familyname3:'',
+        familytie3:'',
+        familywork3:'',
+        familytel3:'',
+        studytime1:'',
+        studyschool1:'',
+        studymajor1:'',
+        studylevel1:'',
+        studytime2:'',
+        studyschool2:'',
+        studymajor2:'',
+        studylevel2:'',
+        worktime1:'',
+        workplace1:'',
+        workdepart1:'',
+        workjob1:'',
+        workcash1:'',
+        leavetext1:'',
+        worktime2:'',
+        workplace2:'',
+        workdepart2:'',
+        workjob2:'',
+        workcash2:'',
+        leavetext2:'',
       },
       rulesAdd: {
-        applicantperson: [
-          { required: true, message: "请输入申请人", trigger: "blur" }
+        name: [
+          { required: true, message: "请填写", trigger: "blur" }
         ],
-        applicantdepart: [
-          { required: true, message: "请选择申请单位", trigger: "change" }
+        sex: [
+          { required: true, message: "请选择", trigger: "blur" }
         ],
-        param2: [
-          { required: true, message: "请输入部门审批负责人", trigger: "change" }
+        age: [
+          { pattern:/^\d{2}$/, required: true, message: "请填写两位数字", trigger: "blur" }
         ],
-        param3: [
-          { required: true, message: "请输入部门采购负责人", trigger: "change" }
+        tel: [
+          { pattern:11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/, required: true, message: "请填写正确的手机号", trigger: "blur" }
         ],
-        materielname: [
-          { required: true, message: "请输入材料名称", trigger: "blur" }
+        department: [
+          { required: false, message: "请填写", trigger: "blur" }
         ],
-        materieltype: [
-          { required: true, message: "请输入规格及型号", trigger: "blur" }
+        entrytime: [
+          { required: false, message: "请填写", trigger: "blur" }
         ],
-        materielattr: [
-          { required: true, message: "请选择单位", trigger: "change" }
+        cash: [
+          { required: true, message: "请填写", trigger: "blur" }
         ],
-        materielonecost: [
-          { required: true, message: "请输入单价", trigger: "blur" }
+        nation: [
+          { required: true, message: "请填写", trigger: "blur" }
         ],
-        materielcount: [
-          { required: true, message: "请输入数量", trigger: "blur" }
+        birthplace: [
+          { required: true, message: "请填写", trigger: "blur" }
         ],
-        materielmoney: [
-          { required: true, message: "请输入金额", trigger: "blur" }
+        ismarried: [
+          { required: true, message: "请填写", trigger: "blur" }
         ],
-        purpose: [{ required: true, message: "请输入项目", trigger: "blur" }],
-        buydesc: [{ required: true, message: "请输入备注", trigger: "blur" }]
-      }
-    };
+        height: [
+          { pattern:/^\d{2,3}$/, message: "请填写", trigger: "blur" }
+        ],
+        weight: [
+          { pattern:/^\d{2,3}$/, message: "请填写", trigger: "blur" }
+        ],
+        healthy: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        liveaddress: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        houseplace: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        idcard: [
+          { required: true, message: "请填写", trigger: "blur" },
+          { pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '请填写合法的身份证', trigger: 'blur' }
+          
+        ],
+        job: [
+          { required: true, message: "请选择", trigger: "blur" }
+        ],
+        familyname1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        familytie1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        familywork1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        familytel1: [
+          {  pattern:11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/, required: true, message: "请填写正确的手机号", trigger: "blur" }
+        ],
+        studytime1:[
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        studyschool1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        studymajor1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        studylevel1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        worktime1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        workplace1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        workdepart1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        workjob1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        workcash1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+        leavetext1: [
+          { required: true, message: "请填写", trigger: "blur" }
+        ],
+    },
+    dropJobList:[]
+  }
   },
   methods: {
     //重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.$emit('transform',this.flowForm)
     },
-    // 添加物料申请
+    // 人员添加申请
     addCar(formName) {
+      this.formAdd.studytime1=this.formAdd.studytime1.join(' ')
+      this.formAdd.studytime2?this.formAdd.studytime2=this.formAdd.studytime2.join(' '):this.formAdd.studytime2=''
+      this.formAdd.worktime1=this.formAdd.worktime1.join(' ')
+      this.formAdd.worktime2?this.formAdd.worktime2=this.formAdd.worktime2.join(' '):this.formAdd.worktime2=''
       // console.log(this.formAdd);
+      // console.log(this.formAdd.studytime1)
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("添加成功");
+          // console.log("添加成功");
+          this.$http.post('hr/memebers/add',this.$qs.stringify(this.formAdd)).then(res=>{
+            this.$emit('addformpersonnel',this.flowForm)
+            console.log('添加成功')
+          })
         } else {
           console.log("添加失败");
           return false;
         }
       });
+    },
+    // 上传图片
+    handleAvatarSuccess(response, file) {
+      console.log(response)
+      this.imageUrl = URL.createObjectURL(file.raw)
+      this.formAdd.photourl=response.url
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
+      // 岗位
+      getDropJob(){
+        this.$http.post('hr/memebers/dropJob').then(res=>{
+          this.dropJobList=res.data
+          // console.log(res.data)
+        })
+      }
+    },
+    created(){
+      this.getDropJob();
     }
   }
-};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" type="text/scss" scoped>
 .demo-form-inline {
-  position: relative ;
   text-align: left;
+  position: relative;
 }
 .buttonOff {
   text-align: center;
 }
 .avatar-uploader .el-upload {
-  cursor: pointer;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  position: absolute;
-  top: 20px;
-  right: 150px;
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-  div {
-      font-size: 14px;
-      width: 100px;
-      height: 14px;
-      line-height: 14px;
+    cursor: pointer;
+    overflow: hidden;
   }
-}
-.avatar {
-  width: 100px;
-  height: 100px;
-  display: block;
-}
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    position: absolute;
+    top: 20px;
+    right: 150px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #8c939d;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    div {
+      width: 100px;
+      height: 16px;
+      line-height: 16px
+    }
+  }
+  .avatar {
+    position: absolute;
+    top: 20px;
+    right: 150px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    width: 100px;
+    height: 100px;
+    display: block;
+  }
 </style>

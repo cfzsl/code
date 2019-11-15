@@ -54,6 +54,7 @@
       <el-dialog title="新建物料采购申请" :visible.sync="dialogVisible" width="705px" class="dialogText">
         <el-form
           :inline="true"
+          hide-required-asterisk
           :model="formAdd"
           ref="ruleForm"
           :rules="rulesAdd"

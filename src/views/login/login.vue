@@ -61,7 +61,7 @@ export default {
   methods: {
     go() {
       this.$router.push({
-        name: "homeview"
+        name: "supervision"
       });
     },
     code() {
