@@ -104,7 +104,7 @@ export default {
         .then(res => {
           if (res.status === 1) {
             localStorage.setItem("usermsg", JSON.stringify(res.data));
-            this.$router.push({ name: "homeview" });
+            this.$router.push({ name: "supervision" });
           } else {
             this.$message({
               type: "error",
