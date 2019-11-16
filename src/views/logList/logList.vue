@@ -111,6 +111,16 @@ export default {
   created() {
     this.getLogList();
   },
+  // 倒序
+  // computed:{
+  //   fn(arr){
+  //     let newArr=[];
+  //     for(let i=0; i<arr.length;i++) {
+  //       newArr.push(arr[i])//数组塌陷
+  //     }
+  //     return newArr
+  //   }
+  // },
   methods: {
     // 切换页面
     nextpage(value) {

@@ -22,12 +22,12 @@
     <el-menu-item index="/town/supervision">
       <span class="iconfont icon-cheliangxinxiguanli2"></span>道路信息管理
     </el-menu-item>
-    <a href="http://47.110.160.217:5080/">
-      <el-menu-item index>
+    <!-- <a href="http://47.110.160.217:5080/"> -->
+      <el-menu-item index @click="postWc">
         <span class="iconfont icon-shouye"></span>
         公厕管理
       </el-menu-item>
-    </a>
+    <!-- </a> -->
     <!-- <el-submenu index="/onece/base">
       <template slot="title">
         <span class="iconfont icon-huanweicheguanli"></span>
@@ -148,6 +148,16 @@ export default {
     handleClose(key, keyPath) {
       // console.log(key, keyPath);
       // this.$router.push(key);
+    },
+    postWc(){
+      // let _date={
+      //   username:'admin',
+      //   password:'1'
+      // }
+      // this.$http.post('http://192.168.124.6:9999/login/adminLogin', this.$qs.stringify(_date)).then(res=>{
+      //   console.log('请求成功')
+      // })
+      location.href='http://192.168.124.6:9999/login/adminLogin?username=admin&password=1'
     }
   },
   created() {}

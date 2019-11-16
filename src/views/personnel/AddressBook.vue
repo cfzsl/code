@@ -16,7 +16,7 @@
       </div>
       <div class="searchbox">
         <span>岗位</span>
-        <el-select v-model="search.param3">
+        <el-select v-model="search.job">
           <el-option label="全部岗位" value></el-option>
           <el-option v-for="item in jobList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
@@ -39,7 +39,7 @@
           :limit="1"
           :on-exceed="onexceed"
           :on-success="onsuccess"
-          :action="$http.defaults.baseURL+'userInformation/importExcel'"
+          :action="$http.defaults.baseURL+'hr/memebers/importIn'"
         >
           <el-button icon="el-icon-download">导入通讯录</el-button>
         </el-upload>
@@ -55,19 +55,19 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column align="center" prop="sid" label="序号" width="50px"></el-table-column>
+        <el-table-column align="center" prop="num" label="序号" width="50px"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="sex" label="性别"></el-table-column>
-        <el-table-column align="center" prop="birthDay" label="出生日期"></el-table-column>
-        <el-table-column align="center" prop="address" label="家庭住处"></el-table-column>
-        <el-table-column align="center" prop="college" label="毕业院校"></el-table-column>
-        <el-table-column align="center" prop="major" label="所学专业"></el-table-column>
-        <el-table-column align="center" prop="depart" label="组织架构"></el-table-column>
-        <el-table-column align="center" prop="param3" label="岗位"></el-table-column>
+        <el-table-column align="center" prop="birthday" label="出生日期"></el-table-column>
+        <el-table-column align="center" prop="liveaddress" label="家庭住处"></el-table-column>
+        <el-table-column align="center" prop="studyschool1" label="毕业院校"></el-table-column>
+        <el-table-column align="center" prop="studymajro1" label="所学专业"></el-table-column>
+        <el-table-column align="center" prop="organ" label="组织架构"></el-table-column>
+        <el-table-column align="center" prop="job" label="岗位"></el-table-column>
         <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
         <el-table-column align="center" label="在职状态">
           <template slot-scope="scope">
-            <span :class="scope.row.workstatus=='在职'?'green':'red'">{{scope.row.workstatus}}</span>
+            <span :class="scope.row.jobstate=='在职'?'green':'red'">{{scope.row.jobstate}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="hiretime" label="入职时间"></el-table-column>
@@ -80,14 +80,14 @@
               @click="showdetail(scope.row, scope.$index)"
             >详情</el-button>
             <el-button
-              v-show="scope.row.workstatus=='在职'?true:false"
+              v-show="scope.row.jobstate=='在职'?true:false"
               class="tableButton2"
               type="warning"
               size="small"
               @click="showrelease(scope.row, scope.$index)"
             >离职</el-button>
             <el-button
-              v-show="scope.row.workstatus=='离职'?true:false"
+              v-show="scope.row.jobstate=='离职'?true:false"
               class="tableButton2"
               type="danger"
               size="small"
@@ -167,7 +167,7 @@ export default {
       search: {
         name: "",
         depart: "",
-        param3: "",
+        job: "",
         tel: ""
       },
       showedit: false,
@@ -184,6 +184,17 @@ export default {
   components: {
     addPeople
   },
+  // computed:{
+  //   fn(arr){
+  //     for(let i=0; i<arr.length;i++){
+  //           if(arr.organ==''){
+  //             arr.organ='待添加'
+  //             console.log(arr)
+  //           }
+  //           return arr
+  //       }
+  //   }
+  // },
   methods: {
     //取消添加人事
     transform(msg) {
@@ -200,7 +211,7 @@ export default {
       this.$router.push({
         path: "/matters/details",
         query: {
-          id: row.sid
+          id: row.idcard
         }
       });
     },
@@ -216,11 +227,11 @@ export default {
     // 获取列表数据
     getAddBook() {
       this.$http
-        .post("userInformation/listBySearch", this.$qs.stringify(this.search))
+        .post("/hr/memebers/search", this.$qs.stringify(this.search))
         .then(res => {
           this.data.list = res.data;
           console.log(res.data);
-          console.log("请求成功");
+          // console.log("请求成功");
         });
     },
     // 查询列表数据
@@ -240,14 +251,14 @@ export default {
     },
     // 获取组织架构列表
     getDropDepart() {
-      this.$http.post("userInformation/dropDepart").then(res => {
+      this.$http.post("hr/memebers/dropOrgan").then(res => {
         this.departList = res.data;
         // console.log(res.data)
       });
     },
     // 获取岗位列表
     getDropJob() {
-      this.$http.post("userInformation/dropJob").then(res => {
+      this.$http.post("hr/memebers/dropJob").then(res => {
         this.jobList = res.data;
         // console.log(res.data)
       });
@@ -267,11 +278,12 @@ export default {
     determine() {
       let _date = {
         leavetime: this.form.leavetime,
+        jobstate:"离职",
         sid: this.form.sid
       };
       console.log( _date )
       this.$http
-        .post("userInformation/update", this.$qs.stringify(_date))
+        .post("hr/memebers/update", this.$qs.stringify(_date))
         .then(res => {
           this.form.workstatus = "离职";
           this.showform = false;
@@ -291,23 +303,29 @@ export default {
         sid: this.delectObject.sid
       };
       this.$http
-        .post("userInformation/update", this.$qs.stringify(_date))
+        .post("/hr/memebers/update", this.$qs.stringify(_date))
         .then(res => {
-          console.log("删除成功");
+          // console.log("删除成功");
           this.delect = false;
           this.getAddBook();
         });
     },
     exportTem() {
       location.href =
-        this.$http.defaults.baseURL + "userInformation/downloadMood";
+        this.$http.defaults.baseURL + "hr/memebers/downloadMood";
     },
     exportPhone() {
       location.href =
-        this.$http.defaults.baseURL + "userInformation/exportExcel";
+        this.$http.defaults.baseURL + "hr/memebers/export";
     },
     // 上传成功的接口
-    onsuccess() {
+    onsuccess(response, file, fileList) {
+      // console.log(response)
+      this.$message({
+          message: response.msg,
+          type: "success",
+          offset: 150
+        });
       this.getAddBook();
     },
     onexceed() {

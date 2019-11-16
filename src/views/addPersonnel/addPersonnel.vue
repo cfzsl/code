@@ -92,14 +92,15 @@
           </el-form-item>
         </div>
         <div>
-          <el-form-item label="所在部门:" prop="department" style="margin-left:14px">
-            <el-select v-model="formAdd.department" style="width:200px">
+          <el-form-item label="所在部门:" prop="organ" style="margin-left:14px">
+            <el-select v-model="formAdd.organ" style="width:200px">
               <el-option label="全部" value></el-option>
+              <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="入职时间:" prop="entrytime" style="margin-left:208px">
+          <el-form-item label="入职时间:" prop="hiretime" style="margin-left:208px">
               <el-date-picker
-              v-model="formAdd.entrytime"
+              v-model="formAdd.hiretime"
               type="date"
               placeholder="选择日期"
               style="width:200px"
@@ -166,8 +167,8 @@
           <el-form-item label="学校:" prop="studyschool1">
             <el-input v-model="formAdd.studyschool1" style="width:160px"></el-input>
           </el-form-item>
-          <el-form-item label="专业:" prop="studymajor1">
-            <el-input v-model="formAdd.studymajor1" style="width:120px"></el-input>
+          <el-form-item label="专业:" prop="studymajro1">
+            <el-input v-model="formAdd.studymajro1" style="width:120px"></el-input>
           </el-form-item>
           <el-form-item label="学历:" prop="studylevel1">
             <el-input v-model="formAdd.studylevel1" style="width:80px"></el-input>
@@ -189,8 +190,8 @@
           <el-form-item label="学校:" prop="studyschool2">
             <el-input v-model="formAdd.studyschool2" style="width:160px"></el-input>
           </el-form-item>
-          <el-form-item label="专业:" prop="studymajor2">
-            <el-input v-model="formAdd.studymajor2" style="width:120px"></el-input>
+          <el-form-item label="专业:" prop="studymajro2">
+            <el-input v-model="formAdd.studymajro2" style="width:120px"></el-input>
           </el-form-item>
           <el-form-item label="学历:" prop="studylevel2">
             <el-input v-model="formAdd.studylevel2" style="width:80px"></el-input>
@@ -279,7 +280,7 @@
 export default {
   data() {
     return {
-      myHeaders: { 'Content-Type': 'multipart/form-data' },
+      departList:[],
       flowForm:false,
       imageUrl:'',
       formAdd: {
@@ -299,8 +300,8 @@ export default {
         idcard:'',
         job:'',
         tel:'',
-        department:'',
-        entrytime:'',
+        organ:'',
+        hiretime:'',
         familyname1:'',
         familytie1:'',
         familywork1:'',
@@ -347,11 +348,11 @@ export default {
         tel: [
           { pattern:11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/, required: true, message: "请填写正确的手机号", trigger: "blur" }
         ],
-        department: [
-          { required: false, message: "请填写", trigger: "blur" }
+        organ: [
+          { required: true, message: "请选择", trigger: "blur" }
         ],
-        entrytime: [
-          { required: false, message: "请填写", trigger: "blur" }
+        hiretime: [
+          { required: true, message: "请填写", trigger: "blur" }
         ],
         cash: [
           { required: true, message: "请填写", trigger: "blur" }
@@ -485,10 +486,18 @@ export default {
           this.dropJobList=res.data
           // console.log(res.data)
         })
-      }
+      },
+      // 获取部门列表
+    getDropDepart() {
+      this.$http.post("hr/memebers/dropOrgan").then(res => {
+        this.departList = res.data;
+        // console.log(res.data)
+      });
+    },
     },
     created(){
       this.getDropJob();
+      this.getDropDepart();
     }
   }
 </script>

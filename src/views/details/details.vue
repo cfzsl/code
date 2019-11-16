@@ -1,5 +1,5 @@
 <template>
-<!-- 个人信息详情 -->
+  <!-- 个人信息详情 -->
   <div id="details">
     <div class="detailsHead">
       <div>个人详情信息</div>
@@ -31,12 +31,8 @@
           </el-form-item>
           <el-form-item label="单位">
             <el-select v-model="detail.depart2" class="selectTop">
-              <el-option
-                v-for="item in optionsWeb"
-                :key="item.web"
-                :label="item.depart2"
-                :value="item.depart2"
-              ></el-option>
+              <el-option label="全部" value></el-option>
+              <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="区域">
@@ -51,12 +47,8 @@
           </el-form-item>
           <el-form-item label="岗位">
             <el-select v-model="detail.job" class="selectTop">
-              <el-option
-                v-for="item in postList"
-                :key="item.lu"
-                :label="item.job"
-                :value="item.job"
-              ></el-option>
+              <el-option label="全部" value></el-option>
+              <el-option v-for="item in jobList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="学历">
@@ -123,7 +115,7 @@
           </tr>
           <tr>
             <td>入职时间：{{detail.hiretime}}</td>
-            <td>状态：{{detail.isretired=="1"?"在职":"离职"}}</td>
+            <td>状态：{{detail.isretired}}</td>
             <td>离职时间：{{detail.firetime}}</td>
             <td>住址：{{detail.address}}</td>
           </tr>
@@ -135,7 +127,6 @@
           <span class="iconfont icon-bianji"></span>修改
         </div>
       </div>
-
       <!-- 薪资待遇弹框 -->
       <el-dialog title="基本信息" :visible.sync="loderTown" center width="410px">
         <el-form :inline="true" :model="bonusList" class="demo-form-inline">
@@ -143,7 +134,7 @@
             <el-input v-model="bonusList.basecash"></el-input>
           </el-form-item>
           <el-form-item label="用餐补助/元">
-            <el-input v-model="bonusList.helpcash"></el-input>
+            <el-input v-model="bonusList.lunchcash"></el-input>
           </el-form-item>
           <el-form-item label="交通补助/元">
             <el-input v-model="bonusList.trafficcash"></el-input>
@@ -174,14 +165,14 @@
           <el-button type="primary" @click="loderTown = false" class="formButon">取消</el-button>
         </span>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="loderTown = false" class="formButon">保存</el-button>
+          <el-button type="primary" @click="updateBonus" class="formButon">保存</el-button>
         </span>
       </el-dialog>
       <div class="table">
         <table width="100%" height="104px">
           <tr>
             <td>基本工资：{{bonusList.basecash}}元/月</td>
-            <td>用餐补助：{{bonusList.helpcash}}元/月</td>
+            <td>用餐补助：{{bonusList.lunchcash}}元/月</td>
             <td>交通补助: {{bonusList.trafficcash}}元/月</td>
             <td>通讯补助：{{bonusList.callcash}}元/月</td>
           </tr>
@@ -193,7 +184,7 @@
           </tr>
         </table>
       </div>
-      <div class="contract">合同文件</div>
+      <!-- <div class="contract">合同文件</div>
       <el-upload
         class="upload-demo"
         action="http://47.110.160.217:10071/xxxx"
@@ -206,15 +197,17 @@
         :file-list="fileList"
       >
         <el-input class="upload" type="text" placeholder="请上传劳动合同.pdf" v-model="text"></el-input>
-      </el-upload>
+      </el-upload> -->
       <div class="head">
         <div class="basic">备注</div>
         <div class="modify" @click="remark = true">+添加备注</div>
       </div>
-
-      <!-- 弹框 -->
+      <div class="addRemark">
+        <span>{{bonusList.param4}}</span>
+      </div>
+      <!-- 备注弹框 -->
       <el-dialog title="添加备注" :visible.sync="remark" center width="22%">
-        <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"></el-input>
+        <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="bonusList.param4"></el-input>
         <span slot="footer" class="delect-footer">
           <el-button type="primary" @click="remark = false" class="formButon">取消</el-button>
         </span>
@@ -222,15 +215,12 @@
           <el-button type="primary" @click="addRemark" class="formButon">保存</el-button>
         </span>
       </el-dialog>
-      <div class="addRemark">
-        <span v-for="(item,id) in remarks" :key="id">{{item.id}}.{{item.text}}</span>
-      </div>
-      <div class="head">
+      <!-- <div class="head">
         <div class="basic">出勤记录</div>
-      </div>
-      <el-calendar v-model="value">
+      </div> -->
+      <!--自定义内容-->
+      <!-- <el-calendar v-model="value">
         <template slot="dateCell" slot-scope="{date, data}">
-          <!--自定义内容-->
           <div class="calendar-flex">
             <div class="calendar-day">{{ data.day.split('-').slice(2).join('-') }}</div>
             <div v-for="(item,index) in calendarData" :key="index">
@@ -261,7 +251,7 @@
             </div>
           </div>
         </template>
-      </el-calendar>
+      </el-calendar> -->
     </div>
   </div>
 </template>
@@ -290,24 +280,7 @@ export default {
       id: "",
       detail: {},
       bonusList: {},
-      optionsWeb: [
-        {
-          web: "1",
-          depart2: "环卫一部"
-        },
-        {
-          web: "2",
-          depart2: "环卫二部"
-        },
-        {
-          web: "3",
-          depart2: "环卫三部"
-        },
-        {
-          web: "4",
-          depart2: "环卫四部"
-        }
-      ],
+      departList: [],
       optionslu: [
         {
           lu: "1",
@@ -356,36 +329,7 @@ export default {
           label: "在职"
         }
       ],
-      postList: [
-        {
-          lu: "1",
-          job: "环卫工"
-        },
-        {
-          lu: "2",
-          job: "洒水车司机"
-        },
-        {
-          lu: "3",
-          job: "垃圾运输车司机"
-        },
-        {
-          lu: "4",
-          job: "中队长"
-        },
-        {
-          lu: "5",
-          job: "队长"
-        },
-        {
-          lu: "6",
-          job: "大队长"
-        },
-        {
-          lu: "7",
-          job: "主管"
-        }
-      ]
+      jobList: []
     };
   },
   created() {
@@ -393,6 +337,8 @@ export default {
     this.getDetail();
     this.getBonus();
     this.getCalendarData();
+    this.getDropDepart();
+    this.getDropJob();
   },
 
   methods: {
@@ -404,22 +350,52 @@ export default {
       month = month < 10 ? "0" + month : month;
       day = day < 10 ? "0" + day : day;
       this.date = year + "-" + month + "-" + day;
-      console.log(this.date)
-      let _date={
+      // console.log(this.date);
+      let _date = {
         time: this.date
-      }
-      this.$http.post('hr/hrinfo/mkCalendar',this.$qs.stringify(_date)).then(res=>{
-        console.log(res.data)
-        this.calendarData=res.data
-      })
+      };
+      this.$http
+        .post("hr/hrinfo/mkCalendar", this.$qs.stringify(_date))
+        .then(res => {
+          // console.log(res.data)
+          this.calendarData = res.data;
+        });
     },
     //修改个人详情
     addDetail() {
       this.$http
         .post("hr/hrinfo/update", this.$qs.stringify(this.detail))
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.loderOne = false;
+        })
+        .catch(err => {
+          console.log("修改失败");
+        });
+    },
+    //修改奖金
+    updateBonus() {
+      this.$http
+        .post("hr/bonus/update", this.$qs.stringify(this.bonusList))
+        .then(res => {
+          console.log(res.data);
+          this.loderTown = false;
+        })
+        .catch(err => {
+          console.log("修改失败");
+        });
+    },
+    // 添加备注
+    addRemark() {
+      let _date={
+        param4:this.bonusList.param4,
+        sid:this.bonusList.sid
+      }
+      this.$http
+        .post("hr/bonus/update", this.$qs.stringify(this.bonusList))
+        .then(res => {
+          // console.log(res.data);
+          this.remark = false;
         })
         .catch(err => {
           console.log("修改失败");
@@ -428,35 +404,26 @@ export default {
     //获取个人详情
     getDetail() {
       let _date = {
-        sid: this.id
+        param3: this.id
       };
       this.$http
-        .post("hr/hrinfo/getBySid", this.$qs.stringify(_date))
+        .post("hr/hrinfo/search", this.$qs.stringify(_date))
         .then(res => {
-          this.detail = res.data;
-          console.log(res.data);
+          this.detail = res.data[0];
+          console.log("个人详情", this.detail);
         });
     },
     //获取个人奖金详情
     getBonus() {
       let _date = {
-        sid: this.id
+        param2: this.id
       };
       this.$http
-        .post("hr/bonus/getBySid", this.$qs.stringify(_date))
+        .post("hr/bonus/search", this.$qs.stringify(_date))
         .then(res => {
-          this.bonusList = res.data;
-          console.log(res.data);
+          this.bonusList = res.data[0];
+          console.log("奖金详情", this.bonusList);
         });
-    },
-    // 添加备注
-    addRemark() {
-      let i = 2;
-      this.remarks.push({
-        id: i++,
-        text: this.textarea
-      });
-      this.remark = false;
     },
     //点击文件列表中已上传的文件时的钩子
     handlePreview(file) {
@@ -478,6 +445,7 @@ export default {
         } 个文件，共选择了 ${files.length + fileList.length} 个文件`
       );
     },
+    // 返回
     gozero() {
       this.$router.push({
         path: "/AddressBook"
@@ -486,7 +454,21 @@ export default {
     //   route传值
     getId() {
       this.id = this.$route.query.id;
-      console.log(this.id);
+      // console.log(this.id);
+    },
+    // 获取组织架构列表
+    getDropDepart() {
+      this.$http.post("hr/memebers/dropOrgan").then(res => {
+        this.departList = res.data;
+        // console.log(res.data)
+      });
+    },
+    // 获取岗位列表
+    getDropJob() {
+      this.$http.post("hr/memebers/dropJob").then(res => {
+        this.jobList = res.data;
+        // console.log(res.data)
+      });
     }
   }
 };

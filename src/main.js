@@ -17,8 +17,8 @@ import VideoPlayer from 'vue-video-player';
 require('video.js/dist/video-js.css');
 require('vue-video-player/src/custom-theme.css');
 import hls from 'videojs-contrib-hls';
-import scroll from 'vue-seamless-scroll'
-
+import scroll from 'vue-seamless-scroll';
+import Vue2OrgTree from 'vue2-org-tree';
 // 路由守卫
 // router.beforeEach((to, from, next) => {
 //   const usermsg = localStorage.getItem('usermsg')
@@ -41,9 +41,9 @@ import scroll from 'vue-seamless-scroll'
 Vue.prototype.$Echarts = Echarts;
 
 Axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-// Axios.defaults.baseURL = 'http://192.168.124.6:8888/' // 路路
+Axios.defaults.baseURL = 'http://192.168.124.6:8888/' // 路路
 // Axios.defaults.baseURL = 'http://192.168.8.126:8080/' // 升龙
-Axios.defaults.baseURL = 'http://118.31.245.183:10500/'
+// Axios.defaults.baseURL = 'http://118.31.245.183:10500/'
 
 Vue.prototype.$http = Axios
 Vue.prototype.$qs = qs
@@ -53,6 +53,8 @@ Axios.interceptors.response.use(function (res) {
   return res.data
 });
 
+
+Vue.use(Vue2OrgTree)
 Vue.use(scroll)
 Vue.use(scroll, { componentName: 'scroll-seamless' })
 Vue.use(hls);

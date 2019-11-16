@@ -112,7 +112,7 @@ export default new Router({
         {
           path: "/matters/details",
           name: "details",
-          component: () => import("./views/five/details.vue")
+          component: () => import("./views/details/details.vue")
         },
         {
           path: "/matters/Adance",
