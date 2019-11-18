@@ -65,8 +65,8 @@ export default {
         this.$http
           .post("login/getLogonCode", this.$qs.stringify(this.usermsg))
           .then(res => {
-            console.log(res.data)
-            if (res.status === "1") {
+            console.log(res.data);
+            if (res.status === 1) {
               this.$message({
                 type: "success",
                 showClose: true,
@@ -83,7 +83,7 @@ export default {
                   this.codeMit--;
                 }
               }, 1000);
-            } else if (res.status === "0") {
+            } else if (res.status === 0) {
               this.$message({
                 type: "error",
                 showClose: true,
