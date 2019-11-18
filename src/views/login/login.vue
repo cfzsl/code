@@ -83,7 +83,7 @@ export default {
                   this.codeMit--;
                 }
               }, 1000);
-            } else if (res.status === "0") {
+            } else if (res.status === 0) {
               this.$message({
                 type: "error",
                 showClose: true,
