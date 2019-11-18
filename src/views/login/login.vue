@@ -66,7 +66,7 @@ export default {
           .post("login/getLogonCode", this.$qs.stringify(this.usermsg))
           .then(res => {
             console.log(res)
-            if (res.status == "1") {
+            if (res.status === 1) {
               this.$message({
                 type: "success",
                 showClose: true,
