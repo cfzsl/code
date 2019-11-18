@@ -53,15 +53,15 @@
         </div>
       </div>
       <div class="searchBot">
-        <el-button type="primary" class="buttonBotLast" @click="scheduling = true">排班</el-button>
-        <el-button type="primary" class="buttonBotLast" @click="kaoqinList">导出数据</el-button>
+        <el-button icon='paibanguanli' @click="scheduling = true"> 排班</el-button>
+        <el-button icon="el-icon-upload2" @click="kaoqinList">导出数据</el-button>
       </div>
     </div>
     <!-- 排班弹框 -->
     <el-dialog title="排班" :visible.sync="scheduling" width="1379px">
       <div class="buildButton">
-        <el-button type="primary" class="buttonBotLast" @click="schedulingBuild = true">新建班次</el-button>
-        <el-button type="primary" class="buttonBotLast" @click="scheduling = false">返回上一级</el-button>
+        <el-button icon="el-icon-plus"  @click="schedulingBuild = true">新建班次</el-button>
+        <el-button icon="el-icon-back" @click="scheduling = false">返回上一级</el-button>
       </div>
       <el-table
         :data="paibanList.slice((currpage - 1) * pagesize, currpage * pagesize)"
@@ -810,13 +810,13 @@ export default {
     position: absolute;
     bottom: 5px;
     right: 0;
-    .buttonBotLast {
-      width: 92px;
-      height: 25px;
-      font-size: 12px;
-      padding: 0;
-      margin: 0 0 0 10px;
-    }
+    // .buttonBotLast {
+    //   width: 92px;
+    //   height: 25px;
+    //   font-size: 12px;
+    //   padding: 0;
+    //   margin: 0 0 0 10px;
+    // }
   }
 }
 .table {

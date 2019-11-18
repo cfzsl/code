@@ -20,22 +20,22 @@ import hls from 'videojs-contrib-hls';
 import scroll from 'vue-seamless-scroll';
 import Vue2OrgTree from 'vue2-org-tree';
 // 路由守卫
-// router.beforeEach((to, from, next) => {
-//   const usermsg = localStorage.getItem('usermsg')
-//   if (usermsg) {
-//     if (to.path === '/login') {
-//       next('/')
-//     } else {
-//       next()
-//     }
-//   } else {
-//     if (to.path === '/login') {
-//       next()
-//     } else {
-//       next('/login')
-//     }
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  const role = localStorage.getItem('role')
+  if (role) {
+    if (to.path === '/login') {
+      next('/')
+    } else {
+      next()
+    }
+  } else {
+    if (to.path === '/login') {
+      next()
+    } else {
+      next('/login')
+    }
+  }
+})
 
 
 Vue.prototype.$Echarts = Echarts;

@@ -114,11 +114,11 @@ export default new Router({
           name: "details",
           component: () => import("./views/details/details.vue")
         },
-        {
-          path: "/matters/Adance",
-          name: "details",
-          component: () => import("./views/personnel/Adance.vue")
-        },
+        // {
+        //   path: "/matters/Adance",
+        //   name: "details",
+        //   component: () => import("./views/personnel/Adance.vue")
+        // },
         {
           path: "/logList",
           name: "logList",

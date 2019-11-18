@@ -13,9 +13,9 @@
               <el-option label="全部" value></el-option>
               <el-option
                 v-for="item in approval"
-                :key="item.e"
-                :label="item.applicantstatus"
-                :value="item.applicantstatus"
+                :key="item"
+                :label="item"
+                :value="item"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -25,8 +25,8 @@
               <el-option
                 v-for="item in purchase"
                 :key="item.i"
-                :label="item.buystatus"
-                :value="item.buystatus"
+                :label="item"
+                :value="item"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -48,7 +48,7 @@
       </div>
       <!-- 新建物料申请 -->
       <div class="searchBot">
-        <el-button class="buttonBot" type="primary" @click="dialogVisible=true">新建物料申请</el-button>
+        <el-button icon="el-icon-plus" @click="dialogVisible=true">新建物料申请</el-button>
       </div>
       <!-- 弹窗 -->
       <el-dialog title="新建物料采购申请" :visible.sync="dialogVisible" width="705px" class="dialogText">
@@ -182,8 +182,8 @@
       <el-form :inline="true" :model="loginList" class="demo-form-inline">
         <el-divider></el-divider>
         <div class="progress">
-          采购完成
-          <br />已分配
+          {{loginList.applicantstatus}}
+          </br>{{loginList.buystatus==='----'?'':loginList.buystatus}}
         </div>
         <div class="formNumber">
           <el-form-item label="申请人:">
@@ -197,7 +197,7 @@
           <el-form-item label="审批负责人:">
             <span>{{loginList.param2}}</span>
           </el-form-item>
-          <el-form-item label="采购负责人:" style="margin-left:280px">
+          <el-form-item label="采购负责人:" style="margin-left:218px">
             <span>{{loginList.param3}}</span>
           </el-form-item>
         </div>
@@ -253,34 +253,6 @@
             description="2019-11-05 18：00已采购发放"
           ></el-step>
         </el-steps>
-        <!-- <el-divider></el-divider> -->
-        <!-- <div class="examine">采购详情</div>
-        <div class="formNumber">
-          <el-form-item label="采购负责人:">
-            <span>{{loginList.purchase}}</span>
-          </el-form-item>
-          <el-form-item style="margin-left:345px" label="采购时间:">
-            <span>{{loginList.distribution}}</span>
-          </el-form-item>
-        </div>
-        <div class="formNumber">
-          <el-form-item label="采购数量:">
-            <span>{{loginList.purchase}}</span>
-          </el-form-item>
-        </div>
-        <div class="formNumber">
-          <el-form-item label="采购规格:">
-            <span>{{loginList.purchase}}</span>
-          </el-form-item>
-        </div>
-        <div class="formNumber">
-          <el-form-item label="分配负责人:">
-            <span>{{loginList.distribution}}</span>
-          </el-form-item>
-          <el-form-item style="margin-left:345px" label="分配时间:">
-            <span>{{loginList.distribution}}</span>
-          </el-form-item>
-        </div>-->
       </el-form>
     </el-dialog>
 
@@ -288,12 +260,15 @@
     <el-dialog title="审批" :visible.sync="ApprovalForm" width="717px" class="dialogText">
       <el-form :inline="true" :model="loginList" class="demo-form-inline">
         <el-divider></el-divider>
-        <div class="progress">待审批</div>
+        <div class="progress">
+          {{loginList.applicantstatus}}
+          </br>{{loginList.buystatus==='----'?'':loginList.buystatus}}
+        </div>
         <div class="formNumber">
           <el-form-item label="申请人:">
             <span>{{loginList.applicantperson}}</span>
           </el-form-item>
-          <el-form-item label="申请部门:" style="margin-left:300px">
+          <el-form-item label="申请部门:" style="margin-left:330px">
             <span>{{loginList.applicantdepart}}</span>
           </el-form-item>
         </div>
@@ -301,7 +276,7 @@
           <el-form-item label="审批负责人:">
             <span>{{loginList.param2}}</span>
           </el-form-item>
-          <el-form-item label="采购负责人:" style="margin-left:260px">
+          <el-form-item label="采购负责人:" style="margin-left:218px">
             <span>{{loginList.param3}}</span>
           </el-form-item>
         </div>
@@ -319,7 +294,7 @@
           <el-form-item label="单位:">
             <span>{{loginList.materielattr}}</span>
           </el-form-item>
-          <el-form-item label="单价:" style="margin-left:380px">
+          <el-form-item label="单价:" style="margin-left:370px">
             <span>{{loginList.materielonecost}}</span>
           </el-form-item>
         </div>
@@ -369,8 +344,8 @@
       <el-form :inline="true" :model="loginList" class="demo-form-inline">
         <el-divider></el-divider>
         <div class="progress">
-          审批完成
-          <br />待发放
+          {{loginList.applicantstatus}}
+          </br>{{loginList.buystatus==='----'?'':loginList.buystatus}}
         </div>
         <div class="formNumber">
           <el-form-item label="申请人:">
@@ -410,7 +385,7 @@
           <el-form-item label="数量:">
             <span>{{loginList.materielcount}}</span>
           </el-form-item>
-          <el-form-item label="金额:" style="margin-left:370px">
+          <el-form-item label="金额:" style="margin-left:362px">
             <span>{{loginList.materielmoney}}</span>
           </el-form-item>
         </div>
@@ -460,6 +435,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -506,44 +482,8 @@ export default {
           }
         ]
       },
-      e: "0",
-      approval: [
-        {
-          e: "1",
-          applicantstatus: "待审批"
-        },
-        {
-          e: "2",
-          applicantstatus: "已审批"
-        },
-        {
-          e: "3",
-          applicantstatus: "被驳回"
-        }
-      ],
-      i: "0",
-      purchase: [
-        {
-          i: "1",
-          buystatus: "—— ——"
-        },
-        {
-          i: "2",
-          buystatus: "等待采购"
-        },
-        {
-          i: "3",
-          buystatus: "采购中"
-        },
-        {
-          i: "4",
-          buystatus: "采购完成，未分配"
-        },
-        {
-          i: "5",
-          buystatus: "采购完成，已分配"
-        }
-      ],
+      approval: [],
+      purchase: [],
       c: "0",
       company: [
         {
@@ -622,14 +562,41 @@ export default {
       active: 0,
       listIndex: "",
       loginList: {},
-      DropBox: []
+      DropBox: [],
+      jurisdictionList:[]
     };
   },
   created() {
     this.getWcList();
     this.getChangeProgress();
+    this.getApproval();
+    this.getPurchase();
+    this.addJurisdiction();
+  },
+  computed:{
+    getJurisdiction(){
+      console.log(this.$store.state.jurisdiction);
+      return this.$store.state.jurisdiction;
+    }
   },
   methods: {
+    // 调用store中的接口
+    addJurisdiction(){
+      this.$store.dispatch('getJurisdiction')//调取store中的接口
+    },
+    // 审批状态
+    getApproval(){
+      this.$http.post('materiel/dropShenpi').then(res=>{
+        this.approval=res.data;
+      })
+    },
+    // 采购状态
+    getPurchase(){
+      this.$http.post('materiel/dropCaigou').then(res=>{
+        this.purchase=res.data;
+      })
+    },
+    // ...mapActions(['getJurisdiction']),
     // 单位列表
     getChangeProgress() {
       this.$http.post("materiel/departDropBox").then(res => {
@@ -643,6 +610,7 @@ export default {
         .post("materiel/search", this.$qs.stringify(this.search))
         .then(res => {
           console.log(res.data);
+          this.jurisdictionList=localStorage.getItem('jurisdiction')
           this.wcList = res.data;
         });
     },
@@ -675,6 +643,7 @@ export default {
         .then(res => {
           console.log("请求成功");
           this.ApprovalForm = false;
+          this.getWcList();
         })
         .catch(err => {
           console.log("请求失败");
@@ -682,12 +651,26 @@ export default {
     },
     // 采购
     Purchase(row, _index) {
-      this.PurchaseForm = true;
       this.loginList = row;
       this.listIndex = _index;
+      //localStorage的本地存储发送给后台报字符串问题
+      console.log(localStorage.getItem('role'))
+      console.log(this.jurisdictionList)
+      if(this.jurisdictionList.indexOf('物料采购-采购')!=-1){
+        this.PurchaseForm = true;
+      }else {
+        this.$message({
+              type: "error",
+              showClose: true,
+              message: "你没有权限"
+          });
+      }
     },
     //取消
-    Reject() {},
+    Reject() {
+      let getJurisdiction=localStorage.getItem('jurisdiction')
+      console.log(getJurisdiction)
+    },
     //提交
     Agree(rov) {
       let _date = {
@@ -697,7 +680,6 @@ export default {
         .post("materiel/changeProgress", this.$qs.stringify(_date))
         .then(res => {
           console.log("请求成功");
-          this.getWcList();
           this.PurchaseForm = false;
         })
         .catch(err => {
@@ -706,9 +688,18 @@ export default {
     },
     // 审批
     Approval(row, _index) {
-      this.ApprovalForm = true;
       this.loginList = row;
       this.listIndex = _index;
+      // console.log(this.jurisdictionList)
+      if(this.jurisdictionList.indexOf('物料采购-审批')!=-1){
+        this.ApprovalForm = true;
+      }else {
+        this.$message({
+              type: "error",
+              showClose: true,
+              message: "你没有权限"
+          });
+      }
     },
     // 详情
     showdetail(row, _index) {
@@ -777,12 +768,7 @@ export default {
     position: absolute;
     bottom: 0;
     right: 0;
-    .buttonBot {
-      width: 92px;
-      height: 25px;
-      font-size: 12px;
-      padding: 0;
-    }
+    margin-bottom: 10px;
     .buttonBotLast {
       width: 92px;
       height: 25px;

@@ -65,19 +65,19 @@ export default {
         this.$http
           .post("login/getLogonCode", this.$qs.stringify(this.usermsg))
           .then(res => {
-            console.log(res.data)
-            if (res.status === "1") {
+            console.log(res)
+            if (res.status == "1") {
               this.$message({
                 type: "success",
                 showClose: true,
                 message: "发送验证码成功"
               });
               this.codeMit = 60;
-              this.codebtn = !this.codebtn;
+              this.codebtn = false;
               clearInterval(interval);
               let interval = setInterval(() => {
                 if (this.codeMit <= 1) {
-                  this.codebtn = !this.codebtn;
+                  this.codebtn = true;
                   clearInterval(interval);
                 } else if (this.codeMit > 1) {
                   this.codeMit--;
@@ -101,10 +101,11 @@ export default {
     },
     login() {
       this.$http
-        .post("login/getLogonInformation", this.$qs.stringify(this.usermsg))
+        .post("login.do", this.$qs.stringify(this.usermsg))
         .then(res => {
+          console.log(res.data)
           if (res.status === 1) {
-            localStorage.setItem("usermsg", JSON.stringify(res.data));
+            localStorage.setItem("role", JSON.stringify(res.data.role));
             this.$router.push({ name: "supervision" });
           } else {
             this.$message({

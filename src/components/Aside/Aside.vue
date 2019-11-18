@@ -24,7 +24,7 @@
     </el-menu-item>
     <!-- <a href="http://47.110.160.217:5080/"> -->
       <el-menu-item index @click="postWc">
-        <span class="iconfont icon-shouye"></span>
+        <span class="iconfont icon-gongceguanli"></span>
         公厕管理
       </el-menu-item>
     <!-- </a> -->
@@ -85,17 +85,14 @@
         <span>人事管理</span>
       </template>
       <el-menu-item index="/matters/HRManagement">
-        <span class="iconfont icon-renyuanxinxiguanli"></span>组织结构
-        <el-menu-item index="/matters/HRManagement">
           <span class="iconfont icon-renyuanxinxiguanli"></span>组织结构
-        </el-menu-item>
       </el-menu-item>
       <el-menu-item index="/AddressBook">
         <span class="iconfont icon-tongxunlu"></span>通讯录
       </el-menu-item>
-      <el-menu-item index="/matters/Adance">
+      <!-- <el-menu-item index="/matters/Adance">
         <span class="iconfont icon-chuqintongji"></span>人员考勤
-      </el-menu-item>
+      </el-menu-item> -->
       <!--<el-menu-item index="/matters/bonus">
         <span class="iconfont icon-xinchouguanli"></span>奖金管理
       </el-menu-item>
@@ -122,13 +119,13 @@
       </el-menu-item>
     </el-submenu>-->
     <el-menu-item index="/town/worker">
-      <span class="iconfont icon-renyuanxinxiguanli"></span>系统通知
+      <span class="iconfont icon-tongzhigonggao"></span>系统通知
     </el-menu-item>
     <el-menu-item index="/materiel">
       <span class="iconfont icon-zhaopinguanli"></span>物料采购管理
     </el-menu-item>
     <el-menu-item index="/logList">
-      <span class="iconfont icon-tongxunlu"></span>操作日志
+      <span class="iconfont icon-yewuchuli"></span>操作日志
     </el-menu-item>
   </el-menu>
 </template>
