@@ -116,7 +116,7 @@
           <el-form-item label="通知类型" prop="type">
             <el-select v-model="newformInline.type" class="selectTop" @change="clearchange">
               <el-option label="部门通知" value="部门通知"></el-option>
-              <el-option label="区域通知" value="区域通知"></el-option>
+              <!-- <el-option label="区域通知" value="区域通知"></el-option> -->
               <el-option label="岗位通知" value="岗位通知"></el-option>
               <el-option label="个人通知" value="个人通知"></el-option>
             </el-select>
@@ -129,12 +129,12 @@
               <el-option v-for="(item,i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="newformInline.type === '区域通知'" label="区域通知" prop="area">
+          <!-- <el-form-item v-else-if="newformInline.type === '区域通知'" label="区域通知" prop="area">
             <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有区域" value></el-option>
               <el-option v-for="(item,i) in dropmenu.area" :key="i" :label="item" :value="item"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item v-else-if="newformInline.type === '岗位通知'" label="岗位通知" prop="job">
             <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有岗位" value></el-option>
@@ -203,7 +203,7 @@
           <el-form-item label="通知类型">
             <el-select v-model="formInline.type" disabled class="selectTop">
               <el-option label="部门通知" value="部门通知"></el-option>
-              <el-option label="区域通知" value="区域通知"></el-option>
+              <!-- <el-option label="区域通知" value="区域通知"></el-option> -->
               <el-option label="岗位通知" value="岗位通知"></el-option>
               <el-option label="个人通知" value="个人通知"></el-option>
             </el-select>
@@ -215,11 +215,11 @@
               <el-option v-for="(item,i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
+          <!-- <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
             <el-select v-model="formInline.users" disabled class="selectTop">
               <el-option v-for="(item,i) in dropmenu.area" :key="i" :label="item" :value="item"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item v-else-if="formInline.type === '岗位通知'" label="岗位通知">
             <el-select v-model="formInline.users" disabled class="selectTop">
               <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
@@ -265,7 +265,7 @@ export default {
       // 下拉框
       dropmenu: {
         depart: [],
-        area: [],
+        // area: [],
         job: []
       },
       // 新建通知
@@ -327,9 +327,9 @@ export default {
       this.$http.get("systemAdvice/getDepart").then(res => {
         this.dropmenu.depart = res.data;
       });
-      this.$http.get("systemAdvice/getArea").then(res => {
-        this.dropmenu.area = res.data;
-      });
+      // this.$http.get("systemAdvice/getArea").then(res => {
+      //   this.dropmenu.area = res.data;
+      // });
       this.$http.get("safeQuality/getJob").then(res => {
         this.dropmenu.job = res.data;
       });
