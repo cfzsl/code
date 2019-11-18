@@ -65,6 +65,7 @@ export default {
         this.$http
           .post("login/getLogonCode", this.$qs.stringify(this.usermsg))
           .then(res => {
+            console.log(res.data)
             if (res.status === "1") {
               this.$message({
                 type: "success",

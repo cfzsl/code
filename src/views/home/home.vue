@@ -48,7 +48,7 @@ export default {
 <style lang="scss">
 .el-header {
   padding: 0;
-  z-index: 9999;
+  z-index: 999;
 }
 .se-container {
   height: calc(100vh - 86px);
@@ -106,15 +106,4 @@ export default {
 .el-carousel__container {
   height: 100% !important;
 }
-// .avatar-uploader .el-upload {
-//     border: 1px dashed #d9d9d9;
-//     border-radius: 6px;
-//     width: 100px ;
-//     height: 100px;
-//     cursor: pointer;
-//     position: absolute;
-//     top: 10px;
-//     right: 150px;
-//     overflow: hidden;
-//   }
 </style>

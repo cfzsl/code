@@ -31,11 +31,20 @@
         </div>
 
         <!-- 弹框 -->
-        <el-dialog title="帮助" :visible.sync="help" width="30%">
+        <el-dialog title="帮助" :visible.sync="help" width="30%" class="helpdialog" :modal-append-to-body='false'>
           <p>这是一段信息</p>
         </el-dialog>
         <div>
-          <span style="cursor:pointer">当前登录：管理员</span>
+          <!-- <span style="cursor:pointer">当前登录：管理员</span> -->
+          <el-dropdown placement='top' @command="handleCommand">
+            <span class="el-dropdown-link" style="cursor:pointer">
+              当前登录：管理员
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item icon="el-icon-back" command='/login'>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
     </div>
@@ -57,14 +66,19 @@ export default {
     };
   },
   methods: {
+    // 退出登录
+    handleCommand(command){
+      localStorage.clear();
+      this.$router.push(command)
+    },
     // 滚动消息
-    getList(){
-      this.$http.post('hw/TopScrollNavbar/list').then(res=>{
-        this.msg=res.data.context;
-      })
+    getList() {
+      this.$http.post("hw/TopScrollNavbar/list").then(res => {
+        this.msg = res.data.context;
+      });
     },
     endlist() {
-      this.open=false;
+      this.open = false;
       this.showdown = !this.showdown;
       this.$emit("asideEnd", this.open);
     },
@@ -207,8 +221,14 @@ export default {
     justify-content: center;
     align-content: center;
   }
-  .el-dialog {
-    z-index: 9999 !important;
-  }
+}
+.el-dropdown {
+  color: #fff;
+}
+.el-dropdown-menu {
+  z-index: 9999;
+}
+.helpdialog {
+  z-index: 9999 !important;
 }
 </style>

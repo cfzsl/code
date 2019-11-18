@@ -2,7 +2,7 @@
   <div id="playerselect">
     <div id="player">
       <div class="playerTop">
-        <el-button type="primary" @click="stringVideo">道路视频详情</el-button>
+        <!-- <el-button type="primary" @click="stringVideo">道路视频详情</el-button> -->
         <div class="warningDate">{{shuldData.logtime}}</div>
       </div>
       <div class="playerVideo">
@@ -21,7 +21,7 @@
       </el-dialog>
       <!-- 图片滚动播放 -->
       <div class="userImage">
-        <div>巡查拍照</div>
+        <div style="font-size: 16px;font-weight: 700;">巡查拍照</div>
         <vueSeamless :data="videoList" :class-option="optionCustomer">
           <ul class="userImageAllWrapper">
             <li v-for="item in videoList" :key="item.index">
@@ -181,10 +181,11 @@ export default {
   float: right;
   font-size: 16px;
   font-weight: 700;
-  margin-top: 10px;
+  margin-top: 30px;
   padding-right: 20px;
   .warningDate {
     color: #000;
+    text-align: center;
   }
 }
 
@@ -193,8 +194,8 @@ export default {
   width: 100%;
   flex-wrap: wrap;
   align-items: stretch;
-  position: absolute;
-  top: 50px;
+  // position: absolute;
+  // top: 50px;
   p {
     overflow: hidden;
     display: -webkit-box;
@@ -211,8 +212,9 @@ export default {
 }
 
 .userImage {
-  position: absolute;
-  bottom: 0px;
+  // position: absolute;
+  // bottom: 0px;
+  margin-top: 50px;
   width: 100%;
   overflow: hidden;
 
