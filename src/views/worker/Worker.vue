@@ -81,7 +81,13 @@
     </div>
 
     <!-- 新建通知 -->
-    <el-dialog title="新建通知" :visible.sync="dialogVisible" width="705px" class="dialogText">
+    <el-dialog
+      title="新建通知"
+      :visible.sync="dialogVisible"
+      width="705px"
+      class="dialogText"
+      @close="newformInline = {};"
+    >
       <el-form
         ref="ruleForm"
         :inline="true"
@@ -230,20 +236,34 @@
     </el-dialog>
 
     <!-- 通知发布 -->
-    <el-dialog title="通知发布" :visible.sync="dialogFormVisible" width="426px" class="dialogText">
-      <el-date-picker
-        style="width:390px"
-        v-model="release.time"
-        value-format="yyyy-MM-dd"
-        type="date"
-        placeholder="选择发布日期"
-      ></el-date-picker>
-      <span slot="footer">
-        <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
-      </span>
-      <span slot="footer">
-        <el-button type="primary" @click="adddate" class="formButon">确定</el-button>
-      </span>
+    <el-dialog
+      title="通知发布"
+      :visible.sync="dialogFormVisible"
+      width="426px"
+      class="dialogText"
+      @close="release = {};"
+    >
+      <el-form
+        :inline="true"
+        :model="release"
+        ref="numberValidateForm"
+        :rules="releaseRules"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="发布时间" prop="time">
+          <el-date-picker
+            style="width:290px"
+            v-model="release.time"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择发布日期"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item style="float: right;">
+          <el-button type="primary" @click="dialogFormVisible = false" class="formButon">取消</el-button>
+          <el-button type="primary" @click="adddate" class="formButon">确定</el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
   </div>
 </template>
@@ -266,7 +286,6 @@ export default {
       // 新建通知非空验证
       newrules: {
         title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
-
         message: [
           { required: true, message: "请输入通知内容", trigger: "blur" }
         ],
@@ -307,7 +326,10 @@ export default {
         sid: ""
       },
       socket: "",
-      jurisdictionList: []
+      // 发布时间非空验证
+      releaseRules: {
+        time: [{ required: true, message: "请选择发布时间", trigger: "blur" }]
+      }
     };
   },
   methods: {
@@ -365,13 +387,22 @@ export default {
     },
     // 发布确认
     adddate() {
-      this.$http
-        .post("systemAdvice/updateAdviceTime", this.$qs.stringify(this.release))
-        .then(res => {
-          console.log(res);
-          this.getAddBook();
-          this.dialogFormVisible = false;
-        });
+      this.$refs["numberValidateForm"].validate(valid => {
+        if (valid) {
+          this.$http
+            .post(
+              "systemAdvice/updateAdviceTime",
+              this.$qs.stringify(this.release)
+            )
+            .then(res => {
+              console.log(res);
+              this.getAddBook();
+              this.dialogFormVisible = false;
+            });
+        } else {
+          return false;
+        }
+      });
     },
     // 获取列表/搜索
     getAddBook() {
@@ -514,6 +545,7 @@ export default {
     close: function() {
       this.socket.close();
       console.log("socket已经关闭");
+      location.href = this.$http.defaults.baseURL + "systemAdvice/exportExcel";
     }
   },
   created() {
@@ -527,6 +559,7 @@ export default {
   beforeDestroy() {
     // 销毁监听
     this.socket.close();
+    this.getDropMenu();
   }
 };
 </script>
