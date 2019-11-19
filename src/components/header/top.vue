@@ -38,7 +38,7 @@
           <!-- <span style="cursor:pointer">当前登录：管理员</span> -->
           <el-dropdown placement='top' @command="handleCommand">
             <span class="el-dropdown-link" style="cursor:pointer">
-              当前登录：管理员
+              当前登录：{{name}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -55,6 +55,7 @@
 export default {
   data() {
     return {
+      name:'',
       help: false,
       screenTop: true,
       isFullscreen: false,
@@ -130,11 +131,15 @@ export default {
         //重新拼接得到新的字符串，并赋值给this.msg
         this.msg = end + start;
       }, 300);
+    },
+    nameSearch(){
+      this.name=JSON.parse(localStorage.getItem('role'))
     }
   },
   created() {
     this.show();
     this.getList();
+    this.nameSearch();
   }
 };
 </script>
@@ -193,7 +198,7 @@ export default {
     color: #fff;
     font-size: 14px;
     text-align: center;
-    width: 444px;
+    width: 480px;
     .right-wrap {
       display: flex;
       // justify-content: space-between;

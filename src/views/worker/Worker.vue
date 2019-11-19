@@ -28,8 +28,8 @@
 
     <!-- 按钮 -->
     <div class="searchBot" style="float: right;margin-bottom: 10px;">
-      <el-button class="buttonBot" icon="el-icon-plus" @click="dialogVisible = true">新建通知</el-button>
-      <el-button icon="el-icon-download" class="buttonBotLast" @click="excellist">导出数据</el-button>
+      <el-button class="buttonBot" icon="el-icon-plus" @click="notice">新建通知</el-button>
+      <el-button icon="el-icon-upload2" class="buttonBotLast" @click="excellist">导出数据</el-button>
     </div>
 
     <!-- 列表 -->
@@ -88,6 +88,7 @@
         :rules="newrules"
         :model="newformInline"
         class="demo-form-inline"
+        hide-required-asterisk
       >
         <div class="newbox">
           <el-form-item label="通知标题" prop="title">
@@ -116,7 +117,6 @@
           <el-form-item label="通知类型" prop="type">
             <el-select v-model="newformInline.type" class="selectTop" @change="clearchange">
               <el-option label="部门通知" value="部门通知"></el-option>
-              <!-- <el-option label="区域通知" value="区域通知"></el-option> -->
               <el-option label="岗位通知" value="岗位通知"></el-option>
               <el-option label="个人通知" value="个人通知"></el-option>
             </el-select>
@@ -126,19 +126,13 @@
           <el-form-item v-if="newformInline.type === '部门通知'" label="部门通知" prop="depart">
             <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有部门" value></el-option>
-              <el-option v-for="(item,i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
+              <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item v-else-if="newformInline.type === '区域通知'" label="区域通知" prop="area">
-            <el-select v-model="newformInline.users" class="selectTop">
-              <el-option label="所有区域" value></el-option>
-              <el-option v-for="(item,i) in dropmenu.area" :key="i" :label="item" :value="item"></el-option>
-            </el-select>
-          </el-form-item> -->
           <el-form-item v-else-if="newformInline.type === '岗位通知'" label="岗位通知" prop="job">
             <el-select v-model="newformInline.users" class="selectTop">
               <el-option label="所有岗位" value></el-option>
-              <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
+              <el-option v-for="item in jobList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="newformInline.type === '个人通知'" label="个人通知" prop="users">
@@ -165,10 +159,10 @@
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <div class="newbox">
           <el-form-item label="通知日期">
-            <el-date-picker readonly v-model="formInline.time" type="date" placeholder="选择日期"></el-date-picker>
+            <el-date-picker readonly v-model="formInline.time" type="date" placeholder="选择日期" disabled></el-date-picker>
           </el-form-item>
           <el-form-item label="通知状态">
-            <el-select style="width: 240px" v-model="formInline.status" disabled placeholder="请选择">
+            <el-select style="width: 240px" v-model="formInline.status" disabled placeholder="请选择" disabled>
               <el-option label="已发布" value="已发布"></el-option>
               <el-option label="未发布" value="未发布"></el-option>
             </el-select>
@@ -178,6 +172,7 @@
           <el-form-item label="通知标题">
             <el-input
               readonly
+              disabled
               style="width:558px"
               maxlength="20"
               show-word-limit
@@ -189,6 +184,7 @@
           <el-form-item label="通知内容">
             <el-input
               readonly
+              disabled
               type="textarea"
               :autosize="{ minRows: 7, maxRows: 7}"
               style="width: 558px"
@@ -212,17 +208,12 @@
         <div class="newbox">
           <el-form-item v-if="formInline.type === '部门通知'" label="部门通知">
             <el-select v-model="formInline.users" disabled class="selectTop">
-              <el-option v-for="(item,i) in dropmenu.depart" :key="i" :label="item" :value="item"></el-option>
+              <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item v-else-if="formInline.type === '区域通知'" label="区域通知">
-            <el-select v-model="formInline.users" disabled class="selectTop">
-              <el-option v-for="(item,i) in dropmenu.area" :key="i" :label="item" :value="item"></el-option>
-            </el-select>
-          </el-form-item> -->
           <el-form-item v-else-if="formInline.type === '岗位通知'" label="岗位通知">
             <el-select v-model="formInline.users" disabled class="selectTop">
-              <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
+              <el-option v-for="item in jobList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="formInline.type === '个人通知'" label="个人通知">
@@ -262,12 +253,9 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      // 下拉框
-      dropmenu: {
-        depart: [],
-        // area: [],
-        job: []
-      },
+      jurisdictionList: [],
+      departList:[],
+      jobList: [],
       // 新建通知
       newformInline: {
         title: "",
@@ -318,20 +306,23 @@ export default {
         time: "",
         sid: ""
       },
-      socket: ""
+      socket: "",
+      jurisdictionList: []
     };
   },
   methods: {
-    // 下拉框
-    getDropMenu() {
-      this.$http.get("systemAdvice/getDepart").then(res => {
-        this.dropmenu.depart = res.data;
+    // 获取组织架构列表
+    getDropDepart() {
+      this.$http.post("hr/memebers/dropOrgan").then(res => {
+        this.departList = res.data;
+        // console.log(res.data)
       });
-      // this.$http.get("systemAdvice/getArea").then(res => {
-      //   this.dropmenu.area = res.data;
-      // });
-      this.$http.get("safeQuality/getJob").then(res => {
-        this.dropmenu.job = res.data;
+    },
+    // 获取岗位列表
+    getDropJob() {
+      this.$http.post("hr/memebers/dropJob").then(res => {
+        this.jobList = res.data;
+        // console.log(res.data)
       });
     },
     // 获取模糊搜索人名
@@ -344,17 +335,33 @@ export default {
     },
     // 显示发布
     showrelease(row, _index) {
-      //记录数据
-      this.release.sid = row.sid;
-      //显示弹窗
-      this.dialogFormVisible = true;
+      if (this.jurisdictionList.indexOf("系统通知-发布") != -1) {
+        //记录数据
+        this.release.sid = row.sid;
+        //显示弹窗
+        this.dialogFormVisible = true;
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     // 显示详情
     showdetail(row, _index) {
-      //记录数据
-      this.formInline = row;
-      //显示弹窗
-      this.detail = !this.detail;
+      if (this.jurisdictionList.indexOf("系统通知-详情") != -1) {
+        //记录数据
+        this.formInline = row;
+        //显示弹窗
+        this.detail = !this.detail;
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     // 发布确认
     adddate() {
@@ -383,6 +390,8 @@ export default {
         )
         .then(res => {
           this.data.list = res.data;
+          // 调用store中的接口
+          this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'))
         });
     },
     // 清空查询
@@ -395,6 +404,19 @@ export default {
         endTime: ""
       };
       this.getAddBook();
+    },
+    // 新建通知
+    notice() {
+      if (this.jurisdictionList.indexOf("系统通知-新建") != -1) {
+        //显示弹窗
+        this.dialogVisible = true;
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     // 翻页
     nextpage(value) {
@@ -445,7 +467,16 @@ export default {
     },
     // 导出
     excellist() {
-      location.href = this.$http.defaults.baseURL + "systemAdvice/exportExcel";
+      if (this.jurisdictionList.indexOf("系统通知-导出数据") != -1) {
+        location.href =
+          this.$http.defaults.baseURL + "systemAdvice/exportExcel";
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     test() {
       // 实例化socket
@@ -488,7 +519,8 @@ export default {
   created() {
     this.getAddBook();
     this.getRestaurants();
-    this.getDropMenu();
+    this.getDropDepart();
+    this.getDropJob();
     this.test();
     console.log(this.socket);
   },

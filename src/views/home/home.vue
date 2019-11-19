@@ -41,7 +41,7 @@ export default {
   components: {
     Top,
     Aside
-  }
+  },
 };
 </script>
 

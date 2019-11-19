@@ -30,7 +30,7 @@
       </div>
       <!-- 导出日志 -->
       <div class="searchBot">
-        <el-button class="buttonBot" type="primary" @click="exportLog">导出日志</el-button>
+        <el-button class="buttonBot" icon="el-icon-upload2" @click="exportLog">导出日志</el-button>
       </div>
     </div>
     <!-- 表格 -->
@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -105,7 +106,8 @@ export default {
       pagesize: 10,
       currpage: 1,
       formInline: {},
-      logList: []
+      logList: [],
+      jurisdictionList:[]
     };
   },
   created() {
@@ -149,7 +151,6 @@ export default {
       this.$http
         .post("hr/operate/search", this.$qs.stringify(this.search))
         .then(res => {
-          console.log(res.data);
           this.logList = res.data;
         })
         .catch(err => {
@@ -174,12 +175,7 @@ export default {
     position: absolute;
     bottom: 0;
     right: 0;
-    .buttonBot {
-      width: 92px;
-      height: 25px;
-      font-size: 12px;
-      padding: 0;
-    }
+    margin-bottom: 10px;
     .buttonBotLast {
       width: 92px;
       height: 25px;

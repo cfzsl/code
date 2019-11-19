@@ -48,7 +48,7 @@
       </div>
       <!-- 新建物料申请 -->
       <div class="searchBot">
-        <el-button icon="el-icon-plus" @click="dialogVisible=true">新建物料申请</el-button>
+        <el-button icon="el-icon-plus" @click="newmaterial">新建物料申请</el-button>
       </div>
       <!-- 弹窗 -->
       <el-dialog title="新建物料采购申请" :visible.sync="dialogVisible" width="705px" class="dialogText">
@@ -84,7 +84,7 @@
           </el-form-item>
           <el-form-item label="单位:" prop="materielattr">
             <el-select v-model="formAdd.materielattr" placeholder="请选择" style="width:200px">
-              <el-option label="个" value></el-option>
+              <el-option label="请选择" value></el-option>
               <el-option
                 v-for="item in company"
                 :key="item.c"
@@ -119,7 +119,7 @@
         </el-steps>
         <div class="buttonOff">
           <span slot="footer">
-            <el-button type="primary" @click="resetForm('ruleForm')">取消</el-button>
+            <el-button type="primary" @click="resetForm('ruleForm')">撤销</el-button>
           </span>
           <span slot="footer">
             <el-button type="primary" @click="addCar('ruleForm')">提交</el-button>
@@ -435,7 +435,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -486,6 +486,10 @@ export default {
       purchase: [],
       c: "0",
       company: [
+        {
+          c: "0",
+          materielattr: "个"
+        },
         {
           c: "1",
           materielattr: "辆"
@@ -571,19 +575,8 @@ export default {
     this.getChangeProgress();
     this.getApproval();
     this.getPurchase();
-    this.addJurisdiction();
-  },
-  computed:{
-    getJurisdiction(){
-      console.log(this.$store.state.jurisdiction);
-      return this.$store.state.jurisdiction;
-    }
   },
   methods: {
-    // 调用store中的接口
-    addJurisdiction(){
-      this.$store.dispatch('getJurisdiction')//调取store中的接口
-    },
     // 审批状态
     getApproval(){
       this.$http.post('materiel/dropShenpi').then(res=>{
@@ -596,11 +589,9 @@ export default {
         this.purchase=res.data;
       })
     },
-    // ...mapActions(['getJurisdiction']),
-    // 单位列表
     getChangeProgress() {
       this.$http.post("materiel/departDropBox").then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         this.DropBox = res.data;
       });
     },
@@ -610,7 +601,7 @@ export default {
         .post("materiel/search", this.$qs.stringify(this.search))
         .then(res => {
           console.log(res.data);
-          this.jurisdictionList=localStorage.getItem('jurisdiction')
+          this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'))
           this.wcList = res.data;
         });
     },
@@ -631,6 +622,18 @@ export default {
         .catch(err => {
           console.log("请求失败");
         });
+    },
+    // 新建物料申请
+    newmaterial(){
+      if(this.jurisdictionList.indexOf('物料采购-新建申请')!=-1){
+        this.dialogVisible = true;
+      }else {
+        this.$message({
+              type: "error",
+              showClose: true,
+              message: "你没有权限"
+          });
+      }
     },
     // 驳回
     RejectOne(rov) {
@@ -653,9 +656,6 @@ export default {
     Purchase(row, _index) {
       this.loginList = row;
       this.listIndex = _index;
-      //localStorage的本地存储发送给后台报字符串问题
-      console.log(localStorage.getItem('role'))
-      console.log(this.jurisdictionList)
       if(this.jurisdictionList.indexOf('物料采购-采购')!=-1){
         this.PurchaseForm = true;
       }else {
@@ -690,7 +690,6 @@ export default {
     Approval(row, _index) {
       this.loginList = row;
       this.listIndex = _index;
-      // console.log(this.jurisdictionList)
       if(this.jurisdictionList.indexOf('物料采购-审批')!=-1){
         this.ApprovalForm = true;
       }else {
@@ -705,10 +704,16 @@ export default {
     showdetail(row, _index) {
       // console.log(row);
       this.loginList = row;
-      //记录索引
-      this.listIndex = _index;
-      //显示弹窗
-      this.dialogForm = true;
+      if(this.jurisdictionList.indexOf('物料采购-查看')!=-1){
+        //显示弹窗
+        this.dialogForm = true;
+      }else {
+        this.$message({
+              type: "error",
+              showClose: true,
+              message: "你没有权限"
+          });
+      }
     },
     // 切换页面
     nextpage(value) {

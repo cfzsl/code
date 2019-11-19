@@ -1,5 +1,5 @@
 <template>
-  <!-- 招聘信息管理 -->
+  <!-- 质量安全管理 -->
   <!-- test -->
   <div>
     <!-- 搜索 -->
@@ -12,8 +12,7 @@
         <span>归属单位</span>
         <el-select v-model="search.area">
           <el-option label="全部" value></el-option>
-          <el-option label="环卫一部" value="环卫一部"></el-option>
-          <el-option label="环卫二部" value="环卫二部"></el-option>
+          <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </div>
       <div class="searchbox">
@@ -43,8 +42,8 @@
     <!-- 按钮 -->
     <div class="menu">
       <div class="btn">
-        <el-button icon="el-icon-plus" @click="feedback = true">新建反馈</el-button>
-        <el-button icon="el-icon-download" @click="excellist">导出数据</el-button>
+        <el-button icon="el-icon-plus" @click="addFeedBack">新建反馈</el-button>
+        <el-button icon="el-icon-upload2" @click="excellist">导出数据</el-button>
       </div>
     </div>
 
@@ -98,6 +97,7 @@
         :model="addfeedback"
         :inline="true"
         style="overflow: hidden;"
+        hide-required-asterisk
       >
         <div class="feedbackbox">
           <el-row type="flex" class="row-bg" justify="space-around">
@@ -124,19 +124,16 @@
             <el-col :span="12">
               <el-form-item label="所属单位" prop="area">
                 <el-select style="width:215px" v-model="addfeedback.area">
-                  <el-option
-                    v-for="(item,i) in dropmenu.depart"
-                    :key="i"
-                    :label="item"
-                    :value="item"
-                  ></el-option>
+                  <el-option label="全部" value></el-option>
+                  <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位" prop="job">
                 <el-select style="width:220px" v-model="addfeedback.job">
-                  <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
+                  <el-option label="全部" value></el-option>
+                  <el-option v-for="item in jobList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -211,19 +208,16 @@
             <el-col :span="12">
               <el-form-item label="所属单位">
                 <el-select disabled style="width:220px" v-model="feedbackdetail.area">
-                  <el-option
-                    v-for="(item,i) in dropmenu.depart"
-                    :key="i"
-                    :label="item"
-                    :value="item"
-                  ></el-option>
+                  <el-option label="全部" value></el-option>
+                  <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位">
                 <el-select disabled v-model="feedbackdetail.job">
-                  <el-option v-for="(item,i) in dropmenu.job" :key="i" :label="item" :value="item"></el-option>
+                  <el-option label="全部" value></el-option>
+                  <el-option v-for="item in jobList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -305,6 +299,7 @@
         :model="processmsg"
         label-width="80px"
         style="overflow: hidden;"
+        hide-required-asterisk
       >
         <el-form-item label="详情内容" prop="param1">
           <el-input
@@ -346,11 +341,13 @@
 export default {
   data() {
     return {
+      departList: [],
+      jobList: [],
       // 下拉框
-      dropmenu: {
-        job: [],
-        depart: []
-      },
+      // dropmenu: {
+      //   job: [],
+      //   depart: []
+      // },
       input: null,
       radio: "0",
       data: {
@@ -410,20 +407,35 @@ export default {
       msg: {
         number: ""
       },
+      jurisdictionList: [],
       imgupload: false,
       status: ""
     };
   },
   methods: {
-    // 下拉框
-    getDropMenu() {
-      this.$http.get("safeQuality/getJob").then(res => {
-        this.dropmenu.job = res.data;
-      });
-      this.$http.get("systemAdvice/getDepart").then(res => {
-        this.dropmenu.depart = res.data;
+    // 获取组织架构部门列表
+    getDropDepart() {
+      this.$http.post("hr/memebers/dropOrgan").then(res => {
+        this.departList = res.data;
+        // console.log(res.data)
       });
     },
+    // 获取岗位列表
+    getDropJob() {
+      this.$http.post("hr/memebers/dropJob").then(res => {
+        this.jobList = res.data;
+        // console.log(res.data)
+      });
+    },
+    // 下拉框
+    // getDropMenu() {
+    //   this.$http.get("safeQuality/getJob").then(res => {
+    //     this.dropmenu.job = res.data;
+    //   });
+    //   this.$http.get("systemAdvice/getDepart").then(res => {
+    //     this.dropmenu.depart = res.data;
+    //   });
+    // },
     uploadImage1() {
       return;
     },
@@ -436,7 +448,21 @@ export default {
         )
         .then(res => {
           this.data.list = res.data;
+          this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'))
         });
+    },
+    // 新建反馈
+    addFeedBack() {
+      if (this.jurisdictionList.indexOf("质量安全管理-新建") != -1) {
+        //显示弹窗
+        this.feedback = true;
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     // 下一页
     nextpage(value) {
@@ -450,8 +476,16 @@ export default {
     // 显示详情
     showdetail(row) {
       console.log(row);
-      this.feedbackdetails = !this.feedbackdetails;
-      this.feedbackdetail = row;
+      if (this.jurisdictionList.indexOf("质量安全管理-详情") != -1) {
+        this.feedbackdetails = !this.feedbackdetails;
+        this.feedbackdetail = row;
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     // 查询按钮
     searchbtn() {
@@ -531,9 +565,17 @@ export default {
     },
     // 显示问题处理
     showprocess(row) {
-      this.process = !this.process;
-      this.processmsg["sid"] = row.sid;
-      console.log(this.processmsg);
+      // console.log(this.processmsg);
+      if (this.jurisdictionList.indexOf("质量安全管理-处理") != -1) {
+        this.process = !this.process;
+        this.processmsg["sid"] = row.sid;
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     // 问题处理图片判断
     beforeProcessUpload(file) {
@@ -584,7 +626,15 @@ export default {
     },
     // 导出数据
     excellist() {
-      location.href = this.$http.defaults.baseURL + "safeQuality/exportExcel";
+      if (this.jurisdictionList.indexOf("质量安全管理-导出数据") != -1) {
+        location.href = this.$http.defaults.baseURL + "safeQuality/exportExcel";
+      } else {
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: "你没有权限"
+        });
+      }
     },
     // 图片添加非空验证
     onChange(file, filelist) {
@@ -610,8 +660,9 @@ export default {
     }
   },
   created() {
-    this.getDropMenu();
     this.getList();
+    this.getDropDepart();
+    this.getDropJob();
   }
 };
 </script>

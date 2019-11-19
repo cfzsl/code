@@ -98,7 +98,7 @@
       </el-table>
       <!-- 离职弹框 -->
       <el-dialog title="离职" :visible.sync="showform" width="20%">
-        <el-form ref="form" :model="form">
+        <el-form ref="ruleForm" :model="form" :rules="rulesAdd">
           <el-form-item label="请选择离职时间:">
             <el-date-picker
               v-model="form.leavetime"
@@ -109,8 +109,8 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="cancelForm">取 消</el-button>
-          <el-button type="primary" @click="determine">确 定</el-button>
+          <el-button @click="cancelForm('ruleForm')">取 消</el-button>
+          <el-button type="primary" @click="determine('ruleForm')">确 定</el-button>
         </span>
       </el-dialog>
       <!-- 删除弹框  -->
@@ -157,7 +157,14 @@ export default {
       personnel: false,
       input: null,
       radio: "0",
-      form: {},
+      form: {
+        leavetime: ""
+      },
+      rulesAdd: {
+        leavetime: [
+          { required: true, message: "请选择离职时间", trigger: "blur" }
+        ]
+      },
       delectObject: {},
       data: {
         pagesize: 10,
@@ -178,7 +185,8 @@ export default {
       },
       th: "0",
       departList: [],
-      jobList: []
+      jobList: [],
+      jurisdictionList: []
     };
   },
   components: {
@@ -230,8 +238,9 @@ export default {
         .post("/hr/memebers/search", this.$qs.stringify(this.search))
         .then(res => {
           this.data.list = res.data;
-          console.log(res.data);
-          // console.log("请求成功");
+          this.jurisdictionList = JSON.parse(
+            localStorage.getItem("jurisdiction")
+          );
         });
     },
     // 查询列表数据
@@ -270,26 +279,33 @@ export default {
       // console.log(row.leavetime)
     },
     // 取消
-    cancelForm() {
+    cancelForm(formName) {
       this.showform = false;
       this.form = {};
+      this.$refs[formName].resetFields();
     },
     // 确认离职
-    determine() {
+    determine(formName) {
       let _date = {
         leavetime: this.form.leavetime,
-        jobstate:"离职",
+        jobstate: "离职",
         sid: this.form.sid
       };
-      console.log( _date )
-      this.$http
-        .post("hr/memebers/update", this.$qs.stringify(_date))
-        .then(res => {
-          this.form.workstatus = "离职";
-          this.showform = false;
-          // console.log("成功离职");
-          this.getAddBook();
-        });
+      console.log(_date);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$http
+            .post("hr/memebers/update", this.$qs.stringify(_date))
+            .then(res => {
+              this.form.workstatus = "离职";
+              this.showform = false;
+              this.getAddBook();
+            });
+        } else {
+          console.log("添加失败");
+          return false;
+        }
+      });
     },
     // 删除
     showdelete(row, _index) {
@@ -311,21 +327,19 @@ export default {
         });
     },
     exportTem() {
-      location.href =
-        this.$http.defaults.baseURL + "hr/memebers/downloadMood";
+      location.href = this.$http.defaults.baseURL + "hr/memebers/downloadMood";
     },
     exportPhone() {
-      location.href =
-        this.$http.defaults.baseURL + "hr/memebers/export";
+      location.href = this.$http.defaults.baseURL + "hr/memebers/export";
     },
     // 上传成功的接口
     onsuccess(response, file, fileList) {
       // console.log(response)
       this.$message({
-          message: response.msg,
-          type: "success",
-          offset: 150
-        });
+        message: response.msg,
+        type: "success",
+        offset: 150
+      });
       this.getAddBook();
     },
     onexceed() {
@@ -334,9 +348,14 @@ export default {
     // 添加人员
     addPersonnel() {
       this.personnel = true;
+    },
+    // 调用store中的接口
+    addJurisdiction() {
+      this.$store.dispatch("getJurisdiction"); //调取store中的接口，获取权限列表
     }
   },
   created() {
+    this.addJurisdiction();
     this.getAddBook();
     this.getDropDepart();
     this.getDropJob();

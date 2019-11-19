@@ -124,7 +124,7 @@
     <el-menu-item index="/materiel">
       <span class="iconfont icon-zhaopinguanli"></span>物料采购管理
     </el-menu-item>
-    <el-menu-item index="/logList">
+    <el-menu-item index="/logList" v-show="logList">
       <span class="iconfont icon-yewuchuli"></span>操作日志
     </el-menu-item>
   </el-menu>
@@ -133,7 +133,10 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      jurisdictionList:[],
+      logList:false
+    };
   },
   methods: {
     //展开
@@ -147,17 +150,20 @@ export default {
       // this.$router.push(key);
     },
     postWc(){
-      // let _date={
-      //   username:'admin',
-      //   password:'1'
-      // }
-      // this.$http.post('http://192.168.124.6:9999/login/adminLogin', this.$qs.stringify(_date)).then(res=>{
-      //   console.log('请求成功')
-      // })
       location.href='http://192.168.124.6:9999/login/adminLogin?username=admin&password=1'
-    }
+    },
+    getJurisdictionList(){
+      this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'));
+      if(this.jurisdictionList.indexOf('操作日志-查看')!==-1){
+        this.logList=true;
+      }else {
+        this.logList=false;
+      }
+    },
   },
-  created() {}
+  created() {
+    this.getJurisdictionList()
+  },
 };
 </script>
 

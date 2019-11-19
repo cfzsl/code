@@ -6,28 +6,6 @@
         <div class="page-header">
           <h3>组织结构</h3>
         </div>
-        <!-- <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-            <form class="form-horizontal row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="control-label col-md-5">背景色选择:</label>
-                  <div class="col-md-7">
-                    <select class="form-control" v-model="labelClassName">
-                      <option value="bg-white">bg-white</option>
-                      <option value="bg-orange">bg-orange</option>
-                      <option value="bg-gold">bg-gold</option>
-                      <option value="bg-gray">bg-gray</option>
-                      <option value="bg-lightpink">bg-lightpink</option>
-                      <option value="bg-chocolate">bg-chocolate</option>
-                      <option value="bg-tomato">bg-tomato</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div> -->
         <div class="text-center">
           <vue2-org-tree
             name="test"
