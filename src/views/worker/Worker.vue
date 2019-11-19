@@ -168,7 +168,7 @@
             <el-date-picker readonly v-model="formInline.time" type="date" placeholder="选择日期" disabled></el-date-picker>
           </el-form-item>
           <el-form-item label="通知状态">
-            <el-select style="width: 240px" v-model="formInline.status" disabled placeholder="请选择" disabled>
+            <el-select style="width: 240px" v-model="formInline.status" disabled placeholder="请选择">
               <el-option label="已发布" value="已发布"></el-option>
               <el-option label="未发布" value="未发布"></el-option>
             </el-select>
@@ -509,58 +509,13 @@ export default {
         });
       }
     },
-    test() {
-      // 实例化socket
-      this.socket = new WebSocket(
-        "ws://192.168.8.126:8080/websocket/server/张三"
-      );
-      // 监听socket连接
-      this.socket.onopen = this.open;
-      // 监听socket错误信息
-      this.socket.onerror = this.error;
-      // 监听socket消息
-      this.socket.onmessage = this.getMessage;
-      // 销毁socket连接
-      this.socket.onclose = this.close;
-    },
-    open: function() {
-      console.log("socket连接成功");
-    },
-    error: function() {
-      console.log("连接错误");
-    },
-    getMessage: function(msg) {
-      console.log("msg");
-      console.log(msg.data);
-      this.$message({
-        showClose: true,
-        message: msg.data,
-        offset: 150
-      });
-    },
-    send: function() {
-      console.log("send");
-      this.socket.send(params);
-    },
-    close: function() {
-      this.socket.close();
-      console.log("socket已经关闭");
-      location.href = this.$http.defaults.baseURL + "systemAdvice/exportExcel";
-    }
   },
   created() {
     this.getAddBook();
     this.getRestaurants();
     this.getDropDepart();
     this.getDropJob();
-    this.test();
-    console.log(this.socket);
   },
-  beforeDestroy() {
-    // 销毁监听
-    this.socket.close();
-    this.getDropMenu();
-  }
 };
 </script>
 
