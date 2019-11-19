@@ -65,7 +65,7 @@ export default {
         this.$http
           .post("login/getLogonCode", this.$qs.stringify(this.usermsg))
           .then(res => {
-            console.log(res)
+            console.log(res);
             if (res.status === 1) {
               this.$message({
                 type: "success",
@@ -103,7 +103,7 @@ export default {
       this.$http
         .post("login.do", this.$qs.stringify(this.usermsg))
         .then(res => {
-          console.log(res.data)
+          console.log(res.data);
           if (res.status === 1) {
             localStorage.setItem("role", JSON.stringify(res.data.role));
             this.$router.push({ name: "supervision" });
@@ -115,6 +115,7 @@ export default {
             });
           }
         });
+      // this.$router.push({ name: "supervision" });
     }
   }
 };
