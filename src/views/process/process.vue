@@ -407,7 +407,7 @@ export default {
       msg: {
         number: ""
       },
-      jurisdictionList: [],
+      jurisdictionList: localStorage.getItem('jurisdiction'),
       imgupload: false,
       status: ""
     };
@@ -448,7 +448,6 @@ export default {
         )
         .then(res => {
           this.data.list = res.data;
-          this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'))
         });
     },
     // 新建反馈

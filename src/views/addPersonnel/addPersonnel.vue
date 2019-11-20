@@ -74,7 +74,7 @@
         </div>
         <div>
           <el-form-item label="身份证号:" prop="idcard" style="margin-left:14px">
-            <el-input v-model="formAdd.idcard" style="width:200px"></el-input>
+            <el-input v-model="formAdd.idcard" style="width:200px" @blur='idcardSearch(formAdd.idcard)'></el-input>
           </el-form-item>
           <el-form-item label="岗位:" prop="job" style="margin-left:236px">
             <el-select v-model="formAdd.job" style="width:200px">
@@ -436,6 +436,29 @@ export default {
   }
   },
   methods: {
+    // 身份校验
+    idcardSearch(id){
+      if(id==''){
+        this.$message({
+          type: "error",
+          showClose: true,
+          message: '值不可以为空'
+        });
+      } else{
+        this.$http.post('hr/memebers/isRepeat',this.$qs.stringify({idcard:id})).then(res=>{
+        // console.log(res.data)
+        if(res.status==1){
+          console.log('身份可以上传')
+        }else if(res.status==0){
+          this.$message({
+          type: "error",
+          showClose: true,
+          message: res.data
+        });
+      }
+      })
+      }
+    },
     //重置
     resetForm(formName) {
       this.$refs[formName].resetFields();

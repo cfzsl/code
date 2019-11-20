@@ -111,13 +111,13 @@ export default {
             this.$message({
               type: "error",
               showClose: true,
-              message: "验证码错误"
+              message: '验证码错误'
             });
           }
-        });
+        })
       // this.$router.push({ name: "supervision" });
-    }
-  }
+    },
+  }  
 };
 </script>
 

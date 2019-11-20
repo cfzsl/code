@@ -4,8 +4,8 @@
     <div class="bdMap">
       <div class="menu">
         <div class="btn">
-          <el-button type="primary" @click="showMap">道路监控</el-button>
-          <el-button type="primary" @click="addPlayer">巡检平台</el-button>
+          <el-button type="primary" @click="showMap" v-show="!showmark">道路监控</el-button>
+          <el-button type="primary" @click="addPlayer" v-show="!playerSelect">巡检平台</el-button>
         </div>
       </div>
       <!-- 播放视频 -->
@@ -60,7 +60,7 @@ export default {
     return {
       zIndex: 8888,
       playerSelect: false,
-      jurisdictionList: [],
+      // jurisdictionList: localStorage.getItem('jurisdiction'),
       //百度地图
       cssMap: [
         {
@@ -124,10 +124,14 @@ export default {
       this.title = view.addr;
     },
     // 获取权限
-    getjurisdictionList() {
-      this.$store.dispatch("getJurisdiction"); //调取store中的接口，获取权限列表
-      this.jurisdictionList = JSON.parse(localStorage.getItem("jurisdiction"));
-      console.log(this.jurisdictionList);
+    getjurisdictionList(){
+      let _date={
+        rolename:localStorage.getItem('role')
+      };
+      this.$http.post('/getFuncs',this.$qs.stringify(_date)).then(res=>{
+        localStorage.setItem('jurisdiction', JSON.stringify(res.data))
+        // console.log(localStorage.getItem('jurisdiction'))
+      })
     },
     // 巡检
     addPlayer() {
@@ -142,7 +146,7 @@ export default {
     getPositions() {
       this.$http.post("RoadInfo/listAllRoadVideos").then(res => {
         this.positions = res.data;
-        console.log(res.data);
+        // console.log(res.data);
       });
     }
   }

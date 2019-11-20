@@ -9,7 +9,7 @@
       </div>
       <div class="searchbox">
         <span>组织架构</span>
-        <el-select v-model="search.depart">
+        <el-select v-model="search.organ">
           <el-option label="全部区域" value></el-option>
           <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
@@ -37,6 +37,7 @@
         <el-upload
           :show-file-list="false"
           :limit="1"
+          :on-error="onerror"
           :on-exceed="onexceed"
           :on-success="onsuccess"
           :action="$http.defaults.baseURL+'hr/memebers/importIn'"
@@ -97,11 +98,12 @@
         </el-table-column>
       </el-table>
       <!-- 离职弹框 -->
-      <el-dialog title="离职" :visible.sync="showform" width="20%">
-        <el-form ref="ruleForm" :model="form" :rules="rulesAdd">
-          <el-form-item label="请选择离职时间:">
+      <el-dialog title="离职" :visible.sync="showform" width="400px">
+        <el-form ref="refForm" :model="form" :rules="formAdd">
+          <el-form-item label="请选择离职时间:" prop="leavetime">
             <el-date-picker
               v-model="form.leavetime"
+              hide-required-asterisk
               type="date"
               value-format="yyyy-MM-dd"
               placeholder="选择日期"
@@ -109,8 +111,8 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="cancelForm('ruleForm')">取 消</el-button>
-          <el-button type="primary" @click="determine('ruleForm')">确 定</el-button>
+          <el-button @click="cancelForm('refForm')">取 消</el-button>
+          <el-button type="primary" @click="determine('refForm')">确 定</el-button>
         </span>
       </el-dialog>
       <!-- 删除弹框  -->
@@ -160,7 +162,7 @@ export default {
       form: {
         leavetime: ""
       },
-      rulesAdd: {
+      formAdd: {
         leavetime: [
           { required: true, message: "请选择离职时间", trigger: "blur" }
         ]
@@ -173,7 +175,7 @@ export default {
       },
       search: {
         name: "",
-        depart: "",
+        organ: "",
         job: "",
         tel: ""
       },
@@ -186,23 +188,12 @@ export default {
       th: "0",
       departList: [],
       jobList: [],
-      jurisdictionList: []
+      jurisdictionList: localStorage.getItem('jurisdiction'),
     };
   },
   components: {
     addPeople
   },
-  // computed:{
-  //   fn(arr){
-  //     for(let i=0; i<arr.length;i++){
-  //           if(arr.organ==''){
-  //             arr.organ='待添加'
-  //             console.log(arr)
-  //           }
-  //           return arr
-  //       }
-  //   }
-  // },
   methods: {
     //取消添加人事
     transform(msg) {
@@ -238,9 +229,6 @@ export default {
         .post("/hr/memebers/search", this.$qs.stringify(this.search))
         .then(res => {
           this.data.list = res.data;
-          this.jurisdictionList = JSON.parse(
-            localStorage.getItem("jurisdiction")
-          );
         });
     },
     // 查询列表数据
@@ -286,14 +274,13 @@ export default {
     },
     // 确认离职
     determine(formName) {
-      let _date = {
-        leavetime: this.form.leavetime,
-        jobstate: "离职",
-        sid: this.form.sid
-      };
-      console.log(_date);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let _date = {
+            leavetime: this.form.leavetime,
+            jobstate: "离职",
+            sid: this.form.sid
+          };
           this.$http
             .post("hr/memebers/update", this.$qs.stringify(_date))
             .then(res => {
@@ -336,7 +323,7 @@ export default {
     onsuccess(response, file, fileList) {
       // console.log(response)
       this.$message({
-        message: response.msg,
+        message: response.data,
         type: "success",
         offset: 150
       });
@@ -345,17 +332,16 @@ export default {
     onexceed() {
       this.$message.error("只能上传一个Excel文件");
     },
+    //上传失败的接口
+    onerror(err,file, fileList){
+      this.$message.error(err.msg);
+    },
     // 添加人员
     addPersonnel() {
       this.personnel = true;
     },
-    // 调用store中的接口
-    addJurisdiction() {
-      this.$store.dispatch("getJurisdiction"); //调取store中的接口，获取权限列表
-    }
   },
   created() {
-    this.addJurisdiction();
     this.getAddBook();
     this.getDropDepart();
     this.getDropJob();

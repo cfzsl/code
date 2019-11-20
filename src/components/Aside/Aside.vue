@@ -18,15 +18,15 @@
     </el-menu-item>
     <el-menu-item index="/town/carmsg">
       <span class="iconfont icon-cheliangxinxiguanli2"></span>三轮车管理
-    </el-menu-item> -->
+    </el-menu-item>-->
     <el-menu-item index="/town/supervision">
       <span class="iconfont icon-cheliangxinxiguanli2"></span>道路信息管理
     </el-menu-item>
     <!-- <a href="http://47.110.160.217:5080/"> -->
-      <el-menu-item index @click="postWc">
-        <span class="iconfont icon-gongceguanli"></span>
-        公厕管理
-      </el-menu-item>
+    <el-menu-item index @click="postWc">
+      <span class="iconfont icon-gongceguanli"></span>
+      公厕管理
+    </el-menu-item>
     <!-- </a> -->
     <!-- <el-submenu index="/onece/base">
       <template slot="title">
@@ -85,14 +85,14 @@
         <span>人事管理</span>
       </template>
       <el-menu-item index="/matters/HRManagement">
-          <span class="iconfont icon-renyuanxinxiguanli"></span>组织结构
+        <span class="iconfont icon-renyuanxinxiguanli"></span>组织结构
       </el-menu-item>
       <el-menu-item index="/AddressBook">
         <span class="iconfont icon-tongxunlu"></span>通讯录
       </el-menu-item>
       <!-- <el-menu-item index="/matters/Adance">
         <span class="iconfont icon-chuqintongji"></span>人员考勤
-      </el-menu-item> -->
+      </el-menu-item>-->
       <!--<el-menu-item index="/matters/bonus">
         <span class="iconfont icon-xinchouguanli"></span>奖金管理
       </el-menu-item>
@@ -124,7 +124,7 @@
     <el-menu-item index="/materiel">
       <span class="iconfont icon-zhaopinguanli"></span>物料采购管理
     </el-menu-item>
-    <el-menu-item index="/logList" v-show="logList">
+    <el-menu-item index="/logList" v-show="jurisdictionList.indexOf('操作日志-查看')==-1?false:true">
       <span class="iconfont icon-yewuchuli"></span>操作日志
     </el-menu-item>
   </el-menu>
@@ -134,8 +134,7 @@
 export default {
   data() {
     return {
-      jurisdictionList:[],
-      logList:false
+      jurisdictionList: [],
     };
   },
   methods: {
@@ -149,21 +148,23 @@ export default {
       // console.log(key, keyPath);
       // this.$router.push(key);
     },
-    postWc(){
-      location.href='http://192.168.124.6:9999/login/adminLogin?username=admin&password=1'
+    postWc() {
+      location.href =
+        "http://47.110.160.217:5080/login/adminLogin?username=admin&password=1";
     },
-    getJurisdictionList(){
-      this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'));
-      if(this.jurisdictionList.indexOf('操作日志-查看')!==-1){
-        this.logList=true;
-      }else {
-        this.logList=false;
-      }
+    // 获取权限
+     getjurisdictionList(){
+      let _date={
+        rolename:localStorage.getItem('role')
+      };
+      this.$http.post('/getFuncs',this.$qs.stringify(_date)).then(res=>{
+        this.jurisdictionList=res.data;
+      })
     },
   },
   created() {
-    this.getJurisdictionList()
-  },
+    this.getjurisdictionList();
+  }
 };
 </script>
 

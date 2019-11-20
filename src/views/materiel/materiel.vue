@@ -567,7 +567,7 @@ export default {
       listIndex: "",
       loginList: {},
       DropBox: [],
-      jurisdictionList:[]
+      jurisdictionList: localStorage.getItem('jurisdiction'),
     };
   },
   created() {
@@ -581,12 +581,15 @@ export default {
     getApproval(){
       this.$http.post('materiel/dropShenpi').then(res=>{
         this.approval=res.data;
+        console.log(this.approval)
       })
     },
     // 采购状态
     getPurchase(){
       this.$http.post('materiel/dropCaigou').then(res=>{
         this.purchase=res.data;
+        console.log(this.purchase)
+        // this.getWcList();
       })
     },
     getChangeProgress() {
@@ -601,7 +604,6 @@ export default {
         .post("materiel/search", this.$qs.stringify(this.search))
         .then(res => {
           console.log(res.data);
-          this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'))
           this.wcList = res.data;
         });
     },
@@ -681,6 +683,7 @@ export default {
         .then(res => {
           console.log("请求成功");
           this.PurchaseForm = false;
+          this.getWcList();
         })
         .catch(err => {
           console.log("请求失败");

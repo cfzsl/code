@@ -9,7 +9,7 @@
     <div class="center">
       <div class="head">
         <div class="basic">基本信息</div>
-        <div class="modify" @click="loderOne = true">
+        <div class="modify" @click="modify">
           <span class="iconfont icon-bianji"></span>修 改
         </div>
       </div>
@@ -37,12 +37,8 @@
           </el-form-item>
           <el-form-item label="区域">
             <el-select v-model="detail.area" class="selectTop">
-              <el-option
-                v-for="item in optionslu"
-                :key="item.lu"
-                :label="item.area"
-                :value="item.area"
-              ></el-option>
+              <el-option label="全部" value></el-option>
+              <el-option v-for="item in departList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="岗位">
@@ -52,7 +48,15 @@
             </el-select>
           </el-form-item>
           <el-form-item label="学历">
-            <el-input v-model="detail.study"></el-input>
+            <el-select v-model="detail.study" class="selectTop">
+              <el-option label="请选择" value></el-option>
+              <el-option label="小学" value="小学"></el-option>
+              <el-option label="中学" value="中学"></el-option>
+              <el-option label="高中" value="高中"></el-option>
+              <el-option label="中专" value="中专"></el-option>
+              <el-option label="大专" value="大专"></el-option>
+              <el-option label="本科" value="本科"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="状态">
             <el-select v-model="detail.isretired" class="selectTop">
@@ -77,10 +81,20 @@
             <el-input v-model="detail.body"></el-input>
           </el-form-item>
           <el-form-item label="入职时间">
-            <el-input v-model="detail.hiretime"></el-input>
+            <el-date-picker
+              v-model="detail.hiretime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="待补充"
+            ></el-date-picker>
           </el-form-item>
           <el-form-item label="离职时间">
-            <el-input v-model="detail.firetime"></el-input>
+            <el-date-picker
+              v-model="detail.firetime"
+              type="date"
+              placeholder="暂未离职"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
           </el-form-item>
           <el-form-item label="住址">
             <el-input v-model="detail.address"></el-input>
@@ -184,20 +198,6 @@
           </tr>
         </table>
       </div>
-      <!-- <div class="contract">合同文件</div>
-      <el-upload
-        class="upload-demo"
-        action="http://47.110.160.217:10071/xxxx"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        multiple
-        :limit="1"
-        :on-exceed="handleExceed"
-        :file-list="fileList"
-      >
-        <el-input class="upload" type="text" placeholder="请上传劳动合同.pdf" v-model="text"></el-input>
-      </el-upload> -->
       <div class="head">
         <div class="basic">备注</div>
         <div class="modify" @click="remark = true">+添加备注</div>
@@ -217,7 +217,7 @@
       </el-dialog>
       <!-- <div class="head">
         <div class="basic">出勤记录</div>
-      </div> -->
+      </div>-->
       <!--自定义内容-->
       <!-- <el-calendar v-model="value">
         <template slot="dateCell" slot-scope="{date, data}">
@@ -251,7 +251,7 @@
             </div>
           </div>
         </template>
-      </el-calendar> -->
+      </el-calendar>-->
     </div>
   </div>
 </template>
@@ -281,44 +281,6 @@ export default {
       detail: {},
       bonusList: {},
       departList: [],
-      optionslu: [
-        {
-          lu: "1",
-          area: "东营区新区"
-        },
-        {
-          lu: "2",
-          area: "文汇街道办事处"
-        },
-        {
-          lu: "3",
-          area: "辛店街道办事处"
-        },
-        {
-          lu: "4",
-          area: "黄河街道办事处"
-        },
-        {
-          lu: "5",
-          area: "圣园街道办事处"
-        },
-        {
-          lu: "6",
-          area: "六户镇"
-        },
-        {
-          lu: "7",
-          area: "牛庄镇"
-        },
-        {
-          lu: "8",
-          area: "史口镇"
-        },
-        {
-          lu: "9",
-          area: "龙居镇"
-        }
-      ],
       optionsStated: [
         {
           state: "0",
@@ -336,32 +298,42 @@ export default {
     this.getId();
     this.getDetail();
     this.getBonus();
-    this.getCalendarData();
+    // this.getCalendarData();
     this.getDropDepart();
     this.getDropJob();
   },
 
   methods: {
     //获取考勤日期
-    getCalendarData() {
-      let year = this.value.getFullYear();
-      let month = this.value.getMonth() + 1;
-      let day = this.value.getDate();
-      month = month < 10 ? "0" + month : month;
-      day = day < 10 ? "0" + day : day;
-      this.date = year + "-" + month + "-" + day;
-      // console.log(this.date);
-      let _date = {
-        time: this.date
-      };
-      this.$http
-        .post("hr/hrinfo/mkCalendar", this.$qs.stringify(_date))
-        .then(res => {
-          // console.log(res.data)
-          this.calendarData = res.data;
-        });
-    },
+    // getCalendarData() {
+    //   let year = this.value.getFullYear();
+    //   let month = this.value.getMonth() + 1;
+    //   let day = this.value.getDate();
+    //   month = month < 10 ? "0" + month : month;
+    //   day = day < 10 ? "0" + day : day;
+    //   this.date = year + "-" + month + "-" + day;
+    //   // console.log(this.date);
+    //   let _date = {
+    //     time: this.date
+    //   };
+    //   this.$http
+    //     .post("hr/hrinfo/mkCalendar", this.$qs.stringify(_date))
+    //     .then(res => {
+    //       // console.log(res.data)
+    //       this.calendarData = res.data;
+    //     });
+    // },
     //修改个人详情
+    modify() {
+      this.loderOne = true;
+      if (this.detail.hiretime === "待补充") {
+        this.detail.hiretime = "";
+      }
+      if (this.detail.firetime === "暂未离职") {
+        this.detail.firetime = "";
+      }
+      // console.log(this.detail);
+    },
     addDetail() {
       this.$http
         .post("hr/hrinfo/update", this.$qs.stringify(this.detail))
@@ -387,10 +359,10 @@ export default {
     },
     // 添加备注
     addRemark() {
-      let _date={
-        param4:this.bonusList.param4,
-        sid:this.bonusList.sid
-      }
+      let _date = {
+        param4: this.bonusList.param4,
+        sid: this.bonusList.sid
+      };
       this.$http
         .post("hr/bonus/update", this.$qs.stringify(this.bonusList))
         .then(res => {
@@ -454,7 +426,7 @@ export default {
     //   route传值
     getId() {
       this.id = this.$route.query.id;
-      // console.log(this.id);
+      console.log(this.id);
     },
     // 获取组织架构列表
     getDropDepart() {

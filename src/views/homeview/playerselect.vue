@@ -7,8 +7,8 @@
       </div>
       <div class="playerVideo">
         <div v-for="item in videoList" :key="item.sid" class="videoDiv" @click="videoPlayer(item)">
-          <el-image :src="item.videoimgurl"></el-image>
-          <p>{{item.logtime}}{{item.addr}}</p>
+          <el-image :src="item.videoimgurl" style="cursor:pointer"></el-image>
+          <p style="cursor:pointer">{{item.logtime}}{{item.addr}}</p>
         </div>
       </div>
       <!-- 视频弹框 -->
@@ -25,8 +25,8 @@
         <vueSeamless :data="videoList" :class-option="optionCustomer">
           <ul class="userImageAllWrapper">
             <li v-for="item in videoList" :key="item.index">
-              <img :src="item.videoimgurl" width="240px" />
-              <p>{{item.logtime}}{{item.addr}}</p>
+              <img :src="item.videoimgurl" width="240px" style="cursor:pointer" />
+              <p style="cursor:pointer">{{item.logtime}}{{item.addr}}</p>
             </li>
           </ul>
         </vueSeamless>

@@ -273,7 +273,7 @@ import Table from "@/components/table/table.vue";
 export default {
   data() {
     return {
-      jurisdictionList: [],
+      jurisdictionList: localStorage.getItem('jurisdiction'),
       departList:[],
       jobList: [],
       // 新建通知
@@ -421,8 +421,6 @@ export default {
         )
         .then(res => {
           this.data.list = res.data;
-          // 调用store中的接口
-          this.jurisdictionList=JSON.parse(localStorage.getItem('jurisdiction'))
         });
     },
     // 清空查询
@@ -516,6 +514,10 @@ export default {
     this.getDropDepart();
     this.getDropJob();
   },
+  // beforeDestroy() {
+  //   // 销毁监听
+  //   this.socket.close();
+  // }
 };
 </script>
 

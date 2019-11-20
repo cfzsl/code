@@ -560,7 +560,7 @@ export default {
       salaryList: [],
       shuldData: {},
       paibanList: [],
-      jurisdiction:[]
+      jurisdictionList: localStorage.getItem('jurisdiction'),
     };
   },
   created() {
@@ -714,8 +714,6 @@ export default {
         .post("/hr/kaoqin/search")
         .then(res => {
           // console.log(res.data);
-          this.$store.dispatch('getJurisdiction')//调取store中的接口，获取权限列表
-          this.jurisdictionList=this.$store.state.jurisdiction;
           this.salaryList = res.data;
         })
         .catch(err => {

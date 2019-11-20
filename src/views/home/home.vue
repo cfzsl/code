@@ -28,6 +28,9 @@ export default {
       direction: "ltr"
     };
   },
+  created(){
+    this.getjurisdictionList()
+  },
   methods: {
     asideEnd(open) {
       this.drawer = open;
@@ -36,7 +39,16 @@ export default {
     asideOpen(open) {
       this.drawer = open;
       console.log(this.drawer);
-    }
+    },
+    // 获取权限
+    getjurisdictionList(){
+      let _date={
+        rolename:localStorage.getItem('role')
+      };
+      this.$http.post('/getFuncs',this.$qs.stringify(_date)).then(res=>{
+        localStorage.setItem('jurisdiction', JSON.stringify(res.data))
+      })
+    },
   },
   components: {
     Top,
